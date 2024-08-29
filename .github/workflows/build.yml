@@ -45,11 +45,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: |
-        npm install
-        npm run build
-
-    - name: Build frontend
-      run: |
         cd frontend
         npm install
         npm run build-only
