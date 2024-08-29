@@ -1,0 +1,97 @@
+name: Go Server Build
+
+permissions:
+  contents: write
+  
+on:
+  release:
+    types: [created]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+
+    - name: Install dependencies
+      run: |
+        cd backend
+        go mod tidy
+
+    - name: Run tests
+      run: |
+        cd backend
+        go test -v ./...
+
+  build-and-package:
+    name: Build and Package Artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.20'
+
+    # since this runs when releasing a new version
+    - name: Get the version
+      id: get_version
+      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+    # build the golang server
+    # also pass ldflags (installation parameters)
+    - name: Build Golang Server
+      run: |
+        cd backend
+        go build -ldflags "-X setup.repository.Version=${{ env.RELEASE_VERSION }}" -v -o server_linux ./server.go
+        GOOS=darwin GOARCH=amd64 go build -ldflags "-X setup.repository.Version=${{ env.RELEASE_VERSION }}" -v -o server_m1 ./server.go
+        cd ..
+
+    # setup nodejs for the frontend
+    - name: Setup node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm install
+        npm run build
+        cd ..
+
+    - name: Copy results to root folder
+      run: |
+        mkdir release
+        mkdir release/frontend
+        cp backend/server release/
+        cp -r frontend/dist/* release/frontend
+        cp -r backend/data/db/migrations release/
+        
+    - name: Zip release folder
+      run: zip -r release.zip release
+      
+    - name: Upload artifacts zip
+      uses: actions/upload-artifact@v2
+      with:
+        name: release
+        path: release
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./release.zip
+        asset_name: release.zip
+        asset_content_type: application/zip

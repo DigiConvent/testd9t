@@ -1,0 +1,1 @@
+update test_table set age = 78 where name = 'test_data';
