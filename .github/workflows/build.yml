@@ -52,8 +52,7 @@ jobs:
     - name: Build Golang Server
       run: |
         cd backend
-        go build -ldflags "-X setup.repository.Version=${{ env.RELEASE_VERSION }}" -v -o server_linux ./server.go
-        GOOS=darwin GOARCH=amd64 go build -ldflags "-X setup.repository.Version=${{ env.RELEASE_VERSION }}" -v -o server_m1 ./server.go
+        go build -ldflags "-X setup.repository.Version=${{ env.RELEASE_VERSION }}" -v -o main ./main.go
         cd ..
 
     # setup nodejs for the frontend
