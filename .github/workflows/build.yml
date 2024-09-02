@@ -36,6 +36,7 @@ jobs:
         go mod tidy
         go build -ldflags "-X setup.repository.Version=${{ env.RELEASE_VERSION }}" -v -o main ./main.go
         ls -l
+        pwd
         cd ..
 
     - name: Setup node.js
