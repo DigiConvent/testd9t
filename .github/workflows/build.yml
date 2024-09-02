@@ -1,73 +1,63 @@
-name: Go Server Build
+name: Build and Package Release
 
-permissions:
-  contents: write
-  
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - '*' 
 
 jobs:
-  build-and-package:
-    name: Build and Package Artifacts
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Set up Go environment
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: '1.20'
 
-    # since this runs when releasing a new version
-    - name: Get the version
-      id: get_version
-      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
-    # build the golang server
-    # also pass ldflags (installation parameters)
-    - name: Build Golang Server
+    # Build Go backend binary
+    - name: Build Go binary
       run: |
+        VERSION=$(git describe --tags)
         cd backend
-        go mod tidy
-        go build -ldflags "-X setup.repository.Version=${{ env.RELEASE_VERSION }}" -v -o main ./main.go
-        cd ..
+        go build -ldflags "-X 'version.Version=${VERSION}'" -o main .
 
-    - name: Build frontend
+    # Set up Node.js environment
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+
+    # Install dependencies and build Vue frontend
+    - name: Build Vue frontend
       run: |
         cd frontend
         npm install
         npm run build-only
-        cd ..
 
-    - name: Copy results to root folder
+    # Gather migration files
+    - name: Copy migration files
       run: |
-        mkdir release
-        mkdir release/frontend
-        ls -l backend
-        ls -l frontend/dist
-        ls -l backend/data/db/migrations
-        cp backend/main release/
-        cp -r frontend/dist/* release/frontend
-        cp -r backend/data/db/migrations release/
-        
-    - name: Zip release folder
-      run: zip -r release.zip release
-      
-    - name: Upload artifacts zip
-      uses: actions/upload-artifact@v2
-      with:
-        name: release
-        path: release
+        mkdir -p /home/runner/work/migrations
+        cp -r backend/data/db/migrations/* /home/runner/work/migrations/
 
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # Create a zip with all necessary artifacts
+    - name: Create a zip file with artifacts
+      run: |
+        mkdir -p release
+        cp backend/main release/
+        cp -r frontend/dist release/
+        cp -r /home/runner/work/migrations release/
+        cd release
+        zip -r release-package.zip *
+
+    # Upload the release package as an artifact
+    - name: Upload Release Artifact
+      uses: actions/upload-artifact@v3
       with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./release.zip
-        asset_name: release.zip
-        asset_content_type: application/zip
+        name: release-package
+        path: release/release-package.zip
