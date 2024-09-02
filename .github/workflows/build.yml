@@ -16,8 +16,6 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
-
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
@@ -37,10 +35,8 @@ jobs:
         go build -ldflags "-X setup.repository.Version=${{ env.RELEASE_VERSION }}" -v -o main ./main.go
         cd ..
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: |
+    - name: Build frontend
+      run: |
         cd frontend
         npm install
         npm run build-only
