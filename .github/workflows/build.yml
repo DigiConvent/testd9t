@@ -35,8 +35,6 @@ jobs:
         cd backend
         go mod tidy
         go build -ldflags "-X setup.repository.Version=${{ env.RELEASE_VERSION }}" -v -o main ./main.go
-        ls -l
-        pwd
         cd ..
 
     - name: Setup node.js
@@ -56,6 +54,7 @@ jobs:
       run: |
         mkdir release
         mkdir release/frontend
+        ls -l
         cp backend/main release/
         cp -r frontend/dist/* release/frontend
         cp -r backend/data/db/migrations release/
