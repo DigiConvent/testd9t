@@ -54,7 +54,7 @@ jobs:
       run: |
         mkdir release
         mkdir release/frontend
-        ls -l
+        ls -lR
         cp backend/main release/
         cp -r frontend/dist/* release/frontend
         cp -r backend/data/db/migrations release/
