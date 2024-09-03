@@ -66,7 +66,7 @@ jobs:
         draft: false
         prerelease: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT }}
 
     # Upload the release package as an asset to the GitHub release
     - name: Upload Release Asset
