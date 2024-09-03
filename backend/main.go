@@ -1,14 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
+	"github.com/DigiConvent/testd9t/version"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	router := gin.Default()
+
+	fmt.Println("Version: ", version.Version)
 
 	router.NoRoute(handleFrontend())
 	router.Run(":8080")
