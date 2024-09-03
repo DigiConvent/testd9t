@@ -33,8 +33,9 @@ is_installed() {
         return 1
     fi
 }
-
-REPO_URL="https://github.com/DigiConvent/d9ttest.git"
+REPO="DigiConvent/testd9t"
+REPO_URL="https://github.com/${REPO}"
+REPO_GIT="${REPO_URL}.git"
 APP_USER="digiconvent"
 APP_GROUP="digiconvent_group"
 APP_NAME="digiconvent"
@@ -46,7 +47,7 @@ CONFIG_DIR="/etc/$APP_NAME"
 
 password=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
 
-if [ ! $# -eq 2 ]
+if [ ! $# -eq 3 ]
   then
     echo "Call this script with the Telegram bot token and domain"
     echo "./install.sh <version> <token> <domain>"
@@ -54,8 +55,8 @@ if [ ! $# -eq 2 ]
     exit 1
 fi
 
-tg_bot_token=$1
-domain=$2
+tg_bot_token=$2
+domain=$3
 
 SECONDS=0
 
@@ -146,20 +147,20 @@ createdb -E UTF8 -O d9t digiconvent;
 psql -c \"ALTER ROLE d9t WITH SUPERUSER;\"
 " > /dev/null
 
-
-
 if [ "$1" == "latest" ]; then
     TAG=$(git ls-remote --tags --sort="v:refname" $REPO_URL | tail -n1 | sed 's/.*\///')
 else
     TAG=$1
 fi
 
-if ! git ls-remote --tags $REPO_URL | grep -q "refs/tags/$TAG"; then
+if ! git ls-remote --tags $REPO_GIT | grep -q "refs/tags/$TAG"; then
+    git ls-remote --tags $REPO_GIT
     echo "Tag $TAG does not exist"
     exit 1
 fi
 
-RELEASE_DATA=$(curl -s "https://api.github.com/repos/DigiConvent/d9t/releases/tags/$TAG")
+RELEASE_DATA=$(curl -s "https://api.github.com/repos/$REPO/releases/tags/$TAG")
+echo $RELEASE_DATA
 ASSET_URL=$(echo "$RELEASE_DATA" | jq -r '.assets[0].browser_download_url')
 echo $ASSET_URL
 if [ -z "$ASSET_URL" ]; then
@@ -170,9 +171,8 @@ fi
 cd /tmp/
 curl -L -o "release.zip" "$ASSET_URL"
 rm -rf release/
-unzip release.zip
+unzip -o release.zip
 
-cp -r /tmp/release/ /tmp/
 
 
 
@@ -214,11 +214,11 @@ echo "DOMAIN=digiconvent.de" >> $CONFIG_DIR/env
 chown -R $APP_USER:$APP_GROUP $STATIC_FILES $CONFIG_DIR $LOG_DIR $HOME_DIR
 chmod -R 750 $STATIC_FILES $CONFIG_DIR $LOG_DIR $HOME_DIR
 
-cp /tmp/server $APP_BIN
+cp /tmp/main $APP_BIN
 chown root:root $APP_BIN
 chmod 755 $APP_BIN
 
-cp -r /tmp/frontend/* $STATIC_FILES/frontend/
+cp -r /tmp/dist/* $STATIC_FILES/frontend/
 cp -r /tmp/migrations $CONFIG_DIR/
 
 SERVICE_FILE="/etc/systemd/system/$APP_NAME.service"
