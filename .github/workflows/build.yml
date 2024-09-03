@@ -24,7 +24,7 @@ jobs:
       run: |
         VERSION=$(git describe --tags)
         cd backend
-        go build -ldflags "-X 'github.com/${{ github.repository }}/version.Version=${VERSION}'" -o main .
+        CGO_ENABLED=0 go build -ldflags "-X 'github.com/${{ github.repository }}/version.Version=${VERSION}'" -o main .
 
     # Set up Node.js environment
     - name: Set up Node.js
