@@ -1,96 +1,76 @@
-name: Go Server Build
+name: Build and Package Release
 
-permissions:
-  contents: write
-  
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - '*' 
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
+    # Set up Go environment
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v3
       with:
         go-version: '1.20'
 
-    - name: Install dependencies
+    # Build Go backend binary
+    - name: Build Go binary
       run: |
+        VERSION=$(git describe --tags)
         cd backend
-        go mod tidy
+        go build -ldflags "-X 'github.com/${{ github.repository }}/version.Version=${VERSION}'" -o main .
 
-    - name: Run tests
-      run: |
-        cd backend
-        go test -v ./...
-
-  build-and-package:
-    name: Build and Package Artifacts
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Go
-      uses: actions/setup-go@v2
+    # Set up Node.js environment
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
       with:
-        go-version: '1.20'
+        node-version: '18.x'
 
-    # since this runs when releasing a new version
-    - name: Get the version
-      id: get_version
-      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
-    # build the golang server
-    # also pass ldflags (installation parameters)
-    - name: Build Golang Server
-      run: |
-        cd backend
-        go build -ldflags "-X setup.repository.Version=${{ env.RELEASE_VERSION }}" -v -o main ./main.go
-        cd ..
-
-    # setup nodejs for the frontend
-    - name: Setup node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18'
-
-    - name: Build frontend
+    # Install dependencies and build Vue frontend
+    - name: Build Vue frontend
       run: |
         cd frontend
         npm install
         npm run build-only
-        cd ..
 
-    - name: Copy results to root folder
+    # Gather migration files
+    - name: Copy migration files
       run: |
-        mkdir release
-        mkdir release/frontend
-        cp backend/server release/
-        cp -r frontend/dist/* release/frontend
-        cp -r backend/data/db/migrations release/
-        
-    - name: Zip release folder
-      run: zip -r release.zip release
-      
-    - name: Upload artifacts zip
-      uses: actions/upload-artifact@v2
-      with:
-        name: release
-        path: release
+        mkdir -p /home/runner/work/migrations
+        cp -r backend/data/db/migrations/* /home/runner/work/migrations/
 
+    # Create a zip with all necessary artifacts
+    - name: Create a zip file with artifacts
+      run: |
+        mkdir -p release
+        cp backend/main release/
+        cp -r frontend/dist release/
+        cp -r /home/runner/work/migrations release/
+        cd release
+        zip -r release.zip *
+
+    # Get the release ID for the tag
+    - name: Get Release ID
+      id: get_release_id
+      run: |
+        release_id=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} | jq -r .id)
+        echo "RELEASE_ID=$release_id" >> $GITHUB_ENV
+
+    # Upload the release package as an asset to the existing GitHub release
     - name: Upload Release Asset
+      if: env.RELEASE_ID != 'null'
       uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./release.zip
+        upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}/assets{?name,label}
+        asset_path: release/release.zip
         asset_name: release.zip
         asset_content_type: application/zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
