@@ -26,6 +26,13 @@ jobs:
         cd backend
         CGO_ENABLED=0 go build -ldflags "-X 'github.com/${{ github.repository }}/version.Version=${VERSION}'" -o main .
 
+    - name: Install UPX
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y upx
+        upx --best --lzma /home/runner/work/backend/main
+
+  
     # Set up Node.js environment
     - name: Set up Node.js
       uses: actions/setup-node@v3
