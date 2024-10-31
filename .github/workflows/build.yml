@@ -1,9 +1,8 @@
 name: Build and Package Release
 
 on:
-  push:
-    tags:
-      - '*' 
+  release:
+    types: [created]
 
 jobs:
   build:
