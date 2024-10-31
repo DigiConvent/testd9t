@@ -75,7 +75,10 @@ jobs:
          echo "upload_url=${{ github.event.release.upload_url }}" >> $GITHUB_ENV
          upload_url=$(curl -sL https://api.github.com/repos/${{github.repository}}/releases/latest?access_token=${{ secrets.GITHUB_TOKEN }} | jq -r '.upload_url')
          echo ::set-output name=upload_url::$upload_url
-         ls -lR
+         ls -l
+         
+    - name: Print Event Context
+      run: echo "${{ toJson(github.event) }}"
 
     - name: Upload binary to release
       uses: actions/upload-release-asset@v1
