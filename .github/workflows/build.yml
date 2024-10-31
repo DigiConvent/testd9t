@@ -67,11 +67,16 @@ jobs:
         path: vue3-app.zip
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
-
+        
+    - name: Get upload URL
+      id: geturl
+      run:   |
+         upload_url=$(curl -sL https://api.github.com/repos/${{github.repository}}/releases/latest?access_token=${{ secrets.GITHUB_TOKEN }} | jq -r '.upload_url')
+         echo ::set-output name=upload_url::$upload_url
     - name: Upload binary to release
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ github.event.release.upload_url }}
+        upload_url: ${{ steps.geturl.outputs.upload_url }}
         asset_path: ./testd9t-binary
         asset_name: main
         asset_content_type: application/octet-stream
@@ -81,7 +86,7 @@ jobs:
     - name: Upload frontend to release
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ github.event.release.upload_url }}
+        upload_url: ${{ steps.geturl.outputs.upload_url }}
         asset_path: ./vue3-app.zip
         asset_name: frontend.zip
         asset_content_type: application/zip
