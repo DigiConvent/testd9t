@@ -12,14 +12,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    # Set up Go environment
+      
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
         go-version: '1.20'
-
-    # Build Go backend binary
+        
     - name: Build Go binary
       run: |
         VERSION=$(git describe --tags)
@@ -33,37 +31,27 @@ jobs:
         ls ${{ github.workspace }}
         upx --best --lzma ${{ github.workspace }}/backend/main
 
-  
-    # Set up Node.js environment
+    - name: Upload binary as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: testd9t-binary
+        path: backend/main
+        
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18.x'
+        node-version: '18'
 
-    # Install dependencies and build Vue frontend
     - name: Build Vue frontend
       run: |
         cd frontend
         npm install
         npm run build-only
 
-    # Gather migration files
-    - name: Copy migration files
+    - name: Create a zip file with the frontend artifacts
       run: |
-        mkdir -p /home/runner/work/migrations
-        cp -r backend/data/db/migrations/* /home/runner/work/migrations/
+          zip -r vue3-app.zip frontend/dist
 
-    # Create a zip with all necessary artifacts
-    - name: Create a zip file with artifacts
-      run: |
-        mkdir -p release
-        cp backend/main release/
-        cp -r frontend/dist release/
-        cp -r /home/runner/work/migrations release/
-        cd release
-        zip -r release.zip *
-
-    # Get the release ID for the tag
     - name: Get Release ID
       id: get_release_id
       run: |
@@ -71,14 +59,11 @@ jobs:
           https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} | jq -r .id)
         echo "RELEASE_ID=$release_id" >> $GITHUB_ENV
 
-    # Upload the release package as an asset to the existing GitHub release
     - name: Upload Release Asset
       if: env.RELEASE_ID != 'null'
-      uses: actions/upload-release-asset@v1
+      uses: actions/upload-artifact@v3
       with:
-        upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}/assets{?name,label}
-        asset_path: release/release.zip
-        asset_name: release.zip
-        asset_content_type: application/zip
+        name: vue3-app
+        path: vue3-app.zip
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
