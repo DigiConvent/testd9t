@@ -32,12 +32,6 @@ jobs:
         sudo apt-get install -y upx
         ls ${{ github.workspace }}
         upx --best --lzma ${{ github.workspace }}/backend/main
-
-    # - name: Upload binary as artifact
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: testd9t-binary
-    #     path: backend/main
         
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -61,31 +55,10 @@ jobs:
           https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} | jq -r .id)
         echo "RELEASE_ID=$release_id" >> $GITHUB_ENV
 
-    # - name: Upload frontend as artifact
-    #   if: env.RELEASE_ID != 'null'
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: vue3-app
-    #     path: vue3-app.zip
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.PAT }}
-        
-    - name: Get upload URL
-      id: geturl
-      run:   |
-         echo "upload_url:${{ github.event.release.upload_url }}"
-         echo "upload_url=${{ github.event.release.upload_url }}" >> $GITHUB_ENV
-         upload_url=$(curl -sL https://api.github.com/repos/${{github.repository}}/releases/latest?access_token=${{ secrets.GITHUB_TOKEN }} | jq -r '.upload_url')
-         echo ::set-output name=upload_url::$upload_url
-         ls -l
-         
-    - name: Print Event Context
-      run: echo "${{ toJson(github.event) }}"
-
     - name: Upload binary to release
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ env.upload_url }}
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: backend/main
         asset_name: main
         asset_content_type: application/octet-stream
@@ -95,7 +68,7 @@ jobs:
     - name: Upload frontend to release
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ env.upload_url }}
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: vue3-app.zip
         asset_name: frontend.zip
         asset_content_type: application/zip
