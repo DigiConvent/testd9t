@@ -8,8 +8,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      actions: read
+      contents: write  # Required to upload assets to releases
+      actions: read    # Needed to access action outputs
 
     steps:
     - name: Checkout code
@@ -32,7 +32,7 @@ jobs:
         sudo apt-get install -y upx
         ls ${{ github.workspace }}
         upx --best --lzma ${{ github.workspace }}/backend/main
-
+        
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
@@ -70,7 +70,7 @@ jobs:
     - name: Upload binary to release
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ env.upload_url }}
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: backend/main
         asset_name: main
         asset_content_type: application/octet-stream
@@ -80,9 +80,10 @@ jobs:
     - name: Upload frontend to release
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ env.upload_url }}
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: vue3-app.zip
         asset_name: frontend.zip
         asset_content_type: application/zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
