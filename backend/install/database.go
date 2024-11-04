@@ -89,9 +89,8 @@ func setPGPW() {
 }
 
 func PsqlCommand(command string) {
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	cmd := exec.Command("sudo", "-u", "postgres", "psql", "-h", host, "-p", port, "-d", "postgres", "-c", env.ReplaceEnvVar(command))
+	setPGPW()
+	cmd := exec.Command("sudo", "-u", "postgres", "psql", "-d", "postgres", "-c", env.ReplaceEnvVar(command))
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println("Could not execute query:", command)
@@ -101,11 +100,10 @@ func PsqlCommand(command string) {
 }
 
 func BackupDatabase(filePath string) error {
-	host := os.Getenv("DB_HOST")
 	dbName := os.Getenv("DB_NAME")
 	setPGPW()
 	os.Remove(filePath)
-	cmd := exec.Command("pg_dump", "-U", "postgres", "-h", host, "-d", dbName, "--data-only", "-f", filePath)
+	cmd := exec.Command("pg_dump", "-U", "postgres", "-d", dbName, "--data-only", "-f", filePath)
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 
