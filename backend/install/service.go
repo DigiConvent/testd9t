@@ -3,7 +3,6 @@ package install
 import (
 	"os"
 	"os/exec"
-	"strings"
 )
 
 func StopService() error {
@@ -13,30 +12,29 @@ func StopService() error {
 	return cmd.Run()
 }
 
-func CreateService() {
-	service := `[Unit]
-Description=digiconvent Service
-After=network.target
+// func CreateService() {
+// 	service := `[Unit]
+// Description=digiconvent Service
+// After=network.target
 
-[Service]
-ExecStart=/usr/local/bin/digiconvent
-WorkingDirectory=/home/digiconvent/
-Restart=always
-User=digiconvent
-Group=digiconvent_group
-EnvironmentFile=/etc/digiconvent/env
-StandardOutput=journal
-StandardError=journal
-AmbientCapabilities=CAP_NET_BIND_SERVICE
+// [Service]
+// ExecStart=/usr/local/bin/digiconvent
+// WorkingDirectory=/home/digiconvent/
+// Restart=always
+// User=digiconvent
+// Group=digiconvent_group
+// EnvironmentFile=/etc/digiconvent/env
+// StandardOutput=journal
+// StandardError=journal
+// AmbientCapabilities=CAP_NET_BIND_SERVICE
 
-[Install]
-WantedBy=multi-user.target
-`
-	serviceFile := "/etc/systemd/system/digiconvent.service"
-	f, err := os.Create(serviceFile)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	service = strings.ReplaceAll(service, "$APP_NAME", "digiconvent")
-}
+// [Install]
+// WantedBy=multi-user.target
+// `
+// 	serviceFile := "/etc/systemd/system/digiconvent.service"
+// 	f, err := os.Create(serviceFile)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	defer f.Close()
+// }
