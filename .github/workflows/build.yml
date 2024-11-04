@@ -1,25 +1,25 @@
 name: Build and Package Release
 
 on:
-  push:
-    tags:
-      - '*' 
+  release:
+    types: [created]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    # Set up Go environment
+      
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
         go-version: '1.20'
-
-    # Build Go backend binary
+        
     - name: Build Go binary
       run: |
         VERSION=$(git describe --tags)
@@ -33,52 +33,56 @@ jobs:
         ls ${{ github.workspace }}
         upx --best --lzma ${{ github.workspace }}/backend/main
 
-  
-    # Set up Node.js environment
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18.x'
+        node-version: '18'
 
-    # Install dependencies and build Vue frontend
     - name: Build Vue frontend
       run: |
         cd frontend
         npm install
         npm run build-only
 
-    # Gather migration files
-    - name: Copy migration files
+    - name: Create a zip file with the frontend artifacts
       run: |
-        mkdir -p /home/runner/work/migrations
-        cp -r backend/data/db/migrations/* /home/runner/work/migrations/
+          zip -r vue3-app.zip frontend/dist
 
-    # Create a zip with all necessary artifacts
-    - name: Create a zip file with artifacts
-      run: |
-        mkdir -p release
-        cp backend/main release/
-        cp -r frontend/dist release/
-        cp -r /home/runner/work/migrations release/
-        cd release
-        zip -r release.zip *
-
-    # Get the release ID for the tag
     - name: Get Release ID
       id: get_release_id
       run: |
         release_id=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} | jq -r .id)
         echo "RELEASE_ID=$release_id" >> $GITHUB_ENV
+        
+    - name: Get upload URL
+      id: geturl
+      run:   |
+         echo "upload_url:${{ github.event.release.upload_url }}"
+         echo "upload_url=${{ github.event.release.upload_url }}" >> $GITHUB_ENV
+         upload_url=$(curl -sL https://api.github.com/repos/${{github.repository}}/releases/latest?access_token=${{ secrets.GITHUB_TOKEN }} | jq -r '.upload_url')
+         echo ::set-output name=upload_url::$upload_url
+         ls -l
+         
+    - name: Print Event Context
+      run: echo "${{ toJson(github.event) }}"
 
-    # Upload the release package as an asset to the existing GitHub release
-    - name: Upload Release Asset
-      if: env.RELEASE_ID != 'null'
+    - name: Upload binary to release
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}/assets{?name,label}
-        asset_path: release/release.zip
-        asset_name: release.zip
+        upload_url: ${{ env.upload_url }}
+        asset_path: backend/main
+        asset_name: main
+        asset_content_type: application/octet-stream
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload frontend to release
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ env.upload_url }}
+        asset_path: vue3-app.zip
+        asset_name: frontend.zip
         asset_content_type: application/zip
       env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
