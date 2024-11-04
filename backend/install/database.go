@@ -116,11 +116,10 @@ func BackupDatabase(filePath string) error {
 }
 
 func RestoreDatabase(filePath string) error {
-	host := os.Getenv("DB_HOST")
 	dbName := os.Getenv("DB_NAME")
 	setPGPW()
 
-	cmd := exec.Command("psql", "-U", "postgres", "-h", host, "-d", dbName, "--file="+filePath)
+	cmd := exec.Command("psql", "-U", "postgres", "-d", dbName, "--file="+filePath)
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 
