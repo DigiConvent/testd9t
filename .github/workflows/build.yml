@@ -125,7 +125,7 @@ jobs:
 
           migrations_folder="data/migrations/$tag"
           if [ -d "$migrations_folder" ]; then
-            migrations=$(find "$migrations_folder" -type f -name "*.sql" | jq -R . | jq -s 'map({name: ., url: "'$REPO_URL'/" + .})')
+            migrations=$(find $migrations_folder -type f -name "*.sql" | jq -R 'split("/") | last' | jq -s --arg repo_url $REPO_URL 'map({name: ., url: ($repo_url + "/data/migrations/" + tag + "/" + .)})')
           else
             migrations="[]"
           fi
