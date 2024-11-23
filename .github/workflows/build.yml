@@ -123,6 +123,7 @@ jobs:
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '.assets | map({name: .name, url: .browser_download_url})')
 
+          migrations_folder="data/migrations/$tag"
           if [ -d "$migrations_folder" ]; then
             migrations=$(find "$migrations_folder" -type f -name "*.sql" | jq -R . | jq -s 'map({name: ., url: "'$REPO_URL'/" + .})')
           else
