@@ -114,12 +114,15 @@ jobs:
           const owner = "${{ github.repository_owner }}";
           const repo = "${{ github.event.repository.name }}";
 
+          // Fetch all tags
           const releases = await octokit.repos.listReleases({ owner, repo });
 
+          // Generate file content
           const fileContent = releases.data.map(release => {
             return `- [${release.tag_name}](${release.html_url}): Assets:\n${release.assets.map(asset => `  - [${asset.name}](${asset.browser_download_url})`).join("\n")}`;
           }).join("\n\n");
 
+          // Write content to file
           fs.writeFileSync("RELEASE_TAGS.md", fileContent);
         }
 
