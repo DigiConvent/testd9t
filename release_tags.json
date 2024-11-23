@@ -14,11 +14,11 @@
     "migrations": [
       {
         "name": "0x0123__1231.sql",
-        "url": "/data/migrations/0.0.1/0x0123__1231.sql"
+        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.1/data/migrations/0.0.1/0x0123__1231.sql"
       },
       {
         "name": "init.sql",
-        "url": "/data/migrations/0.0.1/init.sql"
+        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.1/data/migrations/0.0.1/init.sql"
       }
     ]
   },
@@ -37,7 +37,7 @@
     "migrations": [
       {
         "name": "init.sql",
-        "url": "/data/migrations/0.0.2/init.sql"
+        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.2/data/migrations/0.0.2/init.sql"
       }
     ]
   },
@@ -65,6 +65,20 @@
       {
         "name": "main",
         "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/main"
+      }
+    ],
+    "migrations": []
+  },
+  {
+    "tag": "0.0.5",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.5/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.5/main"
       }
     ],
     "migrations": []
