@@ -12,5 +12,19 @@
       }
     ],
     "migrations": []
+  },
+  {
+    "tag": "0.0.2",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/main"
+      }
+    ],
+    "migrations": []
   }
 ]
