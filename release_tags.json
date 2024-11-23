@@ -1,133 +1,188 @@
 [
-{"tag": "0.0.1", "assets": [
   {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/frontend.zip"
+    "tag": "0.0.1",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/main"
-  }
-]},
-{"tag": "0.0.2", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/frontend.zip"
+    "tag": "0.0.2",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/main"
-  }
-]},
-{"tag": "0.0.3", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.3/frontend.zip"
+    "tag": "0.0.3",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.3/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.3/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.3/main"
-  }
-]},
-{"tag": "0.0.4", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/frontend.zip"
+    "tag": "0.0.4",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/main"
-  }
-]},
-{"tag": "0.0.5", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.5/frontend.zip"
+    "tag": "0.0.5",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.5/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.5/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.5/main"
-  }
-]},
-{"tag": "0.0.6", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.6/frontend.zip"
+    "tag": "0.0.6",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.6/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.6/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.6/main"
-  }
-]},
-{"tag": "0.0.7", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.7/frontend.zip"
+    "tag": "0.0.7",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.7/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.7/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.7/main"
-  }
-]},
-{"tag": "0.0.8", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.8/frontend.zip"
+    "tag": "0.0.8",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.8/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.8/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.8/main"
-  }
-]},
-{"tag": "0.0.9", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.9/frontend.zip"
+    "tag": "0.0.9",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.9/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.9/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.9/main"
-  }
-]},
-{"tag": "0.0.10", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.10/frontend.zip"
+    "tag": "0.0.10",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.10/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.10/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.10/main"
-  }
-]},
-{"tag": "0.0.11", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.11/frontend.zip"
+    "tag": "0.0.11",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.11/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.11/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.11/main"
-  }
-]},
-{"tag": "0.0.12", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.12/frontend.zip"
+    "tag": "0.0.12",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.12/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.12/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.12/main"
-  }
-]},
-{"tag": "0.0.13", "assets": [
-  {
-    "name": "frontend.zip",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.13/frontend.zip"
+    "tag": "0.0.13",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.13/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.13/main"
+      }
+    ]
   },
   {
-    "name": "main",
-    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.13/main"
+    "tag": "0.0.14",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.14/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.14/main"
+      }
+    ]
+  },
+  {
+    "tag": "0.0.15",
+    "assets": []
   }
-]},
-{"tag": "0.0.14", "assets": []}
 ]
