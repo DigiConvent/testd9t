@@ -127,6 +127,8 @@ jobs:
 
         sed -i '$ s/,$//' release_tags.json
         echo "]" >> release_tags.json
+        
+        jq . release_tags.json > tmp.json && mv tmp.json release_tags.json
 
     - name: Configure Git
       run: |
