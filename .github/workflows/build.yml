@@ -87,3 +87,57 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
+  generate-tags-file:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Install dependencies
+      run: npm install @octokit/rest
+
+    - name: Generate tags file
+      run: |
+        node <<EOF
+        const { Octokit } = require("@octokit/rest");
+        const fs = require("fs");
+
+        const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+        async function generateTagsFile() {
+          const owner = "${{ github.repository_owner }}";
+          const repo = "${{ github.event.repository.name }}";
+
+          const releases = await octokit.repos.listReleases({ owner, repo });
+
+          const fileContent = releases.data.map(release => {
+            return `- [${release.tag_name}](${release.html_url}): Assets:\n${release.assets.map(asset => `  - [${asset.name}](${asset.browser_download_url})`).join("\n")}`;
+          }).join("\n\n");
+
+          fs.writeFileSync("RELEASE_TAGS.md", fileContent);
+        }
+
+        generateTagsFile().catch(error => {
+          console.error(error);
+          process.exit(1);
+        });
+        EOF
+
+    - name: Configure Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Commit and push changes
+      run: |
+        git add RELEASE_TAGS.md
+        git commit -m "Update RELEASE_TAGS.md with new release information"
+        git push
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
