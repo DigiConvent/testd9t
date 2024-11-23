@@ -111,8 +111,9 @@ jobs:
         echo "
         import { Octokit } from '@octokit/rest';
         import fs from 'fs';
+        import fetch from "node-fetch";
         
-        const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+        const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN, fetch: fetch });
         
         async function generateTagsFile() {
           const owner = process.env.OWNER;
