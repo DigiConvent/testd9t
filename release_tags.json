@@ -183,6 +183,28 @@
   },
   {
     "tag": "0.0.15",
-    "assets": []
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.15/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.15/main"
+      }
+    ]
+  },
+  {
+    "tag": "0.0.16",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.16/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.16/main"
+      }
+    ]
   }
 ]
