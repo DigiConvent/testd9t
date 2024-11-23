@@ -110,28 +110,22 @@ jobs:
         export OWNER="${{ github.repository_owner }}"
         export REPO="${{ github.event.repository.name }}"
 
-        # Create an empty JSON structure to hold all release tags and assets
-        echo '{"tags": []}' > release_tags.json
+        echo "[]" > release_tags.json
 
-        # Fetch all tags (releases) for the repository
         tags=$(curl -s \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           "https://api.github.com/repos/$OWNER/$REPO/tags")
 
-        # Loop through each tag and gather its assets
         for tag in $(echo "$tags" | jq -r '.[].name'); do
-          # Get the assets for each tag
           assets=$(curl -s \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '.assets')
+            "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '.assets | map({name: .name, url: .browser_download_url})')
 
-          # Append the tag and assets to the JSON file
           echo "{\"tag\": \"$tag\", \"assets\": $assets}," >> release_tags.json
         done
 
-        # Remove the trailing comma and close the JSON array
         sed -i '$ s/,$//' release_tags.json
-        echo "}" >> release_tags.json
+        echo "]" >> release_tags.json
 
     - name: Configure Git
       run: |
