@@ -124,10 +124,12 @@ jobs:
             "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '.assets | map({name: .name, url: .browser_download_url})')
 
           migrations_folder="data/migrations/$tag"
+          echo $migrations_folder
           if [ -d "$migrations_folder" ]; then
             migrations=$(find $migrations_folder -type f -name "*.sql" | jq -R 'split("/") | last' | jq -s --arg repo_url $REPO_URL 'map({name: ., url: ($repo_url + "/data/migrations/" + tag + "/" + .)})')
             echo $migrations
           else
+            echo " doesnt exist "
             migrations="[]"
           fi
           
