@@ -1,19 +1,16 @@
 [
   {
-    "tag": "0.0.1",
+    "tag": "0.0.2",
     "assets": [
       {
         "name": "frontend.zip",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/frontend.zip"
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/frontend.zip"
       },
       {
         "name": "main",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/main"
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/main"
       }
     ],
-    "migrations": [
-      "0x0123__1231.sql",
-      "init.sql"
-    ]
+    "migrations": []
   }
 ]
