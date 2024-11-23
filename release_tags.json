@@ -11,7 +11,10 @@
         "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/main"
       }
     ],
-    "migrations": []
+    "migrations": [
+      "0x0123__1231.sql",
+      "init.sql"
+    ]
   },
   {
     "tag": "0.0.2",
@@ -23,6 +26,36 @@
       {
         "name": "main",
         "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/main"
+      }
+    ],
+    "migrations": [
+      "init.sql"
+    ]
+  },
+  {
+    "tag": "0.0.3",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.3/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.3/main"
+      }
+    ],
+    "migrations": []
+  },
+  {
+    "tag": "0.0.4",
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/main"
       }
     ],
     "migrations": []
