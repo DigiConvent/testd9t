@@ -110,13 +110,14 @@ jobs:
         export OWNER="${{ github.repository_owner }}"
         export REPO="${{ github.event.repository.name }}"
 
-        echo "[]" > release_tags.json
+        echo "[" > release_tags.json
 
         tags=$(curl -s \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           "https://api.github.com/repos/$OWNER/$REPO/tags")
 
-        for tag in $(echo "$tags" | jq -r '.[].name'); do
+        sorted_tags=$(echo "$tags" | jq -r '.[].name' | sort -V)
+        for tag in $sorted_tags; do
           assets=$(curl -s \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '.assets | map({name: .name, url: .browser_download_url})')
