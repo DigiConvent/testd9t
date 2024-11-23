@@ -89,6 +89,7 @@ jobs:
         
 
   generate-tags-file:
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Grant write permissions for this job to modify the repository
