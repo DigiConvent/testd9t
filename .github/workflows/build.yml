@@ -124,6 +124,7 @@ jobs:
             "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '.assets | map({name: .name, url: .browser_download_url})')
 
           migrations_folder="data/migrations/$tag"
+          echo "Checking $migrations_folder"
           if [ -d "$migrations_folder" ]; then
             migrations=$(find "$migrations_folder" -type f -name "*.sql" | jq -R '. as $full_path | {name: ($full_path | split("/") | last), url: ($full_path | gsub("^"; $ENV.REPO_URL + "/"))}' | jq -s)
             echo $migrations
