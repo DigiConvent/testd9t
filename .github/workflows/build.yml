@@ -87,10 +87,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
+
   generate-tags-file:
     runs-on: ubuntu-latest
     permissions:
-      contents: write 
+      contents: write  # Grant write permissions for this job to modify the repository
 
     steps:
     - name: Checkout repository
@@ -99,60 +100,43 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '16'
 
     - name: Install dependencies
-      run: npm install @octokit/rest node-fetch
+      run: npm install @octokit/rest node-fetch jq
 
-    - name: Generate tags file
+    - name: Generate JSON tags file for all tags
       run: |
         export OWNER="${{ github.repository_owner }}"
         export REPO="${{ github.event.repository.name }}"
-        
-        # Create a temporary script file to use import statements
-        echo "
-        import { Octokit } from '@octokit/rest';
-        import fs from 'fs';
-        import fetch from 'node-fetch';
-        
-        const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN, fetch: fetch });
-        
-        async function generateTagsFile() {
-          const owner = process.env.OWNER;
-          const repo = process.env.REPO;
-          
-          // Fetch all releases
-          const releases = await octokit.repos.listReleases({ owner, repo });
-          
-          // Generate file content
-          const fileContent = releases.data.map(release => {
-            return \`- [\${release.tag_name}](\${release.html_url}): Assets:\\n\${release.assets.map(asset => \`  - [\${asset.name}](\${asset.browser_download_url})\`).join('\\n')}\`;
-          }).join('\\n\\n');
-          
-          // Write content to file
-          fs.writeFileSync('RELEASE_TAGS.md', fileContent);
-        }
-        
-        generateTagsFile().catch(error => {
-          console.error(error);
-          process.exit(1);
-        });
-        " > generateTagsFile.mjs
-        
-        # Run the generated script as an ES module
-        node --experimental-specifier-resolution=node generateTagsFile.mjs
-        
-    - name: Configure Git
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git fetch origin main
-        git checkout main
 
-    - name: Commit and push changes
+        # Create an empty JSON structure to hold all release tags and assets
+        echo '{"tags": []}' > release_tags.json
+
+        # Fetch all tags (releases) for the repository
+        tags=$(curl -s \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/$OWNER/$REPO/tags")
+
+        # Loop through each tag and gather its assets
+        for tag in $(echo "$tags" | jq -r '.[].name'); do
+          # Get the assets for each tag
+          assets=$(curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '.assets')
+
+          # Append the tag and assets to the JSON file
+          echo "{\"tag\": \"$tag\", \"assets\": $assets}," >> release_tags.json
+        done
+
+        # Remove the trailing comma and close the JSON array
+        sed -i '$ s/,$//' release_tags.json
+        echo "}" >> release_tags.json
+
+    - name: Commit and push changes to the main branch
       run: |
-        git add RELEASE_TAGS.md
-        git commit -m "Update RELEASE_TAGS.md with new release information"
+        git add release_tags.json
+        git commit -m "Update release_tags.json with all release tags and assets"
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
