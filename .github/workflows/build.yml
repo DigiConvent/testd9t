@@ -149,6 +149,6 @@ jobs:
       run: |
         git add RELEASE_TAGS.md
         git commit -m "Update RELEASE_TAGS.md with new release information"
-        git push
+        git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
