@@ -107,9 +107,10 @@ jobs:
         export OWNER="${{ github.repository_owner }}"
         export REPO="${{ github.event.repository.name }}"
         
-        node -e "
-        const { Octokit } = require('@octokit/rest');
-        const fs = require('fs');
+        # Create a temporary script file to use import statements
+        echo "
+        import { Octokit } from '@octokit/rest';
+        import fs from 'fs';
         
         const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
         
@@ -133,7 +134,10 @@ jobs:
           console.error(error);
           process.exit(1);
         });
-        "
+        " > generateTagsFile.mjs
+        
+        # Run the generated script as an ES module
+        node --experimental-specifier-resolution=node generateTagsFile.mjs
         
     - name: Configure Git
       run: |
