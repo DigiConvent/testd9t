@@ -155,8 +155,8 @@ jobs:
         fi
         echo $folders > .meta/flavours.json
 
-        jq . .meta/release_tags.json > .meta/tmp.json && mv .meta/tmp.json meta/release_tags.json
-        jq . .meta/flavours.json > .meta/tmp.json && mv .meta/tmp.json meta/flavours.json
+        jq . .meta/release_tags.json > .meta/tmp.json && mv .meta/tmp.json .meta/release_tags.json
+        jq . .meta/flavours.json > .meta/tmp.json && mv .meta/tmp.json .meta/flavours.json
 
     - name: Configure Git
       run: |
