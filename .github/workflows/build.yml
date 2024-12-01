@@ -111,7 +111,7 @@ jobs:
         export OWNER="${{ github.repository_owner }}"
         export REPO="${{ github.event.repository.name }}"
 
-        echo "[" > meta/release_tags.json
+        echo "[" > release_tags.json
 
         tags=$(curl -s \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
@@ -140,7 +140,23 @@ jobs:
         sed -i '$ s/,$//' release_tags.json
         echo "]" >> release_tags.json
         
-        jq . release_tags.json > tmp.json && mv tmp.json release_tags.json
+
+
+        folders=$(find "install/" -mindepth 1 -maxdepth 1 -type d | while read -r folder; do
+          folder_name=$(basename "$folder")
+          echo "\"$folder_name\""
+        done | paste -sd, -)
+        if [ -n "$folders" ]; then
+          folders="[$folders]"
+        else
+          folders="[]"
+        fi
+        echo $folders > flavours.json
+
+
+        mkdir meta
+        jq . release_tags.json > tmp.json && mv tmp.json meta/release_tags.json
+        jq . flavours.json > tmp.json && mv tmp.json meta/flavours.json
 
     - name: Configure Git
       run: |
