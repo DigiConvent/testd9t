@@ -68,5 +68,15 @@
     "name": "main",
     "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.7/main"
   }
+], "migrations": []},
+{"tag": "0.0.8", "assets": [
+  {
+    "name": "frontend.zip",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.8/frontend.zip"
+  },
+  {
+    "name": "main",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.8/main"
+  }
 ], "migrations": []}
 ]
