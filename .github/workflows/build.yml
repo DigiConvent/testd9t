@@ -167,7 +167,8 @@ jobs:
 
     - name: Commit and push changes to the main branch
       run: |
-        git add release_tags.json
+        git add .meta/release_tags.json
+        git add .meta/flavours.json
         git commit -m "Update release_tags.json with all release tags and assets"
         git push origin main
       env:
