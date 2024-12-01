@@ -111,7 +111,9 @@ jobs:
         export OWNER="${{ github.repository_owner }}"
         export REPO="${{ github.event.repository.name }}"
 
-        echo "[" > release_tags.json
+        mkdir -p .meta
+
+        echo "[" > .meta/release_tags.json
 
         tags=$(curl -s \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
@@ -134,11 +136,11 @@ jobs:
             migrations="[]"
           fi
           
-          echo "{\"tag\": \"$tag\", \"assets\": $assets, \"migrations\": $migrations}," >> release_tags.json
+          echo "{\"tag\": \"$tag\", \"assets\": $assets, \"migrations\": $migrations}," >> .meta/release_tags.json
         done
 
-        sed -i '$ s/,$//' release_tags.json
-        echo "]" >> release_tags.json
+        sed -i '$ s/,$//' .meta/release_tags.json
+        echo "]" >> .meta/release_tags.json
         
 
 
@@ -151,12 +153,10 @@ jobs:
         else
           folders="[]"
         fi
-        echo $folders > flavours.json
+        echo $folders > .meta/flavours.json
 
-
-        mkdir meta
-        jq . release_tags.json > tmp.json && mv tmp.json meta/release_tags.json
-        jq . flavours.json > tmp.json && mv tmp.json meta/flavours.json
+        jq . .meta/release_tags.json > .meta/tmp.json && mv .meta/tmp.json meta/release_tags.json
+        jq . .meta/flavours.json > .meta/tmp.json && mv .meta/tmp.json meta/flavours.json
 
     - name: Configure Git
       run: |
