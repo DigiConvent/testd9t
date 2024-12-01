@@ -1,0 +1,67 @@
+{
+    "scripts": [
+        {
+            "step": 1,
+            "name": "create_user",
+            "input": [],
+            "output": []
+        },
+        {
+            "step": 2,
+            "requires": [
+                1
+            ],
+            "name": "create_folder_structure",
+            "input": [],
+            "output": []
+        },
+        {
+            "step": 3,
+            "requires": [
+                2
+            ],
+            "name": "create_letsencrypt_certs",
+            "input": [
+                {
+                    "name": "domain",
+                    "default": "digiconvent.de"
+                }
+            ],
+            "output": []
+        },
+        {
+            "step": 4,
+            "name": "install_postgres",
+            "input": [],
+            "output": []
+        },
+        {
+            "step": 5,
+            "name": "setup_database",
+            "input": [
+                {
+                    "name": "hostname"
+                },
+                {
+                    "name": "port"
+                },
+                {
+                    "name": "username"
+                },
+                {
+                    "name": "password"
+                }
+            ],
+            "output": []
+        },
+        {
+            "requires": ["testd9t.service"],
+            "name": "create_systemd_process",
+            "input": [],
+            "output": []
+        }
+    ],
+    "files": [
+        "testd9t.service"
+    ]
+}
