@@ -111,7 +111,7 @@ jobs:
         export OWNER="${{ github.repository_owner }}"
         export REPO="${{ github.event.repository.name }}"
 
-        echo "[" > release_tags.json
+        echo "[" > meta/release_tags.json
 
         tags=$(curl -s \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
