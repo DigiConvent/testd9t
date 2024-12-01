@@ -1,86 +1,72 @@
 [
+{"tag": "0.0.1", "assets": [
   {
-    "tag": "0.0.1",
-    "assets": [
-      {
-        "name": "frontend.zip",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/frontend.zip"
-      },
-      {
-        "name": "main",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/main"
-      }
-    ],
-    "migrations": [
-      {
-        "name": "0x0123__1231.sql",
-        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.1/data/migrations/0.0.1/0x0123__1231.sql"
-      },
-      {
-        "name": "init.sql",
-        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.1/data/migrations/0.0.1/init.sql"
-      }
-    ]
+    "name": "frontend.zip",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/frontend.zip"
   },
   {
-    "tag": "0.0.2",
-    "assets": [
-      {
-        "name": "frontend.zip",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/frontend.zip"
-      },
-      {
-        "name": "main",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/main"
-      }
-    ],
-    "migrations": [
-      {
-        "name": "init.sql",
-        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.2/data/migrations/0.0.2/init.sql"
-      }
-    ]
-  },
-  {
-    "tag": "0.0.3",
-    "assets": [
-      {
-        "name": "frontend.zip",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.3/frontend.zip"
-      },
-      {
-        "name": "main",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.3/main"
-      }
-    ],
-    "migrations": []
-  },
-  {
-    "tag": "0.0.4",
-    "assets": [
-      {
-        "name": "frontend.zip",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/frontend.zip"
-      },
-      {
-        "name": "main",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/main"
-      }
-    ],
-    "migrations": []
-  },
-  {
-    "tag": "0.0.5",
-    "assets": [
-      {
-        "name": "frontend.zip",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.5/frontend.zip"
-      },
-      {
-        "name": "main",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.5/main"
-      }
-    ],
-    "migrations": []
+    "name": "main",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/main"
   }
+], "migrations": [{"name":"0x0123__1231.sql","url":"https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.1/data/migrations/0.0.1/0x0123__1231.sql"},{"name":"init.sql","url":"https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.1/data/migrations/0.0.1/init.sql"}]},
+{"tag": "0.0.2", "assets": [
+  {
+    "name": "frontend.zip",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/frontend.zip"
+  },
+  {
+    "name": "main",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.2/main"
+  }
+], "migrations": [{"name":"init.sql","url":"https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.2/data/migrations/0.0.2/init.sql"}]},
+{"tag": "0.0.3", "assets": [
+  {
+    "name": "frontend.zip",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.3/frontend.zip"
+  },
+  {
+    "name": "main",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.3/main"
+  }
+], "migrations": []},
+{"tag": "0.0.4", "assets": [
+  {
+    "name": "frontend.zip",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/frontend.zip"
+  },
+  {
+    "name": "main",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.4/main"
+  }
+], "migrations": []},
+{"tag": "0.0.5", "assets": [
+  {
+    "name": "frontend.zip",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.5/frontend.zip"
+  },
+  {
+    "name": "main",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.5/main"
+  }
+], "migrations": []},
+{"tag": "0.0.6", "assets": [
+  {
+    "name": "frontend.zip",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.6/frontend.zip"
+  },
+  {
+    "name": "main",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.6/main"
+  }
+], "migrations": []},
+{"tag": "0.0.7", "assets": [
+  {
+    "name": "frontend.zip",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.7/frontend.zip"
+  },
+  {
+    "name": "main",
+    "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.7/main"
+  }
+], "migrations": []}
 ]
