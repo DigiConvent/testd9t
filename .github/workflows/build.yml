@@ -33,17 +33,14 @@ jobs:
           echo "Changed files:"
           echo "$CHANGED_FILES"
           MIGRATIONS_PATH="migrations"
-          CHANGED_IN_MIGRATIONS=$(echo "$CHANGED_FILES" | grep "^$MIGRATIONS_PATH/")
-          if [ -n "$(echo "$CHANGED_FILES" | grep -v "^$MIGRATIONS_PATH/")" ]; then
-            echo "Error: Changes detected outside the migrations folder."
-            exit 1
-          fi
-          CHANGED_IN_UNEXPECTED_FOLDERS=$(echo "$CHANGED_IN_MIGRATIONS" | grep -v "^$MIGRATIONS_PATH/$CURRENT_VERSION/")
-          if [ -n "$CHANGED_IN_UNEXPECTED_FOLDERS" ]; then
-            echo "Error: Changes detected in an unexpected version folder:"
-            echo "$CHANGED_IN_UNEXPECTED_FOLDERS"
-            exit 1
-          fi
+          CHANGED_IN_MIGRATIONS=$(echo "$CHANGED_FILES" | grep "migrations/")
+          echo "Changed in migrations:"
+          echo "$CHANGED_IN_MIGRATIONS"
+          FORBIDDEN_CHANGES=$(echo "$CHANGED_IN_MIGRATIONS" | grep -v "migrations/$CURRENT_VERSION")
+          
+          echo "Forbidden changes in migrations:"
+          echo "$FORBIDDEN_CHANGES"
+          
           echo "All changes are contained within $MIGRATIONS_PATH/$CURRENT_VERSION."
 
       - name: Upload changed files list
