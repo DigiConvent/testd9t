@@ -23,38 +23,28 @@ jobs:
       - name: Get previous release version
         id: get_previous_version
         run: |
-          # Use git tag --sort=v:refname to correctly sort tags according to semantic versioning
           PREVIOUS_VERSION=$(git tag --sort=v:refname | grep -v "$CURRENT_VERSION" | tail -n 1)
           echo "PREVIOUS_VERSION=$PREVIOUS_VERSION" >> $GITHUB_ENV
-          
+
       - name: Compare files between versions
         run: |
           echo "Comparing changes between $PREVIOUS_VERSION and $CURRENT_VERSION"
-          
           CHANGED_FILES=$(git diff --name-only $PREVIOUS_VERSION $CURRENT_VERSION)
           echo "Changed files:"
           echo "$CHANGED_FILES"
-
-          FOLDER_PATH="migrations"
-          CHANGED_IN_UNEXPECTED_FOLDERS=$(echo "$CHANGED_FILES" | grep -v "^$FOLDER_PATH/$CURRENT_VERSION/" || true)
-
+          MIGRATIONS_PATH="migrations"
+          CHANGED_IN_MIGRATIONS=$(echo "$CHANGED_FILES" | grep "^$MIGRATIONS_PATH/")
+          if [ -n "$(echo "$CHANGED_FILES" | grep -v "^$MIGRATIONS_PATH/")" ]; then
+            echo "Error: Changes detected outside the migrations folder."
+            exit 1
+          fi
+          CHANGED_IN_UNEXPECTED_FOLDERS=$(echo "$CHANGED_IN_MIGRATIONS" | grep -v "^$MIGRATIONS_PATH/$CURRENT_VERSION/")
           if [ -n "$CHANGED_IN_UNEXPECTED_FOLDERS" ]; then
-            echo "Error: Changes detected outside of the $FOLDER_PATH/$CURRENT_VERSION folder:"
+            echo "Error: Changes detected in an unexpected version folder:"
             echo "$CHANGED_IN_UNEXPECTED_FOLDERS"
             exit 1
           fi
-
-          # Ensure that no files in other version folders have changed
-          ALL_VERSION_FOLDERS=$(ls -d $FOLDER_PATH/*/ | grep -v "/$CURRENT_VERSION/")
-          for folder in $ALL_VERSION_FOLDERS; do
-            CHANGED_IN_FOLDER=$(echo "$CHANGED_FILES" | grep "^$folder")
-            if [ -n "$CHANGED_IN_FOLDER" ]; then
-              echo "Error: Files were changed in a folder that should not have been modified: $folder"
-              exit 1
-            fi
-          done
-
-          echo "All changes are contained within $FOLDER_PATH/$CURRENT_VERSION."
+          echo "All changes are contained within $MIGRATIONS_PATH/$CURRENT_VERSION."
 
       - name: Upload changed files list
         uses: actions/upload-artifact@v3
