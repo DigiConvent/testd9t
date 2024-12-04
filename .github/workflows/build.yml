@@ -38,7 +38,7 @@ jobs:
           echo "$CHANGED_IN_MIGRATIONS"
           FORBIDDEN_CHANGES=$(echo "$CHANGED_IN_MIGRATIONS" | grep -v "migrations/$CURRENT_VERSION")
 
-          if [[ -z "$FORBIDDEN_CHANGES" ]]; then
+          if [ -n "$FORBIDDEN_CHANGES" ]; then
               echo "The following changes are illegal:"
               echo "$FORBIDDEN_CHANGES"
               return 1
