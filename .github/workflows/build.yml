@@ -49,7 +49,7 @@ jobs:
           path: changed_files.txt
 
   build:
-    needs: check-version-changes
+    needs: check-migration-changes
     runs-on: ubuntu-latest
     permissions:
       contents: write
