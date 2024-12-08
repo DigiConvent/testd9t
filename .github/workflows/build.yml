@@ -5,7 +5,51 @@ on:
     types: [created]
 
 jobs:
+  check-migration-changes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git fetch --tags --prune --unshallow
+
+      - name: Get current release version
+        id: get_current_version
+        run: echo "CURRENT_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Get previous release version
+        id: get_previous_version
+        run: |
+          PREVIOUS_VERSION=$(git tag --sort=v:refname | grep -v "$CURRENT_VERSION" | tail -n 1)
+          echo "PREVIOUS_VERSION=$PREVIOUS_VERSION" >> $GITHUB_ENV
+
+      - name: Compare files between versions
+        run: |
+          echo "Comparing changes between $PREVIOUS_VERSION and $CURRENT_VERSION"
+          CHANGED_FILES=$(git diff --name-only $PREVIOUS_VERSION $CURRENT_VERSION)
+          MIGRATIONS_PATH="migrations"
+          CHANGED_IN_MIGRATIONS=$(echo "$CHANGED_FILES" | grep "migrations/")
+          FORBIDDEN_CHANGES=$(echo "$CHANGED_IN_MIGRATIONS" | grep -v "migrations/$CURRENT_VERSION")
+
+          if [ -n "$FORBIDDEN_CHANGES" ]; then
+              echo "The following changes are illegal:"
+              echo "$FORBIDDEN_CHANGES"
+              return 1
+          fi
+          
+          echo "All changes are contained within $MIGRATIONS_PATH/$CURRENT_VERSION."
+
+      - name: Upload changed files list
+        uses: actions/upload-artifact@v3
+        with:
+          name: changed-files
+          path: changed_files.txt
+
   build:
+    needs: check-version-changes
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -111,7 +155,9 @@ jobs:
         export OWNER="${{ github.repository_owner }}"
         export REPO="${{ github.event.repository.name }}"
 
-        echo "[" > release_tags.json
+        mkdir -p .meta
+
+        echo "[" > .meta/release_tags.json
 
         tags=$(curl -s \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
@@ -134,11 +180,11 @@ jobs:
             migrations="[]"
           fi
           
-          echo "{\"tag\": \"$tag\", \"assets\": $assets, \"migrations\": $migrations}," >> release_tags.json
+          echo "{\"tag\": \"$tag\", \"assets\": $assets, \"migrations\": $migrations}," >> .meta/release_tags.json
         done
 
-        sed -i '$ s/,$//' release_tags.json
-        echo "]" >> release_tags.json
+        sed -i '$ s/,$//' .meta/release_tags.json
+        echo "]" >> .meta/release_tags.json
         
 
 
@@ -151,12 +197,10 @@ jobs:
         else
           folders="[]"
         fi
-        echo $folders > flavours.json
+        echo $folders > .meta/flavours.json
 
-
-        mkdir meta
-        jq . release_tags.json > tmp.json && mv tmp.json meta/release_tags.json
-        jq . flavours.json > tmp.json && mv tmp.json meta/flavours.json
+        jq . .meta/release_tags.json > .meta/tmp.json && mv .meta/tmp.json .meta/release_tags.json
+        jq . .meta/flavours.json > .meta/tmp.json && mv .meta/tmp.json .meta/flavours.json
 
     - name: Configure Git
       run: |
@@ -167,7 +211,8 @@ jobs:
 
     - name: Commit and push changes to the main branch
       run: |
-        git add release_tags.json
+        git add .meta/release_tags.json
+        git add .meta/flavours.json
         git commit -m "Update release_tags.json with all release tags and assets"
         git push origin main
       env:
