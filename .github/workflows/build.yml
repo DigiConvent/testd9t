@@ -33,9 +33,12 @@ jobs:
             echo "No previous version found"
           else
             CHANGED_FILES=$(git diff --name-only $PREVIOUS_VERSION $CURRENT_VERSION)
+            echo $CHANGED_FILES
             MIGRATIONS_PATH="migrations"
             CHANGED_IN_MIGRATIONS=$(echo "$CHANGED_FILES" | grep "migrations/")
+            echo $CHANGED_IN_MIGRATIONS
             FORBIDDEN_CHANGES=$(echo "$CHANGED_IN_MIGRATIONS" | grep -v "migrations/$CURRENT_VERSION")
+            echo $FORBIDDEN_CHANGES
   
             if [ -n "$FORBIDDEN_CHANGES" ]; then
                 echo "The following changes are illegal:"
