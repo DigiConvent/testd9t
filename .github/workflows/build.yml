@@ -29,18 +29,23 @@ jobs:
       - name: Compare files between versions
         run: |
           echo "Comparing changes between $PREVIOUS_VERSION and $CURRENT_VERSION"
-          CHANGED_FILES=$(git diff --name-only $PREVIOUS_VERSION $CURRENT_VERSION)
-          MIGRATIONS_PATH="migrations"
-          CHANGED_IN_MIGRATIONS=$(echo "$CHANGED_FILES" | grep "migrations/")
-          FORBIDDEN_CHANGES=$(echo "$CHANGED_IN_MIGRATIONS" | grep -v "migrations/$CURRENT_VERSION")
-
-          if [ -n "$FORBIDDEN_CHANGES" ]; then
-              echo "The following changes are illegal:"
-              echo "$FORBIDDEN_CHANGES"
-              return 1
+          if [ -z $PREVIOUS_VERSION ]; then
+            echo "No previous version found"
+            exit 0
+          else
+            CHANGED_FILES=$(git diff --name-only $PREVIOUS_VERSION $CURRENT_VERSION)
+            MIGRATIONS_PATH="migrations"
+            CHANGED_IN_MIGRATIONS=$(echo "$CHANGED_FILES" | grep "migrations/")
+            FORBIDDEN_CHANGES=$(echo "$CHANGED_IN_MIGRATIONS" | grep -v "migrations/$CURRENT_VERSION")
+  
+            if [ -n "$FORBIDDEN_CHANGES" ]; then
+                echo "The following changes are illegal:"
+                echo "$FORBIDDEN_CHANGES"
+                exit 1
+            fi
+            
+            echo "All changes are contained within $MIGRATIONS_PATH/$CURRENT_VERSION."
           fi
-          
-          echo "All changes are contained within $MIGRATIONS_PATH/$CURRENT_VERSION."
 
       - name: Upload changed files list
         uses: actions/upload-artifact@v3
@@ -49,7 +54,7 @@ jobs:
           path: changed_files.txt
 
   build:
-    needs: check-version-changes
+    needs: check-migration-changes
     runs-on: ubuntu-latest
     permissions:
       contents: write

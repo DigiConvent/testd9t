@@ -13,6 +13,10 @@
     ],
     "migrations": [
       {
+        "name": "02_forbidden.sql",
+        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.0/data/migrations/0.0.0/02_forbidden.sql"
+      },
+      {
         "name": "01_init.sql",
         "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.0/data/migrations/0.0.0/01_init.sql"
       }
