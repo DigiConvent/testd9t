@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo adduser --system --group --home /etc/digiconvent digiconvent
+sudo adduser --system --group --home /home/digiconvent digiconvent
