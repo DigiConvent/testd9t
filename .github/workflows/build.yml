@@ -29,6 +29,9 @@ jobs:
       - name: Compare files between versions
         run: |
           echo "Comparing changes between $PREVIOUS_VERSION and $CURRENT_VERSION"
+          if [ -z $PREVIOUS_VERSION ]; then
+            return 0;
+          fi
           CHANGED_FILES=$(git diff --name-only $PREVIOUS_VERSION $CURRENT_VERSION)
           MIGRATIONS_PATH="migrations"
           CHANGED_IN_MIGRATIONS=$(echo "$CHANGED_FILES" | grep "migrations/")
