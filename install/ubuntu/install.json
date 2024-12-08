@@ -31,6 +31,7 @@
         },
         {
             "step": 4,
+            "optional": true,
             "name": "install_postgres",
             "input": [],
             "output": []
