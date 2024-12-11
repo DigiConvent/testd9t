@@ -8,8 +8,8 @@ create table versions (
   minor smallint not null,
   patch smallint not null,
   description text,
-  migrated bool not null default false,
-  primary key (major, minor, patch)
+  migation varchar not null,
+  primary key (major, minor, patch, migration)
 );
 
 create table config (
