@@ -8,7 +8,7 @@ create table versions (
   minor smallint not null,
   patch smallint not null,
   description text,
-  migation varchar not null,
+  migration varchar not null,
   primary key (major, minor, patch, migration)
 );
 
