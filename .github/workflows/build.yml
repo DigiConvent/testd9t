@@ -54,9 +54,9 @@ jobs:
                   fi
                 done
             fi
-            
             echo "All changes are contained within $MIGRATIONS_PATH/$CURRENT_VERSION."
           fi
+          exit 0
       - name: Configure Git
         run: |
   
