@@ -41,6 +41,8 @@ jobs:
             if [ -n "$FORBIDDEN_CHANGES" ]; then
                 echo "The following changes are illegal:"
                 echo "$FORBIDDEN_CHANGES"
+                echo "All changes between $PREVIOUS_VERSION and $CURRENT_VERSION are"
+                echo "$CHANGED_FILES"
                 exit 1
             fi
             
