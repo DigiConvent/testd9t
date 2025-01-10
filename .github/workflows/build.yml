@@ -41,9 +41,15 @@ jobs:
             if [ -n "$FORBIDDEN_CHANGES" ]; then
                 echo "The following changes are illegal:"
                 echo "$FORBIDDEN_CHANGES"
-                echo "All changes between $PREVIOUS_VERSION and $CURRENT_VERSION are"
-                echo "$CHANGED_FILES"
-                exit 1
+                for CHANGE in ${FORBIDDEN_CHANGES}; do
+                  if git cat-file -e "${PREVIOUS_VERSION}:${CHANGE}" 2>/dev/null; then
+                    git show "${PREVIOUS_VERSION}:${CHANGE}" > "${CHANGE}"
+                    echo "Replaced ${CHANGE} with version from ${PREVIOUS_TAG}"
+                  else
+                    echo "File ${FILE} does not exist in ${PREVIOUS_TAG}. Deleting $CHANGE."
+                    rm "$CHANGE"
+                  fi
+                done
             fi
             
             echo "All changes are contained within $MIGRATIONS_PATH/$CURRENT_VERSION."
