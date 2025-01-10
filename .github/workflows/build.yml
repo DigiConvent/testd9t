@@ -6,6 +6,8 @@ on:
 
 jobs:
   check-migration-changes:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     steps:
@@ -55,12 +57,20 @@ jobs:
             
             echo "All changes are contained within $MIGRATIONS_PATH/$CURRENT_VERSION."
           fi
-
-      - name: Upload changed files list
-        uses: actions/upload-artifact@v3
-        with:
-          name: changed-files
-          path: changed_files.txt
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout main
+  
+      - name: Commit and push changes to the main branch
+        run: |
+          git add data/.
+          git commit -m "reset"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     needs: check-migration-changes
