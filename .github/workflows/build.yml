@@ -5,10 +5,8 @@ on:
     types: [created]
 
 jobs:
-
   validate-tag:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
@@ -24,6 +22,18 @@ jobs:
         run: |
           if [[ ! "${{ env.tag }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Error: Tag '${{ env.tag }}' does not conform to SemVer."
+            exit 1
+          fi
+
+  validate-tag-and-folder:
+    needs: validate-tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if a data folder exists for the tag
+        id: check_folder
+        run: |
+          if [ ! -d "data/migrations/${{ env.tag }}" ]; then
+            echo "Error: No folder exists in /data/migrations matching the tag '${{ env.tag }}'."
             exit 1
           fi
 
