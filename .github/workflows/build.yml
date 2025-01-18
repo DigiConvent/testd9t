@@ -8,8 +8,6 @@ jobs:
   validate-tag:
     name: Validate tag format
     runs-on: ubuntu-latest
-    outputs:
-      shared_var: ${{ steps.set_output.outputs.tag }}
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
@@ -26,6 +24,8 @@ jobs:
           if [[ ! "${{ env.tag }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Error: Tag '${{ env.tag }}' does not conform to SemVer."
             exit 1
+          else
+            echo "Tag ${{ env.tag }} is a valid tag."
           fi
           
   validate-data-folder:
@@ -36,8 +36,9 @@ jobs:
       - name: Check if a data folder exists for the tag
         id: check_folder
         run: |
-          if [ ! -d "data/migrations/${{ needs.validate-tag.outputs.tag }}" ]; then
-            echo "Error: No folder exists in /data/migrations matching the tag '${{ needs.validate-tag.outputs.tag }}'."
+          echo "Checking if a folder for ${GITHUB_REF#refs/tags/} exists"
+          if [ ! -d "data/migrations/${GITHUB_REF#refs/tags/}" ]; then
+            echo "Error: No folder exists in /data/migrations matching the tag '${GITHUB_REF#refs/tags/}'."
             exit 1
           fi
 
