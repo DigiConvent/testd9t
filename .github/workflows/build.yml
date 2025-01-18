@@ -39,6 +39,7 @@ jobs:
           echo "Checking if a folder for ${GITHUB_REF#refs/tags/} exists"
           if [ ! -d "data/migrations/${GITHUB_REF#refs/tags/}" ]; then
             echo "Error: No folder exists in /data/migrations matching the tag '${GITHUB_REF#refs/tags/}'."
+            echo "$(ls -l data/migrations/)"
             exit 1
           fi
 
