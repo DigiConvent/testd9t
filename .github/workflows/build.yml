@@ -6,6 +6,7 @@ on:
 
 jobs:
   validate-tag:
+    name: Validate tag format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -25,7 +26,8 @@ jobs:
             exit 1
           fi
 
-  validate-tag-and-folder:
+  validate-data-folder:
+    name: Ensure a migration folder exists
     needs: validate-tag
     runs-on: ubuntu-latest
     steps:
@@ -38,6 +40,7 @@ jobs:
           fi
 
   check-migration-changes:
+    name: Ensure other migration files are untouched
     needs: validate-tag
     permissions:
       contents: write
