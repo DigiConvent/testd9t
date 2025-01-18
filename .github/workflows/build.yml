@@ -33,6 +33,8 @@ jobs:
     needs: validate-tag
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
       - name: Check if a data folder exists for the tag
         id: check_folder
         run: |
