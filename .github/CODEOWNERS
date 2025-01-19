@@ -1,2 +1,2 @@
-/.github/CODEOWNERS @DigiConvent
-.meta/ @github-actions
+.github @DigiConvent
+.meta @github-actions
