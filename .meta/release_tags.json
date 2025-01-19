@@ -21,32 +21,5 @@
         "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.0/data/migrations/0.0.0/01_init.sql"
       }
     ]
-  },
-  {
-    "tag": "0.0.1",
-    "assets": [
-      {
-        "name": "frontend.zip",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/frontend.zip"
-      },
-      {
-        "name": "main",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.1/main"
-      }
-    ],
-    "migrations": [
-      {
-        "name": "forbidden.sql",
-        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.1/data/migrations/0.0.1/forbidden.sql"
-      },
-      {
-        "name": "init.sql",
-        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.1/data/migrations/0.0.1/init.sql"
-      },
-      {
-        "name": "0x0123__1231.sql",
-        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.1/data/migrations/0.0.1/0x0123__1231.sql"
-      }
-    ]
   }
 ]
