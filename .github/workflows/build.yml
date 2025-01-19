@@ -48,6 +48,7 @@ jobs:
           fi
 
   compiled-artifacts:
+    name: Build backend and frontend artifacts
     needs: valid-data-folder
     runs-on: ubuntu-latest
     permissions:
@@ -129,9 +130,9 @@ jobs:
         asset_content_type: application/zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
 
   generated-tags-file:
+    name: Update .meta folder
     needs: compiled-artifacts
     runs-on: ubuntu-latest
     permissions:
