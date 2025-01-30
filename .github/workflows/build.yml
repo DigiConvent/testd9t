@@ -13,11 +13,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
       - name: Extract the tag name
         id: extract_tag
         run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
       - name: Validate the tag format
         id: validate_semver
         run: |
@@ -28,28 +26,41 @@ jobs:
             echo "Tag ${{ env.tag }} is a valid tag."
           fi
           
-  valid-data-folder:
-    name: Ensure a migration folder exists
-    needs: valid-tag
+
+  summarised-migrations:
+    name: Summarise migrations for each package
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-      - name: Check if a data folder exists for the tag
-        id: check_folder
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Extract tag version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Create migrations folder
+        run: mkdir -p data/migrations/${VERSION}
+      - name: Generate SQL summaries
         run: |
-          echo "Checking if a folder for ${GITHUB_REF#refs/tags/} exists"
-          if [ ! -d "data/migrations/${GITHUB_REF#refs/tags/}" ]; then
-            echo "Error: No folder exists in /data/migrations matching the tag '${GITHUB_REF#refs/tags/}'."
-            echo "$(pwd)"
-            echo "$(ls -l )"
-            echo "$(ls -l data/migrations/)"
-            exit 1
-          fi
+          for pkg in backend/pkg/*; do
+            pkg_name=$(basename "$pkg")
+            sql_dir="$pkg/db/$VERSION"
+            output_file="data/migrations/${VERSION}/${pkg_name}.sql"
+
+            if [[ -d "$sql_dir" ]]; then
+              cat "$sql_dir"/*.sql > "$output_file"
+              echo "Generated $output_file"
+            else
+              echo "No migrations found for $pkg_name in version $VERSION"
+            fi
+          done
+
+      - name: Upload migration summaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: migrations-${{ env.VERSION }}
+          path: data/migrations/${{ env.VERSION }}/
 
   compiled-artifacts:
     name: Build backend and frontend artifacts
-    needs: valid-data-folder
+    needs: summarised-migrations
     runs-on: ubuntu-latest
     permissions:
       contents: write
