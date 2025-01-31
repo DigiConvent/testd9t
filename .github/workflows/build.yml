@@ -83,6 +83,8 @@ jobs:
     name: Build backend and frontend artifacts
     needs: summarised-migrations
     runs-on: ubuntu-latest
+    container:
+      image: golang:1.21-alpine
     permissions:
       contents: write
       actions: read
@@ -97,7 +99,7 @@ jobs:
         go-version: '1.20'
         
     - name: Install musl
-      run: apk add --no-cache build-base musl-dev
+      run: apt add --no-cache build-base musl-dev
         
     - name: Build Go binary
       run: |
