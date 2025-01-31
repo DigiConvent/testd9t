@@ -4,7 +4,9 @@ The following will install DigiConvent version 1.1.4 on a linux machine with ubu
 
 
 ```bash
-wget https://github.com/DigiConvent/testd9t/releases/download/1.1.4/main
+wget https://github.com/DigiConvent/testd9t/releases/download/1.1.4/main && 
+
+chmod +x main &&
 
 ./main --install ubuntu
 ```
