@@ -1,3 +1,4 @@
+-- backend/pkg/iam/db/0.0.0/00_create_user_table.sql 
 create table if not exists users (
   id uuid primary key not null,
   email varchar unique default '',
@@ -10,32 +11,47 @@ create table if not exists users (
   enabled boolean default true,
   super boolean default false,
   active boolean default false
-);create table if not exists user_status (
+);
+
+-- backend/pkg/iam/db/0.0.0/01_create_user_status_table.sql 
+create table if not exists user_status (
   id uuid primary key not null,
   name varchar not null unique,
   abbr varchar not null unique,
   description varchar default '',
   archived boolean default false
-);create table if not exists user_became_status (
+);
+
+-- backend/pkg/iam/db/0.0.0/02_create_user_became_status_table.sql 
+create table if not exists user_became_status (
   "user" uuid not null references users(id) on delete cascade,
   "status" uuid not null references user_status(id) on delete cascade,
   "date" timestamp not null,
   active boolean default false,
   description varchar default '',
   primary key ("user", "status")
-);create view user_facades as
+);
+
+-- backend/pkg/iam/db/0.0.0/03_create_user_facades_view.sql 
+create view user_facades as
 select distinct u.id, u.id, concat(us.abbr, ' ', u.last_name) as name, ubs.date
 from users u
 left join user_became_status ubs on u.id = ubs.user
 left join user_status us on us.id = ubs.status
-order by u.id, ubs.date desc;create table if not exists permissions (
+order by u.id, ubs.date desc;
+
+-- backend/pkg/iam/db/0.0.0/04_create_permissions_table.sql 
+create table if not exists permissions (
   id uuid primary key not null,
   name varchar unique not null,
   description varchar default '',
   generated boolean default false,
   archived boolean default false,
   meta varchar default ''
-);create table if not exists permission_groups (
+);
+
+-- backend/pkg/iam/db/0.0.0/05_create_permission_groups_table.sql 
+create table if not exists permission_groups (
   id uuid primary key not null,
   name varchar unique not null,
   abbr varchar default '',
@@ -45,17 +61,26 @@ order by u.id, ubs.date desc;create table if not exists permissions (
   description varchar default '',
   parent uuid references permission_groups(id) on delete set null,
   "generated" boolean default false
-);create table if not exists permission_group_has_permission (
+);
+
+-- backend/pkg/iam/db/0.0.0/06_create_permission_group_has_permission_table.sql 
+create table if not exists permission_group_has_permission (
   permission_group uuid not null references permission_groups(id) on delete cascade,
   permission uuid not null references permissions(id) on delete cascade,
   primary key (permission_group, permission)
-);create table if not exists permission_group_has_user (
+);
+
+-- backend/pkg/iam/db/0.0.0/07_create_permission_group_has_user_table.sql 
+create table if not exists permission_group_has_user (
   permission_group uuid not null references permission_groups(id) on delete cascade,
   "user" uuid not null references users(id) on delete cascade,
   "start" timestamp not null default CURRENT_TIMESTAMP,
   "end" timestamp default null,
   primary key (permission_group, "user")
-);create view permission_group_has_users as
+);
+
+-- backend/pkg/iam/db/0.0.0/08_create_permission_group_has_users_view.sql 
+create view permission_group_has_users as
 with recursive relevant_groups as (
   select 
     pg.id as "root",
@@ -80,6 +105,9 @@ join permission_group_has_user pghu on pghu.permission_group = rg.id
 and pghu.start <= datetime('now') 
 and (pghu.end is null or pghu.end >= datetime('now'))
 join user_facades uf on uf.id = pghu."user";
+
+
+-- backend/pkg/iam/db/0.0.0/09_create_user_has_permission_groups_view.sql 
 create view user_has_permission_groups as
 with recursive relevant_groups as (select 
     pghu."user", 
@@ -97,7 +125,10 @@ with recursive relevant_groups as (select
     child.parent
   from permission_groups child
   inner join relevant_groups s on s.parent = child.id)
-select * from relevant_groups;create view permission_has_permission_groups as
+select * from relevant_groups;
+
+-- backend/pkg/iam/db/0.0.0/10_create_permission_has_permission_groups_view.sql 
+create view permission_has_permission_groups as
 with recursive relevant_groups as (select 
     pghp.permission, 
     pghp.permission_group, 
@@ -114,3 +145,4 @@ with recursive relevant_groups as (select
   from permission_groups child
   inner join relevant_groups s on child.parent = s.permission_group)
 select * from relevant_groups;
+
