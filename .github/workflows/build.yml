@@ -29,7 +29,11 @@ jobs:
 
   summarised-migrations:
     name: Summarise migrations for each package
+    needs: valid-tag
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
