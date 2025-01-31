@@ -1,0 +1,12 @@
+package iam_service
+
+import (
+	"github.com/DigiConvent/testd9t/core"
+	"github.com/google/uuid"
+)
+
+func (s *IAMService) GetTelegramRegistrationCode(userId *uuid.UUID) (string, *core.Status) {
+	code, status := s.IAMRepository.GetTelegramRegistrationCode(userId)
+
+	return code, &status
+}
