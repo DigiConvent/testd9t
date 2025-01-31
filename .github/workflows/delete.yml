@@ -1,0 +1,22 @@
+name: Delete Tag on Release Delete
+
+on:
+  release:
+    types: [deleted]
+
+jobs:
+  delete-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Delete the tag
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+
+          git tag -d $TAG_NAME
+          git push origin :refs/tags/$TAG_NAME
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
