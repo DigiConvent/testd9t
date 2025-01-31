@@ -49,7 +49,12 @@ jobs:
             output_file=".meta/migrations/${VERSION}/${pkg_name}.sql"
 
             if [[ -d "$sql_dir" ]]; then
-              cat "$sql_dir"/*.sql > "$output_file"
+              for file in "$sql_dir"/*.sql; do
+                echo "Summarising $file"
+                echo "-- $file " >> "$output_file"
+                cat "$file" >> "$output_file"
+                echo "" >> "$output_file"
+              done
               echo "Generated $output_file"
             else
               echo "No migrations found for $pkg_name in version $VERSION"
