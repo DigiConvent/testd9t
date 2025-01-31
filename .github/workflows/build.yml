@@ -100,7 +100,7 @@ jobs:
       run: |
         VERSION=$(git describe --tags)
         cd backend
-        CGO_ENABLED=0 go build -ldflags "-X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}'" -o main .
+        go build -ldflags "-X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}'" -o main .
 
     - name: Install UPX
       run: |
