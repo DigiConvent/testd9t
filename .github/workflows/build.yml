@@ -62,18 +62,20 @@ jobs:
             done
           done
 
-      - name: Configure Git
+      - name: Commit and push changes to the main branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git checkout main
-  
-      - name: Commit and push changes to the main branch
-        run: |
           git add .meta/migrations/${VERSION}
-          git commit -m "Summarise migrations for packages"
-          git push origin main
+          
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Summarise migrations for packages"
+            git push origin main
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -218,16 +220,21 @@ jobs:
 
     - name: Configure Git
       run: |
+
+    - name: Commit and push changes to the main branch
+      run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git fetch origin main
         git checkout main
-
-    - name: Commit and push changes to the main branch
-      run: |
         git add .meta/release_tags.json
         git add .meta/flavours.json
-        git commit -m "Update release_tags.json with all release tags and assets"
-        git push origin main
+        
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update release_tags.json with all release tags and assets"
+          git push origin main
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
