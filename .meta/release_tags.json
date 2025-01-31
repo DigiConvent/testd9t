@@ -1,7 +1,16 @@
 [
   {
     "tag": "0.0.0",
-    "assets": ["frontend.zip", "main"],
-    "migrations": ["02_forbidden.sql","01_init.sql"]
+    "assets": [
+      {
+        "name": "frontend.zip",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.0/frontend.zip"
+      },
+      {
+        "name": "main",
+        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.0/main"
+      }
+    ],
+    "migrations": []
   }
 ]

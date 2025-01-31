@@ -44,21 +44,22 @@ jobs:
       - name: Generate SQL summaries
         run: |
           for pkg in backend/pkg/*; do
+            if [[ ! -d "$pkg" ]]; then
+              continue
+            fi
             pkg_name=$(basename "$pkg")
             sql_dir="$pkg/db/$VERSION"
+            mkdir -p ".meta/migrations/${VERSION}"
             output_file=".meta/migrations/${VERSION}/${pkg_name}.sql"
-
-            if [[ -d "$sql_dir" ]]; then
-              for file in "$sql_dir"/*.sql; do
-                echo "Summarising $file"
-                echo "-- $file " >> "$output_file"
-                cat "$file" >> "$output_file"
-                echo "" >> "$output_file"
-              done
-              echo "Generated $output_file"
-            else
-              echo "No migrations found for $pkg_name in version $VERSION"
-            fi
+            rm -f "$output_file"
+            touch "$output_file"
+            
+            for file in "$sql_dir"/*.sql; do
+              echo "Summarising $file"
+              echo "-- $file " >> "$output_file"
+              cat "$file" >> "$output_file"
+              printf "\n\n" >> "$output_file"
+            done
           done
 
       - name: Configure Git
