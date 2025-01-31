@@ -101,7 +101,6 @@ jobs:
       
     - name: Build Go binary
       run: |
-        VERSION=$(git describe --tags)
         cd backend
         CC=musl-gcc go build -ldflags "-X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}'" -o main .
 
