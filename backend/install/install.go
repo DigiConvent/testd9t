@@ -1,6 +1,7 @@
 package install
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -24,6 +25,7 @@ type Script struct {
 	Input []struct {
 		Name    string `json:"name"`
 		Default string `json:"default"`
+		Value   string `json:"value"`
 	}
 	// these are the output files that are stored under /tmp/name.txt
 	Output []string `json:"output"`
@@ -55,10 +57,31 @@ func (s Script) Prepare(flavour string) {
 
 	storeFile("do_"+s.Name+".sh", string(doScriptContents))
 	storeFile("undo_"+s.Name+".sh", string(undoScriptContents))
+
+	if len(s.Input) > 0 {
+		for i, input := range s.Input {
+			s.Input[i].Value = promptUser(input.Name, input.Default)
+		}
+	}
 }
 
+// Function to prompt the user for input
+func promptUser(prompt string, defaultValue string) string {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Printf("%s [%s]: ", prompt, defaultValue)
+	userInput, _ := reader.ReadString('\n')
+	userInput = userInput[:len(userInput)-1]
+	if userInput == "" {
+		return defaultValue
+	}
+	return userInput
+}
 func (s Script) Do(fix bool) error {
-	cmd := exec.Command("bash", "-c", getFilePath("do_"+s.Name+".sh"))
+	args := []string{"-c", getFilePath("do_" + s.Name + ".sh")}
+	for _, input := range s.Input {
+		args = append(args, input.Value)
+	}
+	cmd := exec.Command("bash", args...)
 	result, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("❌ do_" + s.Name + "...")
@@ -78,7 +101,11 @@ func (s Script) Do(fix bool) error {
 }
 
 func (s Script) Undo() error {
-	cmd := exec.Command("bash", "-c", getFilePath("undo_"+s.Name+".sh"))
+	args := []string{"-c", getFilePath("undo_" + s.Name + ".sh")}
+	for _, input := range s.Input {
+		args = append(args, input.Value)
+	}
+	cmd := exec.Command("bash", args...)
 	result, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println("failed: " + string(result))
