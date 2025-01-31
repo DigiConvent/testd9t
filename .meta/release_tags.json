@@ -2,24 +2,12 @@
   {
     "tag": "0.0.0",
     "assets": [
-      {
-        "name": "frontend.zip",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.0/frontend.zip"
-      },
-      {
-        "name": "main",
-        "url": "https://github.com/DigiConvent/testd9t/releases/download/0.0.0/main"
-      }
+      "frontend.zip",
+      "main"
     ],
     "migrations": [
-      {
-        "name": "iam.sql",
-        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.0/.meta/migrations/0.0.0/iam.sql"
-      },
-      {
-        "name": "sys.sql",
-        "url": "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/tags/0.0.0/.meta/migrations/0.0.0/sys.sql"
-      }
+      "iam.sql",
+      "sys.sql"
     ]
   }
 ]
