@@ -90,7 +90,7 @@ func proxyHandler(target string) gin.HandlerFunc {
 
 func handleFlags(sysService sys_service.SysServiceInterface) {
 	actionsFlagSet := flag.NewFlagSet("Options", flag.ExitOnError)
-	clearCacheFlag := actionsFlagSet.Bool("clear-cache", false, "Clear the cache")
+	verbose := actionsFlagSet.Bool("verbose", false, "Run more verbosely")
 	forceFlag := actionsFlagSet.Bool("force", false, "Apply fixes upon a failure during the installation")
 	helpFlag := actionsFlagSet.Bool("help", false, "Prints this help message")
 	installFlag := actionsFlagSet.String("install", "", "Install")
@@ -241,7 +241,7 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 			os.Exit(1)
 		}
 
-		install.Install(installFlag, *forceFlag, *clearCacheFlag)
+		install.Install(installFlag, *forceFlag, *verbose)
 	}
 
 	if *migrateDBFlag {

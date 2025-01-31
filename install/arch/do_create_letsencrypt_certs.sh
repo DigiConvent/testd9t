@@ -2,7 +2,7 @@
 
 sudo pacman -S certbot --noconfirm
 
-domain=$1
+domain="$1"
 
 echo "Creating letsencrypt certificates for $domain"
 

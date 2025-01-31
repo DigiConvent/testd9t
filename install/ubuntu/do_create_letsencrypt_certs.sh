@@ -2,7 +2,7 @@
 
 sudo apt-get install -y certbot python3-certbot-nginx
 
-domain=$1
+domain="$1"
 
 echo "Creating letsencrypt certificates for $domain"
 

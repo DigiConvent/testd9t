@@ -65,7 +65,6 @@ func (s Script) Prepare(flavour string) {
 	}
 }
 
-// Function to prompt the user for input
 func promptUser(prompt string, defaultValue string) string {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Printf("%s [%s]: ", prompt, defaultValue)
@@ -76,20 +75,25 @@ func promptUser(prompt string, defaultValue string) string {
 	}
 	return userInput
 }
-func (s Script) Do(fix bool) error {
+func (s Script) Do(fix, verbose bool) error {
 	args := []string{"-c", getFilePath("do_" + s.Name + ".sh")}
 	for _, input := range s.Input {
 		args = append(args, input.Value)
 	}
 	cmd := exec.Command("bash", args...)
+	if verbose {
+		fmt.Println(cmd.String())
+	}
 	result, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("❌ do_" + s.Name + "...")
+		if verbose {
+			fmt.Println("failed: " + string(result))
+		}
 		if fix {
-			fmt.Println(" fixing...")
-			err := s.Undo()
+			err := s.Undo(verbose)
 			if err == nil {
-				s.Do(false)
+				s.Do(false, verbose)
 			}
 		} else {
 			fmt.Println(string(result))
@@ -100,15 +104,20 @@ func (s Script) Do(fix bool) error {
 	return nil
 }
 
-func (s Script) Undo() error {
+func (s Script) Undo(verbose bool) error {
 	args := []string{"-c", getFilePath("undo_" + s.Name + ".sh")}
 	for _, input := range s.Input {
 		args = append(args, input.Value)
 	}
 	cmd := exec.Command("bash", args...)
+	if verbose {
+		fmt.Println(cmd.String())
+	}
 	result, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Println("failed: " + string(result))
+		if verbose {
+			fmt.Println("failed: " + string(result))
+		}
 		return err
 	}
 	return nil
@@ -119,7 +128,7 @@ type InstallationProtocol struct {
 	Files   []string `json:"path"`
 }
 
-func Install(flavour *string, force bool, clearCache bool) {
+func Install(flavour *string, force bool, verbose bool) {
 	repo := file_repo.NewRepoRemote()
 	var protocol InstallationProtocol
 
@@ -145,7 +154,7 @@ func Install(flavour *string, force bool, clearCache bool) {
 
 	for _, script := range protocol.Scripts {
 		script.Prepare(*flavour)
-		script.Do(force)
+		script.Do(force, verbose)
 	}
 }
 
