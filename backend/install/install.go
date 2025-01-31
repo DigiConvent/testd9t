@@ -76,7 +76,7 @@ func promptUser(prompt string, defaultValue string) string {
 	return userInput
 }
 func (s Script) Do(fix, verbose bool) error {
-	args := []string{"-c", getFilePath("do_" + s.Name + ".sh")}
+	args := []string{getFilePath("do_" + s.Name + ".sh")}
 	for _, input := range s.Input {
 		args = append(args, input.Value)
 	}
@@ -105,7 +105,7 @@ func (s Script) Do(fix, verbose bool) error {
 }
 
 func (s Script) Undo(verbose bool) error {
-	args := []string{"-c", getFilePath("undo_" + s.Name + ".sh")}
+	args := []string{getFilePath("undo_" + s.Name + ".sh")}
 	for _, input := range s.Input {
 		args = append(args, input.Value)
 	}
