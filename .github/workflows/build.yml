@@ -194,13 +194,14 @@ jobs:
         for tag in $sorted_tags; do
           assets=$(curl -s \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '.assets | map({name: .name, url: .browser_download_url})')
+            "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '[.assets[].name]')
+
           
           migrations_folder=".meta/migrations/$tag"
           if [ -d "$migrations_folder" ]; then
             migrations=$(find "$migrations_folder" -type f -name "*.sql" | while read -r file; do
               filename=$(basename "$file")
-              echo "{\"name\":\"$filename\",\"url\":\"https://raw.githubusercontent.com/$OWNER/$REPO/refs/tags/$tag/$file\"}"
+              echo "\"$filename\""
             done | paste -sd, -)
             migrations="[$migrations]"
           else
