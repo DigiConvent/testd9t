@@ -96,11 +96,14 @@ jobs:
       with:
         go-version: '1.20'
         
+    - name: Install musl
+      run: apk add --no-cache build-base musl-dev
+        
     - name: Build Go binary
       run: |
         VERSION=$(git describe --tags)
         cd backend
-        CGO_ENABLED=0 go build -ldflags "-X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}'" -o main .
+        CC=musl-gcc go build -ldflags "-X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}'" -o main .
 
     - name: Install UPX
       run: |
