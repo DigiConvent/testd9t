@@ -10,6 +10,5 @@ sudo certbot certonly --standalone -d "$domain" --register-unsafely-without-emai
 
 sudo mkdir -p /home/digiconvent/certs
 
-sudo cp /etc/letsencrypt/live/$domain/fullchain.pem /home/digiconvent/certs/
-sudo cp /etc/letsencrypt/live/$domain/privkey.pem /home/digiconvent/certs/
-chmod 777 /etc/digiconvent/certs/*
+sudo cp /etc/letsencrypt/live/${domain}/fullchain.pem /home/digiconvent/certs/
+sudo cp /etc/letsencrypt/live/${domain}/privkey.pem /home/digiconvent/certs/
