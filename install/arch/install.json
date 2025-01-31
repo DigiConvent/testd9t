@@ -30,31 +30,6 @@
             "output": []
         },
         {
-            "step": 4,
-            "name": "install_postgres",
-            "input": [],
-            "output": []
-        },
-        {
-            "step": 5,
-            "name": "setup_database",
-            "input": [
-                {
-                    "name": "hostname"
-                },
-                {
-                    "name": "port"
-                },
-                {
-                    "name": "username"
-                },
-                {
-                    "name": "password"
-                }
-            ],
-            "output": []
-        },
-        {
             "step": 6,
             "requires_files": ["testd9t.service"],
             "name": "create_systemd_process",
