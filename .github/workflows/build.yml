@@ -8,6 +8,7 @@ jobs:
   valid-tag:
     name: Validate tag format
     runs-on: ubuntu-latest
+<<<<<<< HEAD
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
@@ -50,6 +51,70 @@ jobs:
   compiled-artifacts:
     name: Build backend and frontend artifacts
     needs: valid-data-folder
+=======
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Extract the tag name
+        id: extract_tag
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Validate the tag format
+        id: validate_semver
+        run: |
+          if [[ ! "${{ env.tag }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Tag '${{ env.tag }}' does not conform to SemVer."
+            exit 1
+          else
+            echo "Tag ${{ env.tag }} is a valid tag."
+          fi
+          
+
+  summarised-migrations:
+    name: Summarise migrations for each package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Extract tag version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Create migrations folder
+        run: mkdir -p .meta/migrations/${VERSION}
+      - name: Generate SQL summaries
+        run: |
+          for pkg in backend/pkg/*; do
+            pkg_name=$(basename "$pkg")
+            sql_dir="$pkg/db/$VERSION"
+            output_file=".meta/migrations/${VERSION}/${pkg_name}.sql"
+
+            if [[ -d "$sql_dir" ]]; then
+              cat "$sql_dir"/*.sql > "$output_file"
+              echo "Generated $output_file"
+            else
+              echo "No migrations found for $pkg_name in version $VERSION"
+            fi
+          done
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout main
+  
+      - name: Commit and push changes to the main branch
+        run: |
+          git add .meta/migrations/${VERSION}
+          git commit -m "Summarise migrations for packages"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  compiled-artifacts:
+    name: Build backend and frontend artifacts
+    needs: summarised-migrations
+>>>>>>> 4f35a8a9a95f7fff7fad7cb536467881d928224d
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -107,9 +172,6 @@ jobs:
          upload_url=$(curl -sL https://api.github.com/repos/${{github.repository}}/releases/latest?access_token=${{ secrets.GITHUB_TOKEN }} | jq -r '.upload_url')
          echo ::set-output name=upload_url::$upload_url
          ls -l
-         
-    - name: Print Event Context
-      run: echo "${{ toJson(github.event) }}"
 
     - name: Upload binary to release
       uses: actions/upload-release-asset@v1
@@ -169,7 +231,7 @@ jobs:
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '.assets | map({name: .name, url: .browser_download_url})')
           
-          migrations_folder="data/migrations/$tag"
+          migrations_folder=".meta/migrations/$tag"
           if [ -d "$migrations_folder" ]; then
             migrations=$(find "$migrations_folder" -type f -name "*.sql" | while read -r file; do
               filename=$(basename "$file")
