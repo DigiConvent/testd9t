@@ -94,16 +94,15 @@ jobs:
       uses: actions/checkout@v2
         
     - name: Install musl
-      run: apk add --no-cache build-base musl-dev gcc
+      run: apk add --no-cache build-base musl-dev
 
-        
     - name: Get version tag
       run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
       
     - name: Build Go binary
       run: |
         cd backend
-        CC=musl-gcc go build -ldflags "-X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}'" -o main .
+        CGO_ENABLED=1 CC=musl-gcc go build -ldflags "-linkmode external -extldflags '-static' -X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}'" -o main .
 
     - name: Install UPX
       run: |
