@@ -94,7 +94,7 @@ jobs:
       uses: actions/checkout@v2
         
     - name: Install musl
-      run: apk add --no-cache build-base musl-dev musl-tools gcc
+      run: apk add --no-cache build-base musl-dev gcc
 
         
     - name: Get version tag
