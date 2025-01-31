@@ -218,7 +218,7 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 		}
 
 		*installFlag = strings.ToLower(*installFlag)
-		fmt.Println("--install")
+		fmt.Println("--install", *installFlag)
 
 		flavours, status := sysService.ListFlavours()
 		if status.Err() {

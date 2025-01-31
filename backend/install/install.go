@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
+	"strings"
 
 	"github.com/DigiConvent/testd9t/core/file_repo"
 )
@@ -27,15 +29,71 @@ type Script struct {
 	Output []string `json:"output"`
 }
 
+func (s Script) Prepare(flavour string) {
+	repo := file_repo.NewRepoRemote()
+	if len(s.RequiresFiles) > 0 {
+		for _, file := range s.RequiresFiles {
+			contents, err := repo.GetRawFile("install/" + flavour + "/" + file)
+			if err != nil {
+				fmt.Println("Error downloading file:", err)
+				return
+			}
+			storeFile(file, string(contents))
+		}
+	}
+
+	doScriptContents, err := repo.GetRawFile("install/" + flavour + "/do_" + s.Name + ".sh")
+	if err != nil {
+		fmt.Println("Error downloading script:", err)
+		return
+	}
+	undoScriptContents, err := repo.GetRawFile("install/" + flavour + "/undo_" + s.Name + ".sh")
+	if err != nil {
+		fmt.Println("Error downloading script:", err)
+		return
+	}
+
+	storeFile("do_"+s.Name+".sh", string(doScriptContents))
+	storeFile("undo_"+s.Name+".sh", string(undoScriptContents))
+}
+
+func (s Script) Do(fix bool) error {
+	cmd := exec.Command("bash", "-c", getFilePath("do_"+s.Name+".sh"))
+	result, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("❌ do_" + s.Name + "...")
+		if fix {
+			fmt.Println(" fixing...")
+			err := s.Undo()
+			if err == nil {
+				s.Do(false)
+			}
+		} else {
+			fmt.Println(string(result))
+		}
+		return err
+	}
+	fmt.Println("✅ do_" + s.Name)
+	return nil
+}
+
+func (s Script) Undo() error {
+	cmd := exec.Command("bash", "-c", getFilePath("undo_"+s.Name+".sh"))
+	result, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println("failed: " + string(result))
+		return err
+	}
+	return nil
+}
+
 type InstallationProtocol struct {
 	Scripts []Script `json:"scripts"`
 	Files   []string `json:"path"`
 }
 
 func Install(flavour *string, force bool, clearCache bool) {
-	var requiredFiles map[string]string = make(map[string]string)
-	var scripts map[string]string = make(map[string]string)
-	repo := file_repo.NewRepoLocal()
+	repo := file_repo.NewRepoRemote()
 	var protocol InstallationProtocol
 
 	raw, err := repo.GetRawFile("install/" + *flavour + "/install.json")
@@ -56,85 +114,42 @@ func Install(flavour *string, force bool, clearCache bool) {
 				protocol.Scripts[i], protocol.Scripts[j] = protocol.Scripts[j], protocol.Scripts[i]
 			}
 		}
-
-		prefix := "install/" + *flavour + "/"
-		for _, file := range protocol.Scripts[i].RequiresFiles {
-			contents, err := repo.GetRawFile(prefix + file)
-			if err != nil {
-				fmt.Println("Error downloading file:", err)
-				return
-			}
-			requiredFiles[file] = string(contents)
-		}
-
-		for _, method := range []string{"do", "undo"} {
-			contents, err := repo.GetRawFile(prefix + method + "_" + protocol.Scripts[i].Name + ".sh")
-			scripts[method+"_"+protocol.Scripts[i].Name+".sh"] = string(contents)
-
-			if err != nil {
-				fmt.Println("Error downloading script:", err)
-				return
-			}
-
-			panic("This still needs to be implemented")
-			// err = exec.Command("chmod", "+x", method+"_"+protocol.Scripts[i].Name+".sh").Run()
-			// if err != nil {
-			// 	fmt.Println("Error making script executable:", err)
-			// 	return
-			// }
-		}
 	}
 
-	scriptsRan := make([]string, len(protocol.Scripts))
-	for i := 0; i < len(protocol.Scripts); i++ {
-		for _, file := range protocol.Scripts[i].RequiresFiles {
-			if _, err := os.Stat(file); os.IsNotExist(err) {
-				fmt.Println("Error: file", file, "does not exist")
-				return
-			}
-		}
-
-		for _, input := range protocol.Scripts[i].Input {
-			if _, err := os.Stat(input.Name + ".txt"); os.IsNotExist(err) {
-				err = exec.Command("echo", input.Default).Run()
-				if err != nil {
-					fmt.Println("Error writing default value to file", input.Name+".txt:", err)
-					return
-				}
-			}
-		}
-
-		output, err := ExecuteScript(protocol.Scripts[i].Name, force)
-		scriptsRan[i] = protocol.Scripts[i].Name
-		if err != nil {
-			fmt.Println("Error running script do_"+protocol.Scripts[i].Name+":", err)
-			fmt.Println("Output:", string(output))
-			for j := i; j >= 0; j-- {
-				fmt.Println("Undoing script", protocol.Scripts[j].Name)
-				exec.Command("undo_" + protocol.Scripts[j].Name + ".sh").Run()
-			}
-			return
-		} else {
-			fmt.Println("✅ Script do_" + protocol.Scripts[i].Name)
-		}
+	for _, script := range protocol.Scripts {
+		script.Prepare(*flavour)
+		script.Do(force)
 	}
 }
 
-func ExecuteScript(scriptName string, force bool) (string, error) {
-	output, err := exec.Command("/bin/sh", "/do_"+scriptName+".sh").CombinedOutput()
+const dirToStore = "/testd9t/"
+
+func getFilePath(fileName string) string {
+	return path.Join(os.TempDir(), dirToStore, fileName)
+}
+func storeFile(fileName string, contents string) error {
+	prefix := path.Join(os.TempDir(), dirToStore)
+	os.MkdirAll(prefix, 0755)
+	uri := path.Join(prefix, fileName)
+
+	os.Remove(uri)
+	file, err := os.Create(uri)
 	if err != nil {
-		if !force {
-			return string(output), err
-		} else {
-			fmt.Println("❌ Script do_" + scriptName + " failed, doing a fix 👷🏻‍♂️")
-		}
-	}
-	output, err = exec.Command("/bin/sh", "/undo_"+scriptName+".sh").CombinedOutput()
-	if err != nil {
-		fmt.Println("Error fixing ", scriptName, ":", string(output))
-		return string(output), err
+		return err
 	}
 
-	output, err = exec.Command("/bin/sh", "/do_"+scriptName+".sh").CombinedOutput()
-	return string(output), err
+	defer file.Close()
+
+	_, err = file.WriteString(contents)
+	if err != nil {
+		return err
+	}
+
+	if strings.HasSuffix(fileName, ".sh") {
+		err = exec.Command("chmod", "+x", uri).Run()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

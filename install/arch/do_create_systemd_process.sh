@@ -5,7 +5,7 @@ sudo cp /tmp/testd9t/testd9t.service /etc/systemd/system/testd9t.service
 binary_path=$(pwd)/main
 
 if [ ! -f $binary_path ]; then
-    echo "Binary not found"
+    echo "Expected this binary to be at $binary_path"
     exit 1
 fi
 

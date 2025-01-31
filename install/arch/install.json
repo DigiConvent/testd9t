@@ -30,7 +30,7 @@
             "output": []
         },
         {
-            "step": 6,
+            "step": 4,
             "requires_files": ["testd9t.service"],
             "name": "create_systemd_process",
             "input": [],
