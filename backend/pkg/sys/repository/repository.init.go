@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/DigiConvent/testd9t/core"
-	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
 func (r *SysRepository) SetBotToken(botId string) core.Status {
@@ -12,10 +11,10 @@ func (r *SysRepository) SetBotToken(botId string) core.Status {
 		return *core.BadRequestError("Bot token cannot be empty")
 	}
 
-	status := r.UpdateToVersion(&sys_domain.Version{Major: 0, Minor: 0, Patch: 0})
-	if status.Err() {
-		return *core.InternalError("Failed to migrate to version 0.0.0" + status.Message)
-	}
+	// status := r.UpdateToVersion(&sys_domain.Version{Major: 0, Minor: 0, Patch: 0})
+	// if status.Err() {
+	// 	return *core.InternalError("Failed to migrate to version 0.0.0" + status.Message)
+	// }
 
 	_, err := r.DB.Exec("update config set telegram_bot_token = $1", botId)
 	if err != nil {

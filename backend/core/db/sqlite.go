@@ -29,7 +29,7 @@ func NewSqliteDB(dbName string) DatabaseInterface {
 
 func SqliteConnection(dbName string, test bool) DatabaseInterface {
 	dbName = strings.ToLower(dbName)
-	is_alphanumeric := regexp.MustCompile(`^[a-zA-Z]*$`).MatchString(dbName)
+	is_alphanumeric := regexp.MustCompile(`^[a-zA-Z\.]*$`).MatchString(dbName)
 	if !is_alphanumeric {
 		panic("Database name must be alphanumeric")
 	}

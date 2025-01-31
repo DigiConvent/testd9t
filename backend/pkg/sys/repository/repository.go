@@ -8,11 +8,11 @@ import (
 
 type SysRepositoryInterface interface {
 	ListVersions() ([]sys_domain.Version, core.Status)
-	ListFlavoursForVersion() ([]string, core.Status)
 	GetCurrentVersion() (*sys_domain.Version, *sys_domain.Version, core.Status)
+	ListFlavoursForVersion() ([]string, core.Status)
+
 	SetBotToken(botId string) core.Status
 	ClaimAdmin(telegramId string) core.Status
-	UpdateToVersion(version *sys_domain.Version) core.Status
 
 	GetConfiguration() (*sys_domain.Configuration, core.Status)
 	InitDatabase() core.Status
@@ -30,10 +30,6 @@ type SysRepository struct {
 	GithubToken *string
 }
 
-func (r *SysRepository) ListFlavoursForVersion() ([]string, core.Status) {
-	panic("unimplemented")
-}
-
 func (r *SysRepository) ListVersions() ([]sys_domain.Version, core.Status) {
 	return []sys_domain.Version{
 		{Major: 0, Minor: 0, Patch: 0},
@@ -42,11 +38,6 @@ func (r *SysRepository) ListVersions() ([]sys_domain.Version, core.Status) {
 		{Major: 0, Minor: 0, Patch: 3},
 	}, *core.StatusSuccess()
 }
-
-func (r *SysRepository) UpdateToVersion(version *sys_domain.Version) core.Status {
-	panic("unimplemented")
-}
-
 func NewSysRepository(conn db.DatabaseInterface) SysRepositoryInterface {
 	return &SysRepository{
 		DB: conn,

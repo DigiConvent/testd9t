@@ -16,6 +16,8 @@ type SysServiceInterface interface {
 	GetPackages() (map[string]sys_domain.Package, *core.Status)
 	GetPackageVersions(pkgName string) ([]sys_domain.Version, *core.Status)
 	MigratePackage(pkgName string, toVersion sys_domain.Version) *core.Status
+
+	ListFlavours() ([]string, *core.Status)
 }
 
 type SysService struct {

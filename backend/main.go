@@ -100,7 +100,7 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 	resetDBFlag := actionsFlagSet.Bool("reset-db", false, "Reset the database")
 	statusFlag := actionsFlagSet.Bool("status", false, "Prints the current status")
 	versionsFlag := actionsFlagSet.Bool("versions", false, "List all available versions")
-	versionFlavoursFlag := actionsFlagSet.String("supported-flavours", "", "List supported flavours for this version")
+	versionFlavoursFlag := actionsFlagSet.String("supported-flavours", "", "List supported flavours")
 
 	actionsFlagSet.Parse(os.Args[1:])
 
@@ -174,7 +174,20 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 	}
 
 	if *versionFlavoursFlag != "" {
-		install.GetFlavours(&sysStatus.ProgramVersion)
+		fmt.Println("--supported-flavours")
+		flavours, status := sysService.ListFlavours()
+		if status.Err() {
+			fmt.Println("Error fetching flavours:", status.Message)
+			os.Exit(1)
+		}
+
+		if len(flavours) == 0 {
+			fmt.Println("No flavours found")
+		}
+
+		for _, flavour := range flavours {
+			fmt.Println(flavour)
+		}
 	}
 
 	if *statusFlag {
@@ -207,7 +220,11 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 		*installFlag = strings.ToLower(*installFlag)
 		fmt.Println("--install")
 
-		flavours := install.GetFlavours(&sysStatus.ProgramVersion)
+		flavours, status := sysService.ListFlavours()
+		if status.Err() {
+			fmt.Println("Error fetching flavours:", status.Message)
+			os.Exit(1)
+		}
 
 		found := false
 		for _, flavour := range flavours {
