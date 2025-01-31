@@ -181,50 +181,40 @@ jobs:
       run: |
         export OWNER="${{ github.repository_owner }}"
         export REPO="${{ github.event.repository.name }}"
-
+        
         mkdir -p .meta
-
+        
         echo "[" > .meta/release_tags.json
-
+        
         tags=$(curl -s \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           "https://api.github.com/repos/$OWNER/$REPO/tags")
-
+        
         sorted_tags=$(echo "$tags" | jq -r '.[].name' | sort -V)
         for tag in $sorted_tags; do
           assets=$(curl -s \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq -r '[.assets[].name] // []')
-
+            "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '[.assets[].name]')
+          
           migrations_folder=".meta/migrations/$tag"
           if [ -d "$migrations_folder" ]; then
-            migrations=$(find "$migrations_folder" -type f -name "*.sql" | while read -r file; do
-              filename=$(basename "$file")
-              echo "\"$filename\""
-            done | paste -sd, -)
-            migrations=${migrations:-""}
-            migrations="[$migrations]"
+            migrations=$(find "$migrations_folder" -type f -name "*.sql" -exec basename {} \; | jq -R . | jq -s .)
           else
             migrations="[]"
           fi
-
+          
           echo "{\"tag\": \"$tag\", \"assets\": $assets, \"migrations\": $migrations}," >> .meta/release_tags.json
         done
-
+        
         sed -i '$ s/,$//' .meta/release_tags.json
         echo "]" >> .meta/release_tags.json
-
-        folders=$(find "install/" -mindepth 1 -maxdepth 1 -type d | while read -r folder; do
-          folder_name=$(basename "$folder")
-          echo "\"$folder_name\""
-        done | paste -sd, -)
-        folders=${folders:-""}
-        folders="[$folders]"
-
+        
+        folders=$(find "install/" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R . | jq -s .)
         echo "$folders" > .meta/flavours.json
+        
+        jq . .meta/release_tags.json > .meta/tmp.json && mv .meta/tmp.json .meta/release_tags.json
+        jq . .meta/flavours.json > .meta/tmp.json && mv .meta/tmp.json .meta/flavours.json
 
-        jq -e . .meta/release_tags.json > .meta/tmp.json && mv .meta/tmp.json .meta/release_tags.json || echo "[]" > .meta/release_tags.json
-        jq -e . .meta/flavours.json > .meta/tmp
 
     - name: Configure Git
       run: |
