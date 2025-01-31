@@ -8,50 +8,6 @@ jobs:
   valid-tag:
     name: Validate tag format
     runs-on: ubuntu-latest
-<<<<<<< HEAD
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Extract the tag name
-        id: extract_tag
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
-      - name: Validate the tag format
-        id: validate_semver
-        run: |
-          if [[ ! "${{ env.tag }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Error: Tag '${{ env.tag }}' does not conform to SemVer."
-            exit 1
-          else
-            echo "Tag ${{ env.tag }} is a valid tag."
-          fi
-          
-  valid-data-folder:
-    name: Ensure a migration folder exists
-    needs: valid-tag
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-      - name: Check if a data folder exists for the tag
-        id: check_folder
-        run: |
-          echo "Checking if a folder for ${GITHUB_REF#refs/tags/} exists"
-          if [ ! -d "data/migrations/${GITHUB_REF#refs/tags/}" ]; then
-            echo "Error: No folder exists in /data/migrations matching the tag '${GITHUB_REF#refs/tags/}'."
-            echo "$(pwd)"
-            echo "$(ls -l )"
-            echo "$(ls -l data/migrations/)"
-            exit 1
-          fi
-
-  compiled-artifacts:
-    name: Build backend and frontend artifacts
-    needs: valid-data-folder
-=======
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
@@ -114,7 +70,6 @@ jobs:
   compiled-artifacts:
     name: Build backend and frontend artifacts
     needs: summarised-migrations
->>>>>>> 4f35a8a9a95f7fff7fad7cb536467881d928224d
     runs-on: ubuntu-latest
     permissions:
       contents: write
