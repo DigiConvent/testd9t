@@ -29,40 +29,19 @@ jobs:
           echo "List all the files that have changed: $ALL_CHANGED_FILES"
 
   recreate-release:
-    needs: check-go-files
-    if: needs.check-go-files.outputs.go_files_changed == 'true'
+    # needs: check-go-files
+    # if: needs.check-go-files.outputs.go_files_changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set Tag and Release Name
-        run: echo "RELEASE_TAG=0.0.0" >> $GITHUB_ENV
-
-      - name: Install GitHub CLI
-        run: |
-          sudo apt update
-          sudo apt install -y gh
-
-      - name: Authenticate GitHub CLI
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh auth status
-
-      - name: Delete Existing Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
-        run: gh release delete $RELEASE_TAG --yes
-
-      - name: Delete Existing Tag
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
-        run: |
-          git push origin --delete $RELEASE_TAG || true
-          git tag -d $RELEASE_TAG || true
-
+      - name: Delete the init tag
+      - uses: dev-drprasad/delete-tag-and-release@v1.1
+        with:
+          tag_name: 0.0.0
+          delete_release: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Recreate Tag
         run: |
           git tag $RELEASE_TAG
