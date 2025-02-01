@@ -132,19 +132,24 @@ jobs:
       run: |
           zip -r vue3-app.zip frontend/dist
 
-    - name: Get Release ID
+    - name: Get Release ID and upload URL
       id: get_release_id
       run: |
-        release_id=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} | jq -r .id)
-        echo "RELEASE_ID=$release_id" >> $GITHUB_ENV
-        
-    - name: Get upload URL
-      id: geturl
-      run: |
-         upload_url=$(curl -sL https://api.github.com/repos/${{github.repository}}/releases/0.0.0?access_token=${{ secrets.PAT }} | jq -r '.upload_url')
-         echo "$upload_url"
-         echo "UPLOAD_URL=$upload_url" >> $GITHUB_ENV
+          release_tag="v0.0.0"
+          response=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/${release_tag}")
+          
+          upload_url=$(echo "$response" | jq -r '.upload_url' | sed 's/{?name,label}//')
+          release_id=$(echo "$response" | jq -r '.id')
+
+          echo "Upload URL: $upload_url"
+          echo "Release ID: $release_id"
+
+          echo "::set-output name=upload_url::$upload_url"
+          echo "::set-output name=release_id::$release_id"
+
+          echo "UPLOAD_URL=$upload_url" >> $GITHUB_ENV
+          echo "RELEASE_ID=$release_id" >> $GITHUB_ENV
 
     - name: Upload binary to release
       uses: actions/upload-release-asset@v1
@@ -171,7 +176,7 @@ jobs:
     needs: compiled-artifacts
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Grant write permissions for this job to modify the repository
+      contents: write
 
     steps:
     - name: Checkout repository
