@@ -1,0 +1,70 @@
+name: Recreate Release on Go File Changes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-go-files:
+    runs-on: ubuntu-latest
+    outputs:
+      go_files_changed: ${{ steps.check-files.outputs.go_files_changed }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check for Go File Changes
+        id: check-files
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E '\.go$'; then
+            echo "go_files_changed=true" >> $GITHUB_ENV
+          else
+            echo "go_files_changed=false" >> $GITHUB_ENV
+          fi
+
+  recreate-release:
+    needs: check-go-files
+    if: needs.check-go-files.outputs.go_files_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Tag and Release Name
+        run: echo "RELEASE_TAG=0.0.0" >> $GITHUB_ENV
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt update
+          sudo apt install -y gh
+
+      - name: Authenticate GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh auth status
+
+      - name: Delete Existing Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+        run: gh release delete $RELEASE_TAG --yes
+
+      - name: Delete Existing Tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+        run: |
+          git push origin --delete $RELEASE_TAG || true
+          git tag -d $RELEASE_TAG || true
+
+      - name: Recreate Tag
+        run: |
+          git tag $RELEASE_TAG
+          git push origin $RELEASE_TAG
+
+      - name: Create New Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create $RELEASE_TAG --title "Release $RELEASE_TAG" --notes "Automatically recreated release."
+
