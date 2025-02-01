@@ -29,7 +29,7 @@ type Logger struct {
 
 var logger = &Logger{}
 
-func NewLogger(level int) {
+func SetLogLevel(level int) {
 	if level < 0 {
 		level = 0
 	}

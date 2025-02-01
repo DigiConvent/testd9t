@@ -46,25 +46,29 @@ func main() {
 
 	handleFlags(services.SysService)
 
-	router := gin.Default()
+	httpsRouter := gin.Default()
 
-	router.GET("/", func(c *gin.Context) {
+	httpsRouter.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "Hello, World!",
 		})
 	})
 
 	if sys_domain.ProgramVersion == "dev" {
-		router.Use(gin.Logger())
-		router.Use(gin.Recovery())
-		router.Use(proxyHandler("http://localhost:5173"))
-		err := router.Run(":8080")
+		httpsRouter.Use(gin.Logger())
+		httpsRouter.Use(gin.Recovery())
+		httpsRouter.Use(proxyHandler("http://localhost:5173"))
+		err := httpsRouter.Run(":8080")
 		if err != nil {
 			panic("failed to start server: " + err.Error())
 		}
 	} else {
-		router.NoRoute(handleFrontend())
-		err := router.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
+		httpRouter := gin.Default()
+		httpRouter.GET("/", func(c *gin.Context) {
+			c.Redirect(http.StatusMovedPermanently, "https://"+c.Request.Host+c.Request.URL.String())
+		})
+		httpsRouter.NoRoute(handleFrontend())
+		err := httpsRouter.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
 		if err != nil {
 			panic("failed to start server: " + err.Error())
 		}
@@ -122,8 +126,11 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 	statusFlag := actionsFlagSet.Bool("status", false, "Prints the current status")
 	versionsFlag := actionsFlagSet.Bool("versions", false, "List all available versions")
 	listFlavoursFlag := actionsFlagSet.String("supported-flavours", "", "List supported flavours")
+	logLevelFlag := actionsFlagSet.Int("log-level", 2, "Set the log level")
 
 	actionsFlagSet.Parse(os.Args[1:])
+
+	log.SetLogLevel(*logLevelFlag)
 
 	if *replaceWithFlag != "" {
 		fmt.Println("--replace-with", *replaceWithFlag)
