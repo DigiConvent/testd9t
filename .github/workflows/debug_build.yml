@@ -40,7 +40,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete "0.0.0" --cleanup-tag
+          if gh release view "0.0.0" > /dev/null 2>&1; then
+            gh release delete "0.0.0" --cleanup-tag --yes
+          else
+            echo "Release 0.0.0 does not exist. Skipping deletion."
+          fi
           git tag 0.0.0
           git push origin 0.0.0
           
