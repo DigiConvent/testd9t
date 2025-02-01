@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/DigiConvent/testd9t/core"
+	"github.com/DigiConvent/testd9t/core/log"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
@@ -18,7 +19,7 @@ func (s *SysService) InstallReleaseTag(tag *sys_domain.ReleaseTag) *core.Status 
 	err = tag.DownloadAsset("main", homeFolder+"/backend/main")
 	if err != nil {
 		fmt.Println("Error downloading new version:", tag.Tag)
-		fmt.Println(err.Error())
+		log.Error(err.Error())
 		os.Exit(1)
 	}
 

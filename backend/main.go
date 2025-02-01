@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -15,6 +14,7 @@ import (
 	"github.com/DigiConvent/testd9t/cli"
 	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
 	"github.com/DigiConvent/testd9t/core/db"
+	"github.com/DigiConvent/testd9t/core/log"
 	services "github.com/DigiConvent/testd9t/pkg"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
@@ -27,10 +27,9 @@ func main() {
 		godotenv.Load(".env")
 	} else {
 		db.DatabasePath = os.Getenv("DATABASE_PATH")
-		godotenv.Load("/home/digiconvent/env")
-		fmt.Println("Starting in production mode")
-		for _, key := range os.Environ() {
-			fmt.Println(key)
+		err := godotenv.Load("/home/testd9t/env")
+		if err != nil {
+			log.Error(err.Error())
 		}
 	}
 
@@ -94,7 +93,7 @@ func proxyHandler(target string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		remote, err := url.Parse(target)
 		if err != nil {
-			log.Fatalf("Could not parse proxy target URL: %v", err)
+			log.Error(err.Error())
 		}
 
 		proxy := httputil.NewSingleHostReverseProxy(remote)
