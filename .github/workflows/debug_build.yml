@@ -28,18 +28,9 @@ jobs:
           echo "One or more files in the backend folder has changed."
           echo "List all the files that have changed: $ALL_CHANGED_FILES"
 
-      - name: List all changed files golang files
-        if: steps.changed-markdown-files.outputs.any_changed == 'true'
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-markdown-files.outputs.all_changed_files }}
-        run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
-          done
-
   recreate-release:
     needs: check-go-files
-    if: needs.check-go-files.outputs.go_files_changed == 'true'
+    if: needs.changed-backend-files.outputs.any_changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository

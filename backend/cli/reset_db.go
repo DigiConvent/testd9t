@@ -15,7 +15,7 @@ func ResetDB() {
 	dbPath := db.DatabasePath
 	entries, err := os.ReadDir(dbPath)
 	if err != nil {
-		fmt.Println("Could not find db directory", dbPath)
+		fmt.Println("Could not find db directory ", dbPath)
 	}
 
 	for _, entry := range entries {
