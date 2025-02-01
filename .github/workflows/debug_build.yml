@@ -28,28 +28,48 @@ jobs:
           echo "One or more files in the backend folder has changed."
           echo "List all the files that have changed: $ALL_CHANGED_FILES"
 
-  recreate-release:
-    # needs: check-go-files
-    # if: needs.check-go-files.outputs.go_files_changed == 'true'
+  recreate-release:  
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Delete the init tag
-        uses: dev-drprasad/delete-tag-and-release@v1.1
-        with:
-          tag_name: 0.0.0
-          delete_release: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Recreate Tag
+      - name: Delete the release
         run: |
-          git tag $RELEASE_TAG
-          git push origin $RELEASE_TAG
+            curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \ "https://api.github.com/repos/DigiConvent/testd9t/releases/$release_id"
+            echo "Release deleted successfully"
+          else
+            echo "Release not found"
+          fi
 
-      - name: Create New Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create $RELEASE_TAG --title "Release $RELEASE_TAG" --notes "Automatically recreated release."
+      - name: Delete the tag
+        run: |
+          tag_name="0.0.0"
+          repo="DigiConvent/testd9t"
+          
+        
+          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/$repo/git/refs/tags/$tag_name"
+            
+      - name: Create a new tag
+        id: create_tag
+        run: |
+          tag_name="0.0.0"
+          repo="DigiConvent/testd9t"
+        
+          git tag $tag_name
+          git push origin $tag_name
+          echo "New tag $tag_name created successfully"
 
+      - name: Create a new release
+        run: |
+          release_name="0.0.0"
+          release_body=""
+          repo="DigiConvent/testd9t"
+
+        
+          response=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d '{"tag_name":"v1.0.1","name":"'"$release_name"'","body":"'"$release_body"'"}' \
+            "https://api.github.com/repos/$repo/releases")
+
+          echo "Release created successfully: $response"
