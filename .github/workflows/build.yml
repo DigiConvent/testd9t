@@ -29,7 +29,6 @@ jobs:
           else
             echo "Tag ${{ env.tag }} is a valid tag."
           fi
-          
 
   summarised-migrations:
     name: Summarise migrations for each package
