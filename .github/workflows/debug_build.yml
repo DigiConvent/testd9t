@@ -32,10 +32,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    env:
-      GH_TOKEN: ${{ secrets.PAT }}
     steps:
+      - name: Checkout Repository
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        uses: actions/checkout@v1
+
       - name: Delete the release
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
         run: |
           if gh release view "0.0.0" > /dev/null 2>&1; then
             gh release delete "0.0.0" --cleanup-tag --yes
