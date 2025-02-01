@@ -87,7 +87,8 @@ jobs:
     permissions:
       contents: write
       actions: read
-
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -137,7 +138,7 @@ jobs:
       run: |
           response=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/releases/tags/0.0.0")
-          data = $(gh api \
+          data=$(gh api \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/${{ github.repository }}/releases/tags/0.0.0)
