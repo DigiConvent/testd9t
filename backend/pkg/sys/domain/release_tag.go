@@ -1,6 +1,10 @@
 package sys_domain
 
-import "github.com/DigiConvent/testd9t/core/file_repo"
+import (
+	"errors"
+
+	"github.com/DigiConvent/testd9t/core/file_repo"
+)
 
 type ReleaseTag struct {
 	Tag        string   `json:"tag"`
@@ -26,10 +30,10 @@ func (tag *ReleaseTag) MigrationURL(name string) string {
 	return ""
 }
 
-func (tag *ReleaseTag) DownloadAsset(name, path string) bool {
+func (tag *ReleaseTag) DownloadAsset(name, path string) error {
 	url := tag.AssetURL(name)
 	if url == "" {
-		return false
+		return errors.New("Asset not found: " + name)
 	}
-	return file_repo.NewRepoRemote().DownloadAsset(url, path) == nil
+	return file_repo.NewRepoRemote().DownloadAsset(url, path)
 }

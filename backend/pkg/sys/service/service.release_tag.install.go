@@ -13,13 +13,23 @@ import (
 )
 
 func (s *SysService) InstallReleaseTag(tag *sys_domain.ReleaseTag) *core.Status {
+	var err error
 	homeFolder := "/home/testd9t"
-	if !tag.DownloadAsset("main", homeFolder+"/backend/main") || !tag.DownloadAsset("frontend.zip", "/tmp/frontend.zip") {
+	err = tag.DownloadAsset("main", homeFolder+"/backend/main")
+	if err != nil {
 		fmt.Println("Error downloading new version:", tag.Tag)
+		fmt.Println(err.Error())
 		os.Exit(1)
 	}
 
-	err := exec.Command("chmod", "+x", homeFolder+"/backend/main").Run()
+	err = tag.DownloadAsset("frontend.zip", "/tmp/frontend.zip")
+	if err != nil {
+		fmt.Println("Error downloading new version:", tag.Tag)
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+
+	err = exec.Command("chmod", "+x", homeFolder+"/backend/main").Run()
 	if err != nil {
 		return core.InternalError("Error setting permissions:" + err.Error())
 	}
