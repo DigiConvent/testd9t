@@ -4,11 +4,11 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/home/digiconvent/backend/main
+ExecStart=/home/testd9t/backend/main
 Restart=always
 User=testd9t
 Group=testd9t
-EnvironmentFile=/home/digiconvent/env
+EnvironmentFile=/home/testd9t/env
 StandardOutput=journal
 StandardError=journal
 AmbientCapabilities=CAP_NET_BIND_SERVICE
