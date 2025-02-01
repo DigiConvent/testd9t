@@ -143,6 +143,7 @@ jobs:
       id: geturl
       run: |
          upload_url=$(curl -sL https://api.github.com/repos/${{github.repository}}/releases/0.0.0?access_token=${{ secrets.PAT }} | jq -r '.upload_url')
+         echo "$upload_url"
          echo "UPLOAD_URL=$upload_url" >> $GITHUB_ENV
 
     - name: Upload binary to release
