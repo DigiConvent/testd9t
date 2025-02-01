@@ -63,9 +63,14 @@ func main() {
 			panic("failed to start server: " + err.Error())
 		}
 	} else {
-		httpRouter := gin.Default()
-		httpRouter.GET("/", func(c *gin.Context) {
-			c.Redirect(http.StatusMovedPermanently, "https://"+c.Request.Host+c.Request.URL.String())
+		httpsRouter.RedirectTrailingSlash = true
+		httpsRouter.Use(func(ctx *gin.Context) {
+			if ctx.Request.TLS != nil {
+				ctx.Next()
+			} else {
+				ctx.Redirect(http.StatusMovedPermanently, "https://"+ctx.Request.Host+ctx.Request.RequestURI)
+				return
+			}
 		})
 		httpsRouter.NoRoute(handleFrontend())
 		err := httpsRouter.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
