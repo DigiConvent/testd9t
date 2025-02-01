@@ -37,6 +37,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Delete the release
-        run: gh release delete "0.0.0" --cleanup-tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag 0.0.0
+          git push origin 0.0.0
+          
+          release_body="Automated release"
+          response=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d '{"tag_name":"0.0.0","name":"0.0.0","body":"Automated release"}' \
+            "https://api.github.com/repos/DigiConvent/testd9t/releases")
+
+          echo "Release created successfully: $response"
