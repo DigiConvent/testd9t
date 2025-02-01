@@ -39,7 +39,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Extract tag version
-        run: echo "VERSION=${0.0.0}" >> $GITHUB_ENV
+        run: echo "VERSION=0.0.0" >> $GITHUB_ENV
       - name: Create migrations folder
         run: mkdir -p .meta/migrations/${VERSION}
       - name: Generate SQL summaries
@@ -103,7 +103,7 @@ jobs:
         sudo apt install -y musl musl-dev musl-tools gcc
 
     - name: Get version tag
-      run: echo "VERSION=${0.0.0}" >> $GITHUB_ENV
+      run: echo "VERSION=0.0.0" >> $GITHUB_ENV
       
     - name: Build Go binary
       run: |
