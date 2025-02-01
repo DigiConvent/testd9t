@@ -27,7 +27,7 @@ func ResetDB() {
 		dbPath := path.Join(dbPath, dbName+".db")
 		err := os.RemoveAll(dbPath)
 		if err != nil {
-			fmt.Println("Error removing db:", err)
+			fmt.Println("Error removing db ", err)
 		}
 
 		fmt.Println("Removed", dbPath)
