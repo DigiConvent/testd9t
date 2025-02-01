@@ -35,9 +35,6 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.PAT }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
       - name: Delete the release
         run: |
           if gh release view "0.0.0" > /dev/null 2>&1; then
