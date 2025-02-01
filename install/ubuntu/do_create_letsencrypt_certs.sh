@@ -10,5 +10,7 @@ sudo certbot certonly --standalone -d "$domain" --register-unsafely-without-emai
 
 sudo mkdir -p /home/testd9t/certs
 
+rm /home/testd9t/certs/*
+
 sudo cp /etc/letsencrypt/live/$domain/fullchain.pem /home/testd9t/certs/
 sudo cp /etc/letsencrypt/live/$domain/privkey.pem /home/testd9t/certs/

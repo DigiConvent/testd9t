@@ -45,11 +45,14 @@ func main() {
 
 	handleFlags(services.SysService)
 
-	// gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	router.NoRoute(handleFrontend())
-	router.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
+	err := router.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
+
+	if err != nil {
+		panic("failed to start server: " + err.Error())
+	}
 }
 
 func handleFrontend() gin.HandlerFunc {
