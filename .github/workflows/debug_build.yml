@@ -38,9 +38,8 @@ jobs:
         run: |
           tag_name="0.0.0"
           repo="DigiConvent/testd9t"
-          
-          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \ 
-            "https://api.github.com/repos/$repo/releases/$tag_name"
+
+          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/$repo/releases/$tag_name"
           echo "Release deleted successfully"
 
       - name: Renew the release 2
@@ -48,8 +47,7 @@ jobs:
           tag_name="0.0.0"
           repo="DigiConvent/testd9t"
 
-          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/$repo/git/refs/tags/$tag_name"        
+          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/$repo/git/refs/tags/$tag_name"        
             
       - name: Renew the release 3
         run: |
@@ -61,8 +59,6 @@ jobs:
           echo "New tag $tag_name created successfully"
           
           release_body="Automated release"
-          response=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d '{"tag_name":"$tag_name","name":"'"$release_name"'","body":"'"$release_body"'"}' \
-            "https://api.github.com/repos/$repo/releases")
+          response=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -d '{"tag_name":"$tag_name","name":"'"$release_name"'","body":"'"$release_body"'"}' "https://api.github.com/repos/$repo/releases")
 
           echo "Release created successfully: $response"
