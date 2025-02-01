@@ -30,11 +30,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      GH_TOKEN: ${{ secrets.PAT }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.PAT }}
+        uses: actions/checkout@v4
 
       - name: Delete the release
         run: |
