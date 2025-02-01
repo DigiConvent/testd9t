@@ -1,10 +1,6 @@
 name: Build and Package Release
 
 on:
-  workflow_run:
-    workflows: ["Recreate Release on Go File Changes"]
-    types:
-      - completed
   release:
     types: [created]
 
