@@ -39,7 +39,7 @@ jobs:
           tag_name="0.0.0"
           repo="DigiConvent/testd9t"
           curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \ 
-            "https://api.github.com/repos/$repo/releases/$release_id"
+            "https://api.github.com/repos/$repo/releases/$tag_name"
           echo "Release deleted successfully"
 
           curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
@@ -51,7 +51,7 @@ jobs:
           
           release_body="Automated release"
           response=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d '{"tag_name":"v1.0.1","name":"'"$release_name"'","body":"'"$release_body"'"}' \
+            -d '{"tag_name":"$tag_name","name":"'"$release_name"'","body":"'"$release_body"'"}' \
             "https://api.github.com/repos/$repo/releases")
 
           echo "Release created successfully: $response"
