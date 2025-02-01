@@ -1,6 +1,10 @@
 name: Build and Package Release
 
 on:
+  workflow_run:
+    workflows: ["debug_build"]
+    types:
+      - completed
   release:
     types: [created]
 
