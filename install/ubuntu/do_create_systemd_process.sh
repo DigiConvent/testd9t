@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo cp /tmp/testd9t/testd9t.service /etc/systemd/system/testd9t.service
+sudo cp /tmp/testd9t/env /home/testd9t/env
 
 binary_path=$(pwd)/main
 

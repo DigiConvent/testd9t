@@ -28,6 +28,7 @@ func main() {
 	if sys_domain.ProgramVersion == "dev" {
 		godotenv.Load(".env")
 	} else {
+		db.DatabasePath = os.Getenv("DATABASE_PATH")
 		godotenv.Load("/home/digiconvent/env")
 	}
 

@@ -31,7 +31,7 @@
         },
         {
             "step": 4,
-            "requires_files": ["testd9t.service"],
+            "requires_files": ["testd9t.service", "env"],
             "name": "create_systemd_process",
             "input": [],
             "output": []

@@ -34,16 +34,18 @@ func SqliteConnection(dbName string, test bool) DatabaseInterface {
 		panic("Database name must be alphanumeric")
 	}
 
+	dbPath := path.Join(DatabasePath, dbName)
+
 	if databases[dbName] == nil {
 		var db *sql.DB
 		var err error
-		err = os.MkdirAll(DatabasePath, 0755)
+		err = os.MkdirAll(dbPath, 0755)
 
 		if err != nil {
 			panic(err)
 		}
 
-		db, err = sql.Open("sqlite3", path.Join(DatabasePath, dbName+".db"))
+		db, err = sql.Open("sqlite3", path.Join(dbPath, "database.db"))
 
 		if err != nil {
 			panic(err)
@@ -75,7 +77,7 @@ func ListPackages() []string {
 	return packages
 }
 
-func location() string {
+func packagePath() string {
 	thisPath, _ := os.Getwd()
 	segments := strings.Split(thisPath, "/pkg/")
 	packagePath := segments[0] + "/pkg"
@@ -85,7 +87,7 @@ func location() string {
 }
 
 func (s *SqliteDatabase) MigratePackage() {
-	dbPath := path.Join(location(), "db")
+	dbPath := path.Join(packagePath(), "db")
 
 	dir, err := os.ReadDir(dbPath)
 
@@ -123,11 +125,12 @@ func (s *SqliteDatabase) MigratePackage() {
 
 func (s *SqliteDatabase) DeleteDatabase() {
 	s.DB.Close()
+	dbPath := path.Join(DatabasePath, s.name)
 	var err error
 	if s.test {
 		err = os.Remove(path.Join("/tmp", s.name+".db"))
 	} else {
-		err = os.Remove(s.name + ".db")
+		err = os.Remove(dbPath)
 	}
 	if err != nil {
 		panic(err)
