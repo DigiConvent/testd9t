@@ -1,8 +1,10 @@
 name: Build and Package Release
 
 on:
-  release:
-    types: [created]
+  workflow_run:
+    workflows: ["Recreate Release on Go File Changes"]
+    types:
+      - completed
 
 jobs:
   valid-tag:
@@ -15,7 +17,7 @@ jobs:
           fetch-depth: 0
       - name: Extract the tag name
         id: extract_tag
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: echo "0.0.0" >> $GITHUB_ENV
       - name: Validate the tag format
         id: validate_semver
         run: |
@@ -25,7 +27,6 @@ jobs:
           else
             echo "Tag ${{ env.tag }} is a valid tag."
           fi
-          
 
   summarised-migrations:
     name: Summarise migrations for each package
