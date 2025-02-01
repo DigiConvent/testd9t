@@ -34,40 +34,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Delete the release
+      - name: Renew the release
         run: |
-            curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \ "https://api.github.com/repos/DigiConvent/testd9t/releases/$release_id"
-            echo "Release deleted successfully"
-          else
-            echo "Release not found"
-          fi
+          tag_name="0.0.0"
+          repo="DigiConvent/testd9t"
+          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \ 
+            "https://api.github.com/repos/$repo/releases/$release_id"
+          echo "Release deleted successfully"
 
-      - name: Delete the tag
-        run: |
-          tag_name="0.0.0"
-          repo="DigiConvent/testd9t"
-          
-        
           curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/$repo/git/refs/tags/$tag_name"
+            "https://api.github.com/repos/$repo/git/refs/tags/$tag_name"        
             
-      - name: Create a new tag
-        id: create_tag
-        run: |
-          tag_name="0.0.0"
-          repo="DigiConvent/testd9t"
-        
           git tag $tag_name
           git push origin $tag_name
           echo "New tag $tag_name created successfully"
-
-      - name: Create a new release
-        run: |
-          release_name="0.0.0"
-          release_body=""
-          repo="DigiConvent/testd9t"
-
-        
+          
+          release_body="Automated release"
           response=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -d '{"tag_name":"v1.0.1","name":"'"$release_name"'","body":"'"$release_body"'"}' \
             "https://api.github.com/repos/$repo/releases")
