@@ -24,6 +24,8 @@ jobs:
         id: validate_semver
         run: |
           echo "${{ github.event.release.tag_name }}"
+          echo '${{ toJson(github.event) }}'
+
 
   summarised-migrations:
     name: Summarise migrations for each package
