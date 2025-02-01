@@ -33,7 +33,7 @@ jobs:
     permissions:
       contents: write
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.PAT }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
