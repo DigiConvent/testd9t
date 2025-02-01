@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Delete the release
-        run: gh release delete $TAG --cleanup-tag
+        run: gh release delete 0.0.0 --cleanup-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
