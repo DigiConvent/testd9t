@@ -37,6 +37,7 @@ type IAMServiceInterface interface {
 	// permission relevant methods
 	ListPermissions() ([]*iam_domain.PermissionRead, *core.Status)
 	ListUserPermissions(id *uuid.UUID) ([]*iam_domain.PermissionFacade, *core.Status)
+	UserHasPermission(id *uuid.UUID, permission string) (bool, *core.Status)
 }
 
 type IAMService struct {

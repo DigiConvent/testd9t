@@ -15,6 +15,7 @@ import (
 	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
 	"github.com/DigiConvent/testd9t/core/db"
 	"github.com/DigiConvent/testd9t/core/log"
+	"github.com/DigiConvent/testd9t/delivery/api"
 	services "github.com/DigiConvent/testd9t/pkg"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
@@ -48,11 +49,7 @@ func main() {
 
 	httpsRouter := gin.Default()
 
-	httpsRouter.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello, World!",
-		})
-	})
+	api.RegisterRoutes(httpsRouter, services)
 
 	if sys_domain.ProgramVersion == "dev" {
 		httpsRouter.Use(gin.Logger())
