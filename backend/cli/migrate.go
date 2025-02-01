@@ -21,7 +21,7 @@ func MigrateDB(sysService sys_service.SysServiceInterface) {
 	for _, pkg := range packages {
 		status := sysService.MigratePackage(pkg, sysStatus.ProgramVersion)
 		if status.Err() && status.Code != 404 {
-			fmt.Println("Error migrating package ", pkg, ":", status.Message)
+			fmt.Println("Error migrating package", pkg, ":", status.Message)
 		}
 	}
 }
