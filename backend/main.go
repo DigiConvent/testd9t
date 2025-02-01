@@ -28,6 +28,10 @@ func main() {
 	} else {
 		db.DatabasePath = os.Getenv("DATABASE_PATH")
 		godotenv.Load("/home/digiconvent/env")
+		fmt.Println("Starting in production mode")
+		for _, key := range os.Environ() {
+			fmt.Println(key)
+		}
 	}
 
 	services := services.InitiateServices()
@@ -60,8 +64,6 @@ func main() {
 			panic("failed to start server: " + err.Error())
 		}
 	} else {
-		router.Use(gin.Logger())
-		router.Use(gin.Recovery())
 		router.NoRoute(handleFrontend())
 		err := router.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
 		if err != nil {
@@ -178,5 +180,11 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 
 	if !*runFlag {
 		os.Exit(0)
+	}
+
+	if *verbose {
+		for _, key := range os.Environ() {
+			fmt.Println(key)
+		}
 	}
 }
