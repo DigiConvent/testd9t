@@ -1,4 +1,4 @@
-name: Build and Package Release
+name: Build and Package patient zero
 
 on:
   workflow_run:
