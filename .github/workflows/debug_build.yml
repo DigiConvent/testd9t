@@ -47,3 +47,5 @@ jobs:
           fi
           
           gh release create "0.0.0" --notes "This is an automated release"
+
+          gh release view "0.0.0"
