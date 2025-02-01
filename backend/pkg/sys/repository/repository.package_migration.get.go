@@ -30,7 +30,7 @@ func (r *SysRepository) GetPackageMigrationScript(pkgName string, getVersion sys
 			script += string(contents)
 		}
 	} else {
-		contents, err := file_repo.NewRepoRemote().GetRawFile(".meta/migrations/" + getVersion.String() + "/" + pkgName + ".sql")
+		contents, err := file_repo.NewRepoRemote().ReadRawFile(".meta/migrations/" + getVersion.String() + "/" + pkgName + ".sql")
 		if err != nil {
 			if strings.HasSuffix(err.Error(), "404 Not Found") {
 				return "", *core.NotFoundError("")

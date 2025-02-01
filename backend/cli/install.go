@@ -1,4 +1,4 @@
-package install
+package cli
 
 import (
 	"bufio"
@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/DigiConvent/testd9t/core/file_repo"
+	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 )
 
 type Script struct {
@@ -35,7 +36,7 @@ func (s Script) Prepare(flavour string) {
 	repo := file_repo.NewRepoRemote()
 	if len(s.RequiresFiles) > 0 {
 		for _, file := range s.RequiresFiles {
-			contents, err := repo.GetRawFile("install/" + flavour + "/" + file)
+			contents, err := repo.ReadRawFile("install/" + flavour + "/" + file)
 			if err != nil {
 				fmt.Println("Error downloading file:", err)
 				return
@@ -44,12 +45,12 @@ func (s Script) Prepare(flavour string) {
 		}
 	}
 
-	doScriptContents, err := repo.GetRawFile("install/" + flavour + "/do_" + s.Name + ".sh")
+	doScriptContents, err := repo.ReadRawFile("install/" + flavour + "/do_" + s.Name + ".sh")
 	if err != nil {
 		fmt.Println("Error downloading script:", err)
 		return
 	}
-	undoScriptContents, err := repo.GetRawFile("install/" + flavour + "/undo_" + s.Name + ".sh")
+	undoScriptContents, err := repo.ReadRawFile("install/" + flavour + "/undo_" + s.Name + ".sh")
 	if err != nil {
 		fmt.Println("Error downloading script:", err)
 		return
@@ -128,11 +129,41 @@ type InstallationProtocol struct {
 	Files   []string `json:"path"`
 }
 
-func Install(flavour *string, force bool, verbose bool) {
+func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool) {
+	uid := os.Geteuid()
+
+	if uid != 0 {
+		fmt.Println("You need to be root to install")
+		os.Exit(1)
+	}
+
+	*flavour = strings.ToLower(*flavour)
+	fmt.Println("--install", *flavour)
+
+	flavours, status := sysService.ListFlavours()
+	if status.Err() {
+		fmt.Println("Error fetching flavours:", status.Message)
+		os.Exit(1)
+	}
+
+	found := false
+	for _, availableFlavour := range flavours {
+		if availableFlavour == *flavour {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		fmt.Println("Flavour", *flavour, "not found")
+		choices := strings.Join(flavours, ", ")
+		fmt.Println("Available flavours:", choices)
+		os.Exit(1)
+	}
 	repo := file_repo.NewRepoRemote()
 	var protocol InstallationProtocol
 
-	raw, err := repo.GetRawFile("install/" + *flavour + "/install.json")
+	raw, err := repo.ReadRawFile("install/" + *flavour + "/install.json")
 	if err != nil {
 		fmt.Println("Error fetching installation protocol:", err)
 		return

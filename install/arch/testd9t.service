@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/home/testd9t/backend/main
+ExecStart=/home/testd9t/backend/main --run
 Restart=always
 User=testd9t
 Group=testd9t

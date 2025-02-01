@@ -13,6 +13,7 @@ type ReleaseTag struct {
 }
 
 type FileRepository interface {
-	GetRawFile(path string) ([]byte, error)
+	ReadRawFile(path string) ([]byte, error)
+	DownloadAsset(url, path string) error
 	Type() string
 }

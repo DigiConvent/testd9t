@@ -10,7 +10,7 @@ import (
 func (r *SysRepository) ListFlavoursForVersion() ([]string, core.Status) {
 	var flavours []string
 
-	rawData, err := file_repo.NewRepoRemote().GetRawFile(".meta/flavours.json")
+	rawData, err := file_repo.NewRepoRemote().ReadRawFile(".meta/flavours.json")
 
 	if err != nil {
 		return flavours, *core.InternalError("Could not read the flavours file")

@@ -9,7 +9,7 @@ import (
 )
 
 func (r *SysRepository) ListReleaseTags() ([]sys_domain.ReleaseTag, *core.Status) {
-	contents, err := file_repo.NewRepoRemote().GetRawFile(".meta/release_tags.json")
+	contents, err := file_repo.NewRepoRemote().ReadRawFile(".meta/release_tags.json")
 
 	if err != nil {
 		return nil, core.InternalError(err.Error())

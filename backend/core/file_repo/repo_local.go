@@ -9,11 +9,15 @@ import (
 
 type RepoLocal struct{}
 
+func (m *RepoLocal) DownloadAsset(url string, path string) error {
+	panic("unimplemented")
+}
+
 func (m *RepoLocal) Type() string {
 	return "local"
 }
 
-func (m *RepoLocal) GetRawFile(path string) ([]byte, error) {
+func (m *RepoLocal) ReadRawFile(path string) ([]byte, error) {
 	bytes, err := os.ReadFile(DevPath() + "/../" + path)
 	if err != nil {
 		fmt.Println("Could not read raw file: ", DevPath()+path)

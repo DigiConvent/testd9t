@@ -8,14 +8,15 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"os/exec"
 	"os/signal"
-	"path"
-	"strconv"
 	"strings"
 	"syscall"
 
+	"github.com/DigiConvent/testd9t/cli"
+	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
 	"github.com/DigiConvent/testd9t/core/db"
-	"github.com/DigiConvent/testd9t/install"
+	"github.com/DigiConvent/testd9t/core/file_repo"
 	services "github.com/DigiConvent/testd9t/pkg"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
@@ -47,7 +48,7 @@ func main() {
 	router := gin.Default()
 
 	router.NoRoute(handleFrontend())
-	router.Run(":" + os.Getenv("PORT"))
+	router.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
 }
 
 func handleFrontend() gin.HandlerFunc {
@@ -94,40 +95,41 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 	forceFlag := actionsFlagSet.Bool("force", false, "Apply fixes upon a failure during the installation")
 	helpFlag := actionsFlagSet.Bool("help", false, "Prints this help message")
 	installFlag := actionsFlagSet.String("install", "", "Install")
-	// localFlag := actionsFlagSet.Bool("local", false, "Use local files")
 	migrateDBFlag := actionsFlagSet.Bool("migrate-db", false, "Migrate the database to something that is compatible with the current version")
+	replaceWithFlag := actionsFlagSet.String("replace-with", "", "Replace with a specific version")
 	runFlag := actionsFlagSet.Bool("run", false, "Deploy")
 	resetDBFlag := actionsFlagSet.Bool("reset-db", false, "Reset the database")
 	statusFlag := actionsFlagSet.Bool("status", false, "Prints the current status")
 	versionsFlag := actionsFlagSet.Bool("versions", false, "List all available versions")
-	versionFlavoursFlag := actionsFlagSet.String("supported-flavours", "", "List supported flavours")
+	listFlavoursFlag := actionsFlagSet.String("supported-flavours", "", "List supported flavours")
 
 	actionsFlagSet.Parse(os.Args[1:])
 
-	if *resetDBFlag {
-		fmt.Println("--reset-db")
+	if *replaceWithFlag != "" {
+		fmt.Println("--replace-with", *replaceWithFlag)
 
-		dbPath := db.DatabasePath
-		entries, err := os.ReadDir(dbPath)
+		fromVersion := sys_domain.VersionFromString(*replaceWithFlag)
+		if fromVersion == nil {
+			fmt.Println("Invalid version", *replaceWithFlag)
+			os.Exit(1)
+		}
+
+		url := "https://github.com/DigiConvent/testd9t/releases/download/" + *replaceWithFlag + "/main"
+		err := file_repo.NewRepoRemote().DownloadAsset(url, "/home/testd9t/backend/main")
 		if err != nil {
-			fmt.Println("Could not find db directory", dbPath)
+			fmt.Println("Error downloading new version:", err)
+			os.Exit(1)
 		}
 
-		for _, entry := range entries {
-			dbName := entry.Name()
-			if !entry.IsDir() {
-				continue
-			}
-
-			dbPath := path.Join(dbPath, dbName+".db")
-			err := os.RemoveAll(dbPath)
-			if err != nil {
-				fmt.Println("Error removing db:", err)
-			}
-
-			fmt.Println("Removed", dbPath)
+		err = exec.Command("chmod", "+x", "/home/testd9t/backend/main").Run()
+		if err != nil {
+			fmt.Println("Error setting permissions:", err)
+			os.Exit(1)
 		}
-		os.Exit(0)
+	}
+
+	if *resetDBFlag {
+		cli.ResetDB()
 	}
 
 	if *helpFlag || actionsFlagSet.NFlag() == 0 {
@@ -135,166 +137,28 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 		os.Exit(0)
 	}
 
-	sysStatus, _ := sysService.GetSystemStatus()
-
 	if *versionsFlag {
-		versions, status := sysService.ListReleaseTags()
-		if status.Err() {
-			fmt.Println("Error fetching versions:", status.Message)
-			os.Exit(1)
-		}
-
-		if status.Err() {
-			fmt.Println("Error fetching system status:", status.Message)
-			os.Exit(1)
-		}
-
-		if sysStatus.ProgramVersion.Major == -1 {
-			fmt.Println("Program version: dev")
-			if sysStatus.DatabaseVersion.Equals(&sysStatus.ProgramVersion) {
-				fmt.Println("No migrations found, run with --migrate-db to migrate to a compatible version")
-			}
-		}
-
-		fmt.Println("┏━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━┓")
-		fmt.Println("┃ Version ┃ Program ┃ Migration ┃")
-
-		for _, tag := range versions {
-			var program, migrationExecuted string
-			if tag.Tag == sysStatus.ProgramVersion.String() {
-				program = "✓"
-			}
-			if tag.Tag == sysStatus.DatabaseVersion.String() {
-				migrationExecuted = "✓"
-			}
-			fmt.Println("┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━━━┫")
-			fmt.Printf("┃ %7s ┃ %7s ┃ %9s ┃\n", tag.Tag, program, migrationExecuted)
-		}
-		fmt.Println("┗━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━━━┛")
+		cli_helpers.ListVersions(sysService)
 	}
 
-	if *versionFlavoursFlag != "" {
-		fmt.Println("--supported-flavours")
-		flavours, status := sysService.ListFlavours()
-		if status.Err() {
-			fmt.Println("Error fetching flavours:", status.Message)
-			os.Exit(1)
-		}
-
-		if len(flavours) == 0 {
-			fmt.Println("No flavours found")
-		}
-
-		for _, flavour := range flavours {
-			fmt.Println(flavour)
-		}
+	if *listFlavoursFlag != "" {
+		cli.ListFlavours(sysService)
 	}
 
 	if *statusFlag {
-		fmt.Println("--status")
-		if sys_domain.ProgramVersion == "dev" {
-			fmt.Println("Development")
-		} else {
-			fmt.Println("Production")
-		}
-
-		currentVersion := &sysStatus.DatabaseVersion
-		if currentVersion == nil {
-			fmt.Println("Migration  : No version found (try running with --migrate-db to migrate to something compatible with this version)")
-		} else {
-			fmt.Println("Migration  :", currentVersion.String())
-		}
-		fmt.Println("Environment:", sysStatus.ProgramVersion.String())
-
-		showPackages(sysService)
+		cli.ShowStatus(sysService)
 	}
 
 	if *installFlag != "" {
-		uid := os.Geteuid()
 
-		if uid != 0 {
-			fmt.Println("You need to be root to install")
-			os.Exit(1)
-		}
-
-		*installFlag = strings.ToLower(*installFlag)
-		fmt.Println("--install", *installFlag)
-
-		flavours, status := sysService.ListFlavours()
-		if status.Err() {
-			fmt.Println("Error fetching flavours:", status.Message)
-			os.Exit(1)
-		}
-
-		found := false
-		for _, flavour := range flavours {
-			if flavour == *installFlag {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			fmt.Println("Flavour", *installFlag, "not found")
-			choices := strings.Join(flavours, ", ")
-			fmt.Println("Available flavours:", choices)
-			os.Exit(1)
-		}
-
-		install.Install(installFlag, *forceFlag, *verbose)
+		cli.Install(sysService, installFlag, *forceFlag, *verbose)
 	}
 
 	if *migrateDBFlag {
-		fmt.Println("--migrate-db")
-
-		packages := db.ListPackages()
-
-		cols := []int{9, 13, 9, 8}
-		fmt.Printf("┏%s┳%s┳%s┳%s┓\n", strings.Repeat("━", cols[0]), strings.Repeat("━", cols[1]), strings.Repeat("━", cols[2]), strings.Repeat("━", cols[3]))
-		fmt.Println("┃ Package ┃ Initialised ┃ Version ┃ Max V. ┃")
-
-		for _, pkg := range packages {
-			status := sysService.MigratePackage(pkg, sysStatus.ProgramVersion)
-			if status.Err() && status.Code != 404 {
-				fmt.Println("Error migrating package", pkg, ":", status.Message)
-			}
-		}
-
-		fmt.Printf("┗%s┻%s┻%s┻%s┛\n", strings.Repeat("━", cols[0]), strings.Repeat("━", cols[1]), strings.Repeat("━", cols[2]), strings.Repeat("━", cols[3]))
+		cli.MigrateDB(sysService)
 	}
 
 	if !*runFlag {
 		os.Exit(0)
 	}
-}
-
-func showPackages(sysService sys_service.SysServiceInterface) {
-
-	dbPackages, _ := sysService.GetPackages()
-	packages := db.ListPackages()
-
-	cols := []int{9, 13, 9, 8}
-	fmt.Printf("┏%s┳%s┳%s┳%s┓\n", strings.Repeat("━", cols[0]), strings.Repeat("━", cols[1]), strings.Repeat("━", cols[2]), strings.Repeat("━", cols[3]))
-	fmt.Println("┃ Package ┃ Initialised ┃ Version ┃ Max V. ┃")
-
-	for _, pkg := range packages {
-		fmt.Printf("┣%s╋%s╋%s╋%s┫\n", strings.Repeat("━", cols[0]), strings.Repeat("━", cols[1]), strings.Repeat("━", cols[2]), strings.Repeat("━", cols[3]))
-		format := "┃ %" + strconv.Itoa(cols[0]-2) + "s ┃ %" + strconv.Itoa(cols[1]-2) + "s ┃ %" + strconv.Itoa(cols[2]-2) + "s ┃ %" + strconv.Itoa(cols[3]-2) + "s ┃\n"
-		val, ok := dbPackages[pkg]
-		initialised := "✓"
-		var version, maxVersion string
-		versions, _ := sysService.GetPackageVersions(pkg)
-		sys_domain.Sort(versions, true)
-		if len(versions) > 0 {
-			maxVersion = versions[len(versions)-1].String()
-		}
-		if !ok {
-			initialised = "✗"
-		} else {
-			version = val.Version.String()
-		}
-		fmt.Printf(format, pkg, initialised, version, maxVersion)
-	}
-
-	fmt.Printf("┗%s┻%s┻%s┻%s┛\n", strings.Repeat("━", cols[0]), strings.Repeat("━", cols[1]), strings.Repeat("━", cols[2]), strings.Repeat("━", cols[3]))
 }
