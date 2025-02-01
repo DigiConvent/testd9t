@@ -17,12 +17,13 @@ type SysRepositoryInterface interface {
 	GetConfiguration() (*sys_domain.Configuration, core.Status)
 	InitDatabase() core.Status
 	IsInitialised() bool
-	ListReleaseTags() ([]sys_domain.ReleaseTag, *core.Status)
 
 	GetPackages() ([]sys_domain.Package, core.Status)
 	GetPackageVersions(pkgName string) ([]sys_domain.Version, core.Status)
 	GetPackageMigrationScript(pkgName string, fromVersion sys_domain.Version) (string, core.Status)
 	MigratePackage(pkgName string, toVersion sys_domain.Version) core.Status
+
+	ListReleaseTags() ([]sys_domain.ReleaseTag, *core.Status)
 }
 
 type SysRepository struct {

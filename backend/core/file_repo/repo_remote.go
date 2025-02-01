@@ -40,6 +40,7 @@ func (mr *RepoRemote) ReadRawFile(filePath string) ([]byte, error) {
 type RepoRemote struct{}
 
 func (mr *RepoRemote) DownloadAsset(url, filepath string) error {
+	os.Remove(filepath)
 	out, err := os.Create(filepath)
 	if err != nil {
 		return err
@@ -55,8 +56,6 @@ func (mr *RepoRemote) DownloadAsset(url, filepath string) error {
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("bad status: %s", resp.Status)
 	}
-
-	os.Remove(filepath)
 
 	_, err = io.Copy(out, resp.Body)
 	return err

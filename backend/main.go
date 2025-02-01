@@ -8,7 +8,6 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
-	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
@@ -16,7 +15,6 @@ import (
 	"github.com/DigiConvent/testd9t/cli"
 	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
 	"github.com/DigiConvent/testd9t/core/db"
-	"github.com/DigiConvent/testd9t/core/file_repo"
 	services "github.com/DigiConvent/testd9t/pkg"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
@@ -47,11 +45,28 @@ func main() {
 
 	router := gin.Default()
 
-	router.NoRoute(handleFrontend())
-	err := router.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Hello, World!",
+		})
+	})
 
-	if err != nil {
-		panic("failed to start server: " + err.Error())
+	if sys_domain.ProgramVersion == "dev" {
+		router.Use(gin.Logger())
+		router.Use(gin.Recovery())
+		router.Use(proxyHandler("http://localhost:5173"))
+		err := router.Run(":8080")
+		if err != nil {
+			panic("failed to start server: " + err.Error())
+		}
+	} else {
+		router.Use(gin.Logger())
+		router.Use(gin.Recovery())
+		router.NoRoute(handleFrontend())
+		err := router.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
+		if err != nil {
+			panic("failed to start server: " + err.Error())
+		}
 	}
 }
 
@@ -66,10 +81,10 @@ func handleFrontend() gin.HandlerFunc {
 			} else {
 				path = "/index.html"
 			}
-			c.File(os.Getenv("STATIC_FILES") + "frontend/" + path)
+			c.File("frontend/" + path)
 		}
 	} else {
-		return proxyHandler("http://localhost:5173") // vite server proxy
+		return proxyHandler("http://localhost:5173")
 	}
 }
 
@@ -118,17 +133,17 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 			os.Exit(1)
 		}
 
-		url := "https://github.com/DigiConvent/testd9t/releases/download/" + *replaceWithFlag + "/main"
-		err := file_repo.NewRepoRemote().DownloadAsset(url, "/home/testd9t/backend/main")
-		if err != nil {
-			fmt.Println("Error downloading new version:", err)
+		releaseTags, status := sysService.ListReleaseTags()
+		if status.Err() {
+			fmt.Println("Error checking release tags:", status.Message)
 			os.Exit(1)
 		}
 
-		err = exec.Command("chmod", "+x", "/home/testd9t/backend/main").Run()
-		if err != nil {
-			fmt.Println("Error setting permissions:", err)
-			os.Exit(1)
+		for _, tag := range releaseTags {
+			if tag.Tag != *replaceWithFlag {
+				continue
+			}
+			sysService.InstallReleaseTag(&tag)
 		}
 	}
 
@@ -154,7 +169,6 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 	}
 
 	if *installFlag != "" {
-
 		cli.Install(sysService, installFlag, *forceFlag, *verbose)
 	}
 

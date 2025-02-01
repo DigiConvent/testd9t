@@ -25,3 +25,11 @@ func (tag *ReleaseTag) MigrationURL(name string) string {
 	}
 	return ""
 }
+
+func (tag *ReleaseTag) DownloadAsset(name, path string) bool {
+	url := tag.AssetURL(name)
+	if url == "" {
+		return false
+	}
+	return file_repo.NewRepoRemote().DownloadAsset(url, path) == nil
+}
