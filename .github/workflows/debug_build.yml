@@ -38,19 +38,12 @@ jobs:
 
       - name: Delete the release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_PAT_TOKEN }}
         run: |
           if gh release view "0.0.0" > /dev/null 2>&1; then
             gh release delete "0.0.0" --cleanup-tag --yes
           else
             echo "Release 0.0.0 does not exist. Skipping deletion."
           fi
-          git tag 0.0.0
-          git push origin 0.0.0
           
-          release_body="Automated release"
-          response=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d '{"tag_name":"0.0.0","name":"0.0.0","body":"Automated release"}' \
-            "https://api.github.com/repos/DigiConvent/testd9t/releases")
-
-          echo "Release created successfully: $response"
+          gh release create 0.0.0 --notes "This is an automated release"
