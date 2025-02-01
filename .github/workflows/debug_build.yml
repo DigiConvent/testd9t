@@ -18,7 +18,7 @@ jobs:
         id: changed-backend-files
         uses: tj-actions/changed-files@v45
         with:
-          files: backend/*.go
+          files: backend/**.go
 
       - name: Run step if any file(s) in the backend folder change
         if: steps.changed-backend-files.outputs.any_changed == 'true'

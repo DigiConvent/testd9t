@@ -94,7 +94,7 @@ func handleFlags(sysService sys_service.SysServiceInterface) {
 	verbose := actionsFlagSet.Bool("verbose", false, "Run more verbosely")
 	forceFlag := actionsFlagSet.Bool("force", false, "Apply fixes upon a failure during the installation")
 	helpFlag := actionsFlagSet.Bool("help", false, "Prints this help message")
-	installFlag := actionsFlagSet.String("install", "", "Install")
+	installFlag := actionsFlagSet.String("install", "", "Install ")
 	migrateDBFlag := actionsFlagSet.Bool("migrate-db", false, "Migrate the database to something that is compatible with the current version")
 	replaceWithFlag := actionsFlagSet.String("replace-with", "", "Replace with a specific version")
 	runFlag := actionsFlagSet.Bool("run", false, "Deploy")
