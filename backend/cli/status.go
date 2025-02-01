@@ -23,11 +23,9 @@ func ShowStatus(sysService sys_service.SysServiceInterface) {
 	}
 
 	currentVersion := &sysStatus.DatabaseVersion
-	if currentVersion == nil {
-		fmt.Println("Migration  : No version found (try running with --migrate-db to migrate to something compatible with this version)")
-	} else {
-		fmt.Println("Migration  :", currentVersion.String())
-	}
+
+	fmt.Println("Migration  :", currentVersion.String())
+
 	fmt.Println("Environment:", sysStatus.ProgramVersion.String())
 
 	cli_helpers.ListPackages(sysService)
