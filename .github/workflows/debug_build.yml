@@ -34,21 +34,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Renew the release
-        run: |
-          tag_name="0.0.0"
-          repo="DigiConvent/testd9t"
+      - name: Delete the release
+        uses: sgpublic/delete-release-action@v1.1
+        with:
+          release-drop: true
+          release-drop-tag: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/$repo/releases/$tag_name"
-          echo "Release deleted successfully"
-
-      - name: Renew the release 2
-        run: |
-          tag_name="0.0.0"
-          repo="DigiConvent/testd9t"
-
-          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/$repo/git/refs/tags/$tag_name"        
-            
       - name: Renew the release 3
         run: |
           tag_name="0.0.0"
