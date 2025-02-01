@@ -9,9 +9,9 @@ if [ ! -f $binary_path ]; then
     exit 1
 fi
 
-sudo cp $binary_path /home/digiconvent/backend/main
+sudo cp $binary_path /home/testd9t/backend/main
 
 sudo systemctl enable testd9t
 sudo systemctl start testd9t
 
-sudo chown -R digiconvent:digiconvent /home/digiconvent/
+sudo chown -R testd9t:testd9t /home/testd9t/

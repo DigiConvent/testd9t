@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sudo groupadd digiconvent
-sudo useradd -r -m -d /home/digiconvent -g digiconvent digiconvent
+sudo groupadd testd9t
+sudo useradd -r -m -d /home/testd9t -g testd9t testd9t

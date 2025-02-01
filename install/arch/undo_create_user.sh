@@ -1,5 +1,5 @@
 #!/bin/bash
 
-pkill -u digiconvent
-sudo groupdel digiconvent
-sudo userdel digiconvent -r
+pkill -u testd9t
+sudo groupdel testd9t
+sudo userdel testd9t -r

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-pkill -u digiconvent
-sudo deluser --remove-home digiconvent
-sudo delgroup digiconvent
+pkill -u testd9t
+sudo deluser --remove-home testd9t
+sudo delgroup testd9t

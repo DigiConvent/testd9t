@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -rf /etc/digiconvent
+rm -rf /etc/testd9t

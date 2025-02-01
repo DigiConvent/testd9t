@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sudo mkdir -p /home/digiconvent/backend
-sudo mkdir -p /home/digiconvent/frontend
-sudo mkdir -p /home/digiconvent/certs
-sudo mkdir -p /home/digiconvent/data/uploads
-sudo touch /home/digiconvent/env
+sudo mkdir -p /home/testd9t/backend
+sudo mkdir -p /home/testd9t/frontend
+sudo mkdir -p /home/testd9t/certs
+sudo mkdir -p /home/testd9t/data/uploads
+sudo touch /home/testd9t/env
