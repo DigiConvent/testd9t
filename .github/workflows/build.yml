@@ -172,7 +172,7 @@ jobs:
     needs: compiled-artifacts
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Grant write permissions for this job to modify the repository
+      contents: write
 
     steps:
     - name: Checkout repository
