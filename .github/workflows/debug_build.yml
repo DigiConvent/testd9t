@@ -32,9 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    env:
-      GH_TOKEN: ${{ secrets.PAT }}
     steps:
+      - env:
+          GH_TOKEN: ${{ secrets.PAT }}
       - name: Checkout Repository
         uses: actions/checkout@v4
 
