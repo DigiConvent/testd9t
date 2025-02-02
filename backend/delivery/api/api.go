@@ -9,9 +9,9 @@ import (
 func RegisterRoutes(router *gin.Engine, s *services.Services) {
 	sysRouter := sys_router.NewSysRouter(s.SysService)
 
-	router.Group("/api/")
+	router.Group("/api")
 	{
-		router.Group("/sys/")
+		router.Group("/sys")
 		{
 			router.GET("/status", sysRouter.SystemStatusGet)
 		}
