@@ -27,6 +27,7 @@ func main() {
 	if sys_domain.ProgramVersion == "dev" {
 		godotenv.Load(".env")
 	} else {
+		gin.SetMode(gin.ReleaseMode)
 		log.SetLogLevel(0)
 		db.DatabasePath = os.Getenv("DATABASE_PATH")
 		err := godotenv.Load("/home/testd9t/env")
@@ -51,15 +52,15 @@ func main() {
 	httpsRouter := gin.Default()
 	httpsRouter.RedirectTrailingSlash = true
 
-	api.RegisterRoutes(httpsRouter, services)
-
 	if sys_domain.ProgramVersion == "dev" {
 		log.Info("Development mode")
 		httpsRouter.Use(gin.Logger())
 		httpsRouter.Use(gin.Recovery())
 		httpsRouter.Use(func(ctx *gin.Context) {
-			log.Info("Request URL:" + ctx.Request.URL.Redacted())
+			log.Info("Request URL:" + ctx.Request.URL.Scheme)
+			ctx.Next()
 		})
+		api.RegisterRoutes(httpsRouter, services)
 		httpsRouter.NoRoute(handleFrontend())
 		err := httpsRouter.Run(":8080")
 		if err != nil {
@@ -67,7 +68,6 @@ func main() {
 		}
 	} else {
 		log.Info("Starting build from " + sys_domain.CompiledAt)
-		gin.SetMode(gin.ReleaseMode)
 		httpsRouter.Use(func(ctx *gin.Context) {
 			fmt.Println("Request URL:", ctx.Request.URL)
 			if ctx.Request.URL.Scheme == "https" {
@@ -77,6 +77,7 @@ func main() {
 
 			ctx.Redirect(http.StatusMovedPermanently, "https://"+ctx.Request.Host+ctx.Request.RequestURI)
 		})
+		api.RegisterRoutes(httpsRouter, services)
 		httpsRouter.NoRoute(handleFrontend())
 		err := httpsRouter.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
 		if err != nil {

@@ -1,7 +1,36 @@
 #!/bin/bash
 
 sudo cp /tmp/testd9t/testd9t.service /etc/systemd/system/testd9t.service
-sudo cp /tmp/testd9t/env /home/testd9t/env
+
+SOURCE_ENV="/home/testd9t/env"
+TARGET_ENV="/tmp/testd9t/env"
+
+if [[ ! -f "$SOURCE_ENV" || ! -f "$TARGET_ENV" ]]; then
+  echo "Both source and target env files must exist."
+  exit 1
+fi
+
+declare -A env_vars
+while IFS='=' read -r key value; do
+  if [[ -n "$key" && "$key" != "#"* ]]; then
+    env_vars["$key"]="$value"
+  fi
+done < "$SOURCE_ENV"
+
+while IFS='=' read -r key value; do
+  if [[ -n "$key" && "$key" != "#"* ]]; then
+    if [[ -n "${env_vars[$key]}" ]]; then
+      echo "$key=${env_vars[$key]}"
+    else
+      echo "$key=$value"
+    fi
+  else
+    echo "$key"
+  fi
+done < "$TARGET_ENV" > "${TARGET_ENV}.merged"
+
+mv "${TARGET_ENV}.merged" "$SOURCE_ENV"
+
 
 binary_path=$(pwd)/main
 
