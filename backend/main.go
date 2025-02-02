@@ -27,6 +27,7 @@ func main() {
 	if sys_domain.ProgramVersion == "dev" {
 		godotenv.Load(".env")
 	} else {
+		log.SetLogLevel(0)
 		db.DatabasePath = os.Getenv("DATABASE_PATH")
 		err := godotenv.Load("/home/testd9t/env")
 		if err != nil {
@@ -60,6 +61,8 @@ func main() {
 			panic("failed to start server: " + err.Error())
 		}
 	} else {
+		log.Info("Starting build from " + sys_domain.CompiledAt)
+		gin.SetMode(gin.ReleaseMode)
 		httpsRouter.RedirectTrailingSlash = true
 		httpsRouter.Use(func(ctx *gin.Context) {
 			fmt.Println("Request URL:", ctx.Request.URL)

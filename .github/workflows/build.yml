@@ -107,7 +107,7 @@ jobs:
     - name: Build Go binary
       run: |
         cd backend
-        CGO_ENABLED=1 CC=musl-gcc go build -ldflags "-linkmode external -extldflags '-static' -X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}'" -o main .
+        CGO_ENABLED=1 CC=musl-gcc go build -ldflags "-linkmode external -extldflags '-static' -X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}' -X 'github.com/${{ github.repository }}/pkg/sys/domain.CompiledAt=$(date -u +'%Y-%m-%d %H:%M:%S')'" -o main .
 
     - name: Install UPX
       run: |
