@@ -26,7 +26,7 @@ jobs:
           echo "One or more files in the backend folder has changed."
           echo "List all the files that have changed: $ALL_CHANGED_FILES"
 
-  recreate-release:  
+  recreate-release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -46,4 +46,9 @@ jobs:
           
           gh release create "0.0.0" --notes "This is an automated release"
 
-          gh release view "0.0.0"
+          RELEASE_ID=$(gh release view "0.0.0" --json id -q '.id')
+ 
+          curl -X PATCH -H "Authorization: token ${{ secrets.PAT }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d '{"draft": false}' \
+              "https://api.github.com/repos/DigiConvent/testd9t/releases/${RELEASE_ID}"
