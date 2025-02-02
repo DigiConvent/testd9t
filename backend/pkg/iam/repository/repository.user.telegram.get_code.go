@@ -8,7 +8,7 @@ import (
 )
 
 func (r *IAMRepository) GetTelegramRegistrationCode(userId *uuid.UUID) (string, core.Status) {
-	user := r.DB.QueryRow(`select email from users where id = $1`, userId.String())
+	user := r.DB.QueryRow(`select email from users where id = ?`, userId.String())
 
 	var email string
 	err := user.Scan(&email)

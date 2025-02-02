@@ -6,7 +6,7 @@ import (
 )
 
 func (r *IAMRepository) SetEnabled(id *uuid.UUID, enabled bool) core.Status {
-	result, err := r.DB.Exec("UPDATE users SET enabled = $1 WHERE id = $2", enabled, id)
+	result, err := r.DB.Exec("UPDATE users SET enabled = ? WHERE id = ?", enabled, id)
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

@@ -62,7 +62,7 @@ func (r *IAMRepository) VerifyTelegramUser(body string) (*uuid.UUID, core.Status
 
 	userId := userObj.ID
 
-	userRow := r.DB.QueryRow(`SELECT id FROM users WHERE telegram_id = $1`, userId)
+	userRow := r.DB.QueryRow(`SELECT id FROM users WHERE telegram_id = ?`, userId)
 
 	var uid uuid.UUID
 	var str string

@@ -3,6 +3,8 @@ package log
 import (
 	"fmt"
 	"time"
+
+	core_utils "github.com/DigiConvent/testd9t/core/utils"
 )
 
 var reset = "\033[0m"
@@ -63,5 +65,5 @@ func Success(msg string) {
 }
 
 func getTime() string {
-	return time.Now().Format("2025-02-02 22:53:23")
+	return time.Now().Format(core_utils.FormattedTime)
 }

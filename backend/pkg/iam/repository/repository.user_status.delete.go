@@ -6,7 +6,7 @@ import (
 )
 
 func (r *IAMRepository) DeleteUserStatus(id *uuid.UUID) core.Status {
-	result, err := r.DB.Exec(`DELETE FROM user_status WHERE id = $1`, id)
+	result, err := r.DB.Exec(`DELETE FROM user_status WHERE id = ?`, id)
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

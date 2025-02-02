@@ -10,7 +10,7 @@ func (r *IAMRepository) ListUserPermissions(id *uuid.UUID) ([]*iam_domain.Permis
 	var permissions = make([]*iam_domain.PermissionFacade, 0)
 	rows, err := r.DB.Query(`
 with recursive relevant_groups as (
-	select permission_group from permission_group_has_user where "user" = $1
+	select permission_group from permission_group_has_user where "user" = ?
 	union all
 	select child.id as permission_group from permission_groups child
 		inner join relevant_groups s on s.permission_group = child.parent

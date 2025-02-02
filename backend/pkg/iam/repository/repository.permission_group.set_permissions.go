@@ -11,10 +11,10 @@ WITH existing_permissions AS (
     SELECT p.id
     FROM permissions p
     JOIN permission_group_has_permission pghp ON p.id = pgp.permission
-    WHERE permission_group = $1
+    WHERE permission_group = ?
 ),
 new_permissions AS (
-    SELECT unnest($2::varchar[]) AS permission
+    SELECT unnest(?::varchar[]) AS permission
 ),
 to_delete AS (
     SELECT permission
@@ -32,10 +32,10 @@ to_add AS (
 )
 
 DELETE FROM permission_group_has_permission
-WHERE permission_group = $1 AND permission IN (SELECT permission FROM to_delete);
+WHERE permission_group = ? AND permission IN (SELECT permission FROM to_delete);
 
 INSERT INTO permission_group_has_permission (permission_group, permission)
-SELECT $1, permission
+SELECT ?, permission
 FROM to_add;`, permissionGroupId.String(), permissions)
 
 	if err != nil {

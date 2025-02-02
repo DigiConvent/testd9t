@@ -11,7 +11,7 @@ import (
 func (r *IAMRepository) UpdateUser(id *uuid.UUID, user *iam_domain.UserWrite) core.Status {
 	userId := id.String()
 	user.Email = strings.ToLower(user.Email)
-	result, err := r.DB.Exec(`UPDATE users SET first_name = $2, last_name = $3, email = $4, date_of_birth = $5 WHERE id = $1`, userId, user.FirstName, user.LastName, user.Email, user.DateOfBirth)
+	result, err := r.DB.Exec(`UPDATE users SET first_name = ?, last_name = ?, email = ?, date_of_birth = ? WHERE id = ?`, userId, user.FirstName, user.LastName, user.Email, user.DateOfBirth)
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

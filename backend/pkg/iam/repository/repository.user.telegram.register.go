@@ -59,7 +59,7 @@ func VerifyCode(uuid string, t time.Time, validityPeriod time.Duration, code str
 
 func (r *IAMRepository) RegisterTelegramUser(telegramId int, email string, code string) core.Status {
 	email = strings.ToLower(email)
-	row := r.DB.QueryRow("SELECT id FROM users WHERE email = $1", email)
+	row := r.DB.QueryRow("SELECT id FROM users WHERE email = ?", email)
 
 	var userId uuid.UUID
 	err := row.Scan(&userId)
@@ -71,7 +71,7 @@ func (r *IAMRepository) RegisterTelegramUser(telegramId int, email string, code 
 		return *core.InternalError("Invalid code")
 	}
 
-	result, err := r.DB.Exec("UPDATE users SET telegram_id = $1 WHERE id = $2", telegramId, userId.String())
+	result, err := r.DB.Exec("UPDATE users SET telegram_id = ? WHERE id = ?", telegramId, userId.String())
 	if err != nil {
 		return *core.InternalError("Failed to update user")
 	}

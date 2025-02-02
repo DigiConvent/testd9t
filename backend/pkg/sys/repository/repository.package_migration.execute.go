@@ -60,6 +60,8 @@ func (r *SysRepository) MigratePackage(pkgName string, toVersion sys_domain.Vers
 		_, err := r.DB.Exec("UPDATE packages SET major = ?, minor = ?, patch = ? WHERE name = ?", toVersion.Major, toVersion.Minor, toVersion.Patch, pkgName)
 		if err != nil {
 			return *core.InternalError("Could not update package " + pkgName + " version to " + toVersion.String())
+		} else {
+			log.Success("Updated package " + pkgName + " to version " + toVersion.String())
 		}
 	}
 

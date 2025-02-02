@@ -16,6 +16,7 @@ import (
 	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
 	"github.com/DigiConvent/testd9t/core/db"
 	"github.com/DigiConvent/testd9t/core/log"
+	core_utils "github.com/DigiConvent/testd9t/core/utils"
 	"github.com/DigiConvent/testd9t/delivery/api"
 	services "github.com/DigiConvent/testd9t/pkg"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
@@ -25,8 +26,10 @@ import (
 )
 
 func main() {
+	sys_domain.StartTime = time.Now()
 	if sys_domain.ProgramVersion == "dev" {
-		godotenv.Load(".env")
+		godotenv.Load("env")
+		log.SetLogLevel(4)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
 		log.SetLogLevel(0)
@@ -58,7 +61,7 @@ func main() {
 		httpsRouter.Use(gin.Logger())
 		httpsRouter.Use(gin.Recovery())
 		httpsRouter.Use(func(ctx *gin.Context) {
-			log.Info("Request URL:" + ctx.Request.URL.Scheme)
+			fmt.Println("Request URL:", ctx.Request.URL.RequestURI())
 			ctx.Next()
 		})
 		api.RegisterRoutes(httpsRouter, services)
@@ -71,7 +74,7 @@ func main() {
 		}()
 	} else {
 		log.Info("Build      " + sys_domain.CompiledAt)
-		var now = time.Now().Format("2025-02-02 22:53:23")
+		var now = time.Now().Format(core_utils.FormattedTime)
 		log.Info("Running at " + now)
 		httpsRouter.Use(func(ctx *gin.Context) {
 			fmt.Println("Request URL:", ctx.Request.URL)

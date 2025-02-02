@@ -16,7 +16,7 @@ func (r *IAMRepository) ListUserGroups(userId *uuid.UUID) ([]*iam_domain.Permiss
 	uhpg.parent
 	FROM user_has_permission_groups uhpg
 	RIGHT JOIN permission_groups pg ON pg.id = uhpg.permission_group 
-	WHERE uhpg.user = $1`, userId.String())
+	WHERE uhpg.user = ?`, userId.String())
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

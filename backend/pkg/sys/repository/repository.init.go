@@ -16,7 +16,7 @@ func (r *SysRepository) SetBotToken(botId string) core.Status {
 	// 	return *core.InternalError("Failed to migrate to version 0.0.0" + status.Message)
 	// }
 
-	_, err := r.DB.Exec("update config set telegram_bot_token = $1", botId)
+	_, err := r.DB.Exec("update config set telegram_bot_token = ?", botId)
 	if err != nil {
 		fmt.Println(err.Error())
 		return *core.InternalError("Failed to set telegram bot token")

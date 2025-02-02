@@ -30,7 +30,7 @@ func (r *IAMRepository) GetPermissionGroup(arg *uuid.UUID) (*iam_domain.Permissi
 	LEFT JOIN permissions p ON pghp.permission = p.id
 	LEFT JOIN permission_group_has_user pghu ON pg.id = pghu.permission_group
 	LEFT JOIN user_facades u ON pghu.user = u.id
-	WHERE pg.id = $1`, arg.String())
+	WHERE pg.id = ?`, arg.String())
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

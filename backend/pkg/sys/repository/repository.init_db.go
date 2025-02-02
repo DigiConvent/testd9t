@@ -1,7 +1,10 @@
 package sys_repository
 
 import (
+	"strconv"
+
 	"github.com/DigiConvent/testd9t/core"
+	"github.com/DigiConvent/testd9t/core/log"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
@@ -9,6 +12,11 @@ func (r *SysRepository) IsInitialised() bool {
 	resultSet := r.DB.QueryRow("SELECT major, minor, patch FROM packages WHERE name = 'sys'")
 	var major, minor, patch int = -1, -1, -1
 	err := resultSet.Scan(&major, &minor, &patch)
+	if err != nil {
+		log.Error("Could not check if sys is initialised: " + err.Error())
+	} else {
+		log.Success("System is initialised at version " + strconv.Itoa(major) + "." + strconv.Itoa(minor) + "." + strconv.Itoa(patch))
+	}
 	return err == nil && major >= 0 && minor >= 0 && patch >= 0
 }
 
@@ -29,7 +37,9 @@ func (r *SysRepository) InitDatabase() core.Status {
 	_, err = r.DB.Exec("INSERT INTO packages (name, major, minor, patch) VALUES ('sys', 0, 0, 0)")
 
 	if err != nil {
-		return *core.InternalError("Could not register initialisation")
+		return *core.InternalError("Could not register sys:0.0.0 " + err.Error())
+	} else {
+		log.Success("Registered sys:0.0.0")
 	}
 
 	return *core.StatusSuccess()

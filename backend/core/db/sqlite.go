@@ -12,7 +12,7 @@ import (
 )
 
 var databases = map[string]DatabaseInterface{}
-var DatabasePath string = "/tmp/d9t/db/"
+var DatabasePath string = "/tmp/testd9t/db/"
 
 func CloseAllDatabases() {
 	for _, db := range databases {
@@ -48,6 +48,10 @@ func SqliteConnection(dbName string, test bool) DatabaseInterface {
 		}
 
 		dbPath = path.Join(dbPath, "database.db")
+		if _, err := os.Stat(dbPath); err == nil {
+			log.Success("Loading existing database at " + dbPath)
+		}
+
 		db, err = sql.Open("sqlite3", dbPath)
 
 		if err != nil {

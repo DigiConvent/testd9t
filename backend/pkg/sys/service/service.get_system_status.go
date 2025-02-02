@@ -4,6 +4,7 @@ import (
 	"syscall"
 
 	"github.com/DigiConvent/testd9t/core"
+	core_utils "github.com/DigiConvent/testd9t/core/utils"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
@@ -34,5 +35,6 @@ func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) 
 		ProgramVersion:  *programVersion,
 		DatabaseVersion: *databaseVersion,
 		BuiltAt:         sys_domain.CompiledAt,
+		OnlineSince:     sys_domain.StartTime.Format(core_utils.FormattedTime),
 	}, core.StatusSuccess()
 }

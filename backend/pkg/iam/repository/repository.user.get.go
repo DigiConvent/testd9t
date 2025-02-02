@@ -17,7 +17,7 @@ func (r *IAMRepository) GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.S
 	FROM 
 		users 
 	WHERE 
-		id = $1`, id.String())
+		id = ?`, id.String())
 
 	err := row.Scan(
 		&user.ID,

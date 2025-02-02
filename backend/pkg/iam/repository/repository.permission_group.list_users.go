@@ -8,7 +8,7 @@ import (
 
 func (r *IAMRepository) ListGroupUsers(groupId *uuid.UUID) ([]*iam_domain.UserFacade, core.Status) {
 	var users = make([]*iam_domain.UserFacade, 0)
-	rows, err := r.DB.Query(`SELECT "user" as id, name, implied from permission_group_has_users where root = $1`, groupId.String())
+	rows, err := r.DB.Query(`SELECT "user" as id, name, implied from permission_group_has_users where root = ?`, groupId.String())
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
