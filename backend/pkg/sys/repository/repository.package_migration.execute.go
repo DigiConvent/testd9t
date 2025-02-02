@@ -3,6 +3,7 @@ package sys_repository
 import (
 	"github.com/DigiConvent/testd9t/core"
 	"github.com/DigiConvent/testd9t/core/db"
+	"github.com/DigiConvent/testd9t/core/log"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
@@ -45,6 +46,8 @@ func (r *SysRepository) MigratePackage(pkgName string, toVersion sys_domain.Vers
 		_, err := conn.Exec(script)
 		if err != nil {
 			return *core.InternalError("Could not execute migration script for package " + pkgName + " version " + version.String() + ": " + err.Error())
+		} else {
+			log.Success("Migrated package " + pkgName + " to version " + version.String())
 		}
 	}
 

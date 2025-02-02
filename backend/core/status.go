@@ -2,6 +2,8 @@ package core
 
 import (
 	"fmt"
+
+	"github.com/DigiConvent/testd9t/core/log"
 )
 
 type Status struct {
@@ -10,7 +12,7 @@ type Status struct {
 }
 
 func InternalError(message string) *Status {
-	// fmt.Println("Internal Error:", message)
+	log.Error("Internal Error " + message)
 	return &Status{
 		Message: message,
 		Code:    500,
@@ -18,7 +20,7 @@ func InternalError(message string) *Status {
 }
 
 func NotFoundError(message string) *Status {
-	// fmt.Println("Not Found Error:", message)
+	log.Error("Not Found Error" + message)
 	return &Status{
 		Message: message,
 		Code:    404,
