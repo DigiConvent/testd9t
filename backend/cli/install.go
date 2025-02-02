@@ -7,9 +7,12 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strconv"
 	"strings"
 
+	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
 	"github.com/DigiConvent/testd9t/core/file_repo"
+	"github.com/DigiConvent/testd9t/core/log"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 )
 
@@ -160,6 +163,24 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		fmt.Println("Available flavours:", choices)
 		os.Exit(1)
 	}
+
+	pid, err := cli_helpers.GetPIDByPort(80)
+	if err != nil {
+		fmt.Println("Error getting PID by port:", err)
+		return
+	}
+
+	processName, err := cli_helpers.GetProcessName(pid)
+	if err != nil {
+		fmt.Println("Error getting process name:", err)
+		return
+	}
+
+	if processName != "" {
+		log.Error("Process running on port 80: " + processName)
+		log.Error("kill " + strconv.Itoa(pid))
+	}
+
 	repo := file_repo.NewRepoRemote()
 	var protocol InstallationProtocol
 
