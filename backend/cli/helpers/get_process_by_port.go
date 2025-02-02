@@ -63,5 +63,5 @@ func GetPIDByPort(port int) (int, error) {
 			return pid, nil
 		}
 	}
-	return 0, fmt.Errorf("no process found using port %d", port)
+	return 0, nil
 }

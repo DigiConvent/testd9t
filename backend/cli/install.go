@@ -170,15 +170,17 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		return
 	}
 
-	processName, err := cli_helpers.GetProcessName(pid)
-	if err != nil {
-		fmt.Println("Error getting process name:", err)
-		return
-	}
+	if pid != 0 {
+		processName, err := cli_helpers.GetProcessName(pid)
+		if err != nil {
+			fmt.Println("Error getting process name:", err)
+			return
+		}
 
-	if processName != "" {
-		log.Error("Process running on port 80: " + processName)
-		log.Error("kill " + strconv.Itoa(pid))
+		if processName != "" {
+			log.Error("Process running on port 80: " + processName)
+			log.Error("kill " + strconv.Itoa(pid))
+		}
 	}
 
 	repo := file_repo.NewRepoRemote()

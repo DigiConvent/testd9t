@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+	"time"
 )
 
 var reset = "\033[0m"
@@ -14,7 +15,7 @@ var yellow = "\033[33m"
 var cyan = "\033[36m"
 
 // var gray = "\033[37m"
-// var white = "\033[97m"
+var white = "\033[97m"
 
 type Logger struct {
 	Level int    `json:"level"`
@@ -40,23 +41,27 @@ func SetLogLevel(level int) {
 }
 
 func Error(msg string) {
-	fmt.Println(red + msg + reset)
+	fmt.Println(white + getTime() + ": " + red + msg + reset)
 }
 
 func Warning(msg string) {
 	if logger.Level >= 1 {
-		fmt.Println(yellow + msg + reset)
+		fmt.Println(white + getTime() + ": " + yellow + msg + reset)
 	}
 }
 
 func Info(msg string) {
 	if logger.Level >= 2 {
-		fmt.Println(cyan + msg + reset)
+		fmt.Println(white + getTime() + ": " + cyan + msg + reset)
 	}
 }
 
 func Success(msg string) {
 	if logger.Level >= 3 {
-		fmt.Println(green + msg + reset)
+		fmt.Println(white + getTime() + ": " + green + msg + reset)
 	}
+}
+
+func getTime() string {
+	return time.Now().Format("2006-01-02 15:04:05")
 }

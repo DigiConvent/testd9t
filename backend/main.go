@@ -62,10 +62,12 @@ func main() {
 		})
 		api.RegisterRoutes(httpsRouter, services)
 		httpsRouter.NoRoute(handleFrontend())
-		err := httpsRouter.Run(":8080")
-		if err != nil {
-			panic("failed to start server: " + err.Error())
-		}
+		go func() {
+			err := httpsRouter.Run(":8080")
+			if err != nil {
+				panic("failed to start dev server: " + err.Error())
+			}
+		}()
 	} else {
 		log.Info("Starting build from " + sys_domain.CompiledAt)
 		httpsRouter.Use(func(ctx *gin.Context) {
@@ -79,11 +81,17 @@ func main() {
 		})
 		api.RegisterRoutes(httpsRouter, services)
 		httpsRouter.NoRoute(handleFrontend())
-		err := httpsRouter.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
-		if err != nil {
-			panic("failed to start server: " + err.Error())
-		}
+
+		go func() {
+			err := httpsRouter.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
+			if err != nil {
+				panic("failed to start server: " + err.Error())
+			}
+		}()
 	}
+
+	<-sigChan
+	log.Info("Closing DigiConvent")
 }
 
 func handleFrontend() gin.HandlerFunc {
