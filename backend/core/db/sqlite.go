@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/DigiConvent/testd9t/core/log"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -42,12 +43,15 @@ func SqliteConnection(dbName string, test bool) DatabaseInterface {
 		err = os.MkdirAll(dbPath, 0755)
 
 		if err != nil {
+			log.Error("Could not create database directory: " + dbPath)
 			panic(err)
 		}
 
-		db, err = sql.Open("sqlite3", path.Join(dbPath, "database.db"))
+		dbPath = path.Join(dbPath, "database.db")
+		db, err = sql.Open("sqlite3", dbPath)
 
 		if err != nil {
+			log.Error("Could not create/open database: " + dbPath)
 			panic(err)
 		}
 
