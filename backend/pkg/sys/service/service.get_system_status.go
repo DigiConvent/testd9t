@@ -33,5 +33,6 @@ func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) 
 		FreeSpace:       free,
 		ProgramVersion:  *programVersion,
 		DatabaseVersion: *databaseVersion,
+		BuiltAt:         sys_domain.CompiledAt,
 	}, core.StatusSuccess()
 }

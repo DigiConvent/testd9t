@@ -49,13 +49,18 @@ func main() {
 	handleFlags(services.SysService)
 
 	httpsRouter := gin.Default()
+	httpsRouter.RedirectTrailingSlash = true
 
 	api.RegisterRoutes(httpsRouter, services)
 
 	if sys_domain.ProgramVersion == "dev" {
+		log.Info("Development mode")
 		httpsRouter.Use(gin.Logger())
 		httpsRouter.Use(gin.Recovery())
-		httpsRouter.Use(proxyHandler("http://localhost:5173"))
+		httpsRouter.Use(func(ctx *gin.Context) {
+			log.Info("Request URL:" + ctx.Request.URL.Redacted())
+		})
+		httpsRouter.NoRoute(handleFrontend())
 		err := httpsRouter.Run(":8080")
 		if err != nil {
 			panic("failed to start server: " + err.Error())
@@ -63,7 +68,6 @@ func main() {
 	} else {
 		log.Info("Starting build from " + sys_domain.CompiledAt)
 		gin.SetMode(gin.ReleaseMode)
-		httpsRouter.RedirectTrailingSlash = true
 		httpsRouter.Use(func(ctx *gin.Context) {
 			fmt.Println("Request URL:", ctx.Request.URL)
 			if ctx.Request.URL.Scheme == "https" {
