@@ -62,12 +62,13 @@ func main() {
 	} else {
 		httpsRouter.RedirectTrailingSlash = true
 		httpsRouter.Use(func(ctx *gin.Context) {
-			if ctx.Request.TLS != nil {
+			fmt.Println("Request URL:", ctx.Request.URL)
+			if ctx.Request.URL.Scheme == "https" {
 				ctx.Next()
-			} else {
-				ctx.Redirect(http.StatusMovedPermanently, "https://"+ctx.Request.Host+ctx.Request.RequestURI)
 				return
 			}
+
+			ctx.Redirect(http.StatusMovedPermanently, "https://"+ctx.Request.Host+ctx.Request.RequestURI)
 		})
 		httpsRouter.NoRoute(handleFrontend())
 		err := httpsRouter.RunTLS(":"+os.Getenv("PORT"), "/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
