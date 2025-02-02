@@ -44,6 +44,7 @@ fi
 
 sudo cp $binary_path /home/testd9t/backend/main
 
+sudo systemctl daemon-reload
 sudo systemctl enable testd9t
 sudo systemctl start testd9t
 
