@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/DigiConvent/testd9t/cli"
 	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
@@ -69,7 +70,9 @@ func main() {
 			}
 		}()
 	} else {
-		log.Info("Starting build from " + sys_domain.CompiledAt)
+		log.Info("Build      " + sys_domain.CompiledAt)
+		var now = time.Now().Format("2025-02-02 22:53:23")
+		log.Info("Running at " + now)
 		httpsRouter.Use(func(ctx *gin.Context) {
 			fmt.Println("Request URL:", ctx.Request.URL)
 			if ctx.Request.URL.Scheme == "https" {
