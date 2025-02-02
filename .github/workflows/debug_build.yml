@@ -43,11 +43,15 @@ jobs:
           else
             echo "Release 0.0.0 does not exist. Skipping deletion."
           fi
+
+          gh tag create "0.0.0" --force --message "Recreate release on Go file changes"
           
           gh release create "0.0.0" --notes "This is an automated release"
 
           RELEASE_ID=$(gh release view "0.0.0" --json id -q '.id')
- 
+          
+          echo "Release ID: $RELEASE_ID"
+
           curl -X PATCH -H "Authorization: token ${{ secrets.PAT }}" \
               -H "Accept: application/vnd.github.v3+json" \
               -d '{"draft": false}' \
