@@ -44,6 +44,6 @@ jobs:
             echo "Release 0.0.0 does not exist. Skipping deletion."
           fi
           
-          gh release create "0.0.0" --notes "This is an automated release" --draft=false
+          gh release create "0.0.0" --notes "This is an automated release"
 
           gh release view "0.0.0"
