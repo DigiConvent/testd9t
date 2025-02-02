@@ -151,6 +151,9 @@ jobs:
           echo "UPLOAD_URL=$upload_url" >> $GITHUB_ENV
           echo "RELEASE_ID=$release_id" >> $GITHUB_ENV
 
+          echo ${{ steps.get_release_id.outputs.upload_url }}
+          echo ${{ steps.get_release_id.outputs.upload_url }}
+
     - name: Upload binary to release
       uses: actions/upload-release-asset@v1
       with:
@@ -160,9 +163,6 @@ jobs:
         asset_content_type: application/octet-stream
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
-      run: |
-        echo "Uploading backend binary to release"
-        echo "Upload URL: ${{ steps.get_release_id.outputs.upload_url }}"
 
     - name: Upload frontend to release
       uses: actions/upload-release-asset@v1
