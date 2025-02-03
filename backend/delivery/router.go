@@ -1,10 +1,10 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strings"
 	"sync"
 
 	"github.com/DigiConvent/testd9t/core/log"
@@ -61,15 +61,8 @@ func SetupRouter(services *services.Services) {
 func handleFrontend() gin.HandlerFunc {
 	if sys_domain.ProgramVersion != "dev" {
 		return func(c *gin.Context) {
-			path := c.Request.URL.Path
-			if path == "/favicon.ico" {
-				path = "/favicon.ico"
-			} else if strings.HasPrefix(path, "/assets/") {
-
-			} else {
-				path = "/index.html"
-			}
-			c.File("/home/testd9t/frontend/" + path)
+			urlPath := c.Request.URL.Path
+			c.File("/home/testd9t/frontend" + urlPath)
 		}
 	} else {
 		return proxyHandler("http://localhost:5173")
@@ -78,6 +71,7 @@ func handleFrontend() gin.HandlerFunc {
 
 func proxyHandler(target string) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		fmt.Println(c.Request.URL.Path)
 		remote, err := url.Parse(target)
 		if err != nil {
 			log.Error(err.Error())

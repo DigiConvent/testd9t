@@ -55,7 +55,12 @@ fi
 sudo cp $binary_path /home/testd9t/backend/main
 
 sudo systemctl daemon-reload
-sudo systemctl enable testd9t
-sudo systemctl start testd9t
+
+if ps aux | grep -v grep | grep -q testd9t; then
+    sudo systemctl restart testd9t
+else
+    sudo systemctl enable testd9t
+    sudo systemctl start testd9t
+fi
 
 sudo chown -R testd9t:testd9t /home/testd9t/
