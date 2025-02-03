@@ -15,7 +15,10 @@
     "generate:models": "npx openapi-typescript openapi.yaml --output src/models.ts"
   },
   "dependencies": {
+    "@primevue/forms": "^4.2.5",
+    "@primevue/themes": "^4.2.5",
     "pinia": "^2.1.7",
+    "primevue": "^4.2.5",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },
