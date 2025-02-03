@@ -13,7 +13,7 @@ func (r *SysRepository) IsInitialised() bool {
 	var major, minor, patch int = -1, -1, -1
 	err := resultSet.Scan(&major, &minor, &patch)
 	if err != nil {
-		log.Error("Could not check if sys is initialised: " + err.Error())
+		return false
 	} else {
 		log.Success("System is initialised at version " + strconv.Itoa(major) + "." + strconv.Itoa(minor) + "." + strconv.Itoa(patch))
 	}
