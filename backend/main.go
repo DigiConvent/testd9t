@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -26,8 +27,9 @@ func main() {
 		godotenv.Load("env")
 		log.SetLogLevel(4)
 	} else {
+		logLevel, _ := strconv.Atoi(os.Getenv("LOG_LEVEL"))
 		gin.SetMode(gin.ReleaseMode)
-		log.SetLogLevel(0)
+		log.SetLogLevel(logLevel)
 		db.DatabasePath = os.Getenv("DATABASE_PATH")
 		err := godotenv.Load("/home/testd9t/env")
 		if err != nil {
