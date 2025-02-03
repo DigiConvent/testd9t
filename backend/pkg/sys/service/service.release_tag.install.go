@@ -13,7 +13,7 @@ import (
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
-func (s *SysService) InstallReleaseTag(tag *sys_domain.ReleaseTag) *core.Status {
+func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
 	var err error
 	homeFolder := "/home/testd9t"
 	err = tag.DownloadAsset("main", homeFolder+"/backend/main")

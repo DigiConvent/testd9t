@@ -28,8 +28,8 @@ func main() {
 		log.SetLogLevel(4)
 	} else {
 		logLevel, _ := strconv.Atoi(os.Getenv("LOG_LEVEL"))
-		gin.SetMode(gin.ReleaseMode)
 		log.SetLogLevel(logLevel)
+		gin.SetMode(gin.ReleaseMode)
 		db.DatabasePath = os.Getenv("DATABASE_PATH")
 		err := godotenv.Load("/home/testd9t/env")
 		if err != nil {

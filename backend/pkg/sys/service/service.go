@@ -21,7 +21,7 @@ type SysServiceInterface interface {
 	ListFlavours() ([]string, *core.Status)
 
 	ListReleaseTags() ([]sys_domain.ReleaseTag, *core.Status)
-	InstallReleaseTag(tag *sys_domain.ReleaseTag) *core.Status
+	InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status
 }
 
 type SysService struct {

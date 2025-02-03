@@ -6,7 +6,6 @@ import (
 	"os"
 
 	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
-	"github.com/DigiConvent/testd9t/core/log"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 )
@@ -24,11 +23,8 @@ func HandleFlags(sysService sys_service.SysServiceInterface) {
 	statusFlag := actionsFlagSet.Bool("status", false, "Prints the current status")
 	versionsFlag := actionsFlagSet.Bool("versions", false, "List all available versions")
 	listFlavoursFlag := actionsFlagSet.String("supported-flavours", "", "List supported flavours")
-	logLevelFlag := actionsFlagSet.Int("log-level", 2, "Set the log level")
 
 	actionsFlagSet.Parse(os.Args[1:])
-
-	log.SetLogLevel(*logLevelFlag)
 
 	if *replaceWithFlag != "" {
 		fmt.Println("--replace-with", *replaceWithFlag)
@@ -49,7 +45,7 @@ func HandleFlags(sysService sys_service.SysServiceInterface) {
 			if tag.Tag != *replaceWithFlag {
 				continue
 			}
-			sysService.InstallReleaseTag(&tag)
+			sysService.InstallArtifacts(&tag)
 		}
 	}
 
@@ -76,6 +72,7 @@ func HandleFlags(sysService sys_service.SysServiceInterface) {
 
 	if *installFlag != "" {
 		Install(sysService, installFlag, *forceFlag, *verbose)
+		InstallArtifacts(sys_domain.ProgramVersion, sysService)
 	}
 
 	if *migrateDBFlag {
