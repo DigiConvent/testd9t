@@ -23,8 +23,10 @@ func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) 
 		}
 	}
 	var stat syscall.Statfs_t
+	var testd9tStat syscall.Statfs_t
 
 	syscall.Statfs("/", &stat)
+	syscall.Statfs("/home/testd9t/", &testd9tStat)
 
 	total := stat.Blocks * uint64(stat.Bsize)
 	free := stat.Bfree * uint64(stat.Bsize)
@@ -32,6 +34,7 @@ func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) 
 	return &sys_domain.SystemStatus{
 		TotalSpace:      total,
 		FreeSpace:       free,
+		DataSpace:       testd9tStat.Blocks * uint64(testd9tStat.Bsize),
 		ProgramVersion:  *programVersion,
 		DatabaseVersion: *databaseVersion,
 		BuiltAt:         sys_domain.CompiledAt,

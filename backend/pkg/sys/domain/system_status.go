@@ -10,5 +10,6 @@ type SystemStatus struct {
 	DatabaseVersion Version `json:"database_version"`
 	FreeSpace       uint64  `json:"free_space"`
 	TotalSpace      uint64  `json:"total_space"`
+	DataSpace       uint64  `json:"data_space"`
 	BuiltAt         string  `json:"built_at"`
 }
