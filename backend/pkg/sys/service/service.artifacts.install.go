@@ -2,7 +2,6 @@ package sys_service
 
 import (
 	"archive/zip"
-	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -14,30 +13,27 @@ import (
 )
 
 func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
+	log.Info("Installing artifacts for version " + tag.Tag)
 	var err error
 	homeFolder := "/home/testd9t"
 	err = tag.DownloadAsset("main", homeFolder+"/backend/main")
 	if err != nil {
-		log.Error("Error downloading new version:" + tag.Tag)
-		log.Error(err.Error())
-		os.Exit(1)
+		return core.InternalError("Error downloading binary for version: " + tag.Tag + " " + err.Error())
 	}
 
 	err = tag.DownloadAsset("frontend.zip", "/tmp/frontend.zip")
 	if err != nil {
-		log.Error("Error downloading new version:" + tag.Tag)
-		fmt.Println(err.Error())
-		os.Exit(1)
+		return core.InternalError("Error downloading frontend for version: " + tag.Tag + " " + err.Error())
 	}
 
 	err = exec.Command("chmod", "+x", homeFolder+"/backend/main").Run()
 	if err != nil {
-		return core.InternalError("Error setting permissions:" + err.Error())
+		return core.InternalError("Error setting permissions for binary: " + err.Error())
 	}
 
 	readClose, err := zip.OpenReader("/tmp/frontend.zip")
 	if err != nil {
-		return core.InternalError("Error opening frontend.zip:" + err.Error())
+		return core.InternalError("Error opening frontend.zip: " + err.Error())
 	}
 
 	for _, f := range readClose.File {
@@ -53,11 +49,16 @@ func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
 
 		file, err := os.Create("/tmp/testd9t/frontend/" + name)
 		if err != nil {
-			return core.InternalError("Error creating file:" + err.Error())
+			return core.InternalError("Error creating file " + file.Name() + err.Error())
 		}
 		defer file.Close()
 
-		io.Copy(file, reader)
+		_, err = io.Copy(file, reader)
+		if err != nil {
+			return core.InternalError("Error copying file " + file.Name() + ": " + err.Error())
+		} else {
+			log.Success("Copied file " + file.Name())
+		}
 	}
 
 	os.Exit(0)
