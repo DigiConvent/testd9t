@@ -24,6 +24,8 @@ func (r *SysRepository) MigratePackage(pkgName string, toVersion *sys_domain.Ver
 
 	sys_domain.Sort(versions, true)
 
+	versionsToInstall := make([]sys_domain.Version, 0)
+
 	for i := range versions {
 		version := versions[i]
 		if version.SmallerThan(&fromVersion) {
@@ -35,7 +37,11 @@ func (r *SysRepository) MigratePackage(pkgName string, toVersion *sys_domain.Ver
 		if toVersion.SmallerThan(&version) {
 			continue
 		}
+		versionsToInstall = append(versionsToInstall, version)
+	}
 
+	for i := range versionsToInstall {
+		version := versionsToInstall[i]
 		script, status := r.GetPackageMigrationScript(pkgName, &version)
 		if status.Err() {
 			return status
@@ -47,7 +53,7 @@ func (r *SysRepository) MigratePackage(pkgName string, toVersion *sys_domain.Ver
 		if err != nil {
 			return *core.InternalError("Could not execute migration script for package " + pkgName + " version " + version.String() + ": " + err.Error())
 		} else {
-			log.Success("Migrated package " + pkgName + " to version " + version.String())
+			log.Success("Migrated package " + pkgName + " from " + fromVersion.String() + " to " + version.String())
 		}
 	}
 

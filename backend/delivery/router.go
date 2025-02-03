@@ -19,14 +19,22 @@ func SetupRouter(services *services.Services) {
 	mainRouter.RedirectTrailingSlash = true
 
 	api.RegisterRoutes(mainRouter, services)
-	mainRouter.NoRoute(handleFrontend())
+
+	if sys_domain.ProgramVersion != "dev" {
+		mainRouter.Static("/assets", "../frontend/assets")
+		mainRouter.StaticFile("/favicon.ico", "../frontend/favicon.ico")
+		mainRouter.StaticFile("/index.html", "../frontend/index.html")
+		mainRouter.StaticFile("/", "../frontend/index.html")
+	} else {
+		mainRouter.Use(proxyHandler("http://localhost:5173"))
+	}
 
 	if sys_domain.ProgramVersion == "dev" {
 		log.Info("Development mode")
 		mainRouter.Use(gin.Logger())
 		mainRouter.Use(gin.Recovery())
 		go func() {
-			err := mainRouter.Run(":8080")
+			err := mainRouter.Run(":8081")
 			if err != nil {
 				panic("failed to start dev server: " + err.Error())
 			}
@@ -55,17 +63,6 @@ func SetupRouter(services *services.Services) {
 		}()
 
 		waitGroup.Wait()
-	}
-}
-
-func handleFrontend() gin.HandlerFunc {
-	if sys_domain.ProgramVersion != "dev" {
-		return func(c *gin.Context) {
-			urlPath := c.Request.URL.Path
-			c.File("/home/testd9t/frontend" + urlPath)
-		}
-	} else {
-		return proxyHandler("http://localhost:5173")
 	}
 }
 
