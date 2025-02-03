@@ -20,17 +20,28 @@ while IFS='=' read -r key value; do
   fi
 done < "$SOURCE_ENV"
 
+declare -A merged_vars
 while IFS='=' read -r key value; do
   if [[ -n "$key" && "$key" != "#"* ]]; then
     if [[ -n "${env_vars[$key]}" ]]; then
-      echo "$key=${env_vars[$key]}"
+      merged_vars["$key"]="${env_vars[$key]}"
     else
-      echo "$key=$value"
+      merged_vars["$key"]="$value"  
     fi
-  else
-    echo "$key"
   fi
-done < "$TARGET_ENV" > "${TARGET_ENV}.merged"
+done < "$TARGET_ENV"
+
+for key in "${!env_vars[@]}"; do
+  if [[ -z "${merged_vars[$key]}" ]]; then
+    merged_vars["$key"]="${env_vars[$key]}"
+  fi
+done
+
+{
+  for key in "${!merged_vars[@]}"; do
+    echo "$key=${merged_vars[$key]}"
+  done
+} > "${TARGET_ENV}.merged"
 
 mv "${TARGET_ENV}.merged" "$SOURCE_ENV"
 
