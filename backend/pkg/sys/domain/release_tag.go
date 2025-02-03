@@ -2,8 +2,10 @@ package sys_domain
 
 import (
 	"errors"
+	"os"
 
 	"github.com/DigiConvent/testd9t/core/file_repo"
+	"github.com/DigiConvent/testd9t/core/log"
 )
 
 type ReleaseTag struct {
@@ -31,6 +33,10 @@ func (tag *ReleaseTag) MigrationURL(name string) string {
 }
 
 func (tag *ReleaseTag) DownloadAsset(name, path string) error {
+	err := os.Remove(path)
+	if err != nil && !os.IsNotExist(err) {
+		log.Warning("Might not overwrite file " + path)
+	}
 	url := tag.AssetURL(name)
 	if url == "" {
 		return errors.New("Asset not found: " + name)

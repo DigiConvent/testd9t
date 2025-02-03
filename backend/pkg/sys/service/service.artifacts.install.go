@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path"
 	"strings"
 
 	"github.com/DigiConvent/testd9t/core"
@@ -40,15 +41,15 @@ func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
 	for _, f := range readClose.File {
 		name, _ := strings.CutPrefix(f.Name, "frontend/dist/")
 		if f.FileInfo().IsDir() {
-			err := os.MkdirAll(homeFolder+"frontend/"+name, os.ModePerm)
+			err := os.MkdirAll(path.Join(homeFolder, "frontend", name), os.ModePerm)
 			if err != nil {
 				return core.InternalError("Error creating directory:" + err.Error())
 			}
 			continue
 		}
-		reader, _ := f.OpenRaw()
+		reader, _ := f.Open()
 
-		file, err := os.Create(homeFolder + "frontend/" + name)
+		file, err := os.Create(path.Join(homeFolder, "frontend", name))
 		if err != nil {
 			return core.InternalError("Error creating file " + file.Name() + err.Error())
 		}
