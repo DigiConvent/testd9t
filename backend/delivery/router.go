@@ -21,10 +21,10 @@ func SetupRouter(services *services.Services) {
 	api.RegisterRoutes(mainRouter, services)
 
 	if sys_domain.ProgramVersion != "dev" {
-		mainRouter.Static("/assets", "../frontend/assets")
-		mainRouter.StaticFile("/favicon.ico", "../frontend/favicon.ico")
-		mainRouter.StaticFile("/index.html", "../frontend/index.html")
-		mainRouter.StaticFile("/", "../frontend/index.html")
+		mainRouter.Static("/assets", "/home/testd9t/frontend/assets")
+		mainRouter.StaticFile("/favicon.ico", "/home/testd9t/frontend/favicon.ico")
+		mainRouter.StaticFile("/index.html", "/home/testd9t/frontend/index.html")
+		mainRouter.StaticFile("/", "/home/testd9t/frontend/index.html")
 	} else {
 		mainRouter.Use(proxyHandler("http://localhost:5173"))
 	}
