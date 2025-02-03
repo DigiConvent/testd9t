@@ -69,7 +69,7 @@ func handleFrontend() gin.HandlerFunc {
 			} else {
 				path = "/index.html"
 			}
-			c.File("frontend/" + path)
+			c.File("/home/testd9t/frontend/" + path)
 		}
 	} else {
 		return proxyHandler("http://localhost:5173")
