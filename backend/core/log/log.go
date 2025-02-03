@@ -30,38 +30,20 @@ type Logger struct {
 // 2 - info
 // 3 - success
 
-var logger = &Logger{}
-
-func SetLogLevel(level int) {
-	if level < 0 {
-		level = 0
-	}
-	if level > 3 {
-		level = 3
-	}
-	logger.Level = level
-}
-
 func Error(msg string) {
 	fmt.Println(white + getTime() + ": " + red + msg + reset)
 }
 
 func Warning(msg string) {
-	if logger.Level >= 1 {
-		fmt.Println(white + getTime() + ": " + yellow + msg + reset)
-	}
+	fmt.Println(white + getTime() + ": " + yellow + msg + reset)
 }
 
 func Info(msg string) {
-	if logger.Level >= 2 {
-		fmt.Println(white + getTime() + ": " + cyan + msg + reset)
-	}
+	fmt.Println(white + getTime() + ": " + cyan + msg + reset)
 }
 
 func Success(msg string) {
-	if logger.Level >= 3 {
-		fmt.Println(white + getTime() + ": " + green + msg + reset)
-	}
+	fmt.Println(white + getTime() + ": " + green + msg + reset)
 }
 
 func getTime() string {
