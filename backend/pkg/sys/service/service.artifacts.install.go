@@ -47,7 +47,7 @@ func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
 		}
 		reader, _ := f.OpenRaw()
 
-		file, err := os.Create("/tmp/testd9t/frontend/" + name)
+		file, err := os.Create("/home/testd9t/frontend/" + name)
 		if err != nil {
 			return core.InternalError("Error creating file " + file.Name() + err.Error())
 		}
