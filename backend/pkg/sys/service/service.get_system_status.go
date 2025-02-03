@@ -1,6 +1,8 @@
 package sys_service
 
 import (
+	"os/exec"
+	"strconv"
 	"syscall"
 
 	"github.com/DigiConvent/testd9t/core"
@@ -31,10 +33,17 @@ func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) 
 	total := stat.Blocks * uint64(stat.Bsize)
 	free := stat.Bfree * uint64(stat.Bsize)
 
+	cmd := exec.Command("du", "-sb", "/home/testd9t/")
+	out, _ := cmd.Output()
+
+	outString := string(out)
+
+	outBytes, _ := strconv.Atoi(outString)
+
 	return &sys_domain.SystemStatus{
 		TotalSpace:      total,
 		FreeSpace:       free,
-		DataSpace:       testd9tStat.Blocks * uint64(testd9tStat.Bsize),
+		DataSpace:       uint64(outBytes),
 		ProgramVersion:  *programVersion,
 		DatabaseVersion: *databaseVersion,
 		BuiltAt:         sys_domain.CompiledAt,

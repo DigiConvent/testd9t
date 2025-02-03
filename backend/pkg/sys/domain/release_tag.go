@@ -15,7 +15,7 @@ type ReleaseTag struct {
 func (tag *ReleaseTag) AssetURL(name string) string {
 	for _, fileName := range tag.Assets {
 		if fileName == name {
-			return "https://raw.githubusercontent.com/" + file_repo.GHUser + "/" + file_repo.GHRepo + "/releases/download/" + tag.Tag + "/" + name
+			return "https://github.com/" + file_repo.GHUser + "/" + file_repo.GHRepo + "/releases/download/" + tag.Tag + "/" + name
 		}
 	}
 	return ""
@@ -24,7 +24,7 @@ func (tag *ReleaseTag) AssetURL(name string) string {
 func (tag *ReleaseTag) MigrationURL(name string) string {
 	for _, fileName := range tag.Migrations {
 		if fileName == name {
-			return "https://raw.githubusercontent.com/" + file_repo.GHUser + "/" + file_repo.GHRepo + "/refs/tags/" + tag.Tag + "/data/migrations/" + tag.Tag + "/" + name
+			return "https://github.com/" + file_repo.GHUser + "/" + file_repo.GHRepo + "/refs/tags/" + tag.Tag + "/data/migrations/" + tag.Tag + "/" + name
 		}
 	}
 	return ""

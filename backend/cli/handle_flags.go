@@ -73,6 +73,8 @@ func HandleFlags(sysService sys_service.SysServiceInterface) {
 	if *installFlag != "" {
 		Install(sysService, installFlag, *forceFlag, *verbose)
 		InstallArtifacts(sys_domain.ProgramVersion, sysService)
+		// delete stuff from the tmp directory
+		os.RemoveAll("/tmp/testd9t/")
 	}
 
 	if *migrateDBFlag {

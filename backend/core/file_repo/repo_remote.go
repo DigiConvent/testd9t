@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/DigiConvent/testd9t/core/log"
 )
 
 const prefix string = "https://raw.githubusercontent.com/DigiConvent/testd9t/refs/heads/main/"
@@ -54,6 +56,7 @@ func (mr *RepoRemote) DownloadAsset(url, filepath string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
+		log.Error("Bad status for " + url + ": " + resp.Status)
 		return fmt.Errorf("bad status: %s", resp.Status)
 	}
 

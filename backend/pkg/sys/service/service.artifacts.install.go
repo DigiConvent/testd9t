@@ -18,14 +18,14 @@ func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
 	homeFolder := "/home/testd9t"
 	err = tag.DownloadAsset("main", homeFolder+"/backend/main")
 	if err != nil {
-		fmt.Println("Error downloading new version:", tag.Tag)
+		log.Error("Error downloading new version:" + tag.Tag)
 		log.Error(err.Error())
 		os.Exit(1)
 	}
 
 	err = tag.DownloadAsset("frontend.zip", "/tmp/frontend.zip")
 	if err != nil {
-		fmt.Println("Error downloading new version:", tag.Tag)
+		log.Error("Error downloading new version:" + tag.Tag)
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
