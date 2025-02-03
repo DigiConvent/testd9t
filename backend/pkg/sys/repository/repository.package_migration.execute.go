@@ -7,7 +7,7 @@ import (
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
-func (r *SysRepository) MigratePackage(pkgName string, toVersion sys_domain.Version) core.Status {
+func (r *SysRepository) MigratePackage(pkgName string, toVersion *sys_domain.Version) core.Status {
 	pkgs, _ := r.GetPackages()
 	fromVersion := sys_domain.Version{Major: -1, Minor: -1, Patch: -1}
 	for i := range pkgs {
@@ -36,7 +36,7 @@ func (r *SysRepository) MigratePackage(pkgName string, toVersion sys_domain.Vers
 			continue
 		}
 
-		script, status := r.GetPackageMigrationScript(pkgName, version)
+		script, status := r.GetPackageMigrationScript(pkgName, &version)
 		if status.Err() {
 			return status
 		}

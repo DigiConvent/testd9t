@@ -23,7 +23,7 @@ func (r *SysRepository) IsInitialised() bool {
 func (r *SysRepository) InitDatabase() core.Status {
 	var script string
 
-	script, status := r.GetPackageMigrationScript("sys", sys_domain.Version{Major: 0, Minor: 0, Patch: 0})
+	script, status := r.GetPackageMigrationScript("sys", &sys_domain.Version{Major: 0, Minor: 0, Patch: 0})
 
 	if status.Err() {
 		return status

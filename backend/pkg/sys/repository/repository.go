@@ -15,13 +15,15 @@ type SysRepositoryInterface interface {
 	ClaimAdmin(telegramId string) core.Status
 
 	GetConfiguration() (*sys_domain.Configuration, core.Status)
-	InitDatabase() core.Status
+
 	IsInitialised() bool
+	InitDatabase() core.Status
+	MigrateDatabase(toVersion *sys_domain.Version) core.Status
 
 	GetPackages() ([]sys_domain.Package, core.Status)
 	GetPackageVersions(pkgName string) ([]sys_domain.Version, core.Status)
-	GetPackageMigrationScript(pkgName string, fromVersion sys_domain.Version) (string, core.Status)
-	MigratePackage(pkgName string, toVersion sys_domain.Version) core.Status
+	GetPackageMigrationScript(pkgName string, fromVersion *sys_domain.Version) (string, core.Status)
+	MigratePackage(pkgName string, toVersion *sys_domain.Version) core.Status
 
 	ListReleaseTags() ([]sys_domain.ReleaseTag, *core.Status)
 }

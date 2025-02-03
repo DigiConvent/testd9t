@@ -14,7 +14,9 @@ type SysServiceInterface interface {
 	GetConfiguration() (*sys_domain.Configuration, *core.Status)
 	GetPackages() (map[string]sys_domain.Package, *core.Status)
 	GetPackageVersions(pkgName string) ([]sys_domain.Version, *core.Status)
-	MigratePackage(pkgName string, toVersion sys_domain.Version) *core.Status
+
+	MigrateDatabase(toVersion *sys_domain.Version) *core.Status
+	MigratePackage(pkgName string, toVersion *sys_domain.Version) *core.Status
 
 	ListFlavours() ([]string, *core.Status)
 
@@ -24,6 +26,12 @@ type SysServiceInterface interface {
 
 type SysService struct {
 	Repository sys_repository.SysRepositoryInterface
+}
+
+func (s *SysService) MigrateDatabase(toVersion *sys_domain.Version) *core.Status {
+	status := s.Repository.MigrateDatabase(toVersion)
+
+	return &status
 }
 
 func NewSysService(repo sys_repository.SysRepositoryInterface) SysServiceInterface {

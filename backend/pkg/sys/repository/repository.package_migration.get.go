@@ -10,7 +10,7 @@ import (
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
-func (r *SysRepository) GetPackageMigrationScript(pkgName string, getVersion sys_domain.Version) (string, core.Status) {
+func (r *SysRepository) GetPackageMigrationScript(pkgName string, getVersion *sys_domain.Version) (string, core.Status) {
 	var script string
 	if sys_domain.ProgramVersion == "dev" {
 		projectPath := sys_domain.DevPath()
