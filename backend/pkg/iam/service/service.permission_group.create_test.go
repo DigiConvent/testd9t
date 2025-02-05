@@ -1,23 +1,23 @@
 package iam_service_test
 
 import (
-	"fmt"
 	"testing"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
 func TestCreatePermissionGroup(t *testing.T) {
-	fmt.Println("TestCreatePermissionGroup")
 	testService := GetTestIAMService("iam")
 
-	res, status := testService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
-		Name:        "PermissionGroup",
+	testPermissionGroup := &iam_domain.PermissionGroupWrite{
+		Name:        "PermissionGroupCreate",
 		Abbr:        "PG",
 		Description: "test",
 		IsGroup:     true,
 		IsNode:      false,
-	})
+	}
+
+	res, status := testService.CreatePermissionGroup(testPermissionGroup)
 
 	if status.Err() {
 		t.Fatal(status.Message)
@@ -26,6 +26,4 @@ func TestCreatePermissionGroup(t *testing.T) {
 	if res == nil {
 		t.Fatal("Expected a result")
 	}
-
-	fmt.Println(res)
 }

@@ -31,9 +31,12 @@ type IAMRepositoryInterface interface {
 	AddUserStatusToUser(arg *iam_domain.AddUserStatusToUser) core.Status
 	ListUserStatusesFromUser(id *uuid.UUID) ([]*iam_domain.UserHasStatusRead, core.Status)
 
+	AddUserToPermissionGroup(permissionGroup, userId *uuid.UUID) core.Status
 	CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite) (*uuid.UUID, core.Status)
-	GetPermissionGroup(arg *uuid.UUID) (*iam_domain.PermissionGroupProfile, core.Status)
-	ListPermissionGroups() ([]*iam_domain.PermissionGroupRead, core.Status)
+	GetPermissionGroup(arg *uuid.UUID) (*iam_domain.PermissionGroupRead, core.Status)
+	GetPermissionGroupPermissions(arg *uuid.UUID) ([]*iam_domain.PermissionFacade, core.Status)
+	GetPermissionGroupPermissionGroups(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)
+	ListPermissionGroups() ([]*iam_domain.PermissionGroupFacade, core.Status)
 	UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.PermissionGroupWrite) core.Status
 	DeletePermissionGroup(arg *uuid.UUID) core.Status
 	SetParentPermissionGroup(arg *iam_domain.PermissionGroupSetParent) core.Status

@@ -6,14 +6,11 @@ import (
 )
 
 func (r *IAMRepository) AddUserStatusToUser(d *iam_domain.AddUserStatusToUser) core.Status {
-	result, err := r.DB.Exec(`INSERT INTO user_became_status ("user", status, date, description) VALUES (?, ?, ?, ?)`, d.UserID, d.StatusID, d.When, d.Description)
+	_, err := r.DB.Exec(`insert into user_became_status ("user", status, start, description) values (?, ?, ?, ?)`, d.UserID, d.StatusID, d.When, d.Description)
+
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}
-	lastInsertId, _ := result.LastInsertId()
 
-	if lastInsertId == 0 {
-		return *core.InternalError("Failed to add user status")
-	}
 	return *core.StatusSuccess()
 }

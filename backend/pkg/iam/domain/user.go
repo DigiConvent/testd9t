@@ -27,9 +27,11 @@ type UserSetEnabled struct {
 }
 
 type UserFacade struct {
-	ID      uuid.UUID `json:"id"`
-	Name    string    `json:"name"`
-	Implied bool      `json:"implied"`
+	ID         uuid.UUID `json:"id"`
+	Name       string    `json:"name"`
+	Implied    bool      `json:"implied"`
+	StatusID   uuid.UUID `json:"status_id"`
+	StatusName string    `json:"status_name"`
 }
 
 type UserProfile struct {

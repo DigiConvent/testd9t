@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *IAMService) ReadUser(id *uuid.UUID) (*iam_domain.UserProfile, *core.Status) {
+func (s *IAMService) GetUser(id *uuid.UUID) (*iam_domain.UserRead, *core.Status) {
 	if id == nil {
 		return nil, &core.Status{Code: 422, Message: "ID is required"}
 	}
@@ -16,25 +16,5 @@ func (s *IAMService) ReadUser(id *uuid.UUID) (*iam_domain.UserProfile, *core.Sta
 		return nil, &status
 	}
 
-	userStatuses, status := s.IAMRepository.ListUserStatusesFromUser(id)
-	if status.Err() {
-		return nil, &status
-	}
-
-	userPermissions, status := s.IAMRepository.ListUserPermissions(id)
-	if status.Err() {
-		return nil, &status
-	}
-
-	userGroups, status := s.IAMRepository.ListUserGroups(id)
-	if status.Err() {
-		return nil, &status
-	}
-
-	return &iam_domain.UserProfile{
-		User:        userRead,
-		UserStatus:  userStatuses,
-		Groups:      userGroups,
-		Permissions: userPermissions,
-	}, core.StatusSuccess()
+	return userRead, core.StatusSuccess()
 }

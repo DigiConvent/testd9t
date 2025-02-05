@@ -21,7 +21,21 @@ func CloseAllDatabases() {
 }
 
 func NewTestSqliteDB(dbName string) DatabaseInterface {
-	return SqliteConnection(dbName, true)
+	if databases[dbName] != nil {
+		databases[dbName].Close()
+		delete(databases, dbName)
+	}
+	connection := SqliteConnection(dbName, true)
+
+	if connection.pkgDir() != "" {
+		err := connection.MigratePackage()
+		if err != nil {
+			connection.DeleteDatabase()
+			panic(err)
+		}
+	}
+
+	return connection
 }
 
 func NewSqliteDB(dbName string) DatabaseInterface {
@@ -85,63 +99,90 @@ func ListPackages() []string {
 	return packages
 }
 
-func packagePath() string {
+func packageName() string {
 	thisPath, _ := os.Getwd()
-	segments := strings.Split(thisPath, "/pkg/")
-	packagePath := segments[0] + "/pkg"
+	segments := strings.Split(thisPath, "/testd9t/backend/pkg/")
+	if len(segments) < 2 {
+		return ""
+	}
 	packageName := strings.Split(segments[1], "/")[0]
-	dbPath := path.Join(packagePath, packageName)
-	return dbPath
+	return packageName
 }
 
-func (s *SqliteDatabase) MigratePackage() {
-	dbPath := path.Join(packagePath(), "db")
+func (s *SqliteDatabase) pkgDir() string {
+	// project dir
+	workingDir, _ := os.Getwd()
+	segments := strings.Split(workingDir, "/testd9t/")
+	if len(segments) < 2 {
+		return ""
+	}
+	return path.Join(segments[0], "testd9t", "backend", "pkg", s.name)
+}
 
-	dir, err := os.ReadDir(dbPath)
+func (s *SqliteDatabase) MigratePackage() error {
+	pkgName := packageName()
+	if pkgName == "" {
+		return nil
+	}
+	dbPath := path.Join(s.pkgDir(), "db")
+
+	versions, err := os.ReadDir(dbPath)
 
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	for _, version := range dir {
+	for _, version := range versions {
 		if version.IsDir() {
 			migrations, err := os.ReadDir(path.Join(dbPath, version.Name()))
 
 			if err != nil {
-				panic(err)
+				return err
 			}
 
 			for _, migration := range migrations {
 				sql, err := os.ReadFile(path.Join(dbPath, version.Name(), migration.Name()))
 				if err != nil {
-					panic(err)
+					return err
 				}
 
 				result, err := s.DB.Exec(string(sql))
 
 				if err != nil {
-					panic(string(sql) + err.Error())
+					log.Error("❌ " + s.name + ":" + migration.Name())
+					return err
 				}
 
 				if result == nil {
-					panic("Expected a result")
+					log.Error("Migration did not return a result: " + migration.Name() + " on database " + s.name)
+					return nil
 				}
 			}
 		}
 	}
+
+	return nil
+}
+
+func (s *SqliteDatabase) Dir() string {
+	return path.Join(DatabasePath, s.name)
 }
 
 func (s *SqliteDatabase) DeleteDatabase() {
 	s.DB.Close()
-	dbPath := path.Join(DatabasePath, s.name)
 	var err error
 	if s.test {
-		err = os.Remove(path.Join("/tmp", s.name+".db"))
+		err = os.RemoveAll(s.Dir())
 	} else {
-		err = os.Remove(dbPath)
+		err = os.Remove(s.Dir())
 	}
 	if err != nil {
+		log.Error("Could not delete database: " + s.Dir())
 		panic(err)
+	}
+
+	if _, err := os.Stat(s.Dir()); err == nil {
+		log.Error("Database still exists: " + s.Dir())
 	}
 }
 

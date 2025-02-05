@@ -1,4 +1,4 @@
-create table if not exists user_status (
+create table user_status (
   id uuid primary key not null,
   name varchar not null unique,
   abbr varchar not null unique,

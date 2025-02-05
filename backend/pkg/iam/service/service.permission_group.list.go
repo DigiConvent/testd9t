@@ -5,10 +5,10 @@ import (
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
-func (s *IAMService) ListPermissionGroups() ([]*iam_domain.PermissionGroupRead, *core.Status) {
+func (s *IAMService) ListPermissionGroups() ([]*iam_domain.PermissionGroupFacade, *core.Status) {
 	permissionGroups, status := s.IAMRepository.ListPermissionGroups()
 	if status.Err() {
 		return nil, &status
 	}
-	return permissionGroups, nil
+	return permissionGroups, core.StatusSuccess()
 }

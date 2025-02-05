@@ -1,5 +1,5 @@
 -- backend/pkg/sys/db/0.0.0/00_create_versions_table.sql 
-create table if not exists versions (
+create table versions (
     major integer not null,
     minor integer not null,
     patch integer not null,
@@ -8,7 +8,7 @@ create table if not exists versions (
 );
 
 -- backend/pkg/sys/db/0.0.0/01_create_packages_table.sql 
-create table if not exists packages (
+create table packages (
     name varchar not null primary key,
     major integer not null,
     minor integer not null,
@@ -16,7 +16,7 @@ create table if not exists packages (
 );
 
 -- backend/pkg/sys/db/0.0.0/02_create_configuration_table.sql 
-create table if not exists configurations (
+create table configurations (
     telegram_bot_token text default '',
     domain text default ''
 );

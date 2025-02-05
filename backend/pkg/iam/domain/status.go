@@ -43,6 +43,6 @@ type UserHasStatusRead struct {
 	ID          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
 	Abbr        string    `json:"abbr"`
-	Date        time.Time `json:"date"`
+	Start       time.Time `json:"start"`
 	Description string    `json:"description"`
 }

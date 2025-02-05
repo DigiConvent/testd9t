@@ -7,13 +7,13 @@ import (
 )
 
 func (r *IAMRepository) CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite) (*uuid.UUID, core.Status) {
-	var id string
-	row := r.DB.QueryRow(`INSERT INTO permission_groups (name, abbr, description, is_group, is_node, parent) VALUES (?, ?, ?, ?, ?, ?) RETURNING id`, arg.Name, arg.Abbr, arg.Description, arg.IsGroup, arg.IsNode, arg.Parent)
-	err := row.Scan(&id)
+	id, _ := uuid.NewV7()
+
+	_, err := r.DB.Exec(`INSERT INTO permission_groups (id, name, abbr, description, is_group, is_node, parent) VALUES (?, ?, ?, ?, ?, ?, ?)`, id, arg.Name, arg.Abbr, arg.Description, arg.IsGroup, arg.IsNode, arg.Parent)
+
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}
 
-	uid, _ := uuid.Parse(id)
-	return &uid, *core.StatusCreated()
+	return &id, *core.StatusCreated()
 }

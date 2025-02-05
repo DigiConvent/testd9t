@@ -1,4 +1,4 @@
-create table if not exists versions (
+create table versions (
     major integer not null,
     minor integer not null,
     patch integer not null,

@@ -13,7 +13,7 @@ func (r *IAMRepository) ListUserStatusesFromUser(id *uuid.UUID) ([]*iam_domain.U
 		s.name,
 		s.abbr,
 		ubs.description,
-		ubs.date
+		ubs.start
 	FROM 
 		user_became_status ubs
 	JOIN user_status s ON ubs.status = s.id
@@ -33,7 +33,7 @@ func (r *IAMRepository) ListUserStatusesFromUser(id *uuid.UUID) ([]*iam_domain.U
 			&userStatus.Name,
 			&userStatus.Abbr,
 			&userStatus.Description,
-			&userStatus.Date,
+			&userStatus.Start,
 		)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())

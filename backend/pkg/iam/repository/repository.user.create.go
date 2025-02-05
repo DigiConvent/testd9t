@@ -1,7 +1,6 @@
 package iam_repository
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/DigiConvent/testd9t/core"
@@ -11,7 +10,6 @@ import (
 
 func (r *IAMRepository) CreateUser(user *iam_domain.UserWrite) (*uuid.UUID, core.Status) {
 	uid, err := uuid.NewV7()
-	fmt.Println(uid)
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}

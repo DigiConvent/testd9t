@@ -1,4 +1,4 @@
-create table if not exists configurations (
+create table configurations (
     telegram_bot_token text default '',
     domain text default ''
 );

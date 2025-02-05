@@ -1,5 +1,5 @@
 -- backend/pkg/iam/db/0.0.0/00_create_user_table.sql 
-create table if not exists users (
+create table users (
   id uuid primary key not null,
   email varchar unique default '',
   password varchar default '',
@@ -14,7 +14,7 @@ create table if not exists users (
 );
 
 -- backend/pkg/iam/db/0.0.0/01_create_user_status_table.sql 
-create table if not exists user_status (
+create table user_status (
   id uuid primary key not null,
   name varchar not null unique,
   abbr varchar not null unique,
@@ -23,7 +23,7 @@ create table if not exists user_status (
 );
 
 -- backend/pkg/iam/db/0.0.0/02_create_user_became_status_table.sql 
-create table if not exists user_became_status (
+create table user_became_status (
   "user" uuid not null references users(id) on delete cascade,
   "status" uuid not null references user_status(id) on delete cascade,
   "date" timestamp not null,
@@ -34,14 +34,14 @@ create table if not exists user_became_status (
 
 -- backend/pkg/iam/db/0.0.0/03_create_user_facades_view.sql 
 create view user_facades as
-select distinct u.id, u.id, concat(us.abbr, ' ', u.last_name) as name, ubs.date
+select distinct u.id, u.id, concat(us.abbr, ' ', u.last_name) as name, ubs.start
 from users u
 left join user_became_status ubs on u.id = ubs.user
 left join user_status us on us.id = ubs.status
-order by u.id, ubs.date desc;
+order by u.id, ubs.start desc;
 
 -- backend/pkg/iam/db/0.0.0/04_create_permissions_table.sql 
-create table if not exists permissions (
+create table permissions (
   id uuid primary key not null,
   name varchar unique not null,
   description varchar default '',
@@ -51,7 +51,7 @@ create table if not exists permissions (
 );
 
 -- backend/pkg/iam/db/0.0.0/05_create_permission_groups_table.sql 
-create table if not exists permission_groups (
+create table permission_groups (
   id uuid primary key not null,
   name varchar unique not null,
   abbr varchar default '',
@@ -64,14 +64,14 @@ create table if not exists permission_groups (
 );
 
 -- backend/pkg/iam/db/0.0.0/06_create_permission_group_has_permission_table.sql 
-create table if not exists permission_group_has_permission (
+create table permission_group_has_permission (
   permission_group uuid not null references permission_groups(id) on delete cascade,
   permission uuid not null references permissions(id) on delete cascade,
   primary key (permission_group, permission)
 );
 
 -- backend/pkg/iam/db/0.0.0/07_create_permission_group_has_user_table.sql 
-create table if not exists permission_group_has_user (
+create table permission_group_has_user (
   permission_group uuid not null references permission_groups(id) on delete cascade,
   "user" uuid not null references users(id) on delete cascade,
   "start" timestamp not null default CURRENT_TIMESTAMP,

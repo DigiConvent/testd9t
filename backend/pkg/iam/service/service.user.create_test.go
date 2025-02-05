@@ -1,7 +1,6 @@
 package iam_service_test
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -16,7 +15,6 @@ var testUser = &iam_domain.UserWrite{
 }
 
 func TestCreateUser(t *testing.T) {
-	fmt.Println("TestCreateUser")
 	testService := GetTestIAMService("iam")
 
 	res, status := testService.CreateUser(testUser)
@@ -28,6 +26,4 @@ func TestCreateUser(t *testing.T) {
 	if res == nil {
 		t.Fatal("Expected a result")
 	}
-
-	t.Log(res)
 }

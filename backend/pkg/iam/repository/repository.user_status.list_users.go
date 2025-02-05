@@ -7,7 +7,12 @@ import (
 )
 
 func (r *IAMRepository) ListUserStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserFacade, core.Status) {
-	rows, err := r.DB.Query("SELECT u.id, u.name FROM user_became_status ubs JOIN user_facades u ON ubs.user = u.id WHERE ubs.status = ? and ubs.active = true", arg.String())
+	rows, err := r.DB.Query(`select 
+	u.id, 
+	u.name 
+	from user_became_status ubs
+	join user_facades u on ubs.user = u.id 
+	where ubs.status = ?`, arg.String())
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}

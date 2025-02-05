@@ -8,12 +8,18 @@ import (
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 )
 
-func TestSysService(t *testing.T) {
-	t.Skipped()
+var testDB db.DatabaseInterface
+
+func GetTestSysService(dbName string) sys_service.SysServiceInterface {
+	if testDB == nil {
+		testDB = db.NewTestSqliteDB(dbName)
+	}
+	repo := sys_repository.NewSysRepository(testDB)
+	return sys_service.NewSysService(repo)
 }
 
-func GetTestSysService() sys_service.SysServiceInterface {
-	testDB := db.NewTestSqliteDB("sys")
-	mockRepo := sys_repository.NewSysRepository(testDB)
-	return sys_service.NewSysService(mockRepo)
+func TestMain(m *testing.M) {
+	GetTestSysService("sys")
+	defer testDB.DeleteDatabase()
+	m.Run()
 }

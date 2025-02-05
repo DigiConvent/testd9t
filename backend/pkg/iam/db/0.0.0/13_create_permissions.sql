@@ -1,0 +1,18 @@
+insert into permissions (name) values 
+('iam.user.write'),
+('iam.user.read'),
+('iam.user.list'),
+('iam.user_status.write'),
+('iam.user_status.read'),
+('iam.user_status.list'),
+('iam.user_status.update'),
+('iam.user_status.delete'),
+('iam.user_status.add'),
+('iam.permission.list'),
+('iam.permission_group.write'),
+('iam.permission_group.read'),
+('iam.permission_group.list'),
+('iam.permission_group.delete'),
+('iam.permission_group.add_user'),
+('iam.permission_group.update_permissions'),
+('iam.permission_group.update_users');

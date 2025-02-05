@@ -7,6 +7,9 @@ import (
 )
 
 func (r *IAMRepository) GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.Status) {
+	if id == nil {
+		return nil, *core.UnprocessableContentError("ID is required")
+	}
 	var user = &iam_domain.UserRead{}
 	row := r.DB.QueryRow(`SELECT
 		id,
@@ -27,7 +30,7 @@ func (r *IAMRepository) GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.S
 		&user.DateOfBirth,
 	)
 	if err != nil {
-		return nil, *core.InternalError(err.Error())
+		return nil, *core.NotFoundError("User not found")
 	}
 
 	return user, *core.StatusSuccess()

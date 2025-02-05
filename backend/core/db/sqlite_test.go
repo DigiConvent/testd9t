@@ -1,13 +1,16 @@
 package db_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/DigiConvent/testd9t/core/db"
 )
 
 func TestSqliteDB(t *testing.T) {
-	testDB := db.NewTestSqliteDB("test")
+	os.Stdout = nil
+	testDB := db.NewTestSqliteDB("core.db.sqlite")
+	defer testDB.DeleteDatabase()
 
 	res, err := testDB.Exec("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)")
 	if err != nil {
@@ -49,5 +52,4 @@ func TestSqliteDB(t *testing.T) {
 			t.Fatalf("Expected 'testthis', got '%s'", name)
 		}
 	}
-	testDB.DeleteDatabase()
 }
