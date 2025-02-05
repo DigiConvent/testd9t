@@ -103,7 +103,10 @@ jobs:
 
     - name: Get version tag
       run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-      
+    - name: Test Go code
+      run: |
+        cd backend
+        go test
     - name: Build Go binary
       run: |
         cd backend
