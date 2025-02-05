@@ -26,24 +26,38 @@ create table user_status (
 create table user_became_status (
   "user" uuid not null references users(id) on delete cascade,
   "status" uuid not null references user_status(id) on delete cascade,
-  "date" timestamp not null,
-  active boolean default false,
+  "start" timestamp not null,
   description varchar default '',
   primary key ("user", "status")
 );
 
+create view user_status_interval as
+select 
+    status,
+    start,
+    coalesce(
+        datetime(lead(start) over (partition by user order by start), '-1 second'),
+        null
+    ) as end
+from user_became_status;
+
 -- backend/pkg/iam/db/0.0.0/03_create_user_facades_view.sql 
 create view user_facades as
-select distinct u.id, u.id, concat(us.abbr, ' ', u.last_name) as name, ubs.start
+select 
+    distinct u.id, 
+    u.id, 
+    concat(us.abbr, ' ', u.last_name) as name, 
+    us.id as status_id, 
+    us.name as status_name
 from users u
 left join user_became_status ubs on u.id = ubs.user
 left join user_status us on us.id = ubs.status
+where ubs.start <= current_timestamp
 order by u.id, ubs.start desc;
 
 -- backend/pkg/iam/db/0.0.0/04_create_permissions_table.sql 
 create table permissions (
-  id uuid primary key not null,
-  name varchar unique not null,
+  name varchar primary key not null,
   description varchar default '',
   generated boolean default false,
   archived boolean default false,
@@ -53,7 +67,7 @@ create table permissions (
 -- backend/pkg/iam/db/0.0.0/05_create_permission_groups_table.sql 
 create table permission_groups (
   id uuid primary key not null,
-  name varchar unique not null,
+  name varchar not null,
   abbr varchar default '',
   is_group boolean default false,
   -- is_node describes whether the group is a leaf node in the permission tree and cannot have subgroups
@@ -145,4 +159,122 @@ with recursive relevant_groups as (select
   from permission_groups child
   inner join relevant_groups s on child.parent = s.permission_group)
 select * from relevant_groups;
+
+-- backend/pkg/iam/db/0.0.0/11_create_permission_group_has_permission_groups_view.sql 
+create view permission_group_has_permission_groups as
+with recursive ancestors as (select
+    pg.id,
+    pg.name, 
+    0 as implied,
+    pg.parent,
+    pg.id as child_id
+  from permission_groups pg
+  union all
+  select 
+    parent.id,
+    parent.name,
+    1 as implied,
+    parent.parent,
+    s.child_id
+  from permission_groups parent
+  inner join ancestors s on parent.id = s.parent)
+select * from ancestors;
+
+-- backend/pkg/iam/db/0.0.0/12_create_permission_group_has_permissions_view.sql 
+create view permission_group_has_permissions as
+select p.id, p.name, pghpgs.id as permission_group_id, pghpgs.name as permission_group_name
+from permission_group_has_permission_groups pghpgs
+left join permission_group_has_permission pghp on pghpgs.id = pghp.permission_group;
+
+-- backend/pkg/iam/db/0.0.0/13_create_permissions.sql 
+insert into permissions (name) values 
+('iam.user.write'),
+('iam.user.read'),
+('iam.user.list'),
+('iam.user_status.write'),
+('iam.user_status.read'),
+('iam.user_status.list'),
+('iam.user_status.update'),
+('iam.user_status.delete'),
+('iam.user_status.add'),
+('iam.permission.list'),
+('iam.permission_group.write'),
+('iam.permission_group.read'),
+('iam.permission_group.list'),
+('iam.permission_group.delete'),
+('iam.permission_group.add_user'),
+('iam.permission_group.update_permissions'),
+('iam.permission_group.update_users');
+
+-- backend/pkg/iam/db/0.0.0/20_create_triggers_for_user_status.sql 
+create trigger after_insert_user_status
+after insert on user_status
+for each row
+begin
+    insert into permission_groups (id, name, abbr, is_group, is_node, description, generated) values 
+        (new.id, new.name, new.abbr, 1, 1, new.description, 1);
+end;
+
+
+create trigger after_update_user_status
+after update on user_status
+for each row
+begin
+    update permission_groups set name = new.name, abbr = new.abbr, description = new.description where id = old.id;
+end;
+
+
+create trigger after_delete_user_status
+after delete on user_status
+for each row
+begin
+    delete from permission_groups where id = old.id;
+end;
+
+
+-- backend/pkg/iam/db/0.0.0/21_create_triggers_for_user_became_status.sql 
+create trigger after_insert_user_became_status
+after insert on user_became_status
+for each row
+begin
+    insert into permission_group_has_user (permission_group, user, start) values 
+        (new.status, new.user, new.start);
+
+    update permission_group_has_user
+        set "end" = (
+            select "end" 
+            from user_status_interval 
+            where permission_group_has_user.permission_group = user_status_interval.status
+        )
+    where user = new.user and permission_group = new.status;
+end;
+
+create trigger after_update_user_became_status 
+after update on user_became_status
+for each row
+begin 
+    update permission_group_has_user
+        set "end" = (
+            select "end"
+            from user_status_interval
+            where permission_group_has_user.permission_group = user_status_interval.status
+        )
+    where user = new.user and permission_group = new.status;
+end;
+
+create trigger after_delete_user_became_status
+after delete on user_became_status
+for each row
+begin
+    delete from permission_group_has_user
+    where user = old.user and permission_group = old.status;
+    
+    update permission_group_has_user
+        set "end" = (
+            select "end"
+            from user_status_interval
+            where permission_group_has_user.permission_group = user_status_interval.status
+        )
+    where user = old.user and permission_group = old.status;
+end;
 
