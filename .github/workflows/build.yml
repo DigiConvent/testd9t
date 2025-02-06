@@ -106,6 +106,7 @@ jobs:
     - name: Test Go code
       run: |
         cd backend
+        tree *
         go test ./... -v
 
     - name: Build Go binary
