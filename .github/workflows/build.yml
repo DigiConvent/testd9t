@@ -106,6 +106,7 @@ jobs:
     - name: Test Go code
       run: |
         cd backend
+        echo $(pwd)
         tree *
         go test ./... -v
 
