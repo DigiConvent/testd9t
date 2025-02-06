@@ -1,17 +1,19 @@
 package iam_service_test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
-func TestUserHasPermission(t *testing.T) {
+func TestListUserPermissions(t *testing.T) {
+
 	iamService := GetTestIAMService("iam")
 
 	testUser := iam_domain.UserWrite{
-		Email:       "UserHasPermission@test.test",
+		Email:       "UserListPermissions@test.test",
 		FirstName:   "Test",
 		LastName:    "McTest",
 		DateOfBirth: time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
@@ -21,7 +23,7 @@ func TestUserHasPermission(t *testing.T) {
 	permissions, _ := iamService.ListPermissions()
 	// this is the permission group that the user is going to inherit fromt since its status will be a descendant of this permission group
 	permissionGroup := iam_domain.PermissionGroupWrite{
-		Name:        "TestPermissionGroupUserHasPermission",
+		Name:        "TestUserListPermissions",
 		Permissions: []string{permissions[0].Name},
 		Abbr:        "TPG",
 		Description: "Test Permission Group",
@@ -30,8 +32,8 @@ func TestUserHasPermission(t *testing.T) {
 	permissionGroupID, _ := iamService.CreatePermissionGroup(&permissionGroup)
 
 	userStatus := iam_domain.UserStatusWrite{
-		Name:        "TestStatusUserHasPermission",
-		Abbr:        "TS",
+		Name:        "TestUserListPermissions",
+		Abbr:        "TSLP",
 		Description: "Test Status",
 		Archived:    false,
 	}
@@ -49,13 +51,14 @@ func TestUserHasPermission(t *testing.T) {
 		When:        time.Now().Add(-2 * time.Hour),
 	})
 
-	hasPermission := iamService.UserHasPermission(id, permissions[0].Name)
-	if !hasPermission {
-		t.Errorf("User should have permission")
+	userPermissions, _ := iamService.ListUserPermissions(id)
+
+	if len(userPermissions) != 1 {
+		fmt.Println(userPermissions)
+		t.Errorf("User should have 1 permission")
 	}
 
-	hasPermission = iamService.UserHasPermission(id, permissions[1].Name)
-	if hasPermission {
+	if userPermissions[0].Name != permissions[0].Name {
 		t.Errorf("User should have permission")
 	}
 }
