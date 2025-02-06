@@ -112,11 +112,14 @@ func packageName() string {
 func (s *SqliteDatabase) pkgDir() string {
 	// project dir
 	workingDir, _ := os.Getwd()
-	segments := strings.Split(workingDir, "/testd9t/")
+	sep := "/testd9t/testd9t"
+	segments := strings.Split(workingDir, sep)
 	if len(segments) < 2 {
 		return ""
 	}
-	return path.Join(segments[0], "testd9t", "backend", "pkg", s.name)
+
+	dir := path.Join(segments[0], sep, "backend", "pkg", s.name)
+	return dir
 }
 
 func (s *SqliteDatabase) MigratePackage() error {
