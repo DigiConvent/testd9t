@@ -6,7 +6,7 @@ import (
 	uuid "github.com/google/uuid"
 )
 
-func (r *IAMRepository) GetPermissionGroupPermissionGroups(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status) {
+func (r *IAMRepository) ListPermissionGroupPermissionGroups(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status) {
 	var permissionGroups = make([]*iam_domain.PermissionGroupFacade, 0)
 	rows, err := r.DB.Query(`SELECT id, name, parent, implied FROM permission_group_has_permission_groups where child_id = ?`, arg.String())
 

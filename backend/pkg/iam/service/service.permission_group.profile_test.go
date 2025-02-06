@@ -2,7 +2,6 @@ package iam_service_test
 
 import (
 	"testing"
-	"time"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
@@ -10,26 +9,16 @@ import (
 func TestGetPermissionGroupProfile(t *testing.T) {
 	testService := GetTestIAMService("iam")
 
+	permissions, _ := testService.ListPermissions()
+
 	profileId, _ := testService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
 		Name:        "PermissionGroupProfile",
 		Abbr:        "PG",
 		Description: "test",
 		IsGroup:     true,
 		IsNode:      false,
+		Permissions: []string{permissions[0].Name, permissions[1].Name, permissions[2].Name},
 	})
-
-	testUserId, _ := testService.CreateUser(&iam_domain.UserWrite{
-		Email:       "PermissionGroupProfileTest@test.test",
-		FirstName:   "Test",
-		LastName:    "McTest",
-		DateOfBirth: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
-	})
-
-	status := testService.AddUserToPermissionGroup(profileId, testUserId)
-
-	if status.Err() {
-		t.Fatalf("Error: %v", status)
-	}
 
 	permissionGroupProfile, status := testService.GetPermissionGroupProfile(profileId)
 
@@ -63,5 +52,9 @@ func TestGetPermissionGroupProfile(t *testing.T) {
 
 	if permissionGroupProfile.PermissionGroup.ID != *profileId {
 		t.Fatalf("Expected %v, instead got %v", profileId, permissionGroupProfile.PermissionGroup.ID)
+	}
+
+	if len(permissionGroupProfile.Permissions) != 3 {
+		t.Fatalf("Expected 3, instead got %v", len(permissionGroupProfile.Permissions))
 	}
 }

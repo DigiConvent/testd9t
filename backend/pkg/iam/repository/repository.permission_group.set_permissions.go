@@ -1,51 +1,47 @@
 package iam_repository
 
 import (
+	"encoding/json"
+
 	"github.com/DigiConvent/testd9t/core"
 	uuid "github.com/google/uuid"
 )
 
-func (r *IAMRepository) SetPermissionsForPermissionGroup(permissionGroupId *uuid.UUID, permissions []*uuid.UUID) core.Status {
-	result, err := r.DB.Exec(`
-WITH existing_permissions AS (
-    SELECT p.id
-    FROM permissions p
-    JOIN permission_group_has_permission pghp ON p.id = pgp.permission
-    WHERE permission_group = ?
-),
-new_permissions AS (
-    SELECT unnest(?::varchar[]) AS permission
-),
-to_delete AS (
-    SELECT permission
-    FROM existing_permissions
-    EXCEPT
-    SELECT permission
-    FROM new_permissions
-),
-to_add AS (
-    SELECT permission
-    FROM new_permissions
-    EXCEPT
-    SELECT permission
-    FROM existing_permissions
-)
+func (r *IAMRepository) SetPermissionsForPermissionGroup(permissionGroupId *uuid.UUID, permissions []string) core.Status {
+	if permissionGroupId == nil {
+		return *core.UnprocessableContentError("permissionGroupId cannot be nil")
+	}
 
-DELETE FROM permission_group_has_permission
-WHERE permission_group = ? AND permission IN (SELECT permission FROM to_delete);
+	setPermissions, _ := json.Marshal(permissions)
+	pgId := permissionGroupId.String()
+	_, err := r.DB.Exec(`
+with existing_permissions as (select permission from permission_group_has_permission where permission_group = ?),
+new_permissions as (select value as permission from json_each(?)),
 
-INSERT INTO permission_group_has_permission (permission_group, permission)
-SELECT ?, permission
-FROM to_add;`, permissionGroupId.String(), permissions)
+to_delete as (select permission from existing_permissions except select permission from new_permissions),
+to_add as (select permission from new_permissions except select permission from existing_permissions)
+
+delete from permission_group_has_permission
+where permission_group = ? and permission in (select permission from to_delete);`, pgId, string(setPermissions), pgId)
 
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}
 
-	rowsAffected, _ := result.RowsAffected()
+	if len(permissions) > 0 {
+		_, err = r.DB.Exec(`
+        with existing_permissions as (select permission from permission_group_has_permission where permission_group = ?),
+        new_permissions as (select value as permission from json_each(?)),
+        
+        to_delete as (select permission from existing_permissions except select permission from new_permissions),
+        to_add as (select permission from new_permissions except select permission from existing_permissions)
+        
+        insert into permission_group_has_permission (permission_group, permission)
+        select ?, permission from to_add;`, pgId, string(setPermissions), pgId)
 
-	if rowsAffected == 0 {
-		return *core.NotFoundError("Permission group not found")
+		if err != nil {
+			return *core.InternalError(err.Error())
+		}
 	}
 	return *core.StatusSuccess()
 }

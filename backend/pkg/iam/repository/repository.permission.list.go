@@ -7,7 +7,7 @@ import (
 
 func (r *IAMRepository) ListPermissions() ([]*iam_domain.PermissionRead, core.Status) {
 	var permissions []*iam_domain.PermissionRead
-	rows, err := r.DB.Query(`SELECT name, coalesce(description, name), meta FROM permissions`)
+	rows, err := r.DB.Query(`select name, coalesce(description, name), meta from permissions`)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

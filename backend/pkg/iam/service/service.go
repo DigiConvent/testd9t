@@ -10,7 +10,7 @@ import (
 type IAMServiceInterface interface {
 	CreateUser(user *iam_domain.UserWrite) (*uuid.UUID, *core.Status)
 	GetUser(id *uuid.UUID) (*iam_domain.UserRead, *core.Status)
-	ReadUser(id *uuid.UUID) (*iam_domain.UserProfile, *core.Status)
+	GetUserProfile(id *uuid.UUID) (*iam_domain.UserProfile, *core.Status)
 	ListUsers() ([]*iam_domain.UserFacade, *core.Status)
 	UpdateUser(id *uuid.UUID, user *iam_domain.UserWrite) *core.Status
 	LoginTelegramUser(body string) (*uuid.UUID, *core.Status)
@@ -36,7 +36,7 @@ type IAMServiceInterface interface {
 
 	ListPermissions() ([]*iam_domain.PermissionRead, *core.Status)
 	ListUserPermissions(id *uuid.UUID) ([]*iam_domain.PermissionFacade, *core.Status)
-	UserHasPermission(id *uuid.UUID, permission string) (bool, *core.Status)
+	UserHasPermission(id *uuid.UUID, permission string) bool
 }
 
 type IAMService struct {

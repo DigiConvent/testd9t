@@ -7,7 +7,7 @@ import (
 )
 
 func (r *IAMRepository) UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.PermissionGroupWrite) core.Status {
-	result, err := r.DB.Exec(`UPDATE permission_groups SET name = ?, abbr = ?, description = ? WHERE id = ? and generated = false`, arg.Name, arg.Abbr, arg.Description, id)
+	result, err := r.DB.Exec(`update permission_groups set name = ?, abbr = ?, description = ? where id = ? and generated = false`, arg.Name, arg.Abbr, arg.Description, id)
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

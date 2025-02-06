@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *IAMService) ReadUser(id *uuid.UUID) (*iam_domain.UserProfile, *core.Status) {
+func (s *IAMService) GetUserProfile(id *uuid.UUID) (*iam_domain.UserProfile, *core.Status) {
 	if id == nil {
 		return nil, &core.Status{Code: 422, Message: "ID is required"}
 	}

@@ -17,7 +17,7 @@ with recursive relevant_groups as (
 )
 select distinct p.name from relevant_groups rg 
 join permission_group_has_permission pghp on pghp.permission_group = rg.permission_group
-join permissions p on pghp.permission = p.id
+join permissions p on pghp.permission = p.name
 `, id.String())
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

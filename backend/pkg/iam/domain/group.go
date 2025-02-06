@@ -7,13 +7,13 @@ import (
 )
 
 type PermissionGroupWrite struct {
-	Name        string       `json:"name" validate:"required"`
-	Abbr        string       `json:"abbr"`
-	Description string       `json:"description"`
-	Parent      string       `json:"parent"`
-	IsGroup     bool         `json:"is_group"`
-	IsNode      bool         `json:"is_node"`
-	Permissions []*uuid.UUID `json:"permissions"`
+	Name        string   `json:"name" validate:"required"`
+	Abbr        string   `json:"abbr"`
+	Description string   `json:"description"`
+	Parent      string   `json:"parent"`
+	IsGroup     bool     `json:"is_group"`
+	IsNode      bool     `json:"is_node"`
+	Permissions []string `json:"permissions"`
 }
 
 type PermissionGroupSetParent struct {

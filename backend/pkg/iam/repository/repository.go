@@ -34,18 +34,18 @@ type IAMRepositoryInterface interface {
 	AddUserToPermissionGroup(permissionGroup, userId *uuid.UUID) core.Status
 	CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite) (*uuid.UUID, core.Status)
 	GetPermissionGroup(arg *uuid.UUID) (*iam_domain.PermissionGroupRead, core.Status)
-	GetPermissionGroupPermissions(arg *uuid.UUID) ([]*iam_domain.PermissionFacade, core.Status)
-	GetPermissionGroupPermissionGroups(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)
+	ListPermissionGroupPermissions(arg *uuid.UUID) ([]*iam_domain.PermissionFacade, core.Status)
+	ListPermissionGroupPermissionGroups(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)
 	ListPermissionGroups() ([]*iam_domain.PermissionGroupFacade, core.Status)
 	UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.PermissionGroupWrite) core.Status
 	DeletePermissionGroup(arg *uuid.UUID) core.Status
 	SetParentPermissionGroup(arg *iam_domain.PermissionGroupSetParent) core.Status
-	SetPermissionsForPermissionGroup(permissionGroupId *uuid.UUID, permissions []*uuid.UUID) core.Status
+	SetPermissionsForPermissionGroup(permissionGroupId *uuid.UUID, permissions []string) core.Status
 	ListGroupUsers(groupId *uuid.UUID) ([]*iam_domain.UserFacade, core.Status)
 	ListUserGroups(userId *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)
 
 	ListPermissions() ([]*iam_domain.PermissionRead, core.Status)
-	UserHasPermission(userId *uuid.UUID, permission string) (bool, core.Status)
+	UserHasPermission(userId *uuid.UUID, permission string) bool
 }
 
 func NewIAMRepository(db db.DatabaseInterface) IAMRepositoryInterface {

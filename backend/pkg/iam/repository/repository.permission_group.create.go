@@ -9,7 +9,7 @@ import (
 func (r *IAMRepository) CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite) (*uuid.UUID, core.Status) {
 	id, _ := uuid.NewV7()
 
-	_, err := r.DB.Exec(`INSERT INTO permission_groups (id, name, abbr, description, is_group, is_node, parent) VALUES (?, ?, ?, ?, ?, ?, ?)`, id, arg.Name, arg.Abbr, arg.Description, arg.IsGroup, arg.IsNode, arg.Parent)
+	_, err := r.DB.Exec(`insert into permission_groups (id, name, abbr, description, is_group, is_node, parent) values (?, ?, ?, ?, ?, ?, ?)`, id, arg.Name, arg.Abbr, arg.Description, arg.IsGroup, arg.IsNode, arg.Parent)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

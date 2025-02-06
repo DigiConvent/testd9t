@@ -6,7 +6,10 @@ import (
 )
 
 func (r *IAMRepository) DeletePermissionGroup(arg *uuid.UUID) core.Status {
-	res, err := r.DB.Exec(`DELETE FROM permission_groups WHERE id = ? AND "generated" = false`, arg.String())
+	if arg == nil {
+		return *core.UnprocessableContentError("ID is required")
+	}
+	res, err := r.DB.Exec(`delete from permission_groups where id = ? and "generated" = false`, arg.String())
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

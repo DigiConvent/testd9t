@@ -23,27 +23,39 @@ type TestPackage struct {
 	events []TestEvent
 }
 
-func (p TestPackage) GetFailingTests() []TestEvent {
+func (p *TestPackage) GetFailingTests() []TestEvent {
 	var failingTests []TestEvent
 	for _, event := range p.events {
-		if event.Action == "fail" {
+		if strings.Contains(event.Output, "--- FAIL") {
 			failingTests = append(failingTests, event)
 		}
 	}
 	return failingTests
 }
 
-func (p TestPackage) GetPassingTests() []TestEvent {
+func (p *TestPackage) GetPassingTests() []TestEvent {
 	var passingTests []TestEvent
 	for _, event := range p.events {
-		if event.Action == "pass" {
+		if strings.Contains(event.Output, "--- PASS") {
 			passingTests = append(passingTests, event)
 		}
 	}
 	return passingTests
 }
 
-func (p TestPackage) GetSummary(spaces int) string {
+func (p *TestPackage) AddEvent(event TestEvent) bool {
+	for i, e := range p.events {
+		if e.Test == event.Test {
+			p.events[i].Output += event.Output
+			return false
+		}
+	}
+
+	p.events = append(p.events, event)
+	return true
+}
+
+func (p *TestPackage) GetSummary(spaces int) string {
 	if len(p.events) == 0 {
 		return ""
 	}
@@ -58,14 +70,7 @@ func (p TestPackage) GetSummary(spaces int) string {
 	} else {
 		failing = fmt.Sprintf("%s%3d%s", red, len(failingTests), reset)
 	}
-	result += fmt.Sprintf("%s%"+strconv.Itoa(spaces)+"s%s %4s %4s %s\n", bold, p.Name, reset, success, failing, reset)
-
-	if len(failingTests) != 0 {
-		result += "Fix the following cases\n"
-	}
-	for _, event := range failingTests {
-		result += fmt.Sprintf("%s%s%s\n", red, p.Name+":"+event.Test, reset)
-	}
+	result += fmt.Sprintf("%-"+strconv.Itoa(spaces)+"s%s %4s %4s %s\n", p.Name, reset, success, failing, reset)
 
 	result = strings.TrimSuffix(result, "\n")
 
@@ -80,6 +85,7 @@ const (
 )
 
 func TestMain(m *testing.M) {
+	fmt.Println("Running tests")
 	main()
 }
 
@@ -102,21 +108,34 @@ func main() {
 		return
 	}
 
-	packages := make(map[string]TestPackage)
+	packages := make(map[string]*TestPackage)
 
 	scanner := bufio.NewScanner(stdout)
 
 	toIgnore := map[string]bool{"start": true, "run": true, "pass": true, "skip": true}
 
+	count := 0
+	lastCount := "0"
+
+	testDataFile, err := os.ReadFile("test.json")
+	if err != nil {
+		lastCount = "?"
+	} else {
+		lastCount = strings.TrimSpace(string(testDataFile))
+	}
+
+	maxPkgNameLen := 0
 	for scanner.Scan() {
 		var event TestEvent
 		line := scanner.Text()
-		if err := json.Unmarshal([]byte(line), &event); err != nil {
+		err := json.Unmarshal([]byte(line), &event)
+		if err != nil {
 			continue
+		} else {
 		}
 
 		if _, ok := packages[event.Package]; !ok {
-			packages[event.Package] = TestPackage{Name: event.Package}
+			packages[event.Package] = &TestPackage{Name: event.Package}
 		}
 
 		if _, ok := toIgnore[event.Action]; ok {
@@ -131,29 +150,53 @@ func main() {
 			continue
 		}
 
-		events := packages[event.Package].events
-		events = append(events, event)
-		packages[event.Package] = TestPackage{Name: event.Package, events: events}
+		if len(event.Package) > maxPkgNameLen {
+			maxPkgNameLen = len(event.Package)
+		}
+
+		fmt.Printf("\rRunning %d/%s %s", count, lastCount, event.Package)
+		pkg := packages[event.Package]
+		if pkg.AddEvent(event) {
+			count++
+		}
 	}
+	fmt.Printf("\rRan %d/%s tests%s\n", count, lastCount, strings.Repeat(" ", maxPkgNameLen))
 
 	_ = cmd.Wait()
 
-	maxPkgNameLen := 0
-	hasErrors := false
+	totalFailing := 0
+	totalPassing := 0
 
-	for _, pkg := range packages {
-		if len(pkg.events) == 0 {
-			continue
-		}
-		if len(pkg.GetFailingTests()) != 0 {
-			hasErrors = true
-		}
-		if len(pkg.Name) > maxPkgNameLen {
-			maxPkgNameLen = len(pkg.Name)
+	sortedByLength := make([]string, 0, len(packages))
+
+	for pkgName := range packages {
+		sortedByLength = append(sortedByLength, pkgName)
+	}
+	for i := 0; i < len(sortedByLength); i++ {
+		for j := i + 1; j < len(sortedByLength); j++ {
+			if len(packages[sortedByLength[i]].Name) > len(packages[sortedByLength[j]].Name) {
+				sortedByLength[i], sortedByLength[j] = sortedByLength[j], sortedByLength[i]
+			}
 		}
 	}
 
-	for _, pkg := range packages {
+	for i := 0; i < len(sortedByLength); i++ {
+		for j := i + 1; j < len(sortedByLength); j++ {
+			if len(packages[sortedByLength[i]].Name) == len(packages[sortedByLength[j]].Name) {
+				if packages[sortedByLength[i]].Name > packages[sortedByLength[j]].Name {
+					sortedByLength[i], sortedByLength[j] = sortedByLength[j], sortedByLength[i]
+				}
+			}
+		}
+	}
+
+	allFailingTests := make([]TestEvent, 0)
+	for pkgName := range sortedByLength {
+		pkg := packages[sortedByLength[pkgName]]
+		failingTests := pkg.GetFailingTests()
+		allFailingTests = append(allFailingTests, failingTests...)
+		totalFailing += len(failingTests)
+		totalPassing += len(pkg.GetPassingTests())
 		summary := pkg.GetSummary(maxPkgNameLen)
 		if summary == "" {
 			continue
@@ -161,7 +204,28 @@ func main() {
 		fmt.Println(summary)
 	}
 
-	if hasErrors {
+	fmt.Println(strings.Repeat("-", maxPkgNameLen+20))
+	fmt.Printf("%-"+strconv.Itoa(maxPkgNameLen)+"s %s%3d%s %s%3d%s\n", "Total", green, totalPassing, reset, red, totalFailing, reset)
+
+	for _, event := range allFailingTests {
+		cleanOutput := ""
+		segments := strings.Split(event.Output, "\n")
+		for _, segment := range segments {
+			if strings.Contains(segment, "--- FAIL") || strings.Contains(segment, "=== RUN") {
+				continue
+			}
+			cleanOutput += fmt.Sprintf("%s%s%s\n", red, segment, reset)
+		}
+		fmt.Printf("%s%s%s\n", bold, event.Package+":"+event.Test, reset)
+		fmt.Printf("%s%s%s\n", red, cleanOutput, reset)
+	}
+
+	err = os.WriteFile("test.json", []byte(strconv.Itoa(count)), 0644)
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	if totalFailing > 0 {
 		os.Exit(1)
 	}
 	os.Exit(0)
