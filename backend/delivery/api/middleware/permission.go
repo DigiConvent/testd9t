@@ -31,7 +31,7 @@ func permissionMiddleware(iamService iam_service.IAMServiceInterface, permission
 				}
 				permission = strings.Join(segments, ".")
 			}
-			exists, _ := iamService.UserHasPermission(&userId, permission)
+			exists := iamService.UserHasPermission(&userId, permission)
 			if exists {
 				c.Set("permission", permission)
 				c.Next()
@@ -39,7 +39,7 @@ func permissionMiddleware(iamService iam_service.IAMServiceInterface, permission
 			}
 		}
 
-		exists, _ := iamService.UserHasPermission(&userId, "super")
+		exists := iamService.UserHasPermission(&userId, "super")
 		if exists {
 			c.Set("permission", "super")
 			c.Next()
