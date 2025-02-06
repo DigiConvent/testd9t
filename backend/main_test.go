@@ -6,16 +6,37 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 	"strconv"
 	"strings"
 	"testing"
 )
+
+func TestMain(m *testing.M) {
+	fmt.Println("Running tests")
+	result := true
+	result = main() && result
+	for _, missing := range CheckForMissingTests() {
+		fmt.Println("Missing test file for", missing)
+		result = false
+	}
+	if !result {
+		os.Exit(1)
+	} else {
+		os.Exit(0)
+	}
+}
 
 type TestEvent struct {
 	Action  string `json:"Action"`
 	Package string `json:"Package"`
 	Test    string `json:"Test"`
 	Output  string `json:"Output"`
+}
+
+func (e *TestEvent) filename() string {
+	pkgName, _ := strings.CutPrefix(e.Package, "github.com/DigiConvent/testd9t/")
+	return FindTestFile(pkgName, e.Test)
 }
 
 type TestPackage struct {
@@ -84,14 +105,9 @@ const (
 	bold  = "\033[1m"
 )
 
-func TestMain(m *testing.M) {
-	fmt.Println("Running tests")
-	main()
-}
-
-func main() {
+func main() bool {
 	if os.Getenv("TEST_RUNNER") == "1" {
-		return
+		return false
 	}
 
 	os.Setenv("TEST_RUNNER", "1")
@@ -101,11 +117,11 @@ func main() {
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		fmt.Println("Error:", err)
-		return
+		os.Exit(1)
 	}
 	if err := cmd.Start(); err != nil {
 		fmt.Println("Error:", err)
-		return
+		os.Exit(1)
 	}
 
 	packages := make(map[string]*TestPackage)
@@ -207,6 +223,14 @@ func main() {
 	fmt.Println(strings.Repeat("-", maxPkgNameLen+20))
 	fmt.Printf("%-"+strconv.Itoa(maxPkgNameLen)+"s %s%3d%s %s%3d%s\n", "Total", green, totalPassing, reset, red, totalFailing, reset)
 
+	for i := range allFailingTests {
+		for j := i + 1; j < len(allFailingTests); j++ {
+			if len(allFailingTests[i].filename()) > len(allFailingTests[j].filename()) {
+				allFailingTests[i], allFailingTests[j] = allFailingTests[j], allFailingTests[i]
+			}
+		}
+	}
+
 	for _, event := range allFailingTests {
 		cleanOutput := ""
 		segments := strings.Split(event.Output, "\n")
@@ -214,10 +238,16 @@ func main() {
 			if strings.Contains(segment, "--- FAIL") || strings.Contains(segment, "=== RUN") {
 				continue
 			}
+			if segment == "" {
+				continue
+			}
 			cleanOutput += fmt.Sprintf("%s%s%s\n", red, segment, reset)
 		}
-		fmt.Printf("%s%s%s\n", bold, event.Package+":"+event.Test, reset)
-		fmt.Printf("%s%s%s\n", red, cleanOutput, reset)
+
+		fmt.Printf("%s%s%s%s\n", bold, red, event.filename(), reset)
+		if cleanOutput != "" {
+			fmt.Printf("%s'%s'%s\n", red, cleanOutput, reset)
+		}
 	}
 
 	err = os.WriteFile("test.json", []byte(strconv.Itoa(count)), 0644)
@@ -226,7 +256,66 @@ func main() {
 	}
 
 	if totalFailing > 0 {
-		os.Exit(1)
+		return false
 	}
-	os.Exit(0)
+	return true
+}
+
+func CheckForMissingTests() []string {
+	dirPath, _ := os.Getwd()
+	packageFolder, _ := os.ReadDir(path.Join(dirPath, "pkg"))
+
+	missingTestFiles := []string{}
+	for _, pkgName := range packageFolder {
+		servicesFolder := path.Join(dirPath, "pkg", pkgName.Name(), "service")
+		serviceFiles, _ := os.ReadDir(servicesFolder)
+		for _, serviceFile := range serviceFiles {
+			if serviceFile.IsDir() {
+				continue
+			}
+			if strings.HasSuffix(serviceFile.Name(), "_test.go") {
+				continue
+			}
+			contents, _ := os.ReadFile(path.Join(servicesFolder, serviceFile.Name()))
+			if strings.HasPrefix(string(contents), "// exempt from testing") {
+				continue
+			}
+
+			filename := strings.TrimSuffix(serviceFile.Name(), ".go")
+			if _, err := os.Stat(path.Join(servicesFolder, filename+"_test.go")); os.IsNotExist(err) {
+				var functionName string
+				for _, line := range strings.Split(string(contents), "\n") {
+					if strings.Contains(line, "func") && strings.Contains(line, "*core.Status") {
+						functionName = strings.Split(line, "Service)")[1]
+						functionName = strings.Split(functionName, "(")[0]
+						functionName = strings.TrimSpace(functionName)
+						break
+					}
+				}
+				os.WriteFile(path.Join(servicesFolder, filename+"_test.go"), []byte("package "+pkgName.Name()+"_service_test\n\nimport \"testing\"\n\nfunc Test"+functionName+"(t *testing.T) {\n\tt.Fail()\n}\n"), 0644)
+				missingTestFiles = append(missingTestFiles, serviceFile.Name())
+			}
+		}
+	}
+
+	return missingTestFiles
+}
+
+// I need another helper function to find the filename of the file that contains a test function
+func FindTestFile(pkgName, functionName string) string {
+	dirPath, _ := os.Getwd()
+	pkgDir := path.Join(dirPath, pkgName)
+	files, _ := os.ReadDir(pkgDir)
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+		if strings.HasSuffix(file.Name(), "_test.go") {
+			contents, _ := os.ReadFile(path.Join(pkgDir, file.Name()))
+			if strings.Contains(string(contents), functionName) {
+				return pkgDir + "/" + file.Name()
+			}
+		}
+	}
+	return "unknown file"
 }

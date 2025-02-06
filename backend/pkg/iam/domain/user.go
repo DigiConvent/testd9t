@@ -40,3 +40,12 @@ type UserProfile struct {
 	Groups      []*PermissionGroupFacade `json:"groups"`
 	Permissions []*PermissionFacade      `json:"permissions"`
 }
+
+type UserFilterSort struct {
+	Filter struct {
+	}
+	Sort struct {
+		Field string
+		Asc   bool
+	}
+}

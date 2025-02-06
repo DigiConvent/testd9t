@@ -2,6 +2,7 @@ package iam_service
 
 import (
 	"github.com/DigiConvent/testd9t/core"
+	"github.com/DigiConvent/testd9t/core/pagination"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	iam_repository "github.com/DigiConvent/testd9t/pkg/iam/repository"
 	"github.com/google/uuid"
@@ -11,14 +12,14 @@ type IAMServiceInterface interface {
 	CreateUser(user *iam_domain.UserWrite) (*uuid.UUID, *core.Status)
 	GetUser(id *uuid.UUID) (*iam_domain.UserRead, *core.Status)
 	GetUserProfile(id *uuid.UUID) (*iam_domain.UserProfile, *core.Status)
-	ListUsers() ([]*iam_domain.UserFacade, *core.Status)
+	ListUsers(fs *iam_domain.UserFilterSort) (*pagination.Page[*iam_domain.UserFacade], *core.Status)
 	UpdateUser(id *uuid.UUID, user *iam_domain.UserWrite) *core.Status
 	LoginTelegramUser(body string) (*uuid.UUID, *core.Status)
 	GetTelegramRegistrationCode(userId *uuid.UUID) (string, *core.Status)
 	RegisterTelegramUser(telegramId int, email, code string) *core.Status
 	SetEnabled(id *uuid.UUID, enabled bool) *core.Status
 
-	ListUserStatuses() ([]*iam_domain.UserStatusRead, *core.Status)
+	ListUserStatuses(fs *iam_domain.UserFilterSort) ([]*iam_domain.UserStatusRead, *core.Status)
 	CreateUserStatus(status *iam_domain.UserStatusWrite) (*uuid.UUID, *core.Status)
 	GetUserStatus(id *uuid.UUID) (*iam_domain.UserStatusProfile, *core.Status)
 	DeleteUserStatus(id *uuid.UUID) *core.Status

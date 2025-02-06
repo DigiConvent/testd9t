@@ -1,3 +1,4 @@
+// exempt from testing
 package sys_service_test
 
 import (
