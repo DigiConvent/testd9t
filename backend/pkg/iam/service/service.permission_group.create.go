@@ -1,10 +1,7 @@
 package iam_service
 
 import (
-	"strings"
-
 	"github.com/DigiConvent/testd9t/core"
-	"github.com/DigiConvent/testd9t/core/log"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
@@ -21,8 +18,6 @@ func (s *IAMService) CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite)
 	if status.Err() && status.Code != 201 {
 		return nil, &status
 	}
-
-	log.Error(strings.Join(arg.Permissions, ","))
 
 	setPermissionsStatus := s.IAMRepository.SetPermissionsForPermissionGroup(id, arg.Permissions)
 

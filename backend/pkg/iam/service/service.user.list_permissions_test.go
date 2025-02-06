@@ -1,7 +1,6 @@
 package iam_service_test
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -54,7 +53,6 @@ func TestListUserPermissions(t *testing.T) {
 	userPermissions, _ := iamService.ListUserPermissions(id)
 
 	if len(userPermissions) != 1 {
-		fmt.Println(userPermissions)
 		t.Errorf("User should have 1 permission")
 	}
 

@@ -48,8 +48,6 @@ func TestGetUser(t *testing.T) {
 
 	if user.DateOfBirth.GoString() != fakeUser.DateOfBirth.GoString() {
 		t.Errorf("DateOfBirth is not equal")
-		t.Log(user.DateOfBirth)
-		t.Log(fakeUser.DateOfBirth)
 	}
 
 	// test fake uuid

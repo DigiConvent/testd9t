@@ -13,6 +13,12 @@ import (
 )
 
 func TestMain(m *testing.M) {
+	for _, arg := range os.Args {
+		if strings.HasSuffix(arg, "testlog.txt") {
+			return
+		}
+	}
+
 	fmt.Println("Running tests")
 	result := true
 	result = main() && result
