@@ -130,7 +130,7 @@ with recursive relevant_groups as (select
     pg.parent
   from permission_group_has_user pghu
   join permission_groups pg on pghu.permission_group = pg.id
-  where pghu.start <= now() and (pghu.end is null or pghu.end >= now())
+  where pghu.start <= datetime('now') and (pghu.end is null or pghu.end >= datetime('now'))
   union all
   select 
     s.user,
@@ -182,9 +182,9 @@ select * from ancestors;
 
 -- backend/pkg/iam/db/0.0.0/12_create_permission_group_has_permissions_view.sql 
 create view permission_group_has_permissions as
-select p.id, p.name, pghpgs.id as permission_group_id, pghpgs.name as permission_group_name
+select pghp.permission as name, pghpgs.id as permission_group, pghpgs.name as permission_group_name
 from permission_group_has_permission_groups pghpgs
-left join permission_group_has_permission pghp on pghpgs.id = pghp.permission_group;
+join permission_group_has_permission pghp on pghpgs.id = pghp.permission_group;
 
 -- backend/pkg/iam/db/0.0.0/13_create_permissions.sql 
 insert into permissions (name) values 
@@ -205,6 +205,12 @@ insert into permissions (name) values
 ('iam.permission_group.add_user'),
 ('iam.permission_group.update_permissions'),
 ('iam.permission_group.update_users');
+
+-- backend/pkg/iam/db/0.0.0/14_create_user_has_permission_view.sql 
+create view user_has_permissions as 
+select uhpg.user, pghp.permission
+from user_has_permission_groups uhpg
+join permission_group_has_permission pghp on uhpg.permission_group = pghp.permission_group;
 
 -- backend/pkg/iam/db/0.0.0/20_create_triggers_for_user_status.sql 
 create trigger after_insert_user_status
