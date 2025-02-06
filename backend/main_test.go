@@ -12,6 +12,14 @@ import (
 	"testing"
 )
 
+const (
+	green  = "\033[32m"
+	red    = "\033[31m"
+	reset  = "\033[0m"
+	bold   = "\033[1m"
+	orange = "\033[93m"
+)
+
 func TestMain(m *testing.M) {
 	for _, arg := range os.Args {
 		if strings.HasSuffix(arg, "testlog.txt") {
@@ -60,6 +68,16 @@ func (p *TestPackage) GetFailingTests() []TestEvent {
 	return failingTests
 }
 
+func (p *TestPackage) GetSkippedTests() []TestEvent {
+	var skippedTests []TestEvent
+	for _, event := range p.events {
+		if strings.Contains(event.Output, "--- SKIP") {
+			skippedTests = append(skippedTests, event)
+		}
+	}
+	return skippedTests
+}
+
 func (p *TestPackage) GetPassingTests() []TestEvent {
 	var passingTests []TestEvent
 	for _, event := range p.events {
@@ -89,27 +107,21 @@ func (p *TestPackage) GetSummary(spaces int) string {
 	var result string
 	failingTests := p.GetFailingTests()
 
-	var success = fmt.Sprintf("%s%3d%s", green, len(p.events)-len(failingTests), reset)
+	var success = fmt.Sprintf("%s%8d%s", green, len(p.GetPassingTests()), reset)
+	var skipped = fmt.Sprintf("%s%8d%s", orange, len(p.GetSkippedTests()), reset)
 
 	var failing string
 	if len(failingTests) != 0 {
-		failing = fmt.Sprintf("%s%s%3d%s", red, bold, len(failingTests), reset)
+		failing = fmt.Sprintf("%s%s%8d%s", red, bold, len(failingTests), reset)
 	} else {
-		failing = fmt.Sprintf("%s%3d%s", red, len(failingTests), reset)
+		failing = fmt.Sprintf("%s%8d%s", red, len(failingTests), reset)
 	}
-	result += fmt.Sprintf("%-"+strconv.Itoa(spaces)+"s%s %4s %4s %s\n", p.Name, reset, success, failing, reset)
+	result += fmt.Sprintf("%-"+strconv.Itoa(spaces)+"s%s %s %s %s %s\n", p.Name, reset, success, skipped, failing, reset)
 
 	result = strings.TrimSuffix(result, "\n")
 
 	return result
 }
-
-const (
-	green = "\033[32m"
-	red   = "\033[31m"
-	reset = "\033[0m"
-	bold  = "\033[1m"
-)
 
 func main() bool {
 	if os.Getenv("TEST_RUNNER") == "1" {
@@ -186,9 +198,6 @@ func main() bool {
 
 	_ = cmd.Wait()
 
-	totalFailing := 0
-	totalPassing := 0
-
 	sortedByLength := make([]string, 0, len(packages))
 
 	for pkgName := range packages {
@@ -212,13 +221,21 @@ func main() bool {
 		}
 	}
 
+	totalFailing := 0
+	totalPassing := 0
+	totalSkipped := 0
 	allFailingTests := make([]TestEvent, 0)
+	fmt.Printf("%-"+strconv.Itoa(maxPkgNameLen)+"s %8s %8s %8s\n", "Package", "Passed", "Skipped", "Failed")
 	for pkgName := range sortedByLength {
 		pkg := packages[sortedByLength[pkgName]]
+		if len(pkg.events) == 0 {
+			continue
+		}
 		failingTests := pkg.GetFailingTests()
 		allFailingTests = append(allFailingTests, failingTests...)
 		totalFailing += len(failingTests)
 		totalPassing += len(pkg.GetPassingTests())
+		totalSkipped += len(pkg.GetSkippedTests())
 		summary := pkg.GetSummary(maxPkgNameLen)
 		if summary == "" {
 			continue
@@ -227,7 +244,7 @@ func main() bool {
 	}
 
 	fmt.Println(strings.Repeat("-", maxPkgNameLen+20))
-	fmt.Printf("%-"+strconv.Itoa(maxPkgNameLen)+"s %s%3d%s %s%3d%s\n", "Total", green, totalPassing, reset, red, totalFailing, reset)
+	fmt.Printf("%-"+strconv.Itoa(maxPkgNameLen)+"s %s%8d%s %s%8d%s %s%8d%s\n", "Total", green, totalPassing, reset, orange, totalSkipped, reset, red, totalFailing, reset)
 
 	for i := range allFailingTests {
 		for j := i + 1; j < len(allFailingTests); j++ {
