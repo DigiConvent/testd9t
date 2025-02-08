@@ -151,7 +151,7 @@ func main() bool {
 	count := 0
 	lastCount := "0"
 
-	testDataFile, err := os.ReadFile("test.json")
+	testDataFile, err := os.ReadFile("../.meta/test.json")
 	if err != nil {
 		lastCount = "?"
 	} else {
@@ -273,7 +273,7 @@ func main() bool {
 		}
 	}
 
-	err = os.WriteFile("test.json", []byte(strconv.Itoa(count)), 0644)
+	err = os.WriteFile("../.meta/test.json", []byte(strconv.Itoa(count)), 0644)
 	if err != nil {
 		fmt.Println("Error:", err)
 	}

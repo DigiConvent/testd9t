@@ -16,7 +16,8 @@ func (r *IAMRepository) GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.S
 		email,
 		first_name,
 		last_name,
-		date_of_birth
+		date_of_birth,
+		enabled
 	FROM 
 		users 
 	WHERE 
@@ -28,6 +29,7 @@ func (r *IAMRepository) GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.S
 		&user.FirstName,
 		&user.LastName,
 		&user.DateOfBirth,
+		&user.Enabled,
 	)
 	if err != nil {
 		return nil, *core.NotFoundError("User not found")

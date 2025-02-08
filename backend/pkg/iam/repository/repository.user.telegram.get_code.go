@@ -8,6 +8,9 @@ import (
 )
 
 func (r *IAMRepository) GetTelegramRegistrationCode(userId *uuid.UUID) (string, core.Status) {
+	if userId == nil {
+		return "", *core.UnprocessableContentError("ID is required")
+	}
 	user := r.DB.QueryRow(`select email from users where id = ?`, userId.String())
 
 	var email string
@@ -27,8 +30,6 @@ func (r *IAMRepository) GetTelegramRegistrationCode(userId *uuid.UUID) (string, 
 		}
 		last = last + 1
 	}
-
-	code = "/meddl" + " " + email + " " + code
 
 	return code, core.Status{
 		Code:    200,

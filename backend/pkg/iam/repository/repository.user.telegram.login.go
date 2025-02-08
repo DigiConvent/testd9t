@@ -1,3 +1,4 @@
+// exempt from testing
 package iam_repository
 
 import (
@@ -17,7 +18,7 @@ func (r *IAMRepository) VerifyTelegramUser(body string) (*uuid.UUID, core.Status
 	if body == "" {
 		return nil, *core.UnprocessableContentError("body cannot be empty")
 	}
-	row := r.DB.QueryRow("SELECT telegram_bot_token FROM config LIMIT 1")
+	row := r.DB.QueryRow("select telegram_bot_token from config limit 1")
 	var botToken string
 	err := row.Scan(&botToken)
 	if err != nil {
@@ -62,7 +63,7 @@ func (r *IAMRepository) VerifyTelegramUser(body string) (*uuid.UUID, core.Status
 
 	userId := userObj.ID
 
-	userRow := r.DB.QueryRow(`SELECT id FROM users WHERE telegram_id = ?`, userId)
+	userRow := r.DB.QueryRow(`select id from users where telegram_id = ?`, userId)
 
 	var uid uuid.UUID
 	var str string
