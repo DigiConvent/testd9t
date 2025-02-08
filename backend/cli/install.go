@@ -2,6 +2,8 @@ package cli
 
 import (
 	"bufio"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -210,6 +212,26 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		script.Prepare(*flavour)
 		script.Do(force, verbose)
 	}
+
+	bytes := make([]byte, 64)
+	_, err = rand.Read(bytes)
+	if err != nil {
+		fmt.Println("Failed to generate a master password, no idea what to do from here.", err.Error())
+	}
+	password := hex.EncodeToString(bytes)
+
+	// write this to the env file
+	contents, err := os.ReadFile("/home/testd9t/env")
+	if err != nil {
+		log.Error("Could not store the master password in the env file. No idea what to do from here. " + err.Error())
+	}
+
+	contents = []byte("MASTER_PASSWORD=" + password + "\n" + string(contents))
+	err = os.WriteFile("/home/testd9t/env", contents, 0644)
+	if err != nil {
+		log.Error("Could not store the master password in the env file. No idea what to do from here. " + err.Error())
+	}
+	log.Success("Master password:\n" + password)
 }
 
 const dirToStore = "/testd9t/"
