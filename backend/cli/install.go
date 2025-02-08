@@ -90,7 +90,7 @@ func (s Script) Do(fix, verbose bool) error {
 	}
 	result, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Printf("❌ do_" + s.Name + "...")
+		fmt.Println("❌ do_" + s.Name + "...")
 		if verbose {
 			fmt.Println("failed: " + string(result))
 		}
