@@ -284,3 +284,20 @@ begin
     where user = old.user and permission_group = old.status;
 end;
 
+-- backend/pkg/iam/db/0.0.0/30_create_admin.sql 
+insert into users (id, email, enabled) values
+('00000000-0000-0000-0000-000000000000', '', true);
+
+insert into permissions (name) values ('super');
+insert into permission_groups (id, name, abbr, is_group, is_node, description, "generated") values ('00000000-0000-0000-0000-000000000000', 'Super', 'super', true, true, 'Super user', true);
+insert into permission_group_has_permission (permission_group, permission) values ('00000000-0000-0000-0000-000000000000', 'super');
+insert into permission_group_has_user (permission_group, user) values ('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000');
+
+-- backend/pkg/iam/db/0.0.0/31_create_reset_credentials_request_table.sql 
+create table reset_credentials_requests (
+    user uuid not null,
+    token text not null,
+    created_at timestamp default current_timestamp,
+    primary key (user)
+);
+
