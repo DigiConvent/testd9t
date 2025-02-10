@@ -21,7 +21,7 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 
 	senderEmail := sender.Name + "@" + sender.Domain
 
-	addr := sender.Domain + ":2525"
+	addr := sender.Domain + ":465"
 	msg := "Subject: " + subject + "\r\n" +
 		"From: " + senderEmail + "\r\n" +
 		"To: " + to + "\r\n" +
