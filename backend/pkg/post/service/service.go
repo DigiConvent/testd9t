@@ -36,7 +36,7 @@ func NewPostService(repository post_repository.PostRepositoryInterface, live boo
 		address:    ":2525",
 	}
 	if live {
-		postService.StartSmtpServer()
+		go postService.StartSmtpServer()
 	}
 	return postService
 }
