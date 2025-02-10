@@ -40,32 +40,31 @@ func InitiateServices() *Services {
 		IAMService:  iamService,
 		PostService: postService,
 	}
+
 	if initStatus.Code == 200 {
 		log.Info("Migrating databases to newest version")
 		sysService.MigratePackageDatabases(nil)
 		DoFirstTimeStuff(services)
+	} else {
+		log.Warning("Could not migrate databases to newest version")
 	}
+
 	return services
 }
 
 func DoFirstTimeStuff(services *Services) {
-	log.Success("First time setup")
 	sendFrom, status := services.PostService.CreateEmailAddress(&post_domain.EmailAddressWrite{
 		Name:   "admin",
 		Domain: os.Getenv("DOMAIN"),
 	})
 
-	if !status.Err() {
-		log.Error(status.Message)
-	} else {
-		log.Success(status.Message)
+	if status.Err() {
+		log.Error("Could not create email address: " + status.Message)
 	}
 
 	status = services.PostService.SendEmail(sendFrom, os.Getenv("EMAIL"), "Login credentials", "Here are the login credentials for "+os.Getenv("DOMAIN")+":\n\nEmail: "+os.Getenv("EMAIL")+"\nPassword: "+os.Getenv("PASSWORD"))
 
-	if !status.Err() {
-		log.Error(status.Message)
-	} else {
-		log.Success(status.Message)
+	if status.Err() {
+		log.Error("Could not send email: from " + sendFrom.String() + " to " + os.Getenv("EMAIL") + ": " + status.Message)
 	}
 }
