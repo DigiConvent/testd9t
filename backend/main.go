@@ -25,6 +25,8 @@ func main() {
 	run := core_utils.Contains(os.Args, "--run")
 
 	fmt.Println(os.Args)
+
+	fmt.Println(os.Args)
 	if sys_domain.ProgramVersion == "dev" {
 		godotenv.Load("env")
 	} else {
