@@ -1,8 +1,7 @@
 package post_service
 
 import (
-	"crypto/tls"
-	"log"
+	"fmt"
 	"net/smtp"
 
 	"github.com/DigiConvent/testd9t/core"
@@ -10,35 +9,28 @@ import (
 )
 
 func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body string) *core.Status {
-	fromEmail, status := s.repository.ReadEmailAddress(from)
+	if from == nil {
+		return core.UnprocessableContentError("PostService requires an ID")
+	}
+
+	sender, status := s.ReadEmailAddress(from)
 	if status.Err() {
-		return &status
+		return status
 	}
 
-	smtpServer := fromEmail.Domain
-	port := "465"
-	email := fromEmail.Name + "@" + fromEmail.Domain
+	senderEmail := sender.Name + "@" + sender.Domain
 
-	tlsConfig := &tls.Config{
-		InsecureSkipVerify: false,
-		ServerName:         smtpServer,
-	}
-
-	conn, _ := tls.Dial("tcp", smtpServer+":"+port, tlsConfig)
-	client, _ := smtp.NewClient(conn, smtpServer)
-	defer client.Quit()
-	auth := smtp.PlainAuth("", email, "", smtpServer)
-	if err := client.Auth(auth); err != nil {
-		log.Fatalf("Failed to authenticate: %v", err)
-	}
-
-	message := []byte("Subject: Test Email\r\n" +
+	addr := "localhost:2525"
+	msg := "Subject: " + subject + "\r\n" +
+		"From: " + senderEmail + "\r\n" +
+		"To: " + to + "\r\n" +
 		"\r\n" +
-		"This is a test email sent from a Go program.\r\n")
+		body + "\r\n"
 
-	if err := smtp.SendMail(smtpServer+":"+port, auth, email, []string{to}, message); err != nil {
-		log.Fatalf("Failed to send email: %v", err)
+	err := smtp.SendMail(addr, nil, to, []string{to}, []byte(msg))
+	if err != nil {
+		return core.InternalError(err.Error())
 	}
-
-	return nil
+	fmt.Println("Email sent successfully!")
+	return core.StatusSuccess()
 }
