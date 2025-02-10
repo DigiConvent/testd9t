@@ -140,7 +140,7 @@ type InstallationProtocol struct {
 	Files   []string `json:"path"`
 }
 
-func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool) string {
+func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool) map[string]Input {
 	uid := os.Geteuid()
 
 	if uid != 0 {
@@ -187,13 +187,13 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	raw, err := repo.ReadRawFile("install/" + *flavour + "/install.json")
 	if err != nil {
 		fmt.Println("Error fetching installation protocol:", err)
-		return ""
+		return nil
 	}
 
 	err = json.Unmarshal(raw, &protocol)
 	if err != nil {
 		fmt.Println("Error decoding JSON:", err)
-		return ""
+		return nil
 	}
 
 	for i := 0; i < len(protocol.Scripts); i++ {
@@ -228,8 +228,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	}
 	log.Success("Master password:\n" + password)
 
-	at := promptUser("Gimme your @", "")
-	return at
+	return inputs
 }
 
 const dirToStore = "/testd9t/"

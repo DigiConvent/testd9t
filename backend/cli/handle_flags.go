@@ -74,12 +74,12 @@ func HandleFlags(services *services.Services) {
 
 	if *installFlag != "" {
 		at := Install(sysService, installFlag, *forceFlag, *verbose)
-		if at != "" {
-			services.PostService.CreateEmailAddress(&post_domain.EmailAddressWrite{
+		if at != nil {
+			id, _ := services.PostService.CreateEmailAddress(&post_domain.EmailAddressWrite{
 				Name:   "testd9t",
-				Domain: "",
+				Domain: at["domain"].Value,
 			})
-			services.PostService.SendEmail(nil, at, "Testd9t has been installed", "Testd9t has been installed")
+			services.PostService.SendEmail(id, at["email"].Value, "Testd9t has been installed", "Testd9t has been installed")
 		}
 		InstallArtifacts(sys_domain.ProgramVersion, sysService)
 		os.RemoveAll("/tmp/testd9t/")
