@@ -49,7 +49,7 @@ func SetupRouter(services *services.Services) {
 				ctx.Redirect(http.StatusMovedPermanently, "https://"+ctx.Request.Host+ctx.Request.RequestURI)
 			})
 			if err := subRouter.Run(":80"); err != nil {
-				log.Error("Could not start http redirect server")
+				log.Error("Could not start http redirect server: " + err.Error())
 			}
 		}()
 

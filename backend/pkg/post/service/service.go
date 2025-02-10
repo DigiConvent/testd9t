@@ -2,11 +2,14 @@ package post_service
 
 import (
 	"bufio"
+	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/DigiConvent/testd9t/core"
 	"github.com/DigiConvent/testd9t/core/log"
@@ -33,7 +36,7 @@ type PostService struct {
 func NewPostService(repository post_repository.PostRepositoryInterface, test bool) PostServiceInterface {
 	postService := PostService{
 		repository: repository,
-		address:    ":2525",
+		address:    ":465",
 	}
 
 	// this would fail in tests and I don't feel like changing this
@@ -44,12 +47,31 @@ func NewPostService(repository post_repository.PostRepositoryInterface, test boo
 }
 
 func (s *PostService) StartSmtpServer() {
-	listener, err := net.Listen("tcp", s.address)
+	cert, err := tls.LoadX509KeyPair("/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
+	if err != nil {
+		panic(err)
+	}
+	listener, err := tls.Listen("tcp", s.address,
+		&tls.Config{
+			Certificates: []tls.Certificate{cert},
+		},
+	)
+
 	if err != nil {
 		panic(err)
 	}
 
 	defer func() {
+		err := listener.Close()
+		if err != nil {
+			log.Error("Error closing smtp server: " + err.Error())
+		}
+	}()
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-sigChan
 		err := listener.Close()
 		if err != nil {
 			log.Error("Error closing smtp server: " + err.Error())
@@ -64,6 +86,7 @@ func (s *PostService) StartSmtpServer() {
 		}
 		go s.handleSMTPConnection(connection)
 	}
+
 }
 
 func (s *PostService) handleSMTPConnection(conn net.Conn) {
