@@ -64,7 +64,7 @@ type IAMRepositoryInterface interface {
 	GetPrivateKey() *rsa.PrivateKey
 }
 
-func NewIAMRepository(db db.DatabaseInterface, privateKeyPath string, live bool) IAMRepositoryInterface {
+func NewIAMRepository(db db.DatabaseInterface, privateKeyPath string, test bool) IAMRepositoryInterface {
 	var privateKey *rsa.PrivateKey
 	pkBytes, err := os.ReadFile(privateKeyPath)
 	if err != nil {

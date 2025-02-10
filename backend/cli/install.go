@@ -2,8 +2,6 @@ package cli
 
 import (
 	"bufio"
-	"crypto/rand"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -76,21 +74,12 @@ func (s Script) Prepare(flavour string) {
 	storeFile("undo_"+s.Name+".sh", string(undoScriptContents))
 }
 
-func promptUser(prompt string, defaultValue string) string {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("%s [%s]: ", prompt, defaultValue)
-	userInput, _ := reader.ReadString('\n')
-	userInput = userInput[:len(userInput)-1]
-	if userInput == "" {
-		return defaultValue
-	}
-	return userInput
-}
 func (s Script) Do(fix, verbose bool, inputs map[string]Input) error {
 	args := []string{getFilePath("do_" + s.Name + ".sh")}
 	for _, input := range s.Input {
 		args = append(args, inputs[input.Name].Value)
 	}
+
 	cmd := exec.Command("bash", args...)
 	if verbose {
 		fmt.Println(cmd.String())
@@ -112,7 +101,7 @@ func (s Script) Do(fix, verbose bool, inputs map[string]Input) error {
 		}
 		return err
 	}
-	fmt.Println("✅ do_" + s.Name)
+	fmt.Println("✅ do_" + s.Name + " (" + strings.Join(args, " ") + ")")
 	return nil
 }
 
@@ -173,8 +162,9 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	}
 
 	inputs := map[string]Input{
-		"domain": {Name: "Domain", Value: ""},
-		"email":  {Name: "Email", Value: ""},
+		"domain":   {Name: "Domain", Value: ""},
+		"email":    {Name: "Email", Value: ""},
+		"password": {Name: "Password", Value: ""},
 	}
 
 	for _, input := range inputs {
@@ -209,25 +199,31 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		script.Do(force, verbose, inputs)
 	}
 
-	bytes := make([]byte, 64)
-	_, err = rand.Read(bytes)
-	if err != nil {
-		fmt.Println("Failed to generate a master password, no idea what to do from here.", err.Error())
-	}
-	password := hex.EncodeToString(bytes)
-
+	variables := map[string]string{}
 	contents, err := os.ReadFile("/home/testd9t/env")
+
 	if err != nil {
-		log.Error("Could not store the master password in the env file. No idea what to do from here. " + err.Error())
+		contents = []byte{}
 	}
 
-	contents = []byte("MASTER_PASSWORD=" + password + "\n" + string(contents))
-	os.Setenv("MASTER_PASSWORD", password)
+	for _, entry := range strings.Split(string(contents), "\n") {
+		segments := strings.Split(entry, "=")
+		variables[segments[0]] = segments[1]
+	}
+
+	for key := range inputs {
+		variables[strings.ToUpper(key)] = inputs[key].Value
+	}
+
+	newContent := ""
+	for key := range variables {
+		newContent += fmt.Sprintf("%s=%s\n", key, variables[key])
+	}
+
 	err = os.WriteFile("/home/testd9t/env", contents, 0644)
 	if err != nil {
-		log.Error("Could not store the master password in the env file. No idea what to do from here. " + err.Error())
+		log.Error("Could not store the new environment variables...")
 	}
-	log.Success("Master password:\n" + password)
 
 	return inputs
 }

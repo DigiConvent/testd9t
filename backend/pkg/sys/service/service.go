@@ -15,7 +15,7 @@ type SysServiceInterface interface {
 	GetPackages() (map[string]sys_domain.Package, *core.Status)
 	GetPackageVersions(pkgName string) ([]sys_domain.Version, *core.Status)
 
-	MigrateDatabase(toVersion *sys_domain.Version) *core.Status
+	MigratePackageDatabases(toVersion *sys_domain.Version) *core.Status
 	MigratePackage(pkgName string, toVersion *sys_domain.Version) *core.Status
 
 	ListFlavours() ([]string, *core.Status)
@@ -28,7 +28,7 @@ type SysService struct {
 	repository sys_repository.SysRepositoryInterface
 }
 
-func (s *SysService) MigrateDatabase(toVersion *sys_domain.Version) *core.Status {
+func (s *SysService) MigratePackageDatabases(toVersion *sys_domain.Version) *core.Status {
 	status := s.repository.MigrateDatabase(toVersion)
 	return &status
 }

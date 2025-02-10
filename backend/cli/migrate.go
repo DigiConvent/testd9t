@@ -8,5 +8,5 @@ import (
 
 func MigrateDB(sysService sys_service.SysServiceInterface) {
 	fmt.Println("--migrate-db")
-	sysService.MigrateDatabase(nil)
+	sysService.MigratePackageDatabases(nil)
 }

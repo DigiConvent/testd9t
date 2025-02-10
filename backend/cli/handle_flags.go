@@ -6,13 +6,15 @@ import (
 	"os"
 
 	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
-	services "github.com/DigiConvent/testd9t/pkg"
-	post_domain "github.com/DigiConvent/testd9t/pkg/post/domain"
+	"github.com/DigiConvent/testd9t/core/db"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
+	sys_repository "github.com/DigiConvent/testd9t/pkg/sys/repository"
+	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 )
 
-func HandleFlags(services *services.Services) {
-	sysService := services.SysService
+func HandleFlags() {
+	sysService := sys_service.NewSysService(sys_repository.NewSysRepository(db.NewTestSqliteDB("sys")))
+
 	actionsFlagSet := flag.NewFlagSet("Options", flag.ExitOnError)
 	verbose := actionsFlagSet.Bool("verbose", false, "Run more verbosely")
 	forceFlag := actionsFlagSet.Bool("force", false, "Apply fixes upon a failure during the installation")
@@ -73,14 +75,7 @@ func HandleFlags(services *services.Services) {
 	}
 
 	if *installFlag != "" {
-		at := Install(sysService, installFlag, *forceFlag, *verbose)
-		if at != nil {
-			id, _ := services.PostService.CreateEmailAddress(&post_domain.EmailAddressWrite{
-				Name:   "testd9t",
-				Domain: at["domain"].Value,
-			})
-			services.PostService.SendEmail(id, at["email"].Value, "Testd9t has been installed", "Testd9t has been installed")
-		}
+		Install(sysService, installFlag, *forceFlag, *verbose)
 		InstallArtifacts(sys_domain.ProgramVersion, sysService)
 		os.RemoveAll("/tmp/testd9t/")
 	}

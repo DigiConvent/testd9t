@@ -30,12 +30,14 @@ type PostService struct {
 	address    string
 }
 
-func NewPostService(repository post_repository.PostRepositoryInterface, live bool) PostServiceInterface {
+func NewPostService(repository post_repository.PostRepositoryInterface, test bool) PostServiceInterface {
 	postService := PostService{
 		repository: repository,
 		address:    ":2525",
 	}
-	if live {
+
+	// this would fail in tests and I don't feel like changing this
+	if !test {
 		go postService.StartSmtpServer()
 	}
 	return postService
@@ -46,6 +48,14 @@ func (s *PostService) StartSmtpServer() {
 	if err != nil {
 		panic(err)
 	}
+
+	defer func() {
+		err := listener.Close()
+		if err != nil {
+			log.Error("Error closing smtp server: " + err.Error())
+		}
+	}()
+
 	for {
 		connection, err := listener.Accept()
 		if err != nil {
