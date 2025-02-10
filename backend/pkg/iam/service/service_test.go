@@ -22,7 +22,7 @@ func GetTestIAMService(dbName string) iam_service.IAMServiceInterface {
 	if testDB == nil {
 		testDB = db.NewTestSqliteDB(dbName)
 	}
-	repo := iam_repository.NewIAMRepository(testDB, privKeyPath)
+	repo := iam_repository.NewIAMRepository(testDB, privKeyPath, false)
 	return iam_service.NewIAMService(repo)
 }
 

@@ -22,6 +22,9 @@ func main() {
 	sys_domain.StartTime = time.Now()
 	log.Info("Build      " + sys_domain.CompiledAt)
 	log.Info("Running at " + sys_domain.StartTime.Format(core_utils.FormattedTime))
+	live := core_utils.Contains(os.Args, "--run")
+
+	fmt.Println(os.Args)
 	if sys_domain.ProgramVersion == "dev" {
 		godotenv.Load("env")
 	} else {
@@ -33,7 +36,7 @@ func main() {
 		}
 	}
 
-	services := services.InitiateServices()
+	services := services.InitiateServices(live)
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)

@@ -28,12 +28,14 @@ type PostService struct {
 	address    string
 }
 
-func NewPostService(repository post_repository.PostRepositoryInterface) PostServiceInterface {
+func NewPostService(repository post_repository.PostRepositoryInterface, live bool) PostServiceInterface {
 	postService := PostService{
 		repository: repository,
 		address:    ":2525",
 	}
-	postService.StartSmtpServer()
+	if live {
+		postService.StartSmtpServer()
+	}
 	return postService
 }
 

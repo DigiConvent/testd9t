@@ -16,7 +16,7 @@ type Services struct {
 	PostService post_service.PostServiceInterface
 }
 
-func InitiateServices() *Services {
+func InitiateServices(live bool) *Services {
 	sysDB := db.NewSqliteDB("sys")
 	sysRepo := sys_repository.NewSysRepository(sysDB)
 	sysService := sys_service.NewSysService(sysRepo)
@@ -24,12 +24,12 @@ func InitiateServices() *Services {
 
 	keyPath := "/home/testd9t/certs/privkey.pem"
 	iamDB := db.NewSqliteDB("iam")
-	iamRepo := iam_repository.NewIAMRepository(iamDB, keyPath)
+	iamRepo := iam_repository.NewIAMRepository(iamDB, keyPath, live)
 	iamService := iam_service.NewIAMService(iamRepo)
 
 	postDB := db.NewSqliteDB("post")
 	postRepo := post_repository.NewPostRepository(postDB)
-	postService := post_service.NewPostService(postRepo)
+	postService := post_service.NewPostService(postRepo, live)
 
 	// this needs to be called after all the databases are initialised as it migrates only packages of which a database file exists
 	sysService.MigrateDatabase(nil)
