@@ -9,7 +9,7 @@ func (r *IAMRepository) DeletePermissionGroup(arg *uuid.UUID) core.Status {
 	if arg == nil {
 		return *core.UnprocessableContentError("ID is required")
 	}
-	res, err := r.DB.Exec(`delete from permission_groups where id = ? and "generated" = false`, arg.String())
+	res, err := r.db.Exec(`delete from permission_groups where id = ? and "generated" = false`, arg.String())
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

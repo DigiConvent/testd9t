@@ -7,7 +7,6 @@ import (
 )
 
 type SysRepositoryInterface interface {
-	ListVersions() ([]sys_domain.Version, core.Status)
 	GetCurrentVersion() (*sys_domain.Version, *sys_domain.Version, core.Status)
 	ListFlavoursForVersion() ([]string, core.Status)
 
@@ -29,20 +28,11 @@ type SysRepositoryInterface interface {
 }
 
 type SysRepository struct {
-	DB          db.DatabaseInterface
-	GithubToken *string
+	db db.DatabaseInterface
 }
 
-func (r *SysRepository) ListVersions() ([]sys_domain.Version, core.Status) {
-	return []sys_domain.Version{
-		{Major: 0, Minor: 0, Patch: 0},
-		{Major: 0, Minor: 0, Patch: 1},
-		{Major: 0, Minor: 0, Patch: 2},
-		{Major: 0, Minor: 0, Patch: 3},
-	}, *core.StatusSuccess()
-}
 func NewSysRepository(conn db.DatabaseInterface) SysRepositoryInterface {
 	return &SysRepository{
-		DB: conn,
+		db: conn,
 	}
 }

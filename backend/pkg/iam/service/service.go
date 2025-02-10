@@ -6,6 +6,7 @@ import (
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	iam_repository "github.com/DigiConvent/testd9t/pkg/iam/repository"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type IAMServiceInterface interface {
@@ -14,9 +15,6 @@ type IAMServiceInterface interface {
 	GetUserProfile(id *uuid.UUID) (*iam_domain.UserProfile, *core.Status)
 	ListUsers(fs *iam_domain.UserFilterSort) (*pagination.Page[*iam_domain.UserFacade], *core.Status)
 	UpdateUser(id *uuid.UUID, user *iam_domain.UserWrite) *core.Status
-	LoginTelegramUser(body string) (*uuid.UUID, *core.Status)
-	GetTelegramRegistrationCode(userId *uuid.UUID) (string, *core.Status)
-	RegisterTelegramUser(telegramId int, email, code string) *core.Status
 	SetEnabled(id *uuid.UUID, enabled bool) *core.Status
 
 	ListUserStatuses(fs *iam_domain.UserFilterSort) ([]*iam_domain.UserStatusRead, *core.Status)
@@ -38,6 +36,20 @@ type IAMServiceInterface interface {
 	ListPermissions() ([]*iam_domain.PermissionRead, *core.Status)
 	ListUserPermissions(id *uuid.UUID) ([]*iam_domain.PermissionFacade, *core.Status)
 	UserHasPermission(id *uuid.UUID, permission string) bool
+
+	// telegram and stuff
+	LoginTelegramUser(body string) (*uuid.UUID, *core.Status)
+	GetTelegramRegistrationCode(userId *uuid.UUID) (string, *core.Status)
+	RegisterTelegramUser(telegramId int, email, code string) *core.Status
+
+	// password and stuff
+	ResetPassword(email string) (string, *core.Status)
+	SetUserPassword(id *uuid.UUID, password string) *core.Status
+	LoginUser(email, password string) (*uuid.UUID, *core.Status)
+
+	// jwt stuff
+	GenerateJwt(userId *uuid.UUID) (string, *core.Status)
+	VerifyJwt(token string) (*uuid.UUID, *core.Status)
 }
 
 type IAMService struct {
@@ -48,4 +60,12 @@ func NewIAMService(userRepository iam_repository.IAMRepositoryInterface) IAMServ
 	return &IAMService{
 		IAMRepository: userRepository,
 	}
+}
+
+func hashedPassword(password string) (string, error) {
+	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashed), nil
 }

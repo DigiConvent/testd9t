@@ -11,7 +11,7 @@ func (r *IAMRepository) AddUserToPermissionGroup(permissionGroup, userId *uuid.U
 	}
 
 	var generated bool
-	err := r.DB.QueryRow(`select "generated" from permission_groups where id = ?`, permissionGroup.String()).Scan(&generated)
+	err := r.db.QueryRow(`select "generated" from permission_groups where id = ?`, permissionGroup.String()).Scan(&generated)
 
 	if err != nil {
 		return *core.InternalError(err.Error())
@@ -21,7 +21,7 @@ func (r *IAMRepository) AddUserToPermissionGroup(permissionGroup, userId *uuid.U
 		return *core.UnprocessableContentError("cannot add user to generated permission groups")
 	}
 
-	_, err = r.DB.Exec(`insert into permission_group_has_user (permission_group, user) values (?, ?)`, permissionGroup.String(), userId.String())
+	_, err = r.db.Exec(`insert into permission_group_has_user (permission_group, user) values (?, ?)`, permissionGroup.String(), userId.String())
 
 	if err != nil {
 		return *core.InternalError(err.Error())

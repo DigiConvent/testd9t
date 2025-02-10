@@ -30,20 +30,20 @@ type Logger struct {
 // 2 - info
 // 3 - success
 
-func Error(msg string) {
-	fmt.Println(white + getTime() + ": " + red + msg + reset)
+func Error(msg interface{}) {
+	fmt.Println(white+getTime()+": "+red, msg, reset)
 }
 
-func Warning(msg string) {
-	fmt.Println(white + getTime() + ": " + yellow + msg + reset)
+func Warning(msg interface{}) {
+	fmt.Println(white+getTime()+": "+yellow, msg, reset)
 }
 
-func Info(msg string) {
-	fmt.Println(white + getTime() + ": " + cyan + msg + reset)
+func Info(msg interface{}) {
+	fmt.Println(white+getTime()+": "+cyan, msg, reset)
 }
 
-func Success(msg string) {
-	fmt.Println(white + getTime() + ": " + green + msg + reset)
+func Success(msg interface{}) {
+	fmt.Println(white+getTime()+": "+green, msg, reset)
 }
 
 func getTime() string {

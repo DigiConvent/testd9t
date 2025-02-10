@@ -14,7 +14,7 @@ func (r *IAMRepository) CreateUser(user *iam_domain.UserWrite) (*uuid.UUID, core
 		return nil, *core.InternalError(err.Error())
 	}
 	user.Email = strings.ToLower(user.Email)
-	result, err := r.DB.Exec("insert into users (id, first_name, last_name, email, date_of_birth, enabled) values (?, ?, ?, ?, ?, ?)", uid.String(), user.FirstName, user.LastName, user.Email, user.DateOfBirth, false)
+	result, err := r.db.Exec("insert into users (id, first_name, last_name, email, date_of_birth, enabled) values (?, ?, ?, ?, ?, ?)", uid.String(), user.FirstName, user.LastName, user.Email, user.DateOfBirth, false)
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 func (r *IAMRepository) UpdateUserStatus(id *uuid.UUID, arg *iam_domain.UserStatusWrite) core.Status {
-	result, err := r.DB.Exec("UPDATE user_status SET name = ?, abbr = ?, description = ?, archived = ? WHERE id = ?", arg.Name, arg.Abbr, arg.Description, arg.Archived, id.String())
+	result, err := r.db.Exec("UPDATE user_status SET name = ?, abbr = ?, description = ?, archived = ? WHERE id = ?", arg.Name, arg.Abbr, arg.Description, arg.Archived, id.String())
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

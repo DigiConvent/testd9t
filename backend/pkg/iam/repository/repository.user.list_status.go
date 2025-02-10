@@ -8,7 +8,7 @@ import (
 
 func (r *IAMRepository) ListUserStatusesFromUser(id *uuid.UUID) ([]*iam_domain.UserHasStatusRead, core.Status) {
 	var userStatuses []*iam_domain.UserHasStatusRead
-	rows, err := r.DB.Query(`SELECT
+	rows, err := r.db.Query(`SELECT
 		s.id,
 		s.name,
 		s.abbr,

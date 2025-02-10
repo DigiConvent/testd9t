@@ -9,7 +9,7 @@ func (r *IAMRepository) SetEnabled(id *uuid.UUID, enabled bool) core.Status {
 	if id == nil {
 		return *core.UnprocessableContentError("ID is required")
 	}
-	result, err := r.DB.Exec("update users set enabled = ? where id = ?", enabled, id)
+	result, err := r.db.Exec("update users set enabled = ? where id = ?", enabled, id)
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

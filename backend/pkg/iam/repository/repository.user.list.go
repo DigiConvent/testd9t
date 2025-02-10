@@ -21,7 +21,7 @@ func (r *IAMRepository) ListUsers(filter *iam_domain.UserFilterSort) (*paginatio
 	}
 
 	users := []*iam_domain.UserFacade{}
-	rows, err := r.DB.Query("select id, name from user_facades " + sortClause)
+	rows, err := r.db.Query("select id, name from user_facades " + sortClause)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

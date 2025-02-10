@@ -9,7 +9,7 @@ import (
 )
 
 func (r *SysRepository) IsInitialised() bool {
-	resultSet := r.DB.QueryRow("SELECT major, minor, patch FROM packages WHERE name = 'sys'")
+	resultSet := r.db.QueryRow("SELECT major, minor, patch FROM packages WHERE name = 'sys'")
 	var major, minor, patch int = -1, -1, -1
 	err := resultSet.Scan(&major, &minor, &patch)
 	if err != nil {
@@ -29,12 +29,12 @@ func (r *SysRepository) InitDatabase() core.Status {
 		return status
 	}
 
-	_, err := r.DB.Exec(string(script))
+	_, err := r.db.Exec(string(script))
 	if err != nil {
 		return *core.InternalError("Could not initialise")
 	}
 
-	_, err = r.DB.Exec("INSERT INTO packages (name, major, minor, patch) VALUES ('sys', 0, 0, 0)")
+	_, err = r.db.Exec("INSERT INTO packages (name, major, minor, patch) VALUES ('sys', 0, 0, 0)")
 
 	if err != nil {
 		return *core.InternalError("Could not register sys:0.0.0 " + err.Error())

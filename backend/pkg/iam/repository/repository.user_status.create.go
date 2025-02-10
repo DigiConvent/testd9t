@@ -11,7 +11,7 @@ func (r *IAMRepository) CreateUserStatus(userStatus *iam_domain.UserStatusWrite)
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}
-	res, err := r.DB.Exec("INSERT INTO user_status (id, name, abbr, description, archived) VALUES (?, ?, ?, ?, ?)", id, userStatus.Name, userStatus.Abbr, userStatus.Description, userStatus.Archived)
+	res, err := r.db.Exec("INSERT INTO user_status (id, name, abbr, description, archived) VALUES (?, ?, ?, ?, ?)", id, userStatus.Name, userStatus.Abbr, userStatus.Description, userStatus.Archived)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

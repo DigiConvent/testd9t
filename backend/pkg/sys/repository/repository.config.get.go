@@ -6,7 +6,7 @@ import (
 )
 
 func (r *SysRepository) GetConfiguration() (*sys_domain.Configuration, core.Status) {
-	row := r.DB.QueryRow("SELECT telegram_bot_token, domain FROM configuration LIMIT 1")
+	row := r.db.QueryRow("SELECT telegram_bot_token, domain FROM configuration LIMIT 1")
 
 	config := sys_domain.Configuration{}
 

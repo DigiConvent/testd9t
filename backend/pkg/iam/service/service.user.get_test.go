@@ -78,4 +78,46 @@ func TestGetUser(t *testing.T) {
 	if user != nil {
 		t.Fatal("User is not nil")
 	}
+
+	// also test admin user
+	adminId := uuid.Nil
+	user, status = iamService.GetUser(&adminId)
+
+	if status.Err() {
+		t.Errorf("Error: %v", status.Message)
+	}
+
+	if user == nil {
+		t.Fatal("User is nil")
+	}
+
+	if user.Email != "" {
+		t.Errorf("Email is not empty")
+	}
+
+	if user.FirstName != "" {
+		t.Errorf("FirstName is not empty")
+	}
+
+	if user.LastName != "" {
+		t.Errorf("LastName is not empty")
+	}
+
+	profile, status := iamService.GetUserProfile(&adminId)
+
+	if status.Err() {
+		t.Errorf("Error: %v", status.Message)
+	}
+
+	if profile == nil {
+		t.Fatal("Profile is nil")
+	}
+
+	if profile.User == nil {
+		t.Fatal("User is nil")
+	}
+
+	if profile.Permissions[0].Name != "super" {
+		t.Errorf("Permission is not super")
+	}
 }

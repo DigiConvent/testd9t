@@ -6,7 +6,7 @@ import (
 )
 
 func (r *IAMRepository) AddUserStatusToUser(d *iam_domain.AddUserStatusToUser) core.Status {
-	_, err := r.DB.Exec(`insert into user_became_status ("user", status, start, description) values (?, ?, ?, ?)`, d.UserID, d.StatusID, d.When, d.Description)
+	_, err := r.db.Exec(`insert into user_became_status ("user", status, start, description) values (?, ?, ?, ?)`, d.UserID, d.StatusID, d.When, d.Description)
 
 	if err != nil {
 		return *core.InternalError(err.Error())

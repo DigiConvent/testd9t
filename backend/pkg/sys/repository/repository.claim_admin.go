@@ -6,7 +6,7 @@ import (
 )
 
 func (r *SysRepository) ClaimAdmin(tgId string) core.Status {
-	res := r.DB.QueryRow(`SELECT id FROM users WHERE super = true`)
+	res := r.db.QueryRow(`SELECT id FROM users WHERE super = true`)
 
 	var superId string
 	err := res.Scan(&superId)
@@ -15,7 +15,7 @@ func (r *SysRepository) ClaimAdmin(tgId string) core.Status {
 	}
 
 	var exists int
-	res = r.DB.QueryRow(`SELECT count(*) FROM users WHERE telegram_id = ?`, tgId)
+	res = r.db.QueryRow(`SELECT count(*) FROM users WHERE telegram_id = ?`, tgId)
 	err = res.Scan(&exists)
 	if err != nil {
 		return *core.InternalError(err.Error())
@@ -23,7 +23,7 @@ func (r *SysRepository) ClaimAdmin(tgId string) core.Status {
 
 	var userId string
 	if exists > 0 {
-		update, err := r.DB.Exec(`UPDATE users SET super = true WHERE telegram_id = ?`, tgId)
+		update, err := r.db.Exec(`UPDATE users SET super = true WHERE telegram_id = ?`, tgId)
 		if err != nil {
 			return *core.InternalError(err.Error())
 		}
@@ -31,13 +31,13 @@ func (r *SysRepository) ClaimAdmin(tgId string) core.Status {
 		if rowsAffected == 0 {
 			return *core.NotFoundError("User not found")
 		}
-		row := r.DB.QueryRow(`SELECT id FROM users WHERE telegram_id = ?`, tgId)
+		row := r.db.QueryRow(`SELECT id FROM users WHERE telegram_id = ?`, tgId)
 		err = row.Scan(&userId)
 		if err != nil {
 			return *core.InternalError(err.Error())
 		}
 	} else {
-		row := r.DB.QueryRow(`INSERT INTO users (telegram_id, super) VALUES (?, true) returning id`, tgId)
+		row := r.db.QueryRow(`INSERT INTO users (telegram_id, super) VALUES (?, true) returning id`, tgId)
 		err = row.Scan(&userId)
 		if err != nil {
 			return *core.InternalError(err.Error())
@@ -46,7 +46,7 @@ func (r *SysRepository) ClaimAdmin(tgId string) core.Status {
 
 	var superPermissionGroupId pgtype.UUID
 
-	row := r.DB.QueryRow(`SELECT id FROM permission_groups WHERE name = 'super'`)
+	row := r.db.QueryRow(`SELECT id FROM permission_groups WHERE name = 'super'`)
 
 	err = row.Scan(&superPermissionGroupId)
 
@@ -54,7 +54,7 @@ func (r *SysRepository) ClaimAdmin(tgId string) core.Status {
 		return *core.NotFoundError("Super permission group does not exist")
 	}
 
-	_, err = r.DB.Exec(`INSERT INTO permission_group_has_user (permission_group, "user") VALUES (?, ?)`, superPermissionGroupId, userId)
+	_, err = r.db.Exec(`INSERT INTO permission_group_has_user (permission_group, "user") VALUES (?, ?)`, superPermissionGroupId, userId)
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

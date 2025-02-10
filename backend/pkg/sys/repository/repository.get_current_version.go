@@ -11,7 +11,7 @@ func (r *SysRepository) GetCurrentVersion() (*sys_domain.Version, *sys_domain.Ve
 		programVersion = &sys_domain.Version{Major: -1, Minor: -1, Patch: -1}
 	}
 
-	row := r.DB.QueryRow(`SELECT major, minor, patch FROM versions ORDER BY major DESC, minor DESC, patch DESC LIMIT 1`)
+	row := r.db.QueryRow(`SELECT major, minor, patch FROM versions ORDER BY major DESC, minor DESC, patch DESC LIMIT 1`)
 
 	var result = &sys_domain.Version{
 		Major: -1,

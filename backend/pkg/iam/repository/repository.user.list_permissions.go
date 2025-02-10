@@ -8,7 +8,7 @@ import (
 
 func (r *IAMRepository) ListUserPermissions(id *uuid.UUID) ([]*iam_domain.PermissionFacade, core.Status) {
 	var permissions = make([]*iam_domain.PermissionFacade, 0)
-	rows, err := r.DB.Query(`
+	rows, err := r.db.Query(`
 select permission from user_has_permissions where user = ?
 `, id.String())
 	if err != nil {

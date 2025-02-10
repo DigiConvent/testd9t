@@ -7,7 +7,7 @@ import (
 )
 
 func (r *IAMRepository) ListUserStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserFacade, core.Status) {
-	rows, err := r.DB.Query(`select 
+	rows, err := r.db.Query(`select 
 	u.id, 
 	u.name 
 	from user_became_status ubs

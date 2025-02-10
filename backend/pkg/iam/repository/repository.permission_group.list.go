@@ -7,7 +7,7 @@ import (
 
 func (r *IAMRepository) ListPermissionGroups() ([]*iam_domain.PermissionGroupFacade, core.Status) {
 	var permissionGroups []*iam_domain.PermissionGroupFacade
-	rows, err := r.DB.Query(`SELECT
+	rows, err := r.db.Query(`SELECT
 		id,
 		name,
 		abbr,

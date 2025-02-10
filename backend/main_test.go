@@ -165,7 +165,6 @@ func main() bool {
 		err := json.Unmarshal([]byte(line), &event)
 		if err != nil {
 			continue
-		} else {
 		}
 
 		if _, ok := packages[event.Package]; !ok {
@@ -292,6 +291,7 @@ func CheckForMissingTests() []string {
 	for _, pkgName := range packageFolder {
 		servicesFolder := path.Join(dirPath, "pkg", pkgName.Name(), "service")
 		serviceFiles, _ := os.ReadDir(servicesFolder)
+
 		for _, serviceFile := range serviceFiles {
 			if serviceFile.IsDir() {
 				continue

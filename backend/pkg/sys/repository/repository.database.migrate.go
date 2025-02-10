@@ -24,7 +24,7 @@ func (r *SysRepository) MigrateDatabase(toVersion *sys_domain.Version) core.Stat
 		}
 	}
 
-	_, err := r.DB.Exec("insert into versions (major, minor, patch) values (?, ?, ?)", toVersion.Major, toVersion.Minor, toVersion.Patch)
+	_, err := r.db.Exec("insert into versions (major, minor, patch) values (?, ?, ?)", toVersion.Major, toVersion.Minor, toVersion.Patch)
 	if err != nil {
 		return *core.InternalError("Could not register database version " + toVersion.String())
 	}

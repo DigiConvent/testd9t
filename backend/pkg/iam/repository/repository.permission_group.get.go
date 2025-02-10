@@ -12,7 +12,7 @@ func (r *IAMRepository) GetPermissionGroup(arg *uuid.UUID) (*iam_domain.Permissi
 	}
 	pg := &iam_domain.PermissionGroupRead{}
 
-	row := r.DB.QueryRow(`SELECT id, name, abbr, description, is_group, parent, is_node, "generated" FROM permission_groups WHERE id = ?`, arg.String())
+	row := r.db.QueryRow(`SELECT id, name, abbr, description, is_group, parent, is_node, "generated" FROM permission_groups WHERE id = ?`, arg.String())
 
 	err := row.Scan(
 		&pg.ID,
