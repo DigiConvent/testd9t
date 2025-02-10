@@ -7,5 +7,9 @@ import (
 )
 
 func (s PostService) ReadEmailAddress(id *uuid.UUID) (*post_domain.EmailAddressRead, *core.Status) {
-	panic("unimplemented")
+	if id == nil {
+		return nil, core.UnprocessableContentError("PostService requires an ID")
+	}
+	address, status := s.repository.ReadEmailAddress(id)
+	return address, &status
 }

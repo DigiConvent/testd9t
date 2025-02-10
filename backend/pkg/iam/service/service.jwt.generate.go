@@ -12,7 +12,7 @@ func (service *IAMService) GenerateJwt(userId *uuid.UUID) (string, *core.Status)
 	if userId == nil {
 		return "", core.UnprocessableContentError("ID is required")
 	}
-	privKey := service.IAMRepository.GetPrivateKey()
+	privKey := service.repository.GetPrivateKey()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
 		"id":  userId.String(),

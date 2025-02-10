@@ -53,12 +53,12 @@ type IAMServiceInterface interface {
 }
 
 type IAMService struct {
-	IAMRepository iam_repository.IAMRepositoryInterface
+	repository iam_repository.IAMRepositoryInterface
 }
 
 func NewIAMService(userRepository iam_repository.IAMRepositoryInterface) IAMServiceInterface {
 	return &IAMService{
-		IAMRepository: userRepository,
+		repository: userRepository,
 	}
 }
 

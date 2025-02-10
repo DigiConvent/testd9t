@@ -15,7 +15,7 @@ func (service *IAMService) VerifyJwt(token string) (*uuid.UUID, *core.Status) {
 			return nil, errors.New("unexpected signing method")
 		}
 		log.Success("Verified JWT")
-		return &service.IAMRepository.GetPrivateKey().PublicKey, nil
+		return &service.repository.GetPrivateKey().PublicKey, nil
 	})
 
 	if err != nil {

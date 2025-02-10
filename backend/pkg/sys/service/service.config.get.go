@@ -7,7 +7,7 @@ import (
 )
 
 func (s *SysService) GetConfiguration() (*sys_domain.Configuration, *core.Status) {
-	config, status := s.Repository.GetConfiguration()
+	config, status := s.repository.GetConfiguration()
 	if status.Err() {
 		return nil, &status
 	}

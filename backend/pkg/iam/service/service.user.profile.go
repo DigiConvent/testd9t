@@ -11,22 +11,22 @@ func (s *IAMService) GetUserProfile(id *uuid.UUID) (*iam_domain.UserProfile, *co
 		return nil, &core.Status{Code: 422, Message: "ID is required"}
 	}
 
-	userRead, status := s.IAMRepository.GetUserByID(id)
+	userRead, status := s.repository.GetUserByID(id)
 	if status.Err() {
 		return nil, &status
 	}
 
-	userStatuses, status := s.IAMRepository.ListUserStatusesFromUser(id)
+	userStatuses, status := s.repository.ListUserStatusesFromUser(id)
 	if status.Err() {
 		return nil, &status
 	}
 
-	userPermissions, status := s.IAMRepository.ListUserPermissions(id)
+	userPermissions, status := s.repository.ListUserPermissions(id)
 	if status.Err() {
 		return nil, &status
 	}
 
-	userGroups, status := s.IAMRepository.ListUserGroups(id)
+	userGroups, status := s.repository.ListUserGroups(id)
 	if status.Err() {
 		return nil, &status
 	}

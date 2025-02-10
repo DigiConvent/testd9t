@@ -10,7 +10,7 @@ func (s PostService) CreateEmailAddress(credentials *post_domain.EmailAddressWri
 	if credentials == nil {
 		return nil, core.UnprocessableContentError("credentials are required")
 	}
-	id, status := s.Repository.CreateEmailAddress(credentials)
+	id, status := s.repository.CreateEmailAddress(credentials)
 	if status.Err() {
 		return nil, &status
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 func (s *SysService) GetPackages() (map[string]sys_domain.Package, *core.Status) {
-	packages, status := s.Repository.GetPackages()
+	packages, status := s.repository.GetPackages()
 	if status.Err() {
 		return nil, &status
 	}

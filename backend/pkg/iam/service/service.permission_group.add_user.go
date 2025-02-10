@@ -6,6 +6,6 @@ import (
 )
 
 func (service *IAMService) AddUserToPermissionGroup(permissionGroup, userId *uuid.UUID) *core.Status {
-	status := service.IAMRepository.AddUserToPermissionGroup(permissionGroup, userId)
+	status := service.repository.AddUserToPermissionGroup(permissionGroup, userId)
 	return &status
 }

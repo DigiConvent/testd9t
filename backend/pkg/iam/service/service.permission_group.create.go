@@ -14,12 +14,12 @@ func (s *IAMService) CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite)
 		return nil, core.UnprocessableContentError(err.Error())
 	}
 
-	id, status := s.IAMRepository.CreatePermissionGroup(arg)
+	id, status := s.repository.CreatePermissionGroup(arg)
 	if status.Err() && status.Code != 201 {
 		return nil, &status
 	}
 
-	setPermissionsStatus := s.IAMRepository.SetPermissionsForPermissionGroup(id, arg.Permissions)
+	setPermissionsStatus := s.repository.SetPermissionsForPermissionGroup(id, arg.Permissions)
 
 	if setPermissionsStatus.Err() {
 		return nil, &setPermissionsStatus

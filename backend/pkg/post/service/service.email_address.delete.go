@@ -6,5 +6,10 @@ import (
 )
 
 func (s PostService) DeleteEmailAddress(id *uuid.UUID) *core.Status {
-	panic("unimplemented")
+	if id == nil {
+		return core.UnprocessableContentError("ID is required")
+	}
+	status := s.repository.DeleteEmailAddress(id)
+
+	return &status
 }

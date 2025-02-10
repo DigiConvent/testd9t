@@ -6,6 +6,6 @@ import (
 )
 
 func (s *IAMService) SetParentPermissionGroup(arg *iam_domain.PermissionGroupSetParent) *core.Status {
-	status := s.IAMRepository.SetParentPermissionGroup(arg)
+	status := s.repository.SetParentPermissionGroup(arg)
 	return &status
 }

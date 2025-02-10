@@ -10,7 +10,7 @@ import (
 )
 
 func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body string) *core.Status {
-	fromEmail, status := s.Repository.ReadEmailAddress(from)
+	fromEmail, status := s.repository.ReadEmailAddress(from)
 	if status.Err() {
 		return &status
 	}

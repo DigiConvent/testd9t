@@ -10,12 +10,12 @@ func TestCreateEmailAddress(t *testing.T) {
 	postService := GetTestPostService("post")
 
 	credentials := &post_domain.EmailAddressWrite{
-		Name:     "test",
-		Domain:   "test",
-		Password: "test",
+		Name:   "TestCreateEmailAddress",
+		Domain: "test.test",
 	}
 
 	id, status := postService.CreateEmailAddress(credentials)
+
 	if status.Err() {
 		t.Errorf("Failed to create email address: %s", status.Message)
 	}

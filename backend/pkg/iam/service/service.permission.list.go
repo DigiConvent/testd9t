@@ -6,7 +6,7 @@ import (
 )
 
 func (service *IAMService) ListPermissions() ([]*iam_domain.PermissionRead, *core.Status) {
-	permissions, status := service.IAMRepository.ListPermissions()
+	permissions, status := service.repository.ListPermissions()
 	if status.Err() {
 		return nil, &status
 	}

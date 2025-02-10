@@ -11,7 +11,7 @@ func (s *IAMService) GetUser(id *uuid.UUID) (*iam_domain.UserRead, *core.Status)
 		return nil, &core.Status{Code: 422, Message: "ID is required"}
 	}
 
-	userRead, status := s.IAMRepository.GetUserByID(id)
+	userRead, status := s.repository.GetUserByID(id)
 	if status.Err() {
 		return nil, &status
 	}

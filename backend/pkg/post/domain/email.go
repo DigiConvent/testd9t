@@ -3,9 +3,8 @@ package post_domain
 import "github.com/google/uuid"
 
 type EmailAddressWrite struct {
-	Name     string `json:"name"`
-	Domain   string `json:"domain"`
-	Password string `json:"password"`
+	Name   string `json:"name"`
+	Domain string `json:"domain"`
 }
 
 type EmailAddressRead struct {

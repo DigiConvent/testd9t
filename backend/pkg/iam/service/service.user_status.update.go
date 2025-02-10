@@ -7,6 +7,6 @@ import (
 )
 
 func (s *IAMService) UpdateUserStatus(id *uuid.UUID, arg *iam_domain.UserStatusWrite) *core.Status {
-	status := s.IAMRepository.UpdateUserStatus(id, arg)
+	status := s.repository.UpdateUserStatus(id, arg)
 	return &status
 }

@@ -31,4 +31,5 @@ func TestGenerateJwt(t *testing.T) {
 	if !status.Err() {
 		t.Fatal("Expected an error")
 	}
+
 }

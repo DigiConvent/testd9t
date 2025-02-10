@@ -11,7 +11,7 @@ type PostRepositoryInterface interface {
 	CreateEmailAddress(credentials *post_domain.EmailAddressWrite) (*uuid.UUID, core.Status)
 	ReadEmailAddress(id *uuid.UUID) (*post_domain.EmailAddressRead, core.Status)
 	DeleteEmailAddress(id *uuid.UUID) core.Status
-	ListEmailAddress(address string) ([]post_domain.EmailAddressRead, core.Status)
+	ListEmailAddresses() ([]post_domain.EmailAddressRead, core.Status)
 	UpdateEmailAddress(id *uuid.UUID, credentials *post_domain.EmailAddressWrite) core.Status
 }
 

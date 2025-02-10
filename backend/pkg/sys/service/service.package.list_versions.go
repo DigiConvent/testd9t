@@ -7,7 +7,7 @@ import (
 )
 
 func (s *SysService) GetPackageVersions(pkgName string) ([]sys_domain.Version, *core.Status) {
-	versions, status := s.Repository.GetPackageVersions(pkgName)
+	versions, status := s.repository.GetPackageVersions(pkgName)
 
 	if status.Err() {
 		return nil, &status

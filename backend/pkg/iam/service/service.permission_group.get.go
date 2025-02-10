@@ -7,7 +7,7 @@ import (
 )
 
 func (s *IAMService) GetPermissionGroup(id *uuid.UUID) (*iam_domain.PermissionGroupRead, *core.Status) {
-	read, status := s.IAMRepository.GetPermissionGroup(id)
+	read, status := s.repository.GetPermissionGroup(id)
 
 	if status.Err() {
 		return nil, &status

@@ -14,7 +14,7 @@ func (s *IAMService) CreateUser(user *iam_domain.UserWrite) (*uuid.UUID, *core.S
 		return nil, &core.Status{Code: 422, Message: err.Error()}
 	}
 
-	id, status := s.IAMRepository.CreateUser(user)
+	id, status := s.repository.CreateUser(user)
 	if status.Err() && status.Code != 201 {
 		return nil, &status
 	}

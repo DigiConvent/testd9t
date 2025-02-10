@@ -18,7 +18,7 @@ func (service *IAMService) SetUserPassword(id *uuid.UUID, password string) *core
 		return core.InternalError(err.Error())
 	}
 
-	status := service.IAMRepository.SetCredentialPassword(id, password)
+	status := service.repository.SetCredentialPassword(id, password)
 	if status.Err() {
 		return &status
 	}

@@ -6,6 +6,6 @@ import (
 )
 
 func (s *IAMService) DeletePermissionGroup(id *uuid.UUID) *core.Status {
-	status := s.IAMRepository.DeletePermissionGroup(id)
+	status := s.repository.DeletePermissionGroup(id)
 	return &status
 }

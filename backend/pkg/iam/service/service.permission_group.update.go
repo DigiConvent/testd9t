@@ -7,6 +7,6 @@ import (
 )
 
 func (s *IAMService) UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.PermissionGroupWrite) *core.Status {
-	status := s.IAMRepository.UpdatePermissionGroup(id, arg)
+	status := s.repository.UpdatePermissionGroup(id, arg)
 	return &status
 }

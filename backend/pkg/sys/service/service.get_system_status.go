@@ -12,7 +12,7 @@ import (
 )
 
 func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) {
-	programVersion, databaseVersion, status := s.Repository.GetCurrentVersion()
+	programVersion, databaseVersion, status := s.repository.GetCurrentVersion()
 	if status.Err() {
 		programVersion = &sys_domain.Version{
 			Major: -1,

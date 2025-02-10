@@ -13,7 +13,7 @@ func (s *IAMService) AddUserStatus(status *iam_domain.AddUserStatusToUser) *core
 		return &core.Status{Code: 422, Message: err.Error()}
 	}
 
-	result := s.IAMRepository.AddUserStatusToUser(status)
+	result := s.repository.AddUserStatusToUser(status)
 
 	return &result
 }

@@ -10,7 +10,7 @@ func (service *IAMService) GetPermissionGroupProfile(id *uuid.UUID) (*iam_domain
 
 	profile := &iam_domain.PermissionGroupProfile{}
 
-	group, status := service.IAMRepository.GetPermissionGroup(id)
+	group, status := service.repository.GetPermissionGroup(id)
 
 	if status.Err() {
 		return nil, &status
@@ -18,14 +18,14 @@ func (service *IAMService) GetPermissionGroupProfile(id *uuid.UUID) (*iam_domain
 
 	profile.PermissionGroup = group
 
-	users, status := service.IAMRepository.ListGroupUsers(id)
+	users, status := service.repository.ListGroupUsers(id)
 	if status.Err() {
 		return nil, &status
 	}
 
 	profile.Members = users
 
-	permissionGroups, status := service.IAMRepository.ListPermissionGroupPermissionGroups(id)
+	permissionGroups, status := service.repository.ListPermissionGroupPermissionGroups(id)
 
 	if status.Err() {
 		return nil, &status
@@ -33,7 +33,7 @@ func (service *IAMService) GetPermissionGroupProfile(id *uuid.UUID) (*iam_domain
 
 	profile.PermissionGroups = permissionGroups
 
-	permissions, status := service.IAMRepository.ListPermissionGroupPermissions(id)
+	permissions, status := service.repository.ListPermissionGroupPermissions(id)
 
 	if status.Err() {
 		return nil, &status

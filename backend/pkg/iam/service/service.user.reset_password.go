@@ -5,12 +5,12 @@ import (
 )
 
 func (service *IAMService) ResetPassword(email string) (string, *core.Status) {
-	user, status := service.IAMRepository.GetUserByEmail(email)
+	user, status := service.repository.GetUserByEmail(email)
 	if status.Err() {
 		return "", &status
 	}
 
-	token, status := service.IAMRepository.ResetCredentials(&user.ID)
+	token, status := service.repository.ResetCredentials(&user.ID)
 
 	return token, &status
 }

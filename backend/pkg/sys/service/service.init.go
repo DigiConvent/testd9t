@@ -6,11 +6,11 @@ import (
 )
 
 func (s *SysService) Init() *core.Status {
-	if s.Repository.IsInitialised() {
+	if s.repository.IsInitialised() {
 		return core.ConflictError("Already initialised")
 	}
 
-	initStatus := s.Repository.InitDatabase()
+	initStatus := s.repository.InitDatabase()
 
 	if initStatus.Err() {
 		return core.InternalError(initStatus.Message)

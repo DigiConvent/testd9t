@@ -7,7 +7,7 @@ import (
 )
 
 func (s *IAMService) LoginTelegramUser(body string) (*uuid.UUID, *core.Status) {
-	userId, status := s.IAMRepository.VerifyTelegramUser(body)
+	userId, status := s.repository.VerifyTelegramUser(body)
 	if status.Ok() {
 		return userId, &status
 	}

@@ -6,6 +6,6 @@ import (
 )
 
 func (s *IAMService) SetEnabled(id *uuid.UUID, enabled bool) *core.Status {
-	status := s.IAMRepository.SetEnabled(id, enabled)
+	status := s.repository.SetEnabled(id, enabled)
 	return &status
 }

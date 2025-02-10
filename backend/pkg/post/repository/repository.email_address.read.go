@@ -11,7 +11,12 @@ func (p PostRepository) ReadEmailAddress(id *uuid.UUID) (*post_domain.EmailAddre
 		return nil, *core.UnprocessableContentError("ID is required")
 	}
 
-	p.db.QueryRow("select id, name, domain, password from email_addresses where id = ?", id.String())
+	readAddress := &post_domain.EmailAddressRead{}
+	err := p.db.QueryRow("select id, name, domain from email_addresses where id = ?", id.String()).Scan(&readAddress.ID, &readAddress.Name, &readAddress.Domain)
 
-	return nil, *core.StatusSuccess()
+	if err != nil {
+		return nil, *core.NotFoundError("email address not found")
+	}
+
+	return readAddress, *core.StatusSuccess()
 }

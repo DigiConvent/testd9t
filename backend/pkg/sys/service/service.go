@@ -25,17 +25,17 @@ type SysServiceInterface interface {
 }
 
 type SysService struct {
-	Repository sys_repository.SysRepositoryInterface
+	repository sys_repository.SysRepositoryInterface
 }
 
 func (s *SysService) MigrateDatabase(toVersion *sys_domain.Version) *core.Status {
-	status := s.Repository.MigrateDatabase(toVersion)
+	status := s.repository.MigrateDatabase(toVersion)
 
 	return &status
 }
 
 func NewSysService(repo sys_repository.SysRepositoryInterface) SysServiceInterface {
 	return &SysService{
-		Repository: repo,
+		repository: repo,
 	}
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func (s *SysService) MigratePackage(pkgName string, toVersion *sys_domain.Version) *core.Status {
-	status := s.Repository.MigratePackage(pkgName, toVersion)
+	status := s.repository.MigratePackage(pkgName, toVersion)
 	if status.Err() {
 		return &status
 	}

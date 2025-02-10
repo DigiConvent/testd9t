@@ -7,7 +7,7 @@ import (
 )
 
 func (service *IAMService) ListUsers(fs *iam_domain.UserFilterSort) (*pagination.Page[*iam_domain.UserFacade], *core.Status) {
-	page, status := service.IAMRepository.ListUsers(fs)
+	page, status := service.repository.ListUsers(fs)
 	if status.Err() {
 		return nil, &status
 	}

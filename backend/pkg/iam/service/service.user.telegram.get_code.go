@@ -6,7 +6,7 @@ import (
 )
 
 func (s *IAMService) GetTelegramRegistrationCode(userId *uuid.UUID) (string, *core.Status) {
-	code, status := s.IAMRepository.GetTelegramRegistrationCode(userId)
+	code, status := s.repository.GetTelegramRegistrationCode(userId)
 
 	return code, &status
 }
