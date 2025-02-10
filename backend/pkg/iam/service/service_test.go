@@ -31,7 +31,6 @@ func TestMain(m *testing.M) {
 	GetTestIAMService("iam")
 	defer testDB.DeleteDatabase()
 	m.Run()
-
 }
 
 func generatePrivateKey() {

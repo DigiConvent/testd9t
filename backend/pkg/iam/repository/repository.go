@@ -66,14 +66,12 @@ type IAMRepositoryInterface interface {
 
 func NewIAMRepository(db db.DatabaseInterface, privateKeyPath string, live bool) IAMRepositoryInterface {
 	var privateKey *rsa.PrivateKey
-	if live {
-		pkBytes, err := os.ReadFile(privateKeyPath)
-		if err != nil {
-			log.Warning("Could not find the private key for the IAM repository. This is fine if you are installing.")
-		} else {
-			block, _ := pem.Decode(pkBytes)
-			privateKey, _ = x509.ParsePKCS1PrivateKey(block.Bytes)
-		}
+	pkBytes, err := os.ReadFile(privateKeyPath)
+	if err != nil {
+		log.Warning("Could not find the private key for the IAM repository. This is fine if you are installing.")
+	} else {
+		block, _ := pem.Decode(pkBytes)
+		privateKey, _ = x509.ParsePKCS1PrivateKey(block.Bytes)
 	}
 
 	return &IAMRepository{
