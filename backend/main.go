@@ -22,7 +22,7 @@ func main() {
 	sys_domain.StartTime = time.Now()
 	log.Info("Build      " + sys_domain.CompiledAt)
 	log.Info("Running at " + sys_domain.StartTime.Format(core_utils.FormattedTime))
-	live := core_utils.Contains(os.Args, "--run")
+	live := core_utils.Contains(os.Args, "--run") || core_utils.Contains(os.Args, "--install")
 
 	fmt.Println(os.Args)
 	if sys_domain.ProgramVersion == "dev" {
