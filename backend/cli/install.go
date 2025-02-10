@@ -78,9 +78,7 @@ func (s Script) Do(fix, verbose bool, inputs map[string]*Input) error {
 	args := make([]string, 0)
 	args = append(args, getFilePath("do_"+s.Name+".sh"))
 	for _, input := range s.Input {
-		fmt.Println(inputs[strings.ToLower(input.Name)].Value)
 		args = append(args, inputs[strings.ToLower(input.Name)].Value)
-		fmt.Println(args)
 	}
 
 	cmd := exec.Command("bash", args...)
