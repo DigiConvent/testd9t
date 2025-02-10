@@ -8,6 +8,7 @@ import (
 
 	"github.com/DigiConvent/testd9t/core"
 	"github.com/DigiConvent/testd9t/core/db"
+	"github.com/DigiConvent/testd9t/core/log"
 	"github.com/DigiConvent/testd9t/core/pagination"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	uuid "github.com/google/uuid"
@@ -15,7 +16,7 @@ import (
 
 type IAMRepository struct {
 	db         db.DatabaseInterface
-	privateKey rsa.PrivateKey
+	privateKey *rsa.PrivateKey
 }
 
 type IAMRepositoryInterface interface {
@@ -64,16 +65,17 @@ type IAMRepositoryInterface interface {
 }
 
 func NewIAMRepository(db db.DatabaseInterface, privateKeyPath string) IAMRepositoryInterface {
+	var privateKey *rsa.PrivateKey
 	pkBytes, err := os.ReadFile(privateKeyPath)
 	if err != nil {
-		panic(err)
+		log.Warning("Could not find the private key for the IAM repository. This is fine if you are installing.")
+	} else {
+		block, _ := pem.Decode(pkBytes)
+		privateKey, _ = x509.ParsePKCS1PrivateKey(block.Bytes)
 	}
-
-	block, _ := pem.Decode(pkBytes)
-	privateKey, _ := x509.ParsePKCS1PrivateKey(block.Bytes)
 
 	return &IAMRepository{
 		db:         db,
-		privateKey: *privateKey,
+		privateKey: privateKey,
 	}
 }

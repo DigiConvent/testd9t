@@ -12,7 +12,7 @@ func (service *IAMService) LoginUser(email string, password string) (*uuid.UUID,
 	}
 	userId, status := service.repository.GetCredentials(email, password)
 
-	if err != nil {
+	if status.Err() {
 		return nil, &status
 	}
 

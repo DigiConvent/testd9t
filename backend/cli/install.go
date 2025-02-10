@@ -220,7 +220,6 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	}
 	password := hex.EncodeToString(bytes)
 
-	// write this to the env file
 	contents, err := os.ReadFile("/home/testd9t/env")
 	if err != nil {
 		log.Error("Could not store the master password in the env file. No idea what to do from here. " + err.Error())

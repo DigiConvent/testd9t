@@ -6,7 +6,6 @@ import (
 	iam_service "github.com/DigiConvent/testd9t/pkg/iam/service"
 	post_repository "github.com/DigiConvent/testd9t/pkg/post/repository"
 	post_service "github.com/DigiConvent/testd9t/pkg/post/service"
-	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 	sys_repository "github.com/DigiConvent/testd9t/pkg/sys/repository"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 )
@@ -24,9 +23,6 @@ func InitiateServices() *Services {
 	sysService.Init()
 
 	keyPath := "/home/testd9t/certs/privkey.pem"
-	if sys_domain.ProgramVersion == "dev" {
-		keyPath = ""
-	}
 	iamDB := db.NewSqliteDB("iam")
 	iamRepo := iam_repository.NewIAMRepository(iamDB, keyPath)
 	iamService := iam_service.NewIAMService(iamRepo)
