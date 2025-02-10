@@ -222,6 +222,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	}
 
 	contents = []byte("MASTER_PASSWORD=" + password + "\n" + string(contents))
+	os.Setenv("MASTER_PASSWORD", password)
 	err = os.WriteFile("/home/testd9t/env", contents, 0644)
 	if err != nil {
 		log.Error("Could not store the master password in the env file. No idea what to do from here. " + err.Error())

@@ -13,6 +13,8 @@ type PostRepositoryInterface interface {
 	DeleteEmailAddress(id *uuid.UUID) core.Status
 	ListEmailAddresses() ([]post_domain.EmailAddressRead, core.Status)
 	UpdateEmailAddress(id *uuid.UUID, credentials *post_domain.EmailAddressWrite) core.Status
+
+	GetEmailAddressByName(name string) (*post_domain.EmailAddressRead, core.Status)
 }
 
 type PostRepository struct {

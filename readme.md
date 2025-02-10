@@ -62,27 +62,6 @@ cd testd9t
 ./development/pir8.sh <your github username> <your github repository name>
 ```
 
-## Technical details
-
-### Installing on a server
-
- 1. Create user digiconvent for the process 
- 2. Install Postgres database (skip if you have your own dedicated postgres server)
-    
-    2.1 `create role testd9t with login password '<your telegram code>'`
-
-    2.2 `create database digiconvent owner testd9t`
- 3. Install certbot
- 
-    3.1 `certbot certonly --standalone -d $1 --register-unsafely-without-email --non-interactive --agree-tos`
- 4. Move all the files and folders to the right positions
-
-    4.1 `mv ./main /home/digiconvent/backend/main`
-
-    4.2 `mv ./frontend /home/digiconvent/frontend/`
-
-    4.4 `cp /etc/letsencrypt/live/digiconvent.de/*.pem /home/albert/certs/`
-
 
 ### Folder/File structure
 

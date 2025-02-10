@@ -2,8 +2,10 @@ package post_service
 
 import (
 	"bufio"
+	"encoding/base64"
 	"fmt"
 	"net"
+	"os"
 	"strings"
 
 	"github.com/DigiConvent/testd9t/core"
@@ -50,31 +52,67 @@ func (s *PostService) StartSmtpServer() {
 			log.Error("Error accepting connection: " + err.Error())
 			continue
 		}
-		go s.startListening(connection)
+		go s.handleSMTPConnection(connection)
 	}
 }
 
-func (s PostService) startListening(conn net.Conn) {
+func (s *PostService) handleSMTPConnection(conn net.Conn) {
 	defer conn.Close()
-	fmt.Fprintln(conn, "220 GoSMTP Server Ready")
+	fmt.Fprintln(conn, "220 SMTP Server for testd9t is ready")
 
 	scanner := bufio.NewScanner(conn)
-	var sender, recipient, data string
+
+	authenticated := false
 	isData := false
+	var sender, recipient, data string
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		fmt.Println("Client:", line)
+		fmt.Println("Received:", line)
 
-		if strings.HasPrefix(line, "HELO") {
-			fmt.Fprintln(conn, "250 Hello")
+		if strings.HasPrefix(line, "HELO") || strings.HasPrefix(line, "EHLO") {
+			fmt.Fprintln(conn, "250-Hello")
+			fmt.Fprintln(conn, "250 AUTH PLAIN")
+		} else if strings.HasPrefix(line, "AUTH PLAIN") {
+			fmt.Fprintln(conn, "334")
+
+			scanner.Scan()
+			decoded, _ := base64.StdEncoding.DecodeString(scanner.Text())
+			parts := strings.SplitN(string(decoded), "\x00", 3)
+			email := parts[1]
+			password := parts[2]
+
+			_, status := s.repository.GetEmailAddressByName(email)
+			if status.Err() {
+				fmt.Fprintln(conn, "535 Authentication failed")
+				continue
+			}
+
+			if len(parts) == 3 && password == os.Getenv("MASTER_PASSWORD") {
+				authenticated = true
+				fmt.Fprintln(conn, "235 Authentication successful")
+			} else {
+				fmt.Fprintln(conn, "535 Authentication failed")
+			}
 		} else if strings.HasPrefix(line, "MAIL FROM:") {
+			if !authenticated {
+				fmt.Fprintln(conn, "530 Authentication required")
+				continue
+			}
 			sender = strings.TrimPrefix(line, "MAIL FROM:")
 			fmt.Fprintln(conn, "250 OK")
 		} else if strings.HasPrefix(line, "RCPT TO:") {
+			if !authenticated {
+				fmt.Fprintln(conn, "530 Authentication required")
+				continue
+			}
 			recipient = strings.TrimPrefix(line, "RCPT TO:")
 			fmt.Fprintln(conn, "250 OK")
 		} else if strings.HasPrefix(line, "DATA") {
+			if !authenticated {
+				fmt.Fprintln(conn, "530 Authentication required")
+				continue
+			}
 			fmt.Fprintln(conn, "354 End data with <CR><LF>.<CR><LF>")
 			isData = true
 			data = ""
