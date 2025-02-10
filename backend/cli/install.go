@@ -74,10 +74,13 @@ func (s Script) Prepare(flavour string) {
 	storeFile("undo_"+s.Name+".sh", string(undoScriptContents))
 }
 
-func (s Script) Do(fix, verbose bool, inputs map[string]Input) error {
-	args := []string{getFilePath("do_" + s.Name + ".sh")}
+func (s Script) Do(fix, verbose bool, inputs map[string]*Input) error {
+	args := make([]string, 0)
+	args = append(args, getFilePath("do_"+s.Name+".sh"))
 	for _, input := range s.Input {
-		args = append(args, inputs[input.Name].Value)
+		fmt.Println(inputs[strings.ToLower(input.Name)].Value)
+		args = append(args, inputs[strings.ToLower(input.Name)].Value)
+		fmt.Println(args)
 	}
 
 	cmd := exec.Command("bash", args...)
@@ -129,7 +132,7 @@ type InstallationProtocol struct {
 	Files   []string `json:"path"`
 }
 
-func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool) map[string]Input {
+func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool) {
 	uid := os.Geteuid()
 
 	if uid != 0 {
@@ -161,7 +164,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		os.Exit(1)
 	}
 
-	inputs := map[string]Input{
+	inputs := map[string]*Input{
 		"domain":   {Name: "Domain", Value: ""},
 		"email":    {Name: "Email", Value: ""},
 		"password": {Name: "Password", Value: ""},
@@ -170,6 +173,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	for _, input := range inputs {
 		input.promptUser()
 	}
+	fmt.Println(inputs["domain"].Value)
 
 	repo := file_repo.NewRepoRemote()
 	var protocol InstallationProtocol
@@ -177,13 +181,13 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	raw, err := repo.ReadRawFile("install/" + *flavour + "/install.json")
 	if err != nil {
 		fmt.Println("Error fetching installation protocol:", err)
-		return nil
+		os.Exit(1)
 	}
 
 	err = json.Unmarshal(raw, &protocol)
 	if err != nil {
 		fmt.Println("Error decoding JSON:", err)
-		return nil
+		os.Exit(1)
 	}
 
 	for i := 0; i < len(protocol.Scripts); i++ {
@@ -207,8 +211,10 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	}
 
 	for _, entry := range strings.Split(string(contents), "\n") {
-		segments := strings.Split(entry, "=")
-		variables[segments[0]] = segments[1]
+		if strings.Count(entry, "=") == 1 {
+			segments := strings.Split(entry, "=")
+			variables[segments[0]] = segments[1]
+		}
 	}
 
 	for key := range inputs {
@@ -224,8 +230,6 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	if err != nil {
 		log.Error("Could not store the new environment variables...")
 	}
-
-	return inputs
 }
 
 const dirToStore = "/testd9t/"
