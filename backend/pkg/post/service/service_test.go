@@ -15,7 +15,7 @@ func GetTestPostService(dbName string) post_service.PostServiceInterface {
 		testDB = db.NewTestSqliteDB(dbName)
 	}
 	repo := post_repository.NewPostRepository(testDB)
-	return post_service.NewPostService(repo, false)
+	return post_service.NewPostService(repo, true)
 }
 
 func TestMain(m *testing.M) {

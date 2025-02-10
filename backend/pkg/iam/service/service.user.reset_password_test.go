@@ -22,12 +22,10 @@ func TestResetPassword(t *testing.T) {
 		t.Fatal(status.Message)
 	}
 
-	user, status := iamService.GetUser(uid)
+	_, status = iamService.GetUser(uid)
 	if status.Err() {
 		t.Fatal(status.Message)
 	}
-
-	t.Log(user.Email)
 
 	token, status := iamService.ResetPassword("TestResetPassword@test.test")
 	if status.Err() {
