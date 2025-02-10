@@ -30,7 +30,6 @@ type SysService struct {
 
 func (s *SysService) MigrateDatabase(toVersion *sys_domain.Version) *core.Status {
 	status := s.repository.MigrateDatabase(toVersion)
-
 	return &status
 }
 

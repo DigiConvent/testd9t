@@ -13,6 +13,7 @@ type SMTPServer struct {
 
 func (s *SMTPServer) HandleConnection(conn net.Conn) {
 	defer conn.Close()
+	fmt.Fprintln(conn, "220 GoSMTP Server Ready")
 
 	scanner := bufio.NewScanner(conn)
 	var sender, recipient, data string
@@ -51,22 +52,5 @@ func (s *SMTPServer) HandleConnection(conn net.Conn) {
 		} else {
 			fmt.Fprintln(conn, "500 Unrecognized command")
 		}
-	}
-}
-
-func (s *SMTPServer) Start() error {
-	listener, err := net.Listen("tcp", s.Address)
-	if err != nil {
-		return err
-	}
-	fmt.Println("SMTP server listening on", s.Address)
-
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			fmt.Println("Error accepting connection:", err)
-			continue
-		}
-		go s.HandleConnection(conn)
 	}
 }

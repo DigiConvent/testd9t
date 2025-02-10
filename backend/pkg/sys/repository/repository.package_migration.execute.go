@@ -58,16 +58,16 @@ func (r *SysRepository) MigratePackage(pkgName string, toVersion *sys_domain.Ver
 	}
 
 	if fromVersion.Major == -1 {
-		_, err := r.db.Exec("INSERT INTO packages (name, major, minor, patch) VALUES (?, ?, ?, ?)", pkgName, toVersion.Major, toVersion.Minor, toVersion.Patch)
+		_, err := r.db.Exec("insert into packages (name, major, minor, patch) values (?, ?, ?, ?)", pkgName, toVersion.Major, toVersion.Minor, toVersion.Patch)
 		if err != nil {
 			return *core.InternalError("Could not register package " + pkgName + " version " + toVersion.String())
 		}
 	} else {
-		_, err := r.db.Exec("UPDATE packages SET major = ?, minor = ?, patch = ? WHERE name = ?", toVersion.Major, toVersion.Minor, toVersion.Patch, pkgName)
+		_, err := r.db.Exec("update packages set major = ?, minor = ?, patch = ? where name = ?", toVersion.Major, toVersion.Minor, toVersion.Patch, pkgName)
 		if err != nil {
 			return *core.InternalError("Could not update package " + pkgName + " version to " + toVersion.String())
 		} else {
-			log.Success("Updated package " + pkgName + " to version " + toVersion.String())
+			log.Success("Updated package " + pkgName + " from version " + fromVersion.String() + " to version " + toVersion.String())
 		}
 	}
 
