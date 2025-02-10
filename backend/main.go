@@ -44,7 +44,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	cli.HandleFlags(services.SysService)
+	cli.HandleFlags(services)
 
 	router.SetupRouter(services)
 

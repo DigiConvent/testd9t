@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "moduleResolution": "nodenext",
     "target": "esnext",
-    "module": "esnext",
+    "module": "NodeNext",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]

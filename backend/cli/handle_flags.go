@@ -6,11 +6,13 @@ import (
 	"os"
 
 	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
+	services "github.com/DigiConvent/testd9t/pkg"
+	post_domain "github.com/DigiConvent/testd9t/pkg/post/domain"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
-	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 )
 
-func HandleFlags(sysService sys_service.SysServiceInterface) {
+func HandleFlags(services *services.Services) {
+	sysService := services.SysService
 	actionsFlagSet := flag.NewFlagSet("Options", flag.ExitOnError)
 	verbose := actionsFlagSet.Bool("verbose", false, "Run more verbosely")
 	forceFlag := actionsFlagSet.Bool("force", false, "Apply fixes upon a failure during the installation")
@@ -71,10 +73,15 @@ func HandleFlags(sysService sys_service.SysServiceInterface) {
 	}
 
 	if *installFlag != "" {
-		Install(sysService, installFlag, *forceFlag, *verbose)
+		at := Install(sysService, installFlag, *forceFlag, *verbose)
+		if at != "" {
+			services.PostService.CreateEmailAddress(&post_domain.EmailAddressWrite{
+				Name:   "testd9t",
+				Domain: "",
+			})
+			services.PostService.SendEmail(nil, at, "Testd9t has been installed", "Testd9t has been installed")
+		}
 		InstallArtifacts(sys_domain.ProgramVersion, sysService)
-
-		// delete stuff from the tmp directory
 		os.RemoveAll("/tmp/testd9t/")
 	}
 

@@ -9,10 +9,8 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"strconv"
 	"strings"
 
-	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
 	"github.com/DigiConvent/testd9t/core/file_repo"
 	"github.com/DigiConvent/testd9t/core/log"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
@@ -35,6 +33,19 @@ type Script struct {
 	}
 	// these are the output files that are stored under /tmp/name.txt
 	Output []string `json:"output"`
+}
+
+type Input struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+func (input *Input) promptUser() {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Printf("%s: ", input.Name)
+	userInput, _ := reader.ReadString('\n')
+	userInput = userInput[:len(userInput)-1]
+	input.Value = userInput
 }
 
 func (s Script) Prepare(flavour string) {
@@ -63,12 +74,6 @@ func (s Script) Prepare(flavour string) {
 
 	storeFile("do_"+s.Name+".sh", string(doScriptContents))
 	storeFile("undo_"+s.Name+".sh", string(undoScriptContents))
-
-	if len(s.Input) > 0 {
-		for i, input := range s.Input {
-			s.Input[i].Value = promptUser(input.Name, input.Default)
-		}
-	}
 }
 
 func promptUser(prompt string, defaultValue string) string {
@@ -81,15 +86,16 @@ func promptUser(prompt string, defaultValue string) string {
 	}
 	return userInput
 }
-func (s Script) Do(fix, verbose bool) error {
+func (s Script) Do(fix, verbose bool, inputs map[string]Input) error {
 	args := []string{getFilePath("do_" + s.Name + ".sh")}
 	for _, input := range s.Input {
-		args = append(args, input.Value)
+		args = append(args, inputs[input.Name].Value)
 	}
 	cmd := exec.Command("bash", args...)
 	if verbose {
 		fmt.Println(cmd.String())
 	}
+
 	result, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println("❌ do_" + s.Name + "...")
@@ -99,7 +105,7 @@ func (s Script) Do(fix, verbose bool) error {
 		if fix {
 			err := s.Undo(verbose)
 			if err == nil {
-				s.Do(false, verbose)
+				s.Do(false, verbose, inputs)
 			}
 		} else {
 			fmt.Println(string(result))
@@ -134,7 +140,7 @@ type InstallationProtocol struct {
 	Files   []string `json:"path"`
 }
 
-func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool) {
+func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool) string {
 	uid := os.Geteuid()
 
 	if uid != 0 {
@@ -166,23 +172,13 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		os.Exit(1)
 	}
 
-	pid, err := cli_helpers.GetPIDByPort(80)
-	if err != nil {
-		fmt.Println("Error getting PID by port:", err)
-		return
+	inputs := map[string]Input{
+		"domain": {Name: "Domain", Value: ""},
+		"email":  {Name: "Email", Value: ""},
 	}
 
-	if pid != 0 {
-		processName, err := cli_helpers.GetProcessName(pid)
-		if err != nil {
-			fmt.Println("Error getting process name:", err)
-			return
-		}
-
-		if processName != "" {
-			log.Error("Process running on port 80: " + processName)
-			log.Error("kill " + strconv.Itoa(pid))
-		}
+	for _, input := range inputs {
+		input.promptUser()
 	}
 
 	repo := file_repo.NewRepoRemote()
@@ -191,13 +187,13 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	raw, err := repo.ReadRawFile("install/" + *flavour + "/install.json")
 	if err != nil {
 		fmt.Println("Error fetching installation protocol:", err)
-		return
+		return ""
 	}
 
 	err = json.Unmarshal(raw, &protocol)
 	if err != nil {
 		fmt.Println("Error decoding JSON:", err)
-		return
+		return ""
 	}
 
 	for i := 0; i < len(protocol.Scripts); i++ {
@@ -210,7 +206,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 
 	for _, script := range protocol.Scripts {
 		script.Prepare(*flavour)
-		script.Do(force, verbose)
+		script.Do(force, verbose, inputs)
 	}
 
 	bytes := make([]byte, 64)
@@ -231,6 +227,9 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		log.Error("Could not store the master password in the env file. No idea what to do from here. " + err.Error())
 	}
 	log.Success("Master password:\n" + password)
+
+	at := promptUser("Gimme your @", "")
+	return at
 }
 
 const dirToStore = "/testd9t/"
