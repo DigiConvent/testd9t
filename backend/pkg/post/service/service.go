@@ -62,6 +62,7 @@ func (s *PostService) StartSmtpServer() {
 	}
 
 	defer func() {
+		log.Info("Closing smtp server (defer)")
 		err := listener.Close()
 		if err != nil {
 			log.Error("Error closing smtp server: " + err.Error())
@@ -72,6 +73,7 @@ func (s *PostService) StartSmtpServer() {
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-sigChan
+		log.Info("Closing smtp server (signal)")
 		err := listener.Close()
 		if err != nil {
 			log.Error("Error closing smtp server: " + err.Error())
