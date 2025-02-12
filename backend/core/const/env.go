@@ -27,6 +27,21 @@ func CheckEnv() {
 		shouldContinue = false
 	}
 
+	if os.Getenv("SMTP_PORT") == "" {
+		log.Info("SMTP_PORT environment variable is not set, defaulting to 465")
+		os.Setenv("SMTP_PORT", "465")
+	}
+
+	if os.Getenv("HTTPS_PORT") == "" {
+		log.Info("HTTPS_PORT environment variable is not set, defaulting to 443")
+		os.Setenv("HTTPS_PORT", "443")
+	}
+
+	if os.Getenv("HTTP_PORT") == "" {
+		log.Info("HTTP_PORT environment variable is not set, defaulting to 80")
+		os.Setenv("HTTP_PORT", "80")
+	}
+
 	if !shouldContinue {
 		os.Exit(1)
 	}
