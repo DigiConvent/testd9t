@@ -63,6 +63,9 @@ func (r *SysRepository) MigratePackage(pkgName string, toVersion *sys_domain.Ver
 			return *core.InternalError("Could not register package " + pkgName + " version " + toVersion.String())
 		}
 	} else {
+		if fromVersion.String() == toVersion.String() {
+			return *core.StatusSuccess()
+		}
 		_, err := r.db.Exec("update packages set major = ?, minor = ?, patch = ? where name = ?", toVersion.Major, toVersion.Minor, toVersion.Patch, pkgName)
 		if err != nil {
 			return *core.InternalError("Could not update package " + pkgName + " version to " + toVersion.String())

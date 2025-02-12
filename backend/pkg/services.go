@@ -69,6 +69,8 @@ func DoFirstTimeStuff(services *Services) {
 
 	if status.Err() {
 		log.Error("Could not create email admin address: " + status.Message)
+	} else {
+		log.Info("Created email admin address")
 	}
 
 	status = services.PostService.SendEmail(sendFrom, emailAddress, "Login credentials", "Here are the login credentials for "+os.Getenv(constants.DOMAIN)+":\n\nEmail: "+emailAddress+"\nPassword: "+os.Getenv(constants.MASTER_PASSWORD))

@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strconv"
 	"strings"
 
 	constants "github.com/DigiConvent/testd9t/core/const"
@@ -219,16 +220,24 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		variables[strings.ToUpper(key)] = inputs[key].Value
 	}
 
+	maxL := 0
 	newContent := ""
 	for key := range variables {
 		newContent += fmt.Sprintf("%s=%s\n", key, variables[key])
+		if len(key) > maxL {
+			maxL = len(key)
+		}
 	}
 
 	err = os.WriteFile(constants.ENV_PATH, []byte(newContent), 0644)
 	if err != nil {
 		log.Error("Could not store the new environment variables...")
 	} else {
-		log.Info("Using the following environment variables:\n" + newContent)
+		readable := ""
+		for key := range variables {
+			readable += fmt.Sprintf("%"+strconv.Itoa(maxL)+"-s: %s\n", key, variables[key])
+		}
+		log.Info("Using the following environment variables:\n" + readable)
 	}
 }
 
