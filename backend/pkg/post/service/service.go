@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"github.com/DigiConvent/testd9t/core"
+	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/log"
 	post_domain "github.com/DigiConvent/testd9t/pkg/post/domain"
 	post_repository "github.com/DigiConvent/testd9t/pkg/post/repository"
@@ -37,10 +38,11 @@ type PostService struct {
 func NewPostService(repository post_repository.PostRepositoryInterface, test bool) PostServiceInterface {
 	postService := PostService{
 		repository: repository,
-		address:    ":465",
+		address:    ":" + os.Getenv(constants.SMTP_PORT),
 	}
 
 	if !test {
+		log.Info("Starting smtp server on " + postService.address)
 		go postService.StartSmtpServer()
 	}
 	return postService
@@ -49,7 +51,7 @@ func NewPostService(repository post_repository.PostRepositoryInterface, test boo
 func (s *PostService) StartSmtpServer() {
 	cert, err := tls.LoadX509KeyPair(post_setup.TlsPublicKeyPath(), post_setup.TlsPrivateKeyPath())
 	if err != nil {
-		panic(err)
+		log.Error("Error loading certificate for the smtp server: " + err.Error())
 	}
 	listener, err := tls.Listen("tcp", s.address,
 		&tls.Config{
@@ -58,7 +60,7 @@ func (s *PostService) StartSmtpServer() {
 	)
 
 	if err != nil {
-		panic(err.Error())
+		log.Error("Error starting smtp server: " + err.Error())
 	}
 
 	defer func() {
@@ -123,7 +125,7 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				continue
 			}
 
-			if len(parts) == 3 && password == os.Getenv("MASTER_PASSWORD") {
+			if len(parts) == 3 && password == os.Getenv(constants.MASTER_PASSWORD) {
 				authenticated = true
 				fmt.Fprintln(conn, "235 Authentication successful")
 			} else {

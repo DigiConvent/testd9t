@@ -32,19 +32,19 @@ type Logger struct {
 // 3 - success
 
 func Error(msg interface{}) {
-	fmt.Println(white+getTime()+": "+red, prep(msg), reset)
+	fmt.Println(white+getTime()+":"+red, prep(msg), reset)
 }
 
 func Warning(msg interface{}) {
-	fmt.Println(white+getTime()+": "+yellow, prep(msg), reset)
+	fmt.Println(white+getTime()+":"+yellow, prep(msg), reset)
 }
 
 func Info(msg interface{}) {
-	fmt.Println(white+getTime()+": "+cyan, prep(msg), reset)
+	fmt.Println(white+getTime()+":"+cyan, prep(msg), reset)
 }
 
 func Success(msg interface{}) {
-	fmt.Println(white+getTime()+": "+green, prep(msg), reset)
+	fmt.Println(white+getTime()+":"+green, prep(msg), reset)
 }
 
 func getTime() string {

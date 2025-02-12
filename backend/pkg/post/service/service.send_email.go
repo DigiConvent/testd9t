@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/DigiConvent/testd9t/core"
+	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/google/uuid"
 )
 
@@ -21,14 +22,14 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 
 	senderEmail := sender.Name + "@" + sender.Domain
 
-	addr := sender.Domain + ":465"
+	addr := sender.Domain + ":" + os.Getenv(constants.SMTP_PORT)
 	msg := "Subject: " + subject + "\r\n" +
 		"From: " + senderEmail + "\r\n" +
 		"To: " + to + "\r\n" +
 		"\r\n" +
 		body + "\r\n"
 
-	auth := smtp.PlainAuth("", sender.Name, os.Getenv("MASTER_PASSWORD"), sender.Domain)
+	auth := smtp.PlainAuth("", sender.Name, os.Getenv(constants.MASTER_PASSWORD), sender.Domain)
 	err := smtp.SendMail(addr, auth, to, []string{to}, []byte(msg))
 	if err != nil {
 		return core.InternalError("Unable to send electronic mail: " + err.Error())

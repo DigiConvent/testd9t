@@ -53,7 +53,7 @@ func (s Script) Prepare(flavour string) {
 		for _, file := range s.RequiresFiles {
 			contents, err := repo.ReadRawFile("install/" + flavour + "/" + file)
 			if err != nil {
-				fmt.Println("Error downloading file:", err)
+				log.Error("Error downloading file: " + err.Error())
 				return
 			}
 			storeFile(file, string(contents))
@@ -62,12 +62,12 @@ func (s Script) Prepare(flavour string) {
 
 	doScriptContents, err := repo.ReadRawFile("install/" + flavour + "/do_" + s.Name + ".sh")
 	if err != nil {
-		fmt.Println("Error downloading script:", err)
+		log.Error("Error downloading script: " + err.Error())
 		return
 	}
 	undoScriptContents, err := repo.ReadRawFile("install/" + flavour + "/undo_" + s.Name + ".sh")
 	if err != nil {
-		fmt.Println("Error downloading script:", err)
+		log.Error("Error downloading script: " + err.Error())
 		return
 	}
 
@@ -84,14 +84,14 @@ func (s Script) Do(fix, verbose bool, inputs map[string]*Input) error {
 
 	cmd := exec.Command("bash", args...)
 	if verbose {
-		fmt.Println(cmd.String())
+		log.Info(cmd.String())
 	}
 
 	result, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Println("❌ do_" + s.Name + "...")
+		log.Error("❌ do_" + s.Name + "...")
 		if verbose {
-			fmt.Println("failed: " + string(result))
+			log.Error("failed: " + string(result))
 		}
 		if fix {
 			err := s.Undo(verbose)
@@ -99,11 +99,11 @@ func (s Script) Do(fix, verbose bool, inputs map[string]*Input) error {
 				s.Do(false, verbose, inputs)
 			}
 		} else {
-			fmt.Println(string(result))
+			log.Info(string(result))
 		}
 		return err
 	}
-	fmt.Println("✅ do_" + s.Name)
+	log.Success("✅ do_" + s.Name)
 	return nil
 }
 
@@ -114,12 +114,12 @@ func (s Script) Undo(verbose bool) error {
 	}
 	cmd := exec.Command("bash", args...)
 	if verbose {
-		fmt.Println(cmd.String())
+		log.Info(cmd.String())
 	}
 	result, err := cmd.CombinedOutput()
 	if err != nil {
 		if verbose {
-			fmt.Println("failed: " + string(result))
+			log.Warning("failed: " + string(result))
 		}
 		return err
 	}
@@ -135,16 +135,16 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	uid := os.Geteuid()
 
 	if uid != 0 {
-		fmt.Println("You need to be root to install")
+		log.Error("You need to be root to install")
 		os.Exit(1)
 	}
 
 	*flavour = strings.ToLower(*flavour)
-	fmt.Println("--install", *flavour)
+	log.Info("--install " + *flavour)
 
 	flavours, status := sysService.ListFlavours()
 	if status.Err() {
-		fmt.Println("Error fetching flavours:", status.Message)
+		log.Error("Error fetching flavours:" + status.Message)
 		os.Exit(1)
 	}
 
@@ -157,9 +157,9 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	}
 
 	if !found {
-		fmt.Println("Flavour", *flavour, "not found")
+		log.Warning("Flavour" + *flavour + "not found")
 		choices := strings.Join(flavours, ", ")
-		fmt.Println("Available flavours:", choices)
+		log.Info("Available flavours:" + choices)
 		os.Exit(1)
 	}
 
@@ -178,13 +178,13 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 
 	raw, err := repo.ReadRawFile("install/" + *flavour + "/install.json")
 	if err != nil {
-		fmt.Println("Error fetching installation protocol:", err)
+		log.Error("Error fetching installation protocol: " + err.Error())
 		os.Exit(1)
 	}
 
 	err = json.Unmarshal(raw, &protocol)
 	if err != nil {
-		fmt.Println("Error decoding JSON:", err)
+		log.Error("Error decoding JSON: " + err.Error())
 		os.Exit(1)
 	}
 

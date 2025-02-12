@@ -6,24 +6,25 @@ import (
 	"github.com/DigiConvent/testd9t/core/log"
 )
 
-const DOMAIN = "DOMAIN"
-const DATABASE_PATH = "DATABASE_PATH"
 const CERTIFICATES_PATH = "CERTIFICATES_PATH"
-const SMTP_PORT = "SMTP_PORT"
+const DATABASE_PATH = "DATABASE_PATH"
+const DOMAIN = "DOMAIN"
 const HTTP_PORT = "HTTP_PORT"
 const HTTPS_PORT = "HTTPS_PORT"
+const MASTER_PASSWORD = "PASSWORD"
+const SMTP_PORT = "SMTP_PORT"
 
-const HOME_PATH = "/home/testd9t/"
 const ENV_PATH = HOME_PATH + "env"
+const HOME_PATH = "/home/testd9t/"
 
 func CheckEnv() {
 	shouldContinue := true
-	shouldContinue = CheckIfSet(DOMAIN, false, "") && shouldContinue
-	shouldContinue = CheckIfSet(DATABASE_PATH, false, "") && shouldContinue
 	shouldContinue = CheckIfSet(CERTIFICATES_PATH, false, "") && shouldContinue
-	shouldContinue = CheckIfSet(SMTP_PORT, true, "465") && shouldContinue
+	shouldContinue = CheckIfSet(DATABASE_PATH, false, "") && shouldContinue
+	shouldContinue = CheckIfSet(DOMAIN, false, "") && shouldContinue
 	shouldContinue = CheckIfSet(HTTP_PORT, true, "80") && shouldContinue
 	shouldContinue = CheckIfSet(HTTPS_PORT, true, "443") && shouldContinue
+	shouldContinue = CheckIfSet(SMTP_PORT, true, "465") && shouldContinue
 
 	if !shouldContinue {
 		os.Exit(1)
