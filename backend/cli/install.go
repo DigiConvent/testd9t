@@ -164,7 +164,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 
 	inputs := map[string]*Input{
 		"domain":   {Name: "Domain", Value: ""},
-		"email":    {Name: "Your email", Value: ""},
+		"email":    {Name: "Your e-mailaddress", Value: ""},
 		"password": {Name: "A strong password", Value: ""},
 	}
 
@@ -200,8 +200,9 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		script.Do(force, verbose, inputs)
 	}
 
+	envFilePath := "/home/testd9t/env"
 	variables := map[string]string{}
-	contents, err := os.ReadFile("/home/testd9t/env")
+	contents, err := os.ReadFile(envFilePath)
 
 	if err != nil {
 		contents = []byte{}
@@ -223,7 +224,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		newContent += fmt.Sprintf("%s=%s\n", key, variables[key])
 	}
 
-	err = os.WriteFile("/home/testd9t/env", contents, 0644)
+	err = os.WriteFile(envFilePath, contents, 0644)
 	if err != nil {
 		log.Error("Could not store the new environment variables...")
 	}
