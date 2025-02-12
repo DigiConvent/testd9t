@@ -77,7 +77,10 @@ func HandleFlags() {
 	if *installFlag != "" {
 		Install(sysService, installFlag, *forceFlag, *verbose)
 		InstallArtifacts(sys_domain.ProgramVersion, sysService)
-		os.RemoveAll("/tmp/testd9t/")
+		err := os.RemoveAll("/tmp/testd9t/")
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 	if *migrateDBFlag {

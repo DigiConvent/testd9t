@@ -102,7 +102,7 @@ func (s Script) Do(fix, verbose bool, inputs map[string]*Input) error {
 		}
 		return err
 	}
-	fmt.Println("✅ do_" + s.Name + " (" + strings.Join(args, " ") + ")")
+	fmt.Println("✅ do_" + s.Name)
 	return nil
 }
 
@@ -164,14 +164,13 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 
 	inputs := map[string]*Input{
 		"domain":   {Name: "Domain", Value: ""},
-		"email":    {Name: "Email", Value: ""},
-		"password": {Name: "Password", Value: ""},
+		"email":    {Name: "Your email", Value: ""},
+		"password": {Name: "A strong password", Value: ""},
 	}
 
 	for _, input := range inputs {
 		input.promptUser()
 	}
-	fmt.Println(inputs["domain"].Value)
 
 	repo := file_repo.NewRepoRemote()
 	var protocol InstallationProtocol
