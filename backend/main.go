@@ -47,11 +47,14 @@ func main() {
 }
 
 func loadEnv() {
+	var err error
 	if sys_domain.ProgramVersion == "dev" {
-		err := godotenv.Load("env")
-		if err != nil {
-			log.Error(err.Error())
-		}
+		err = godotenv.Load("env")
+	} else {
+		err = godotenv.Load("/home/testd9t/env")
+	}
+	if err != nil {
+		log.Error(err.Error())
 	}
 	constants.CheckEnv()
 }
