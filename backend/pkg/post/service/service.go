@@ -96,7 +96,6 @@ func (s *PostService) StartSmtpServer() {
 	}
 
 }
-
 func (s *PostService) handleSMTPConnection(conn net.Conn) {
 	defer conn.Close()
 	fmt.Fprintln(conn, "220 SMTP Server for testd9t is ready")
@@ -109,17 +108,26 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		log.Info("[SMTP]Received: " + line)
+		log.Info("[SMTP] Received: " + line)
 
 		if strings.HasPrefix(line, "HELO") || strings.HasPrefix(line, "EHLO") {
 			fmt.Fprintln(conn, "250-Hello")
 			fmt.Fprintln(conn, "250 AUTH PLAIN")
 		} else if strings.HasPrefix(line, "AUTH PLAIN") {
-			fmt.Fprintln(conn, "334")
+			fmt.Fprintln(conn, "334 ")
 
-			scanner.Scan()
+			if !scanner.Scan() {
+				fmt.Fprintln(conn, "535 Authentication failed")
+				break
+			}
 			decoded, _ := base64.StdEncoding.DecodeString(scanner.Text())
 			parts := strings.SplitN(string(decoded), "\x00", 3)
+
+			if len(parts) < 3 {
+				fmt.Fprintln(conn, "535 Authentication failed")
+				continue
+			}
+
 			email := parts[1]
 			password := parts[2]
 
@@ -129,7 +137,7 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				continue
 			}
 
-			if len(parts) == 3 && password == os.Getenv(constants.MASTER_PASSWORD) {
+			if password == os.Getenv(constants.MASTER_PASSWORD) {
 				authenticated = true
 				fmt.Fprintln(conn, "235 Authentication successful")
 			} else {
@@ -140,14 +148,14 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				fmt.Fprintln(conn, "530 Authentication required")
 				continue
 			}
-			sender = strings.TrimPrefix(line, "MAIL FROM:")
+			sender = strings.TrimSpace(strings.TrimPrefix(line, "MAIL FROM:"))
 			fmt.Fprintln(conn, "250 OK")
 		} else if strings.HasPrefix(line, "RCPT TO:") {
 			if !authenticated {
 				fmt.Fprintln(conn, "530 Authentication required")
 				continue
 			}
-			recipient = strings.TrimPrefix(line, "RCPT TO:")
+			recipient = strings.TrimSpace(strings.TrimPrefix(line, "RCPT TO:"))
 			fmt.Fprintln(conn, "250 OK")
 		} else if strings.HasPrefix(line, "DATA") {
 			if !authenticated {
@@ -158,12 +166,12 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 			isData = true
 			data = ""
 		} else if isData {
-			if line == "." {
+			if strings.TrimSpace(line) == "." {
 				fmt.Println("Received Email:")
 				fmt.Println("From:", sender)
 				fmt.Println("To:", recipient)
 				fmt.Println("Data:", data)
-				fmt.Fprintln(conn, "250 Message accepted for delivery")
+				fmt.Fprintln(conn, "250 OK: Message accepted")
 				isData = false
 			} else {
 				data += line + "\n"
@@ -174,5 +182,9 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 		} else {
 			fmt.Fprintln(conn, "500 Unrecognized command")
 		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Error("Connection error: " + err.Error())
 	}
 }

@@ -18,10 +18,7 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 
 	sender, status := s.ReadEmailAddress(from)
 	if status.Err() {
-		log.Info(2)
 		return status
-	} else {
-		log.Info(3)
 	}
 
 	senderEmail := sender.Name + "@" + sender.Domain
@@ -40,6 +37,7 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 
 	err := smtp.SendMail(addr, auth, to, []string{to}, []byte(msg))
 	if err != nil {
+		log.Error("Unable to send electronic mail: " + err.Error())
 		return core.InternalError("Unable to send electronic mail: " + err.Error())
 	}
 	log.Success("Email sent from " + senderEmail + " to " + to)
