@@ -45,18 +45,6 @@ done
 
 mv "${TARGET_ENV}.merged" "$SOURCE_ENV"
 
-
-binary_path=$(pwd)/main
-
-if [ ! -f $binary_path ]; then
-    echo "Expected this binary to be at $binary_path"
-    exit 1
-fi
-
-sudo cp $binary_path /home/testd9t/backend/main
-
-sudo chown -R testd9t:testd9t /home/testd9t/
-
 sudo systemctl daemon-reload
 if ps aux | grep -v grep | grep -q testd9t; then
     sudo systemctl restart testd9t

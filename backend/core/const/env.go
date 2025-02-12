@@ -9,6 +9,8 @@ import (
 const DOMAIN = "DOMAIN"
 const DATABASE_PATH = "DATABASE_PATH"
 const CERTIFICATES_PATH = "CERTIFICATES_PATH"
+const HOME_PATH = "/home/testd9t/"
+const ENV_PATH = HOME_PATH + "env"
 
 func CheckEnv() {
 	shouldContinue := true

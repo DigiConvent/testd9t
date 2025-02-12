@@ -9,6 +9,7 @@ import (
 	"path"
 	"strings"
 
+	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/file_repo"
 	"github.com/DigiConvent/testd9t/core/log"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
@@ -200,9 +201,8 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		script.Do(force, verbose, inputs)
 	}
 
-	envFilePath := "/home/testd9t/env"
 	variables := map[string]string{}
-	contents, err := os.ReadFile(envFilePath)
+	contents, err := os.ReadFile(constants.ENV_PATH)
 
 	if err != nil {
 		contents = []byte{}
@@ -224,7 +224,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		newContent += fmt.Sprintf("%s=%s\n", key, variables[key])
 	}
 
-	err = os.WriteFile(envFilePath, contents, 0644)
+	err = os.WriteFile(constants.ENV_PATH, contents, 0644)
 	if err != nil {
 		log.Error("Could not store the new environment variables...")
 	}

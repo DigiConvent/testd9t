@@ -51,7 +51,7 @@ func loadEnv() {
 	if sys_domain.ProgramVersion == "dev" {
 		err = godotenv.Load("env")
 	} else {
-		err = godotenv.Load("/home/testd9t/env")
+		err = godotenv.Load(constants.ENV_PATH)
 	}
 	if err != nil {
 		log.Error(err.Error())
