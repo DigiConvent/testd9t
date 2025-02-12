@@ -34,7 +34,7 @@ func Setup() {
 	if _, err := os.Stat(TlsPrivateKeyPath()); os.IsNotExist(err) {
 		err := os.MkdirAll(path.Dir(TlsPrivateKeyPath()), 0755)
 		if err != nil {
-			panic("Cannot create folders for jwt: " + err.Error())
+			log.Error("Cannot create folders for jwt: " + err.Error())
 		}
 		caCert, privateKey := getOrCreateCaCert()
 
@@ -51,20 +51,18 @@ func Setup() {
 		}
 		certBytes, err := x509.CreateCertificate(rand.Reader, cert, caCert, &privateKey.PublicKey, privateKey)
 		if err != nil {
-			panic(err)
+			log.Error(err)
 		}
 		err = os.WriteFile(TlsPublicKeyPath(), pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certBytes}), 0644)
 
 		if err != nil {
-			panic("Cannot create public key for jwt: " + err.Error())
+			log.Error("Cannot create public key for jwt: " + err.Error())
 		}
 		// create privkey.pem
 		err = os.WriteFile(TlsPrivateKeyPath(), pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}), 0644)
 		if err != nil {
-			panic("Cannot create private key for jwt: " + err.Error())
+			log.Error("Cannot create private key for jwt: " + err.Error())
 		}
-	} else {
-		log.Info("File exists: " + TlsPrivateKeyPath())
 	}
 }
 
@@ -73,27 +71,27 @@ func getOrCreateCaCert() (*x509.Certificate, *rsa.PrivateKey) {
 		os.MkdirAll(path.Dir(TlsCaPrivateKeyPath()), 0755)
 		cert, err := os.ReadFile(TlsCaCertificatePath())
 		if err != nil {
-			panic(err)
+			log.Error(err)
 		}
 		block, _ := pem.Decode(cert)
 		if block == nil {
-			panic("Could not decode ca cert")
+			log.Error("Could not decode ca cert")
 		}
 		parsed, err := x509.ParseCertificate(block.Bytes)
 		if err != nil {
-			panic(err)
+			log.Error(err)
 		}
 		key, err := os.ReadFile(TlsCaPrivateKeyPath())
 		if err != nil {
-			panic(err)
+			log.Error(err)
 		}
 		block, _ = pem.Decode(key)
 		if block == nil {
-			panic("Could not decode ca key")
+			log.Error("Could not decode ca key")
 		}
 		privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 		if err != nil {
-			panic(err)
+			log.Error(err)
 		}
 		return parsed, privateKey
 	}

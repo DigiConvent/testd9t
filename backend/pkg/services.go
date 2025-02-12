@@ -3,6 +3,7 @@ package packages
 import (
 	"os"
 
+	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/db"
 	"github.com/DigiConvent/testd9t/core/log"
 	iam_repository "github.com/DigiConvent/testd9t/pkg/iam/repository"
@@ -46,28 +47,35 @@ func InitiateServices(live bool) *Services {
 
 	if initStatus.Code == 200 {
 		log.Info("Migrating databases to newest version")
-		sysService.MigratePackageDatabases(nil)
+		status := sysService.MigratePackageDatabases(nil)
+		if status.Err() {
+			log.Error("Could not migrate databases to newest version: " + status.Message)
+		}
 		DoFirstTimeStuff(services)
 	} else {
-		log.Warning("Could not migrate databases to newest version")
+		log.Warning("Could not migrate system database to newest version")
 	}
 
 	return services
 }
 
 func DoFirstTimeStuff(services *Services) {
+	log.Info("Doing first time stuff")
+	emailAddress := os.Getenv("EMAIL")
 	sendFrom, status := services.PostService.CreateEmailAddress(&post_domain.EmailAddressWrite{
 		Name:   "admin",
-		Domain: os.Getenv("DOMAIN"),
+		Domain: os.Getenv(constants.DOMAIN),
 	})
 
 	if status.Err() {
-		log.Error("Could not create email address: " + status.Message)
+		log.Error("Could not create email admin address: " + status.Message)
 	}
 
-	status = services.PostService.SendEmail(sendFrom, os.Getenv("EMAIL"), "Login credentials", "Here are the login credentials for "+os.Getenv("DOMAIN")+":\n\nEmail: "+os.Getenv("EMAIL")+"\nPassword: "+os.Getenv("PASSWORD"))
+	status = services.PostService.SendEmail(sendFrom, emailAddress, "Login credentials", "Here are the login credentials for "+os.Getenv(constants.DOMAIN)+":\n\nEmail: "+emailAddress+"\nPassword: "+os.Getenv(constants.MASTER_PASSWORD))
 
 	if status.Err() {
-		log.Error("Could not send email: from " + sendFrom.String() + " to " + os.Getenv("EMAIL") + ": " + status.Message)
+		log.Error("Could not send email: from " + sendFrom.String() + " to " + emailAddress + ": " + status.Message)
+	} else {
+		log.Success("Send password to " + emailAddress)
 	}
 }

@@ -1,12 +1,12 @@
 package post_service
 
 import (
-	"fmt"
 	"net/smtp"
 	"os"
 
 	"github.com/DigiConvent/testd9t/core"
 	constants "github.com/DigiConvent/testd9t/core/const"
+	"github.com/DigiConvent/testd9t/core/log"
 	"github.com/google/uuid"
 )
 
@@ -34,6 +34,6 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 	if err != nil {
 		return core.InternalError("Unable to send electronic mail: " + err.Error())
 	}
-	fmt.Println("Email sent successfully!")
+	log.Success("Email sent from " + senderEmail + " to " + to)
 	return core.StatusSuccess()
 }
