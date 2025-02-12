@@ -99,7 +99,10 @@ func (s *PostService) StartSmtpServer() {
 func (s *PostService) handleSMTPConnection(conn net.Conn) {
 	defer conn.Close()
 	response := bufio.NewWriter(conn)
-	fmt.Fprintln(response, "220 SMTP Server for testd9t is ready")
+	_, err := fmt.Fprintln(response, "220 SMTP Server for testd9t is ready")
+	if err != nil {
+		log.Error("Error sending response: " + err.Error())
+	}
 	response.Flush()
 
 	scanner := bufio.NewScanner(conn)
