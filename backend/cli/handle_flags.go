@@ -76,7 +76,10 @@ func HandleFlags() {
 
 	if *installFlag != "" {
 		Install(sysService, installFlag, *forceFlag, *verbose)
-		InstallArtifacts(sys_domain.ProgramVersion, sysService)
+		status := InstallArtifacts(sys_domain.ProgramVersion, sysService)
+		if status.Err() {
+			fmt.Println("Error installing artifacts:", status.Message)
+		}
 		err := os.RemoveAll("/tmp/testd9t/")
 		if err != nil {
 			fmt.Println(err)
