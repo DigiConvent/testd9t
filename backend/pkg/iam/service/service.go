@@ -5,6 +5,7 @@ import (
 	"github.com/DigiConvent/testd9t/core/pagination"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	iam_repository "github.com/DigiConvent/testd9t/pkg/iam/repository"
+	iam_setup "github.com/DigiConvent/testd9t/pkg/iam/setup"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -57,6 +58,7 @@ type IAMService struct {
 }
 
 func NewIAMService(userRepository iam_repository.IAMRepositoryInterface) IAMServiceInterface {
+	iam_setup.Setup()
 	return &IAMService{
 		repository: userRepository,
 	}

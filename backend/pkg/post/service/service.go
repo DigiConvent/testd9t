@@ -15,6 +15,7 @@ import (
 	"github.com/DigiConvent/testd9t/core/log"
 	post_domain "github.com/DigiConvent/testd9t/pkg/post/domain"
 	post_repository "github.com/DigiConvent/testd9t/pkg/post/repository"
+	post_setup "github.com/DigiConvent/testd9t/pkg/post/setup"
 	"github.com/google/uuid"
 )
 
@@ -39,7 +40,6 @@ func NewPostService(repository post_repository.PostRepositoryInterface, test boo
 		address:    ":465",
 	}
 
-	// this would fail in tests and I don't feel like changing this
 	if !test {
 		go postService.StartSmtpServer()
 	}
@@ -47,7 +47,7 @@ func NewPostService(repository post_repository.PostRepositoryInterface, test boo
 }
 
 func (s *PostService) StartSmtpServer() {
-	cert, err := tls.LoadX509KeyPair("/home/testd9t/certs/fullchain.pem", "/home/testd9t/certs/privkey.pem")
+	cert, err := tls.LoadX509KeyPair(post_setup.TlsPublicKeyPath(), post_setup.TlsPrivateKeyPath())
 	if err != nil {
 		panic(err)
 	}
@@ -58,7 +58,7 @@ func (s *PostService) StartSmtpServer() {
 	)
 
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 
 	defer func() {

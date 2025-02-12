@@ -10,6 +10,13 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 	sysRouter := sys_router.NewSysRouter(s.SysService)
 	apiRoutes := router.Group("/api")
 
+	apiRoutes.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"sys": gin.H{
+				"status": "/api/sys/status",
+			},
+		})
+	})
 	sysRoutes := apiRoutes.Group("/sys")
 
 	sysRoutes.GET("/status", sysRouter.SystemStatusGet)

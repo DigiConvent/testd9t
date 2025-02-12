@@ -1,4 +1,4 @@
-package services
+package packages
 
 import (
 	"os"
@@ -7,9 +7,11 @@ import (
 	"github.com/DigiConvent/testd9t/core/log"
 	iam_repository "github.com/DigiConvent/testd9t/pkg/iam/repository"
 	iam_service "github.com/DigiConvent/testd9t/pkg/iam/service"
+	iam_setup "github.com/DigiConvent/testd9t/pkg/iam/setup"
 	post_domain "github.com/DigiConvent/testd9t/pkg/post/domain"
 	post_repository "github.com/DigiConvent/testd9t/pkg/post/repository"
 	post_service "github.com/DigiConvent/testd9t/pkg/post/service"
+	post_setup "github.com/DigiConvent/testd9t/pkg/post/setup"
 	sys_repository "github.com/DigiConvent/testd9t/pkg/sys/repository"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 )
@@ -20,20 +22,21 @@ type Services struct {
 	PostService post_service.PostServiceInterface
 }
 
-func InitiateServices() *Services {
+func InitiateServices(live bool) *Services {
 	sysDB := db.NewSqliteDB("sys")
 	sysRepo := sys_repository.NewSysRepository(sysDB)
 	sysService := sys_service.NewSysService(sysRepo)
 	initStatus := sysService.Init()
 
-	keyPath := "/home/testd9t/certs/privkey.pem"
+	iam_setup.Setup()
 	iamDB := db.NewSqliteDB("iam")
-	iamRepo := iam_repository.NewIAMRepository(iamDB, keyPath, false)
+	iamRepo := iam_repository.NewIAMRepository(iamDB)
 	iamService := iam_service.NewIAMService(iamRepo)
 
+	post_setup.Setup()
 	postDB := db.NewSqliteDB("post")
 	postRepo := post_repository.NewPostRepository(postDB)
-	postService := post_service.NewPostService(postRepo, false)
+	postService := post_service.NewPostService(postRepo, live)
 
 	services := &Services{
 		SysService:  sysService,

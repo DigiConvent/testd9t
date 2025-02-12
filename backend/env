@@ -1,1 +1,3 @@
-DATABASE_PATH=/tmp
+DATABASE_PATH=/tmp/testd9t/data/
+DOMAIN=digiconvent.de
+CERTIFICATES_PATH=/tmp/testd9t/certs/
