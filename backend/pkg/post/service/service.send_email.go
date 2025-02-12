@@ -14,10 +14,14 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 	if from == nil {
 		return core.UnprocessableContentError("PostService requires an ID")
 	}
+	log.Info("Sending email from " + from.String() + " to " + to)
 
 	sender, status := s.ReadEmailAddress(from)
 	if status.Err() {
+		log.Info(2)
 		return status
+	} else {
+		log.Info(3)
 	}
 
 	senderEmail := sender.Name + "@" + sender.Domain
@@ -29,7 +33,11 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 		"\r\n" +
 		body + "\r\n"
 
+	log.Info(addr)
+	log.Info(msg)
+
 	auth := smtp.PlainAuth("", sender.Name, os.Getenv(constants.MASTER_PASSWORD), sender.Domain)
+
 	err := smtp.SendMail(addr, auth, to, []string{to}, []byte(msg))
 	if err != nil {
 		return core.InternalError("Unable to send electronic mail: " + err.Error())

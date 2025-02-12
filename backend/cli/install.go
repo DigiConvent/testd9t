@@ -235,7 +235,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	} else {
 		readable := ""
 		for key := range variables {
-			readable += fmt.Sprintf("%"+strconv.Itoa(maxL)+"-s: %s\n", key, variables[key])
+			readable += fmt.Sprintf("%-"+strconv.Itoa(maxL)+"s: %s\n", key, variables[key])
 		}
 		log.Info("Using the following environment variables:\n" + readable)
 	}

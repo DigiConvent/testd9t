@@ -78,6 +78,6 @@ func DoFirstTimeStuff(services *Services) {
 	if status.Err() {
 		log.Error("Could not send email: from " + sendFrom.String() + " to " + emailAddress + ": " + status.Message)
 	} else {
-		log.Success("Send password to " + emailAddress)
+		log.Success("Sent password to " + emailAddress)
 	}
 }

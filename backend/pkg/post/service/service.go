@@ -89,6 +89,8 @@ func (s *PostService) StartSmtpServer() {
 		if err != nil {
 			log.Error("Error accepting connection: " + err.Error())
 			continue
+		} else {
+			log.Info("Accepted connection from " + connection.RemoteAddr().String())
 		}
 		go s.handleSMTPConnection(connection)
 	}
@@ -107,7 +109,7 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		fmt.Println("Received:", line)
+		log.Info("[SMTP]Received: " + line)
 
 		if strings.HasPrefix(line, "HELO") || strings.HasPrefix(line, "EHLO") {
 			fmt.Fprintln(conn, "250-Hello")
