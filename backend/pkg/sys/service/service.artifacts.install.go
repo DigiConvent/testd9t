@@ -64,10 +64,11 @@ func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
 		}
 	}
 
-	// give correct rights
-	err = exec.Command("chown", "-R", "testd9t:testd9t", constants.HOME_PATH+"frontend").Run()
+	err = exec.Command("chown", "-R", "testd9t:testd9t", constants.HOME_PATH).Run()
 	if err != nil {
 		return core.InternalError("Error setting ownership for frontend: " + err.Error())
+	} else {
+		log.Success("Set ownership for artifacts")
 	}
 
 	return core.StatusSuccess()
