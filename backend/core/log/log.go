@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	core_utils "github.com/DigiConvent/testd9t/core/utils"
@@ -31,21 +32,33 @@ type Logger struct {
 // 3 - success
 
 func Error(msg interface{}) {
-	fmt.Println(white+getTime()+": "+red, msg, reset)
+	fmt.Println(white+getTime()+": "+red, prep(msg), reset)
 }
 
 func Warning(msg interface{}) {
-	fmt.Println(white+getTime()+": "+yellow, msg, reset)
+	fmt.Println(white+getTime()+": "+yellow, prep(msg), reset)
 }
 
 func Info(msg interface{}) {
-	fmt.Println(white+getTime()+": "+cyan, msg, reset)
+	fmt.Println(white+getTime()+": "+cyan, prep(msg), reset)
 }
 
 func Success(msg interface{}) {
-	fmt.Println(white+getTime()+": "+green, msg, reset)
+	fmt.Println(white+getTime()+": "+green, prep(msg), reset)
 }
 
 func getTime() string {
 	return time.Now().Format(core_utils.FormattedTime)
+}
+
+func prep(input interface{}) string {
+	stringInput := fmt.Sprint(input)
+	segments := strings.Split(stringInput, "\n")
+	for i := range segments {
+		if segments[i] == "" {
+			continue
+		}
+		segments[i] = strings.Repeat(" ", 19) + segments[i]
+	}
+	return strings.Join(segments, "\n")
 }
