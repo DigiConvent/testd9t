@@ -35,15 +35,17 @@ type PostService struct {
 	address    string
 }
 
-func NewPostService(repository post_repository.PostRepositoryInterface, test bool) PostServiceInterface {
+func NewPostService(repository post_repository.PostRepositoryInterface, startSmtpServer bool) PostServiceInterface {
 	postService := PostService{
 		repository: repository,
 		address:    ":" + os.Getenv(constants.SMTP_PORT),
 	}
 
-	if !test {
+	if startSmtpServer {
 		log.Info("Starting smtp server on " + postService.address)
 		go postService.StartSmtpServer()
+	} else {
+		log.Info("Skipping smtp server start")
 	}
 	return postService
 }
