@@ -19,7 +19,6 @@ import (
 )
 
 func main() {
-	loadEnv()
 	sys_domain.StartTime = time.Now()
 	log.Info("Build      " + sys_domain.CompiledAt)
 	log.Info("Running at " + sys_domain.StartTime.Format(core_utils.FormattedTime))
@@ -36,6 +35,7 @@ func main() {
 	}()
 
 	if run {
+		loadEnv()
 		services := packages.InitiateServices(!local)
 		router.SetupRouter(services)
 	} else {
