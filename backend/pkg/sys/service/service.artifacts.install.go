@@ -15,26 +15,31 @@ import (
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
+const targetBinaryPath = constants.HOME_PATH + "backend/main"
+const targetFrontendPath = constants.HOME_PATH + "frontend"
+
+const sourceFrontendZipPath = "/tmp/testd9t/frontend.zip"
+
 func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
 	log.Info("Installing artifacts for version " + tag.Tag)
 	var err error
-	tmpFolder := "/tmp/testd9t/"
-	err = tag.DownloadAsset("main", constants.HOME_PATH+"backend/main")
+
+	err = tag.DownloadAsset("main", targetBinaryPath)
 	if err != nil {
 		return core.InternalError("Error downloading binary for version: " + tag.Tag + " " + err.Error())
 	}
 
-	err = tag.DownloadAsset("frontend.zip", tmpFolder+"frontend.zip")
-	if err != nil {
-		return core.InternalError("Error downloading frontend for version: " + tag.Tag + " " + err.Error())
-	}
-
-	err = exec.Command("chmod", "+x", constants.HOME_PATH+"backend/main").Run()
+	err = exec.Command("chmod", "+x", targetBinaryPath).Run()
 	if err != nil {
 		return core.InternalError("Error setting permissions for binary: " + err.Error())
 	}
 
-	readClose, err := zip.OpenReader(tmpFolder + "frontend.zip")
+	err = tag.DownloadAsset("frontend.zip", sourceFrontendZipPath)
+	if err != nil {
+		return core.InternalError("Error downloading frontend for version: " + tag.Tag + " " + err.Error())
+	}
+
+	readClose, err := zip.OpenReader(sourceFrontendZipPath)
 	if err != nil {
 		return core.InternalError("Error opening frontend.zip: " + err.Error())
 	}
@@ -42,7 +47,7 @@ func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
 	for _, f := range readClose.File {
 		name, _ := strings.CutPrefix(f.Name, "frontend/dist/")
 		if f.FileInfo().IsDir() {
-			err := os.MkdirAll(path.Join(constants.HOME_PATH, "frontend", name), os.ModePerm)
+			err := os.MkdirAll(path.Join(targetFrontendPath, name), os.ModePerm)
 			if err != nil {
 				return core.InternalError("Error creating directory:" + err.Error())
 			}
@@ -50,7 +55,7 @@ func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
 		}
 		reader, _ := f.Open()
 
-		file, err := os.Create(path.Join(constants.HOME_PATH, "frontend", name))
+		file, err := os.Create(path.Join(targetFrontendPath, name))
 		if err != nil {
 			return core.InternalError("Error creating file " + file.Name() + err.Error())
 		}
@@ -62,13 +67,6 @@ func (s *SysService) InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status {
 		} else {
 			log.Success("Copied file " + file.Name())
 		}
-	}
-
-	err = exec.Command("chown", "-R", "testd9t:testd9t", constants.HOME_PATH).Run()
-	if err != nil {
-		return core.InternalError("Error setting ownership for frontend: " + err.Error())
-	} else {
-		log.Success("Set ownership for artifacts")
 	}
 
 	return core.StatusSuccess()

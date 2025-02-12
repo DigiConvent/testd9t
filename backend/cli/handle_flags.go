@@ -4,9 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 
 	cli_helpers "github.com/DigiConvent/testd9t/cli/helpers"
+	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/db"
+	"github.com/DigiConvent/testd9t/core/log"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 	sys_repository "github.com/DigiConvent/testd9t/pkg/sys/repository"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
@@ -75,14 +78,21 @@ func HandleFlags() {
 	}
 
 	if *installFlag != "" {
-		Install(sysService, installFlag, *forceFlag, *verbose)
 		status := InstallArtifacts(sys_domain.ProgramVersion, sysService)
 		if status.Err() {
 			fmt.Println("Error installing artifacts:", status.Message)
 		}
+		Install(sysService, installFlag, *forceFlag, *verbose)
 		err := os.RemoveAll("/tmp/testd9t/")
 		if err != nil {
 			fmt.Println(err)
+		}
+
+		err = exec.Command("chown", "-R", "testd9t:testd9t", constants.HOME_PATH).Run()
+		if err != nil {
+			log.Error("Error setting ownership for artifacts: " + err.Error())
+		} else {
+			log.Success("Set ownership for artifacts")
 		}
 	}
 
