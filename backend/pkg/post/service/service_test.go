@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/db"
 	post_repository "github.com/DigiConvent/testd9t/pkg/post/repository"
 	post_service "github.com/DigiConvent/testd9t/pkg/post/service"
@@ -13,7 +14,7 @@ import (
 var testDB db.DatabaseInterface
 
 func GetTestPostService(dbName string) post_service.PostServiceInterface {
-	os.Setenv("CERTIFICATES_PATH", "/tmp/testd9t/certificates")
+	os.Setenv(constants.CERTIFICATES_PATH, "/tmp/testd9t/certificates")
 	if testDB == nil {
 		post_setup.Setup()
 		testDB = db.NewTestSqliteDB(dbName)

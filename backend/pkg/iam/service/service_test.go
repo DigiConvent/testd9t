@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/db"
 	iam_repository "github.com/DigiConvent/testd9t/pkg/iam/repository"
 	iam_service "github.com/DigiConvent/testd9t/pkg/iam/service"
@@ -13,7 +14,7 @@ import (
 var testDB db.DatabaseInterface
 
 func GetTestIAMService(dbName string) iam_service.IAMServiceInterface {
-	os.Setenv("CERTIFICATES_PATH", "/tmp/testd9t/certificates")
+	os.Setenv(constants.CERTIFICATES_PATH, "/tmp/testd9t/certificates")
 	if testDB == nil {
 		iam_setup.Setup()
 		testDB = db.NewTestSqliteDB(dbName)
