@@ -6,9 +6,9 @@
       "main"
     ],
     "migrations": [
+      "post.sql",
       "iam.sql",
-      "sys.sql",
-      "post.sql"
+      "sys.sql"
     ]
   }
 ]
