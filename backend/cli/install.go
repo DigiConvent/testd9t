@@ -224,9 +224,11 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		newContent += fmt.Sprintf("%s=%s\n", key, variables[key])
 	}
 
-	err = os.WriteFile(constants.ENV_PATH, contents, 0644)
+	err = os.WriteFile(constants.ENV_PATH, []byte(newContent), 0644)
 	if err != nil {
 		log.Error("Could not store the new environment variables...")
+	} else {
+		log.Info("Using the following environment variables:\n" + newContent)
 	}
 }
 
