@@ -3,6 +3,7 @@ package sys_domain
 import (
 	"errors"
 	"os"
+	"path"
 
 	"github.com/DigiConvent/testd9t/core/file_repo"
 	"github.com/DigiConvent/testd9t/core/log"
@@ -32,14 +33,15 @@ func (tag *ReleaseTag) MigrationURL(name string) string {
 	return ""
 }
 
-func (tag *ReleaseTag) DownloadAsset(name, path string) error {
-	err := os.Remove(path)
+func (tag *ReleaseTag) DownloadAsset(name, target string) error {
+	err := os.Remove(target)
 	if err != nil && !os.IsNotExist(err) {
-		log.Warning("Might not overwrite file " + path)
+		log.Warning("Might not overwrite file " + target)
 	}
+	os.MkdirAll(path.Dir(target), os.ModePerm)
 	url := tag.AssetURL(name)
 	if url == "" {
 		return errors.New("Asset not found: " + name)
 	}
-	return file_repo.NewRepoRemote().DownloadAsset(url, path)
+	return file_repo.NewRepoRemote().DownloadAsset(url, target)
 }
