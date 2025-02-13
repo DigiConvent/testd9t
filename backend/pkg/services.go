@@ -15,6 +15,7 @@ import (
 	post_setup "github.com/DigiConvent/testd9t/pkg/post/setup"
 	sys_repository "github.com/DigiConvent/testd9t/pkg/sys/repository"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
+	"github.com/google/uuid"
 )
 
 type Services struct {
@@ -62,8 +63,9 @@ func InitiateServices(live bool) *Services {
 func DoFirstTimeStuff(services *Services) {
 	log.Info("Doing first time stuff")
 	emailAddress := os.Getenv("EMAIL")
-	sendFrom, status := services.PostService.CreateEmailAddress(&post_domain.EmailAddressWrite{
-		Name:   "admin",
+	id := uuid.MustParse("00000000-0000-0000-0000-000000000000")
+	status := services.PostService.UpdateEmailAddresses(&id, &post_domain.EmailAddressWrite{
+		Name:   "Admin",
 		Domain: os.Getenv(constants.DOMAIN),
 	})
 
@@ -73,10 +75,10 @@ func DoFirstTimeStuff(services *Services) {
 		log.Info("Created email admin address")
 	}
 
-	status = services.PostService.SendEmail(sendFrom, emailAddress, "Login credentials", "Here are the login credentials for "+os.Getenv(constants.DOMAIN)+":\n\nEmail: "+emailAddress+"\nPassword: "+os.Getenv(constants.MASTER_PASSWORD))
+	status = services.PostService.SendEmail(&id, emailAddress, "Login credentials", "Here are the login credentials for "+os.Getenv(constants.DOMAIN)+":\n\nEmail: "+emailAddress+"\nPassword: "+os.Getenv(constants.MASTER_PASSWORD))
 
 	if status.Err() {
-		log.Error("Could not send email: from " + sendFrom.String() + " to " + emailAddress + ": " + status.Message)
+		log.Error("Could not send email: from " + id.String() + " to " + emailAddress + ": " + status.Message)
 	} else {
 		log.Success("Sent password to " + emailAddress)
 	}

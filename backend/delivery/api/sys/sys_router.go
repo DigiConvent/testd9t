@@ -1,13 +1,17 @@
 package sys_router
 
-import sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
+import (
+	post_service "github.com/DigiConvent/testd9t/pkg/post/service"
+	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
+)
 
 type SysRouter struct {
-	SysService sys_service.SysServiceInterface
+	sysService  sys_service.SysServiceInterface
+	postService post_service.PostServiceInterface
 }
 
 func NewSysRouter(sysService sys_service.SysServiceInterface) *SysRouter {
 	return &SysRouter{
-		SysService: sysService,
+		sysService: sysService,
 	}
 }

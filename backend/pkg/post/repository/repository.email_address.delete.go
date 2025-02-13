@@ -10,7 +10,7 @@ func (p PostRepository) DeleteEmailAddress(id *uuid.UUID) core.Status {
 		return *core.UnprocessableContentError("ID is required")
 	}
 
-	result, err := p.db.Exec("delete from email_addresses where id = ?", id.String())
+	result, err := p.db.Exec("delete from email_addresses where id = ? and generated = 0", id.String())
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

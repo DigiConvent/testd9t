@@ -14,6 +14,7 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 	if from == nil {
 		return core.UnprocessableContentError("PostService requires an ID")
 	}
+
 	log.Info("Sending email from " + from.String() + " to " + to)
 
 	sender, status := s.ReadEmailAddress(from)

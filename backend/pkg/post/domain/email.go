@@ -8,7 +8,8 @@ type EmailAddressWrite struct {
 }
 
 type EmailAddressRead struct {
-	ID     *uuid.UUID `json:"id"`
-	Name   string     `json:"name"`
-	Domain string     `json:"domain"`
+	ID        *uuid.UUID `json:"id"`
+	Name      string     `json:"name"`
+	Domain    string     `json:"domain"`
+	Generated bool       `json:"generated"`
 }

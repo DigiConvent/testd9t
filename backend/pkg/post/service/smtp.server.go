@@ -100,7 +100,7 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 			log.Info("[SMTP] Received: " + string(decoded))
 			log.Info("       Received: " + strings.Join(parts, ", "))
 			if len(parts) < 3 {
-				fmt.Fprintln(response, "535 Authentication failed")
+				fmt.Fprintln(response, "535 Need username and password, base64 encoded")
 				response.Flush()
 				continue
 			}
