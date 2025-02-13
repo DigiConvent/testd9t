@@ -69,21 +69,16 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 			log.Error("Error closing [SMTP] connection: " + err.Error())
 		}
 	}()
-	response := bufio.NewWriter(conn)
 
 	welcomeMessage := "SMTP Server for testd9t is ready"
-	n, err := fmt.Fprintln(response, "220"+welcomeMessage)
+	n, err := conn.Write([]byte("220" + welcomeMessage + "\r\n"))
+	if err != nil {
+		log.Info(err.Error())
+	}
 	if err != nil {
 		log.Error("Error sending response: " + err.Error())
 	} else {
 		log.Info("[SMTP] Sent: 220 SMTP Server for testd9t is ready: " + strconv.Itoa(n))
-	}
-
-	err = response.Flush()
-	if err != nil {
-		log.Error("Error flushing response: " + err.Error())
-	} else {
-		log.Info("[SMTP] Flushed response")
 	}
 
 	scanner := bufio.NewScanner(conn)
@@ -97,18 +92,27 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 		log.Info("[SMTP] Received: " + line)
 
 		if strings.HasPrefix(line, "HELO") || strings.HasPrefix(line, "EHLO") {
-			fmt.Fprintln(response, "250-Hello")
-			fmt.Fprintln(response, "250 AUTH PLAIN")
+			_, err = conn.Write([]byte("250-Hello"))
+			if err != nil {
+				log.Info("Failed to send " + "250-Hello:" + err.Error())
+			}
+			_, err = conn.Write([]byte("250 AUTH PLAIN"))
+			if err != nil {
+				log.Info("Failed to send " + "250 AUTH PLAIN:" + err.Error())
+			}
 			log.Info("[SMTP] Received: 250-Hello")
-			response.Flush()
 		} else if strings.HasPrefix(line, "AUTH PLAIN") {
-			fmt.Fprintln(response, "334 ")
+			_, err = conn.Write([]byte("334"))
+			if err != nil {
+				log.Info("Failed to send " + "334:" + err.Error())
+			}
 			log.Info("[SMTP] Received: AUTH PLAIN")
-			response.Flush()
 
 			if !scanner.Scan() {
-				fmt.Fprintln(response, "535 Authentication failed")
-				response.Flush()
+				_, err = conn.Write([]byte("535 Authentication failed"))
+				if err != nil {
+					log.Info("Failed to send " + "535 Authentication failed:" + err.Error())
+				}
 				break
 			}
 			decoded, _ := base64.StdEncoding.DecodeString(scanner.Text())
@@ -116,8 +120,10 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 			log.Info("[SMTP] Received: " + string(decoded))
 			log.Info("       Received: " + strings.Join(parts, ", "))
 			if len(parts) < 3 {
-				fmt.Fprintln(response, "535 Need username and password, base64 encoded")
-				response.Flush()
+				_, err = conn.Write([]byte("535 Need username and password, base64 encoded"))
+				if err != nil {
+					log.Info("Failed to send " + "535 Need username and password, base64 encoded:" + err.Error())
+				}
 				continue
 			}
 
@@ -128,45 +134,64 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 			_, status := s.repository.GetEmailAddressByName(email)
 			if status.Err() {
 				log.Error("Could not find email address: " + email)
-				fmt.Fprintln(response, "535 Authentication failed")
-				response.Flush()
+				_, err = conn.Write([]byte("535 Authentication failed"))
+				if err != nil {
+					log.Info("Failed to send " + "535 Authentication failed:" + err.Error())
+				}
 				continue
 			}
 
 			log.Info("[SMTP] Comparing if " + password + " = " + os.Getenv(constants.MASTER_PASSWORD))
 			if password == os.Getenv(constants.MASTER_PASSWORD) {
 				authenticated = true
-				fmt.Fprintln(response, "235 Authentication successful")
+				_, err = conn.Write([]byte("235 Authentication successful"))
+				if err != nil {
+					log.Info("Failed to send " + "235 Authentication successful:" + err.Error())
+				}
 			} else {
-				fmt.Fprintln(response, "535 Authentication failed")
+				_, err = conn.Write([]byte("535 Authentication failed"))
+				if err != nil {
+					log.Info("Failed to send " + "535 Authentication failed:" + err.Error())
+				}
 			}
-			response.Flush()
 		} else if strings.HasPrefix(line, "MAIL FROM:") {
 			if !authenticated {
-				fmt.Fprintln(response, "530 Authentication required")
-				response.Flush()
+				_, err = conn.Write([]byte("530 Authentication required"))
+				if err != nil {
+					log.Info("Failed to send " + "530 Authentication required:" + err.Error())
+				}
 				continue
 			}
 			sender = strings.TrimSpace(strings.TrimPrefix(line, "MAIL FROM:"))
-			fmt.Fprintln(response, "250 OK")
-			response.Flush()
+			_, err = conn.Write([]byte("250 OK"))
+			if err != nil {
+				log.Info("Failed to send " + "250 OK:" + err.Error())
+			}
 		} else if strings.HasPrefix(line, "RCPT TO:") {
 			if !authenticated {
-				fmt.Fprintln(response, "530 Authentication required")
-				response.Flush()
+				_, err = conn.Write([]byte("530 Authentication required"))
+				if err != nil {
+					log.Info("Failed to send " + "530 Authentication required:" + err.Error())
+				}
 				continue
 			}
 			recipient = strings.TrimSpace(strings.TrimPrefix(line, "RCPT TO:"))
-			fmt.Fprintln(response, "250 OK")
-			response.Flush()
+			_, err = conn.Write([]byte("250 OK"))
+			if err != nil {
+				log.Info("Failed to send " + "250 OK:" + err.Error())
+			}
 		} else if strings.HasPrefix(line, "DATA") {
 			if !authenticated {
-				fmt.Fprintln(response, "530 Authentication required")
-				response.Flush()
+				_, err = conn.Write([]byte("530 Authentication required"))
+				if err != nil {
+					log.Info("Failed to send " + "530 Authentication required:" + err.Error())
+				}
 				continue
 			}
-			fmt.Fprintln(response, "354 End data with <CR><LF>.<CR><LF>")
-			response.Flush()
+			_, err = conn.Write([]byte("354 End data with <CR><LF>.<CR><LF>"))
+			if err != nil {
+				log.Info("Failed to send " + "354 End data with <CR><LF>.<CR><LF:>" + err.Error())
+			}
 			isData = true
 			data = ""
 		} else if isData {
@@ -175,18 +200,25 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 				fmt.Println("From:", sender)
 				fmt.Println("To:", recipient)
 				fmt.Println("Data:", data)
-				fmt.Fprintln(response, "250 OK: Message accepted")
+				_, err = conn.Write([]byte("250 OK: Message accepted"))
+				if err != nil {
+					log.Info("Failed to send " + "250 OK: Message accepted:" + err.Error())
+				}
 				isData = false
 			} else {
 				data += line + "\n"
 			}
 		} else if strings.HasPrefix(line, "QUIT") {
-			fmt.Fprintln(response, "221 Bye")
-			response.Flush()
+			_, err = conn.Write([]byte("221 Bye"))
+			if err != nil {
+				log.Info("Failed to send " + "221 Bye:" + err.Error())
+			}
 			break
 		} else {
-			fmt.Fprintln(response, "500 Unrecognized command")
-			response.Flush()
+			_, err = conn.Write([]byte("500 Unrecognized command"))
+			if err != nil {
+				log.Info("Failed to send " + "500 Unrecognized command:" + err.Error())
+			}
 		}
 	}
 
