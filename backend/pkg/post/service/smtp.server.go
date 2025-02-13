@@ -124,9 +124,7 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 
 			email := parts[1]
 			password := parts[2]
-
-			log.Info("[SMTP] Authenticating with\nemail: " + email + "\npassword" + password)
-			_, status := s.repository.GetEmailAddressByName(email)
+			_, status := s.repository.GetEmailAddressByName(strings.Split(email, "@")[0])
 			if status.Err() {
 				log.Error("Could not find email address: " + email)
 				_, err = conn.Write([]byte("535 Authentication failed"))
