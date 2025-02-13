@@ -33,11 +33,12 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 
 	auth := smtp.PlainAuth("", sender.Name, os.Getenv(constants.MASTER_PASSWORD), sender.Domain)
 
-	err := smtp.SendMail(addr, auth, to, []string{to}, []byte(msg))
-	if err != nil {
-		log.Error("Unable to send electronic mail: " + err.Error())
-		return core.InternalError("Unable to send electronic mail: " + err.Error())
-	}
-	log.Success("Email sent from " + senderEmail + " to " + to)
-	return core.StatusSuccess()
+	go func() {
+		err := smtp.SendMail(addr, auth, to, []string{to}, []byte(msg))
+		if err != nil {
+			log.Error("Unable to send electronic mail: " + err.Error())
+		}
+		log.Success("Email sent from " + senderEmail + " to " + to)
+	}()
+	return core.IsProcessing()
 }

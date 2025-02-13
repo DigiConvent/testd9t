@@ -62,6 +62,13 @@ func ConflictError(message string) *Status {
 	}
 }
 
+func IsProcessing() *Status {
+	return &Status{
+		Message: "Processing",
+		Code:    102,
+	}
+}
+
 func StatusSuccess() *Status {
 	return &Status{
 		Message: "Success",
