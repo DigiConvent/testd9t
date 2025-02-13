@@ -31,7 +31,7 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 		"\r\n" +
 		body + "\r\n"
 
-	auth := smtp.PlainAuth("", sender.Name, os.Getenv(constants.MASTER_PASSWORD), sender.Domain)
+	auth := smtp.PlainAuth("", senderEmail, os.Getenv(constants.MASTER_PASSWORD), sender.Domain)
 
 	go func() {
 		err := smtp.SendMail(addr, auth, to, []string{to}, []byte(msg))

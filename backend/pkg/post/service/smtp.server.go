@@ -82,6 +82,8 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 	err = response.Flush()
 	if err != nil {
 		log.Error("Error flushing response: " + err.Error())
+	} else {
+		log.Info("[SMTP] Flushed response")
 	}
 
 	scanner := bufio.NewScanner(conn)
@@ -190,5 +192,7 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 
 	if err := scanner.Err(); err != nil {
 		log.Error("Connection error: " + err.Error())
+	} else {
+		log.Info("[SMTP] Connection closed")
 	}
 }
