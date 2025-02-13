@@ -31,9 +31,7 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 		"\r\n" +
 		body + "\r\n"
 
-	log.Info("Creating auth object")
 	auth := smtp.PlainAuth("", senderEmail, os.Getenv(constants.MASTER_PASSWORD), sender.Domain)
-	log.Info("Created  auth object")
 
 	go func() {
 		err := smtp.SendMail(addr, auth, to, []string{to}, []byte(msg))
