@@ -1,12 +1,14 @@
 package post_service
 
 import (
+	"crypto/tls"
 	"net/smtp"
 	"os"
 
 	"github.com/DigiConvent/testd9t/core"
 	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/log"
+	post_setup "github.com/DigiConvent/testd9t/pkg/post/setup"
 	"github.com/google/uuid"
 )
 
@@ -38,6 +40,57 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 		if err != nil {
 			log.Error("Unable to send electronic mail: " + err.Error())
 		}
+		log.Success("Email sent from " + senderEmail + " to " + to)
+	}()
+	go func() {
+		keypair, err := tls.LoadX509KeyPair(post_setup.TlsPublicKeyPath(), post_setup.TlsPrivateKeyPath())
+		if err != nil {
+			log.Error("Unable to connect to smtp server: " + err.Error())
+		}
+		tlsConfig := tls.Config{Certificates: []tls.Certificate{keypair}}
+		conn, err := tls.Dial("tcp", addr, &tlsConfig)
+		if err != nil {
+			log.Error("Unable to connect to smtp server: " + err.Error())
+		}
+
+		client, err := smtp.NewClient(conn, sender.Domain)
+		if err != nil {
+			log.Error("Unable to connect to smtp server: " + err.Error())
+		}
+
+		err = client.Auth(auth)
+		if err != nil {
+			log.Error("Unable to connect to smtp server: " + err.Error())
+		}
+
+		err = client.Mail(senderEmail)
+		if err != nil {
+			log.Error("Unable to connect to smtp server: " + err.Error())
+		}
+
+		err = client.Rcpt(to)
+		if err != nil {
+			log.Error("Unable to connect to smtp server: " + err.Error())
+		}
+
+		w, err := client.Data()
+		if err != nil {
+			log.Error("Unable to connect to smtp server: " + err.Error())
+		}
+
+		_, err = w.Write([]byte(msg))
+		if err != nil {
+			log.Error("Unable to connect to smtp server: " + err.Error())
+		}
+		err = w.Close()
+		if err != nil {
+			log.Error("Unable to connect to smtp server: " + err.Error())
+		}
+		err = client.Quit()
+		if err != nil {
+			log.Error("Unable to connect to smtp server: " + err.Error())
+		}
+
 		log.Success("Email sent from " + senderEmail + " to " + to)
 	}()
 	return core.IsProcessing()

@@ -67,6 +67,8 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 		err := conn.Close()
 		if err != nil {
 			log.Error("Error closing [SMTP] connection: " + err.Error())
+		} else {
+			log.Info("[SMTP] Connection from " + conn.RemoteAddr().String() + " closed")
 		}
 	}()
 
