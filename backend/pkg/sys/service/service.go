@@ -9,7 +9,6 @@ import (
 type SysServiceInterface interface {
 	Init() *core.Status
 	GetSystemStatus() (*sys_domain.SystemStatus, *core.Status)
-	ClaimAdmin(telegramId string) *core.Status
 
 	GetConfiguration() (*sys_domain.Configuration, *core.Status)
 	GetPackages() (map[string]sys_domain.Package, *core.Status)

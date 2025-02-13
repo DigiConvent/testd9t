@@ -11,7 +11,6 @@ type SysRepositoryInterface interface {
 	ListFlavoursForVersion() ([]string, core.Status)
 
 	SetBotToken(botId string) core.Status
-	ClaimAdmin(telegramId string) core.Status
 
 	GetConfiguration() (*sys_domain.Configuration, core.Status)
 
