@@ -79,7 +79,11 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 		log.Info("[SMTP] Sent: 220 SMTP Server for testd9t is ready: " + strconv.Itoa(n))
 	}
 
-	response.Flush()
+	err = response.Flush()
+	if err != nil {
+		log.Error("Error flushing response: " + err.Error())
+	}
+
 	scanner := bufio.NewScanner(conn)
 
 	authenticated := false
