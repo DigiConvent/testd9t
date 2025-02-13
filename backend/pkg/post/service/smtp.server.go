@@ -103,12 +103,14 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 
 			_, err = conn.Write([]byte("250 AUTH PLAIN"))
 			if err != nil {
-				log.Warning("[SMTP] S: " + "250 AUTH PLAIN LOGIN:" + err.Error())
+				log.Warning("[SMTP] S: " + "250 AUTH PLAIN:" + err.Error())
 			} else {
 				log.Success("[SMTP] S: 250 AUTH PLAIN")
 			}
 		} else if strings.HasPrefix(line, "AUTH PLAIN") {
-			decoded, _ := base64.StdEncoding.DecodeString(scanner.Text())
+			baseEncodedInput := strings.TrimPrefix(line, "AUTH PLAIN ")
+			decoded, _ := base64.StdEncoding.DecodeString(baseEncodedInput)
+
 			parts := strings.SplitN(string(decoded), "\x00", 3)
 			log.Info("[SMTP] Received: " + string(decoded))
 			log.Info("       Received: " + strings.Join(parts, ", "))
