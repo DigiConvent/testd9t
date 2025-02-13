@@ -108,20 +108,6 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 				log.Success("[SMTP] S: 250 AUTH PLAIN LOGIN")
 			}
 		} else if strings.HasPrefix(line, "AUTH PLAIN") {
-			_, err = conn.Write([]byte("334"))
-			if err != nil {
-				log.Info("Failed to send " + "334:" + err.Error())
-			} else {
-				log.Info("[SMTP] Received: AUTH PLAIN")
-			}
-
-			if !scanner.Scan() {
-				_, err = conn.Write([]byte("535 Authentication failed"))
-				if err != nil {
-					log.Info("Failed to send " + "535 Authentication failed:" + err.Error())
-				}
-				break
-			}
 			decoded, _ := base64.StdEncoding.DecodeString(scanner.Text())
 			parts := strings.SplitN(string(decoded), "\x00", 3)
 			log.Info("[SMTP] Received: " + string(decoded))
