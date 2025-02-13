@@ -91,24 +91,29 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		log.Info("[SMTP] Received: " + line)
+		log.Info("[SMTP] C: " + line)
 
 		if strings.HasPrefix(line, "HELO") || strings.HasPrefix(line, "EHLO") {
-			_, err = conn.Write([]byte("250-Hello"))
+			_, err = conn.Write([]byte("250-testd9t-smtp"))
 			if err != nil {
-				log.Info("Failed to send " + "250-Hello:" + err.Error())
+				log.Warning("[SMTP] S:" + "250-testd9t-smtp:" + err.Error())
+			} else {
+				log.Success("[SMTP] S: 250-testd9t-smtp")
 			}
-			_, err = conn.Write([]byte("250 AUTH PLAIN"))
+
+			_, err = conn.Write([]byte("250 AUTH PLAIN LOGIN"))
 			if err != nil {
-				log.Info("Failed to send " + "250 AUTH PLAIN:" + err.Error())
+				log.Warning("[SMTP] S: " + "250 AUTH PLAIN LOGIN:" + err.Error())
+			} else {
+				log.Success("[SMTP] S: 250 AUTH PLAIN LOGIN")
 			}
-			log.Info("[SMTP] Received: 250-Hello")
 		} else if strings.HasPrefix(line, "AUTH PLAIN") {
 			_, err = conn.Write([]byte("334"))
 			if err != nil {
 				log.Info("Failed to send " + "334:" + err.Error())
+			} else {
+				log.Info("[SMTP] Received: AUTH PLAIN")
 			}
-			log.Info("[SMTP] Received: AUTH PLAIN")
 
 			if !scanner.Scan() {
 				_, err = conn.Write([]byte("535 Authentication failed"))
