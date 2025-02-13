@@ -10,8 +10,9 @@ type SysRouter struct {
 	postService post_service.PostServiceInterface
 }
 
-func NewSysRouter(sysService sys_service.SysServiceInterface) *SysRouter {
+func NewSysRouter(sysService sys_service.SysServiceInterface, postService post_service.PostServiceInterface) *SysRouter {
 	return &SysRouter{
-		sysService: sysService,
+		sysService:  sysService,
+		postService: postService,
 	}
 }

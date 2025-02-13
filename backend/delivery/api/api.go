@@ -7,7 +7,7 @@ import (
 )
 
 func RegisterRoutes(router *gin.Engine, s *services.Services) {
-	sysRouter := sys_router.NewSysRouter(s.SysService)
+	sysRouter := sys_router.NewSysRouter(s.SysService, s.PostService)
 	apiRoutes := router.Group("/api")
 
 	apiRoutes.GET("/", func(c *gin.Context) {
