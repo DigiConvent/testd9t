@@ -97,7 +97,8 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 			}
 			decoded, _ := base64.StdEncoding.DecodeString(scanner.Text())
 			parts := strings.SplitN(string(decoded), "\x00", 3)
-
+			log.Info("[SMTP] Received: " + string(decoded))
+			log.Info("       Received: " + strings.Join(parts, ", "))
 			if len(parts) < 3 {
 				fmt.Fprintln(response, "535 Authentication failed")
 				response.Flush()
@@ -110,11 +111,13 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 			log.Info("[SMTP] Authenticating with\nemail: " + email + "\npassword" + password)
 			_, status := s.repository.GetEmailAddressByName(email)
 			if status.Err() {
+				log.Error("Could not find email address: " + email)
 				fmt.Fprintln(response, "535 Authentication failed")
 				response.Flush()
 				continue
 			}
 
+			log.Info("[SMTP] Comparing if " + password + " = " + os.Getenv(constants.MASTER_PASSWORD))
 			if password == os.Getenv(constants.MASTER_PASSWORD) {
 				authenticated = true
 				fmt.Fprintln(response, "235 Authentication successful")

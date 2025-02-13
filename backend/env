@@ -1,6 +1,6 @@
 DATABASE_PATH=/tmp/testd9t/data/
 DOMAIN=digiconvent.de
 CERTIFICATES_PATH=/tmp/testd9t/certs/
-SMTP_PORT=465
+SMTP_PORT=587
 HTTPS_PORT=443
 HTTP_PORT=80

@@ -24,7 +24,7 @@ func CheckEnv() {
 	shouldContinue = CheckIfSet(DOMAIN, false, "") && shouldContinue
 	shouldContinue = CheckIfSet(HTTP_PORT, true, "80") && shouldContinue
 	shouldContinue = CheckIfSet(HTTPS_PORT, true, "443") && shouldContinue
-	shouldContinue = CheckIfSet(SMTP_PORT, true, "465") && shouldContinue
+	shouldContinue = CheckIfSet(SMTP_PORT, true, "587") && shouldContinue
 
 	if !shouldContinue {
 		os.Exit(1)
