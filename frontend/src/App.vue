@@ -1,7 +1,20 @@
 <template>
   <header>
     <div v-if="status != null">
-      {{ status }}
+      <table>
+        <tr>
+          <td>Version:</td>
+          <td>{{ status.version }}</td>
+        </tr>
+        <tr>
+          <td>Uptime:</td>
+          <td>{{ status.online_since }}</td>
+        </tr>
+        <tr>
+          <td>Disk status:</td>
+          <td>{{ (100 / status.total_space) * (status.total_space - status.free_space) }}%</td>
+        </tr>
+      </table>
     </div>
   </header>
 </template>

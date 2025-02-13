@@ -73,7 +73,7 @@ func (s *PostService) handleSmtpConnection(conn net.Conn) {
 	}()
 
 	welcomeMessage := "SMTP Server for testd9t is ready"
-	n, err := conn.Write([]byte("220" + welcomeMessage + "\r\n"))
+	n, err := conn.Write([]byte("220 " + welcomeMessage + "\r\n"))
 	if err != nil {
 		log.Info(err.Error())
 	}
