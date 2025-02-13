@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -56,17 +57,26 @@ func (s *PostService) startSmtpServer() {
 		} else {
 			log.Info("Accepted connection from " + connection.RemoteAddr().String())
 		}
-		go s.handleSMTPConnection(connection)
+		go s.handleSmtpConnection(connection)
 	}
 }
 
-func (s *PostService) handleSMTPConnection(conn net.Conn) {
-	defer conn.Close()
+func (s *PostService) handleSmtpConnection(conn net.Conn) {
+	log.Info("[SMTP] Connection from " + conn.RemoteAddr().String())
+	defer func() {
+		err := conn.Close()
+		if err != nil {
+			log.Error("Error closing [SMTP] connection: " + err.Error())
+		}
+	}()
 	response := bufio.NewWriter(conn)
 
-	_, err := fmt.Fprintln(response, "220 SMTP Server for testd9t is ready")
+	welcomeMessage := "SMTP Server for testd9t is ready"
+	n, err := fmt.Fprintln(response, "220"+welcomeMessage)
 	if err != nil {
 		log.Error("Error sending response: " + err.Error())
+	} else {
+		log.Info("[SMTP] Sent: 220 SMTP Server for testd9t is ready: " + strconv.Itoa(n))
 	}
 
 	response.Flush()
