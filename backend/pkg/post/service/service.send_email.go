@@ -43,23 +43,23 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 		log.Success("Email sent from " + senderEmail + " to " + to)
 	}()
 	go func() {
-		log.Info(1)
 		auth := smtp.PlainAuth("", senderEmail, os.Getenv(constants.MASTER_PASSWORD), sender.Domain)
-		log.Info(2)
 		keypair, err := tls.LoadX509KeyPair(post_setup.TlsPublicKeyPath(), post_setup.TlsPrivateKeyPath())
-		log.Info(3)
+
 		if err != nil {
 			log.Error("Unable to load x509 key pair: " + err.Error())
+		} else {
+			log.Info("Loaded x509 key pair")
 		}
-		log.Info(4)
+
 		tlsConfig := tls.Config{Certificates: []tls.Certificate{keypair}}
-		log.Info(5)
 		conn, err := tls.Dial("tcp", addr, &tlsConfig)
 		if err != nil {
 			log.Error("Unable to connect to smtp server: " + err.Error())
+		} else {
+			log.Info("Connected to smtp server")
 		}
 
-		log.Info(6)
 		client, err := smtp.NewClient(conn, sender.Domain)
 		if err != nil {
 			log.Error("Unable to create smtp client: " + err.Error())
@@ -67,28 +67,36 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 			log.Info("Created smtp client")
 		}
 
+		log.Info(7)
 		err = client.Auth(auth)
+		log.Info(8)
 		if err != nil {
 			log.Error("Unable to authenticate: " + err.Error())
 		} else {
 			log.Info("Authenticated with smtp server")
 		}
 
+		log.Info(9)
 		err = client.Mail(senderEmail)
+		log.Info(10)
 		if err != nil {
 			log.Error("Unable to send mail: " + err.Error())
 		} else {
 			log.Info("Sent mail from " + senderEmail)
 		}
 
+		log.Info(11)
 		err = client.Rcpt(to)
+		log.Info(12)
 		if err != nil {
 			log.Error("Unable to set recipient: " + err.Error())
 		} else {
 			log.Info("Set recipient to " + to)
 		}
 
+		log.Info(13)
 		w, err := client.Data()
+		log.Info(14)
 		if err != nil {
 			log.Error("Unable to get data writer: " + err.Error())
 		} else {
