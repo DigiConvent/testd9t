@@ -19,7 +19,6 @@ import (
 )
 
 func main() {
-	fmt.Println("SMTP Server is reachable!")
 	sys_domain.StartTime = time.Now()
 	log.Info("Build      " + sys_domain.CompiledAt)
 	log.Info("Running at " + sys_domain.StartTime.Format(core_utils.FormattedTime))

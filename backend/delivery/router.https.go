@@ -20,6 +20,8 @@ func runHttps(router *gin.Engine) {
 		err := router.RunTLS(":"+os.Getenv(constants.HTTPS_PORT), sys_setup.TlsPublicKeyPath(), sys_setup.TlsPrivateKeyPath())
 		if err != nil {
 			panic("failed to start server: " + err.Error())
+		} else {
+			log.Info("Server started at https://" + os.Getenv(constants.DOMAIN) + ":" + os.Getenv(constants.HTTPS_PORT))
 		}
 	}()
 	waitGroup.Wait()
@@ -35,6 +37,8 @@ func runHttp2Https(waitGroup *sync.WaitGroup) {
 		})
 		if err := subRouter.Run(":" + os.Getenv(constants.HTTP_PORT)); err != nil {
 			log.Error("Could not start http redirect server: " + err.Error())
+		} else {
+			log.Info("Server started at http://" + os.Getenv(constants.DOMAIN) + ":" + os.Getenv(constants.HTTP_PORT))
 		}
 	}()
 }
