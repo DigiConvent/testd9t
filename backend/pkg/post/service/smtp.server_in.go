@@ -137,6 +137,8 @@ func extractEmailContents(raw string) (string, string, map[string][]byte, []stri
 			part, err := mr.NextPart()
 			if err != nil {
 				break
+			} else {
+				log.Info("Part: " + part.Header.Get("Content-Type") + " (" + part.FileName() + ")")
 			}
 
 			if part.Header.Get("Content-Type") == "text/plain" {
@@ -176,6 +178,8 @@ func extractEmailContents(raw string) (string, string, map[string][]byte, []stri
 		}
 		textContent = string(data)
 	}
+
+	log.Info("Notes: " + strings.Join(notes, ", "))
 
 	return textContent, htmlContent, attachments, notes
 }
