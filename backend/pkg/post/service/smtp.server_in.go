@@ -79,7 +79,10 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 					line = line[1:]
 				}
 
+				body += line + "\n"
+
 				if line == "" || line == "\r\n" || line == "\n" {
+
 					log.Info("End of headers, starting to read body. Read separator: '" + line + "'")
 					scanBody = true
 					continue
@@ -96,9 +99,6 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 					if strings.HasPrefix(line, "Subject:") {
 						subject = strings.TrimSpace(line[8:])
 					}
-					body += line + "\n"
-				} else {
-					body += line + "\n"
 				}
 			}
 
