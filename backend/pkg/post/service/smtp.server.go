@@ -1,3 +1,4 @@
+// exempt from testing
 package post_service
 
 import (
