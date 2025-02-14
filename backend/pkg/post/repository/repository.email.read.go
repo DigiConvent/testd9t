@@ -17,8 +17,8 @@ func (p PostRepository) ReadEmail(id *uuid.UUID) (*post_domain.EmailRead, core.S
 
 	var email = &post_domain.EmailRead{}
 
-	err := p.db.QueryRow("select id, from, to, subject, body, read_at, sent_at from emails where id = ?", id.String()).
-		Scan(&email.ID, &email.From, &email.To, &email.Subject, &email.Body, &email.ReadAt, &email.SentAt)
+	err := p.db.QueryRow("select id, from_email_address, to_email_address, subject, read_at, sent_at from emails where id = ?", id.String()).
+		Scan(&email.ID, &email.From, &email.To, &email.Subject, &email.ReadAt, &email.SentAt)
 
 	if err != nil {
 		return nil, *core.NotFoundError("email not found")
@@ -36,6 +36,11 @@ func (p PostRepository) ReadEmail(id *uuid.UUID) (*post_domain.EmailRead, core.S
 		attachments = append(attachments, file.Name())
 	}
 
+	body, err := os.ReadFile(path.Join(os.Getenv(constants.DATABASE_PATH), "post", "email", id.String(), "contents"))
+	if err != nil {
+		return nil, *core.InternalError(err.Error())
+	}
+	email.Body = string(body)
 	email.Attachments = attachments
 
 	return email, *core.StatusSuccess()

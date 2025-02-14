@@ -3,10 +3,12 @@ package post_repository
 import (
 	"os"
 	"path"
+	"strconv"
 	"strings"
 
 	"github.com/DigiConvent/testd9t/core"
 	constants "github.com/DigiConvent/testd9t/core/const"
+	"github.com/DigiConvent/testd9t/core/log"
 	post_domain "github.com/DigiConvent/testd9t/pkg/post/domain"
 	"github.com/google/uuid"
 )
@@ -35,6 +37,7 @@ func (p PostRepository) StoreEmail(email *post_domain.EmailWrite) core.Status {
 	}
 
 	var notes []string
+	log.Info("Found " + strconv.Itoa(len(email.Attachments)) + " attachments")
 	for filename, attachment := range email.Attachments {
 		err = os.WriteFile(path.Join(emailFolder, "attachments", filename), attachment, 0644)
 		if err != nil {
@@ -45,8 +48,11 @@ func (p PostRepository) StoreEmail(email *post_domain.EmailWrite) core.Status {
 	err = os.WriteFile(path.Join(emailFolder, "body"), []byte(email.Body), 0644)
 	if err != nil {
 		notes = append(notes, "Could not store email body: "+err.Error())
+	} else {
+		log.Info("Stored email body " + email.Body)
 	}
 
+	log.Info("Notes: " + strings.Join(notes, "\n"))
 	_, err = p.db.Exec("insert into emails (id, from_email_address, to_email_address, subject, notes) values (?, ?, ?, ?, ?)",
 		id.String(),
 		email.From,
