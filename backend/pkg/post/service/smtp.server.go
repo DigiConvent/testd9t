@@ -1,4 +1,3 @@
-// exempt from testing
 package post_service
 
 import (
@@ -54,14 +53,15 @@ func (s *PostService) startSmtpServer() {
 		} else {
 			log.Info("Accepted connection from " + connection.RemoteAddr().String())
 		}
-		go s.handleConnection(connection)
+		go s.handleConnection(connection, &tlsConfig)
 	}
 }
 
-func (s *PostService) handleConnection(conn net.Conn) {
+func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 	defer conn.Close()
 
 	sendResponse(conn, "220 Welcome to my SMTP server")
+	tlsEnabled := false
 
 	buf := make([]byte, 1024)
 	var commandQueue []string
@@ -92,6 +92,11 @@ func (s *PostService) handleConnection(conn net.Conn) {
 				sendResponse(conn, "250-AUTH PLAIN")
 				sendResponse(conn, "250 STARTTLS")
 			case strings.HasPrefix(cmd, "AUTH PLAIN"):
+				if !tlsEnabled {
+					sendResponse(conn, "538 Encryption required for AUTH PLAIN")
+					continue
+				}
+
 				input := strings.TrimPrefix(cmd, "AUTH PLAIN ")
 				decoded, err := base64.StdEncoding.DecodeString(input)
 				if err != nil {
@@ -121,6 +126,23 @@ func (s *PostService) handleConnection(conn net.Conn) {
 				}
 
 				sendResponse(conn, "235 OK")
+			case strings.HasPrefix(cmd, "STARTTLS"):
+				if tlsEnabled {
+					sendResponse(conn, "503 TLS already enabled")
+					continue
+				}
+				sendResponse(conn, "220 Ready to start TLS")
+
+				tlsConn := tls.Server(conn, tlsConfig)
+				err := tlsConn.Handshake()
+				if err != nil {
+					log.Warning("TLS handshake failed: " + err.Error())
+					return
+				}
+
+				conn = tlsConn
+				tlsEnabled = true
+				log.Info("TLS enabled")
 			case strings.HasPrefix(cmd, "MAIL FROM"):
 				sendResponse(conn, "250 OK")
 			case strings.HasPrefix(cmd, "RCPT TO"):
