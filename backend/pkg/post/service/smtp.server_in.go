@@ -10,6 +10,7 @@ import (
 	"mime/quotedprintable"
 	"net"
 	"net/mail"
+	"strconv"
 	"strings"
 
 	"github.com/DigiConvent/testd9t/core/log"
@@ -121,11 +122,13 @@ func extractEmail(line string) string {
 }
 
 func extractEmailContents(raw string) (string, string, map[string][]byte, []string) {
-	log.Info("Extracting email contents...")
+	log.Info("Extracting email contents from " + strconv.Itoa(len(raw)))
 	msg, err := mail.ReadMessage(strings.NewReader(raw))
 	if err != nil {
 		log.Error("Error parsing email: " + err.Error())
 		return "", "", nil, nil
+	} else {
+		log.Info("Read message")
 	}
 
 	var textContent, htmlContent string
