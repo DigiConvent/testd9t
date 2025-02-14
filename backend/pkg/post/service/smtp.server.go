@@ -85,6 +85,8 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 			commandQueue = append(commandQueue, cmd)
 		}
 
+		log.Info("C: " + string(buf[:n]))
+
 		for len(commandQueue) > 0 {
 			cmd := commandQueue[0]
 			commandQueue = commandQueue[1:]
@@ -130,6 +132,8 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 					sendResponse(conn, "535 Could not parse AUTH PLAIN "+input)
 					continue
 				}
+
+				log.Success("Authenticated as " + from)
 
 				sendResponse(conn, "235 OK")
 			case strings.HasPrefix(cmd, "STARTTLS"):
