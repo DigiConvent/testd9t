@@ -68,6 +68,20 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 			for scanner.Scan() {
 				line := scanner.Text()
 				fmt.Println(line)
+
+				if line == "" {
+					fmt.Println("-----------------BREAK----------------'" + line + "'")
+				}
+				if line == "\n" {
+					fmt.Println("-----------------BREAK----------------'" + line + "'")
+				}
+				if line == "\r\n" {
+					fmt.Println("-----------------BREAK----------------'" + line + "'")
+				}
+				if line == "\r\n\r\n" {
+					fmt.Println("-----------------BREAK----------------'" + line + "'")
+				}
+
 				if line == "." {
 					break
 				}
