@@ -6,20 +6,21 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"log"
 	"mime/multipart"
 	"mime/quotedprintable"
 	"net"
 	"net/mail"
 	"strings"
 
+	"github.com/DigiConvent/testd9t/core/log"
 	post_domain "github.com/DigiConvent/testd9t/pkg/post/domain"
 )
 
 func (s *PostService) smtpReceiveServer() {
 	listener, err := net.Listen("tcp", ":25")
 	if err != nil {
-		log.Fatal("Error starting server:", err)
+		log.Error("Error starting server:" + err.Error())
+		return
 	}
 	defer listener.Close()
 
@@ -28,7 +29,7 @@ func (s *PostService) smtpReceiveServer() {
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Println("Error accepting connection:", err)
+			log.Error("Error accepting connection:" + err.Error())
 			continue
 		}
 
@@ -78,7 +79,7 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				plain = html
 			}
 
-			s.repository.StoreEmail(&post_domain.EmailWrite{
+			status := s.repository.StoreEmail(&post_domain.EmailWrite{
 				From:        from,
 				To:          to,
 				Subject:     subject,
@@ -86,6 +87,11 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				Attachments: attachments,
 				Notes:       notes,
 			})
+
+			if status.Err() {
+				log.Error("Error storing email: " + status.Message)
+				break
+			}
 
 			fmt.Fprintf(conn, "250 OK: Message accepted\r\n")
 		} else if line == "QUIT" {
@@ -97,7 +103,7 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Println("Error reading:", err)
+		log.Error("Error reading:" + err.Error())
 	}
 }
 

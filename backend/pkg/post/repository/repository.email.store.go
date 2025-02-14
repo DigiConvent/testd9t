@@ -47,7 +47,7 @@ func (p PostRepository) StoreEmail(email *post_domain.EmailWrite) core.Status {
 		notes = append(notes, "Could not store email body: "+err.Error())
 	}
 
-	_, err = p.db.Exec("insert into emails (id, from, to, subject, body, attachments) values (?, ?, ?, ?, ?, ?)",
+	_, err = p.db.Exec("insert into emails (id, from_email_address, to_email_address, subject, notes) values (?, ?, ?, ?, ?)",
 		id.String(),
 		email.From,
 		toId.ID,
