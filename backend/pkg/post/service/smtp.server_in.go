@@ -74,6 +74,8 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				data += line + "\n"
 			}
 
+			fmt.Println("Data: " + data)
+
 			plain, html, attachments, notes := extractEmailContents(data)
 
 			if html != "" {
@@ -127,8 +129,6 @@ func extractEmailContents(raw string) (string, string, map[string][]byte, []stri
 	if err != nil {
 		log.Error("Error parsing email: " + err.Error())
 		return "", "", nil, nil
-	} else {
-		log.Info("Read message")
 	}
 
 	var textContent, htmlContent string
@@ -136,6 +136,7 @@ func extractEmailContents(raw string) (string, string, map[string][]byte, []stri
 
 	var notes []string
 	contentType := msg.Header.Get("Content-Type")
+	log.Info("Content type: " + contentType)
 	if strings.Contains(contentType, "multipart") {
 		mr := multipart.NewReader(msg.Body, msg.Header.Get("Boundary"))
 		for {
@@ -177,7 +178,6 @@ func extractEmailContents(raw string) (string, string, map[string][]byte, []stri
 			}
 		}
 	} else {
-		log.Info("Content type: " + contentType)
 		data, err := io.ReadAll(msg.Body)
 		if err != nil {
 			return "", "", nil, notes
