@@ -85,10 +85,9 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 			commandQueue = append(commandQueue, cmd)
 		}
 
-		log.Info("C: " + string(buf[:n]))
-
 		for len(commandQueue) > 0 {
 			cmd := commandQueue[0]
+			log.Info("C: " + cmd)
 			commandQueue = commandQueue[1:]
 
 			switch {
