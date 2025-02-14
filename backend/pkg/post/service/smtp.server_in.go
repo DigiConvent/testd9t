@@ -80,6 +80,7 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				}
 
 				if line == "" {
+					log.Info("End of headers, starting to read body. Read separator: " + line)
 					scanBody = true
 					continue
 				}
