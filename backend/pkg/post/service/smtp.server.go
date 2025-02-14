@@ -182,18 +182,24 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 					continue
 				}
 			case strings.HasPrefix(cmd, "DATA"):
+				log.Info("Received DATA command")
 				sendResponse(conn, "354 Start mail input; end with <CRLF>.<CRLF>")
 				contents := handleData(conn)
 				if contents == "" {
 					log.Warning("Missing email contents: '" + contents + "'")
 					sendResponse(conn, "451 Requested action aborted: local error in processing")
 					continue
+				} else {
+					log.Info("Email contents: '" + contents + "'")
 				}
 
 				if from == "" || to == "" {
 					log.Warning("Missing sender or recipient: " + from + ", " + to)
 					sendResponse(conn, "451 Requested action aborted: local error in processing")
 					continue
+				} else {
+					log.Info("Sender:    " + from)
+					log.Info("Recipient: " + to)
 				}
 
 				recipientDomain := strings.Split(from, "@")[1]
@@ -201,6 +207,8 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 					log.Warning("Missing recipient domain: " + recipientDomain)
 					sendResponse(conn, "451 Requested action aborted: local error in processing")
 					continue
+				} else {
+					log.Info("Recipient domain: " + recipientDomain)
 				}
 
 				err := forwardEmail(from, to, contents)
@@ -264,6 +272,8 @@ func sendResponse(conn net.Conn, response string) {
 	_, err := conn.Write([]byte(response + "\r\n"))
 	if err != nil {
 		log.Warning("Error sending response: " + err.Error())
+	} else {
+		log.Info("S: " + response)
 	}
 }
 
