@@ -203,7 +203,12 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 					continue
 				}
 
-				forwardEmail(from, to, contents)
+				err := forwardEmail(from, to, contents)
+				if err != nil {
+					log.Warning("Error forwarding email: " + err.Error())
+					sendResponse(conn, "451 Requested action aborted: local error in processing")
+					continue
+				}
 			case strings.HasPrefix(cmd, "QUIT"):
 				sendResponse(conn, "221 Bye")
 				return
@@ -214,10 +219,12 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 	}
 }
 
-func forwardEmail(from, to, contents string) any {
+func forwardEmail(from, to, contents string) error {
 	mxRecords, err := net.LookupMX(strings.Split(to, "@")[1])
 	if err != nil {
 		return fmt.Errorf("failed to lookup MX records: %v", err)
+	} else {
+		log.Info("Found MX records: " + mxRecords[0].Host)
 	}
 
 	mxHost := mxRecords[0].Host
@@ -225,6 +232,8 @@ func forwardEmail(from, to, contents string) any {
 	client, err := smtp.Dial(mxHost + ":25")
 	if err != nil {
 		return fmt.Errorf("failed to connect to MX host: %v", err)
+	} else {
+		log.Info("Connected to MX host: " + mxHost)
 	}
 	defer client.Quit()
 
@@ -237,11 +246,15 @@ func forwardEmail(from, to, contents string) any {
 	wc, err := client.Data()
 	if err != nil {
 		return fmt.Errorf("failed to start data: %v", err)
+	} else {
+		log.Info("Started data")
 	}
 	defer wc.Close()
 
 	if _, err := wc.Write([]byte(contents)); err != nil {
 		return fmt.Errorf("failed to write email data: %v", err)
+	} else {
+		log.Info("Finished sending email to " + to)
 	}
 
 	return nil
