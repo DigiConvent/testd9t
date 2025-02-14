@@ -1,15 +1,28 @@
 package post_domain
 
-import "github.com/google/uuid"
+import (
+	"time"
 
-type EmailAddressWrite struct {
-	Name   string `json:"name"`
-	Domain string `json:"domain"`
+	"github.com/google/uuid"
+)
+
+type EmailRead struct {
+	From        string     `json:"from"`
+	To          *uuid.UUID `json:"to"`
+	ID          *uuid.UUID `json:"id"`
+	Subject     string     `json:"subject"`
+	Body        string     `json:"body"`
+	Attachments []string   `json:"attachments"`
+	ReadAt      *time.Time `json:"read_at"`
+	SentAt      *time.Time `json:"when"`
+	Notes       string     `json:"notes"`
 }
 
-type EmailAddressRead struct {
-	ID        *uuid.UUID `json:"id"`
-	Name      string     `json:"name"`
-	Domain    string     `json:"domain"`
-	Generated bool       `json:"generated"`
+type EmailWrite struct {
+	From        string            `json:"from"`
+	To          string            `json:"to"`
+	Subject     string            `json:"subject"`
+	Body        string            `json:"body"`
+	Attachments map[string][]byte `json:"attachments"`
+	Notes       []string          `json:"notes"`
 }

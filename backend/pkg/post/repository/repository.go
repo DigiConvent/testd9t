@@ -15,6 +15,9 @@ type PostRepositoryInterface interface {
 	UpdateEmailAddress(id *uuid.UUID, credentials *post_domain.EmailAddressWrite) core.Status
 
 	GetEmailAddressByName(name string) (*post_domain.EmailAddressRead, core.Status)
+
+	StoreEmail(email *post_domain.EmailWrite) core.Status
+	ReadEmail(id *uuid.UUID) (*post_domain.EmailRead, core.Status)
 }
 
 type PostRepository struct {

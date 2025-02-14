@@ -240,7 +240,7 @@ func forwardEmail(from, to, contents string) error {
 
 	mxHost := mxRecords[0].Host
 
-	client, err := smtp.Dial(mxHost + ":25")
+	client, err := smtp.Dial(mxHost + ":587")
 	if err != nil {
 		return fmt.Errorf("failed to connect to MX host: %v", err)
 	} else {
