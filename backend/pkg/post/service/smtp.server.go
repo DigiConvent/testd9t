@@ -4,7 +4,9 @@ package post_service
 import (
 	"crypto/tls"
 	"encoding/base64"
+	"fmt"
 	"net"
+	"net/smtp"
 	"os"
 	"os/signal"
 	"strings"
@@ -66,6 +68,7 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 
 	buf := make([]byte, 1024)
 	var commandQueue []string
+	var from, to string
 
 	for {
 		n, err := conn.Read(buf)
@@ -118,6 +121,8 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 					log.Warning("Error getting email address by name: " + status.Message)
 					sendResponse(conn, "535 Could not parse AUTH PLAIN "+input)
 					continue
+				} else {
+					from = segments[1]
 				}
 
 				if segments[2] != os.Getenv(constants.MASTER_PASSWORD) {
@@ -145,12 +150,60 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 				tlsEnabled = true
 				log.Info("TLS enabled")
 			case strings.HasPrefix(cmd, "MAIL FROM"):
+				start := strings.Index(cmd, "<")
+				end := strings.Index(cmd, ">")
+				if start == -1 || end == -1 || start >= end {
+					from = ""
+				} else {
+					from = cmd[start+1 : end]
+				}
+
+				if from == "" {
+					sendResponse(conn, "501 Invalid sender syntax")
+					continue
+				}
+
+				if strings.Split(from, "@")[1] != os.Getenv(constants.DOMAIN) {
+					sendResponse(conn, "501 Invalid sender syntax")
+					continue
+				}
 				sendResponse(conn, "250 OK")
 			case strings.HasPrefix(cmd, "RCPT TO"):
-				sendResponse(conn, "250 OK")
+				start := strings.Index(cmd, "<")
+				end := strings.Index(cmd, ">")
+				if start == -1 || end == -1 || start >= end {
+					to = ""
+				} else {
+					to = cmd[start+1 : end]
+				}
+
+				if to == "" {
+					sendResponse(conn, "501 Invalid recipient syntax")
+					continue
+				}
 			case strings.HasPrefix(cmd, "DATA"):
 				sendResponse(conn, "354 Start mail input; end with <CRLF>.<CRLF>")
-				handleData(conn)
+				contents := handleData(conn)
+				if contents == "" {
+					log.Warning("Missing email contents: '" + contents + "'")
+					sendResponse(conn, "451 Requested action aborted: local error in processing")
+					continue
+				}
+
+				if from == "" || to == "" {
+					log.Warning("Missing sender or recipient: " + from + ", " + to)
+					sendResponse(conn, "451 Requested action aborted: local error in processing")
+					continue
+				}
+
+				recipientDomain := strings.Split(from, "@")[1]
+				if recipientDomain == "" {
+					log.Warning("Missing recipient domain: " + recipientDomain)
+					sendResponse(conn, "451 Requested action aborted: local error in processing")
+					continue
+				}
+
+				forwardEmail(from, to, contents)
 			case strings.HasPrefix(cmd, "QUIT"):
 				sendResponse(conn, "221 Bye")
 				return
@@ -161,6 +214,39 @@ func (s *PostService) handleConnection(conn net.Conn, tlsConfig *tls.Config) {
 	}
 }
 
+func forwardEmail(from, to, contents string) any {
+	mxRecords, err := net.LookupMX(strings.Split(to, "@")[1])
+	if err != nil {
+		return fmt.Errorf("failed to lookup MX records: %v", err)
+	}
+
+	mxHost := mxRecords[0].Host
+
+	client, err := smtp.Dial(mxHost + ":25")
+	if err != nil {
+		return fmt.Errorf("failed to connect to MX host: %v", err)
+	}
+	defer client.Quit()
+
+	if err := client.Mail(from); err != nil {
+		return fmt.Errorf("failed to set sender: %v", err)
+	}
+	if err := client.Rcpt(to); err != nil {
+		return fmt.Errorf("failed to set recipient: %v", err)
+	}
+	wc, err := client.Data()
+	if err != nil {
+		return fmt.Errorf("failed to start data: %v", err)
+	}
+	defer wc.Close()
+
+	if _, err := wc.Write([]byte(contents)); err != nil {
+		return fmt.Errorf("failed to write email data: %v", err)
+	}
+
+	return nil
+}
+
 func sendResponse(conn net.Conn, response string) {
 	_, err := conn.Write([]byte(response + "\r\n"))
 	if err != nil {
@@ -168,19 +254,23 @@ func sendResponse(conn net.Conn, response string) {
 	}
 }
 
-func handleData(conn net.Conn) {
+func handleData(conn net.Conn) string {
 	buf := make([]byte, 1024)
+	var emailContents strings.Builder
 	for {
 		n, err := conn.Read(buf)
 		if err != nil {
 			log.Warning("Error reading data: " + err.Error())
-			return
+			return ""
+		} else {
+			log.Info("Reading data: " + string(buf[:n]))
 		}
 
+		emailContents.WriteString(string(buf[:n]))
 		data := string(buf[:n])
 		if strings.Contains(data, "\r\n.\r\n") {
 			sendResponse(conn, "250 OK")
-			return
+			return emailContents.String()
 		}
 	}
 }
