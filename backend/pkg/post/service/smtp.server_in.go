@@ -96,6 +96,7 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 					if strings.HasPrefix(line, "Subject:") {
 						subject = strings.TrimSpace(line[8:])
 					}
+					body += line + "\n"
 				} else {
 					body += line + "\n"
 				}
