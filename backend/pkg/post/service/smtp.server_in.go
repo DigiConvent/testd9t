@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/DigiConvent/testd9t/core/log"
+	"github.com/DigiConvent/testd9t/core/mime"
 	post_domain "github.com/DigiConvent/testd9t/pkg/post/domain"
 )
 
@@ -65,22 +66,9 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 			body := ""
 
 			scanBody := false
+
 			for scanner.Scan() {
 				line := scanner.Text()
-				fmt.Println(line)
-
-				if line == "" {
-					fmt.Println("-----------------BREAK----------------'" + line + "'")
-				}
-				if line == "\n" {
-					fmt.Println("-----------------BREAK----------------'" + line + "'")
-				}
-				if line == "\r\n" {
-					fmt.Println("-----------------BREAK----------------'" + line + "'")
-				}
-				if line == "\r\n\r\n" {
-					fmt.Println("-----------------BREAK----------------'" + line + "'")
-				}
 
 				if line == "." {
 					break
@@ -112,19 +100,18 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				}
 			}
 
-			plain, html, attachments, notes := extractEmailContents(body)
-
-			if html != "" {
-				plain = html
+			emailContents, err := mime.ParseEmail(body)
+			if err != nil {
+				log.Error("Error parsing email: " + err.Error())
+				break
 			}
 
 			status := s.repository.StoreEmail(&post_domain.EmailWrite{
 				From:        from,
 				To:          to,
 				Subject:     subject,
-				Body:        plain,
-				Attachments: attachments,
-				Notes:       notes,
+				Body:        emailContents.HTMLText,
+				Attachments: emailContents.Attachments,
 			})
 
 			if status.Err() {

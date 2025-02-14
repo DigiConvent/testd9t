@@ -34,7 +34,6 @@ type EmailWrite struct {
 	Subject     string            `json:"subject"`
 	Body        string            `json:"body"`
 	Attachments map[string][]byte `json:"attachments"`
-	Notes       []string          `json:"notes"`
 }
 
 type EmailFilterSort struct {
