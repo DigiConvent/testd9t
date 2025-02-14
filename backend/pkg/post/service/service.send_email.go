@@ -8,6 +8,7 @@ import (
 
 	"github.com/DigiConvent/testd9t/core"
 	constants "github.com/DigiConvent/testd9t/core/const"
+	"github.com/DigiConvent/testd9t/core/log"
 	"github.com/google/uuid"
 )
 
@@ -19,15 +20,22 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 	sender, status := s.ReadEmailAddress(from)
 	if status.Err() {
 		return status
+	} else {
+		log.Info("Sender: " + sender.Name)
 	}
 
 	mx, err := net.LookupMX(strings.Split(to, "@")[1])
 	if err != nil {
 		return core.InternalError(err.Error())
+	} else {
+		log.Info("Found MX records: " + mx[0].Host)
 	}
+
 	conn, err := net.Dial("tcp", mx[0].Host+":25")
 	if err != nil {
 		return core.InternalError(err.Error())
+	} else {
+		log.Info("Connected to MX host: " + mx[0].Host)
 	}
 	defer conn.Close()
 
