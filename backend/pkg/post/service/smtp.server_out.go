@@ -17,7 +17,7 @@ import (
 	post_setup "github.com/DigiConvent/testd9t/pkg/post/setup"
 )
 
-func (s *PostService) startSmtpServer() {
+func (s *PostService) smtpSendServer() {
 	cert, err := tls.LoadX509KeyPair(post_setup.TlsPublicKeyPath(), post_setup.TlsPrivateKeyPath())
 	if err != nil {
 		log.Error("Error loading certificate for the smtp server: " + err.Error())

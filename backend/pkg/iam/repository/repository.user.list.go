@@ -20,6 +20,8 @@ func (r *IAMRepository) ListUsers(filter *iam_domain.UserFilterSort) (*paginatio
 		}
 	}
 
+	filterClause := ""
+
 	users := []*iam_domain.UserFacade{}
 	rows, err := r.db.Query("select id, name from user_facades " + sortClause)
 
@@ -40,25 +42,26 @@ func (r *IAMRepository) ListUsers(filter *iam_domain.UserFilterSort) (*paginatio
 		users = append(users, &user)
 	}
 
-	return &pagination.Page[*iam_domain.UserFacade]{
-		Items: users,
-	}, *core.StatusSuccess()
+	pageNumber := 1
+	if filter != nil {
+		pageNumber = filter.Page
+	}
+
+	itemsPerPage := 10
+	if filter != nil {
+		itemsPerPage = filter.ItemsPerPage
+	}
+	var page = &pagination.Page[*iam_domain.UserFacade]{
+		Items:        users,
+		Page:         pageNumber,
+		ItemsPerPage: itemsPerPage,
+	}
+
+	err = r.db.QueryRow("select count(*) from user_facades " + filterClause).Scan(&page.ItemsCount)
+
+	if err != nil {
+		return nil, *core.InternalError(err.Error())
+	}
+
+	return page, *core.StatusSuccess()
 }
-
-// 	if err != nil {
-// 		return nil, *core.InternalError(err.Error())
-// 	}
-// 	defer rows.Close()
-// 	for rows.Next() {
-// 		user := iam_domain.UserFacade{}
-
-// 		err := rows.Scan(&user.ID, &user.Name)
-// 		fmt.Println(user.ID, user.Name)
-// 		if err != nil {
-// 			return nil, *core.InternalError(err.Error())
-// 		}
-
-// 		users = append(users, &user)
-// 	}
-// 	return users, *core.StatusSuccess()
-// }

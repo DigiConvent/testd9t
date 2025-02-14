@@ -3,6 +3,7 @@ package post_repository
 import (
 	"github.com/DigiConvent/testd9t/core"
 	"github.com/DigiConvent/testd9t/core/db"
+	"github.com/DigiConvent/testd9t/core/pagination"
 	post_domain "github.com/DigiConvent/testd9t/pkg/post/domain"
 	"github.com/google/uuid"
 )
@@ -18,6 +19,7 @@ type PostRepositoryInterface interface {
 
 	StoreEmail(email *post_domain.EmailWrite) core.Status
 	ReadEmail(id *uuid.UUID) (*post_domain.EmailRead, core.Status)
+	ListEmails(fs *post_domain.EmailFilterSort) (*pagination.Page[*post_domain.EmailFacade], core.Status)
 }
 
 type PostRepository struct {

@@ -43,9 +43,15 @@ type UserProfile struct {
 
 type UserFilterSort struct {
 	Filter struct {
+		Email       *string
+		FirstName   *string
+		LastName    *string
+		DateOfBirth *string
 	}
 	Sort struct {
 		Field string
 		Asc   bool
 	}
+	Page         int
+	ItemsPerPage int
 }
