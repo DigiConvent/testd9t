@@ -30,8 +30,9 @@ func (p PostRepository) StoreEmail(email *post_domain.EmailWrite) core.Status {
 
 	id, _ := uuid.NewV7()
 
-	emailFolder := path.Join(os.Getenv(constants.DATABASE_PATH), "post", "email", id.String(), "attachments")
-	err := os.MkdirAll(emailFolder, 0755)
+	emailFolder := path.Join(os.Getenv(constants.DATABASE_PATH), "post", "email", id.String())
+	attachmentsFolder := path.Join(emailFolder, "attachments")
+	err := os.MkdirAll(attachmentsFolder, 0755)
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}
@@ -39,7 +40,7 @@ func (p PostRepository) StoreEmail(email *post_domain.EmailWrite) core.Status {
 	var notes []string
 	log.Info("Found " + strconv.Itoa(len(email.Attachments)) + " attachments")
 	for filename, attachment := range email.Attachments {
-		err = os.WriteFile(path.Join(emailFolder, "attachments", filename), attachment, 0644)
+		err = os.WriteFile(path.Join(attachmentsFolder, filename), attachment, 0644)
 		if err != nil {
 			notes = append(notes, "Could not store attachment "+filename+": "+err.Error())
 		}

@@ -121,8 +121,10 @@ func extractEmail(line string) string {
 }
 
 func extractEmailContents(raw string) (string, string, map[string][]byte, []string) {
+	log.Info("Extracting email contents...")
 	msg, err := mail.ReadMessage(strings.NewReader(raw))
 	if err != nil {
+		log.Error("Error parsing email: " + err.Error())
 		return "", "", nil, nil
 	}
 
@@ -172,6 +174,7 @@ func extractEmailContents(raw string) (string, string, map[string][]byte, []stri
 			}
 		}
 	} else {
+		log.Info("Content type: " + contentType)
 		data, err := io.ReadAll(msg.Body)
 		if err != nil {
 			return "", "", nil, notes
