@@ -42,85 +42,79 @@ func (s PostService) SendEmail(from *uuid.UUID, to string, subject string, body 
 	}()
 	go func() {
 		auth := smtp.PlainAuth("", senderEmail, os.Getenv(constants.MASTER_PASSWORD), sender.Domain)
-		keypair, err := tls.LoadX509KeyPair(post_setup.TlsPublicKeyPath(), post_setup.TlsPrivateKeyPath())
 
+		keypair, err := tls.LoadX509KeyPair(post_setup.TlsPublicKeyPath(), post_setup.TlsPrivateKeyPath())
 		if err != nil {
 			log.Error("Unable to load x509 key pair: " + err.Error())
-		} else {
-			log.Info("Loaded x509 key pair")
+			return
 		}
+		log.Info("Loaded x509 key pair")
 
-		tlsConfig := tls.Config{Certificates: []tls.Certificate{keypair}}
+		tlsConfig := tls.Config{Certificates: []tls.Certificate{keypair}, ServerName: sender.Domain}
+
 		conn, err := tls.Dial("tcp", addr, &tlsConfig)
 		if err != nil {
 			log.Error("Unable to connect to smtp server: " + err.Error())
-		} else {
-			log.Info("Connected to smtp server")
+			return
 		}
+		log.Info("Connected to smtp server")
 
 		client, err := smtp.NewClient(conn, sender.Domain)
 		if err != nil {
 			log.Error("Unable to create smtp client: " + err.Error())
-		} else {
-			log.Info("Created smtp client")
+			return
 		}
+		log.Info("Created smtp client")
 
-		log.Info(7)
-		err = client.Auth(auth)
-		log.Info(8)
-		if err != nil {
+		if err = client.StartTLS(&tlsConfig); err != nil {
+			log.Error("Unable to start TLS: " + err.Error())
+			return
+		}
+		log.Info("Upgraded connection to TLS")
+
+		if err = client.Auth(auth); err != nil {
 			log.Error("Unable to authenticate: " + err.Error())
-		} else {
-			log.Info("Authenticated with smtp server")
+			return
 		}
+		log.Info("Authenticated with smtp server")
 
-		log.Info(9)
-		err = client.Mail(senderEmail)
-		log.Info(10)
-		if err != nil {
+		if err = client.Mail(senderEmail); err != nil {
 			log.Error("Unable to send mail: " + err.Error())
-		} else {
-			log.Info("Sent mail from " + senderEmail)
+			return
 		}
+		log.Info("Sent mail from " + senderEmail)
 
-		log.Info(11)
-		err = client.Rcpt(to)
-		log.Info(12)
-		if err != nil {
+		if err = client.Rcpt(to); err != nil {
 			log.Error("Unable to set recipient: " + err.Error())
-		} else {
-			log.Info("Set recipient to " + to)
+			return
 		}
+		log.Info("Set recipient to " + to)
 
-		log.Info(13)
 		w, err := client.Data()
-		log.Info(14)
 		if err != nil {
 			log.Error("Unable to get data writer: " + err.Error())
-		} else {
-			log.Info("Got data writer")
+			return
 		}
+		log.Info("Got data writer")
 
 		_, err = w.Write([]byte(msg))
 		if err != nil {
 			log.Error("Unable to write data: " + err.Error())
-		} else {
-			log.Info("Wrote data")
+			return
 		}
+		log.Info("Wrote data")
 
-		err = w.Close()
-		if err != nil {
+		if err = w.Close(); err != nil {
 			log.Error("Unable to close data writer: " + err.Error())
-		} else {
-			log.Info("Closed data writer")
+			return
 		}
+		log.Info("Closed data writer")
 
-		err = client.Quit()
-		if err != nil {
+		if err = client.Quit(); err != nil {
 			log.Error("Unable to close smtp client: " + err.Error())
-		} else {
-			log.Info("Closed smtp client")
+			return
 		}
+		log.Info("Closed smtp client")
 
 		log.Success("Email sent from " + senderEmail + " to " + to)
 	}()
