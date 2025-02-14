@@ -101,6 +101,7 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				}
 			}
 
+			log.Info("Trying to parse email" + body)
 			emailContents, err := mime.ParseEmail(body)
 			if err != nil {
 				log.Error("Error parsing email: " + err.Error())
