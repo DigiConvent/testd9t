@@ -61,22 +61,44 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 			fmt.Fprintf(conn, "250 OK\r\n")
 		} else if line == "DATA" {
 			fmt.Fprintf(conn, "354 Start mail input; end with <CRLF>.<CRLF>\r\n")
-			data := ""
+			headers := []string{}
+			body := ""
 
+			scanBody := false
 			for scanner.Scan() {
 				line := scanner.Text()
+				fmt.Println(line)
 				if line == "." {
 					break
 				}
-				if strings.HasPrefix(line, "Subject:") {
-					subject = line[8:]
+
+				// remove dot stuffing rfc5321 4.5.2
+				if strings.HasPrefix(line, "..") {
+					line = line[1:]
 				}
-				data += line + "\n"
+
+				if line == "" {
+					scanBody = true
+					continue
+				}
+
+				if !scanBody {
+					headers = append(headers, line)
+
+					if strings.HasPrefix(line, " ") || strings.HasPrefix(line, "\t") {
+						headers[len(headers)-1] += " " + strings.TrimSpace(line)
+						headers = headers[:len(headers)-1]
+					}
+
+					if strings.HasPrefix(line, "Subject:") {
+						subject = strings.TrimSpace(line[8:])
+					}
+				} else {
+					body += line + "\n"
+				}
 			}
 
-			fmt.Println("Data: " + data)
-
-			plain, html, attachments, notes := extractEmailContents(data)
+			plain, html, attachments, notes := extractEmailContents(body)
 
 			if html != "" {
 				plain = html
