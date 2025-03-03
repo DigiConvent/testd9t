@@ -12,7 +12,7 @@ func TestSqliteDB(t *testing.T) {
 	testDB := db.NewTestSqliteDB("core.db.sqlite")
 	defer testDB.DeleteDatabase()
 
-	res, err := testDB.Exec("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)")
+	res, err := testDB.Exec("create table test (id integer primary key, name text)")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -21,7 +21,7 @@ func TestSqliteDB(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	res, err = testDB.Exec("INSERT INTO test (name) VALUES (?)", "testthis")
+	res, err = testDB.Exec("insert into test (name) values (?)", "testthis")
 
 	if err != nil {
 		t.Fatal(err)
@@ -31,7 +31,7 @@ func TestSqliteDB(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	rows, err := testDB.Query("SELECT name FROM test")
+	rows, err := testDB.Query("select name from test")
 
 	if err != nil {
 		t.Fatal(err)

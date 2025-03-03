@@ -16,10 +16,10 @@ type UserRead struct {
 }
 
 type UserWrite struct {
-	Emailaddress string    `json:"emailaddress" validate:"required,email"`
-	FirstName    string    `json:"first_name" validate:"required"`
-	LastName     string    `json:"last_name" validate:"required"`
-	DateOfBirth  time.Time `json:"date_of_birth" validate:"required"`
+	Emailaddress *string    `json:"emailaddress" validate:"required,email"`
+	FirstName    *string    `json:"first_name" validate:"required"`
+	LastName     *string    `json:"last_name" validate:"required"`
+	DateOfBirth  *time.Time `json:"date_of_birth" validate:"required"`
 }
 
 type UserSetEnabled struct {

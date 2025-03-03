@@ -7,7 +7,7 @@ import (
 )
 
 func (r *IAMRepository) GetUserStatus(arg *uuid.UUID) (*iam_domain.UserStatusRead, core.Status) {
-	row := r.db.QueryRow("SELECT id, name, abbr, description, archived FROM user_status WHERE id = ?", arg)
+	row := r.db.QueryRow("select id, name, abbr, description, archived from user_status where id = ?", arg)
 
 	var userStatus iam_domain.UserStatusRead
 	err := row.Scan(&userStatus.ID, &userStatus.Name, &userStatus.Abbr, &userStatus.Description, &userStatus.Archived)

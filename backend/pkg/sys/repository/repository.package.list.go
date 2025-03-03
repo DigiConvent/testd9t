@@ -6,7 +6,7 @@ import (
 )
 
 func (r *SysRepository) GetPackages() ([]sys_domain.Package, core.Status) {
-	res, err := r.db.Query("SELECT name, major, minor, patch FROM packages")
+	res, err := r.db.Query("select name, major, minor, patch from packages")
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}

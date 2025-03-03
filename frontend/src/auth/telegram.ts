@@ -44,5 +44,6 @@ export interface TelegramWebApp {
 }
 
 export default function getWebApp(): TelegramWebApp {
+  console.log(window.Telegram.WebApp)
   return window.Telegram.WebApp as TelegramWebApp
 }

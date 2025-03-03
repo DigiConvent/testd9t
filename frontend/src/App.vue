@@ -34,7 +34,9 @@ let status = ref<SystemStatus>()
 let tgWebApp = ref<TelegramWebApp>()
 
 api.sys.getStatus().then(result => {
+  alert("API is up")
   tgWebApp.value = getWebApp();
+  console.dir(tgWebApp.value)
   result.fold(() => {
     console.log('API is down')
   }, (data) => {

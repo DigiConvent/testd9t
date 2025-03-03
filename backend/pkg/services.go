@@ -6,6 +6,7 @@ import (
 	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/db"
 	"github.com/DigiConvent/testd9t/core/log"
+	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	iam_repository "github.com/DigiConvent/testd9t/pkg/iam/repository"
 	iam_service "github.com/DigiConvent/testd9t/pkg/iam/service"
 	iam_setup "github.com/DigiConvent/testd9t/pkg/iam/setup"
@@ -65,7 +66,7 @@ func DoFirstTimeStuff(services *Services) {
 	emailAddress := os.Getenv(constants.MASTER_EMAILADDRESS)
 	id := uuid.MustParse("00000000-0000-0000-0000-000000000000")
 	status := services.PostService.UpdateEmailAddresses(&id, &post_domain.EmailAddressWrite{
-		Name:   "Admin",
+		Name:   "admin",
 		Domain: os.Getenv(constants.DOMAIN),
 	})
 
@@ -73,15 +74,13 @@ func DoFirstTimeStuff(services *Services) {
 		log.Error("Could not update email admin address: " + status.Message)
 	}
 
-	go func() {
-		log.Info("Sending email to " + emailAddress)
-		status = services.PostService.SendEmail(&id, emailAddress, "Login credentials", "Here are the login credentials for "+os.Getenv(constants.DOMAIN)+":\n\nEmail: "+emailAddress+"\nPassword: "+os.Getenv(constants.MASTER_PASSWORD))
-		log.Info("Finished sending email to " + emailAddress)
+	// enable the super user
+	status = services.IamService.SetEnabled(&id, true)
+	if status.Err() {
+		log.Error("Could not enable super user: " + status.Message)
+	}
 
-		if status.Err() {
-			log.Error("Could not send email: from " + id.String() + " to " + emailAddress + ": " + status.Message)
-		} else {
-			log.Success("Sent password to " + emailAddress)
-		}
-	}()
+	status = services.IamService.UpdateUser(&id, &iam_domain.UserWrite{
+		Emailaddress: emailAddress,
+	})
 }
