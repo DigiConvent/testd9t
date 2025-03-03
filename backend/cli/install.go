@@ -16,6 +16,8 @@ import (
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 )
 
+const d9tPresetsFileName = ".d9t_presets"
+
 type Script struct {
 	Step          int      `json:"step"`
 	Optional      bool     `json:"optional"`
@@ -38,6 +40,7 @@ type Script struct {
 type Input struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
+	Key   string `json:"key"`
 }
 
 func (input *Input) promptUser() {
@@ -132,7 +135,7 @@ type InstallationProtocol struct {
 	Files   []string `json:"path"`
 }
 
-func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool) {
+func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool, installUsingPresets bool) {
 	uid := os.Geteuid()
 
 	if uid != 0 {
@@ -165,13 +168,36 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	}
 
 	inputs := map[string]*Input{
-		"domain":       {Name: "Domain", Value: ""},
-		"emailaddress": {Name: "Your e-mail address", Value: ""},
-		"password":     {Name: "A strong password", Value: ""},
+		"domain":             {Name: "Domain", Value: "", Key: constants.DOMAIN},
+		"emailaddress":       {Name: "Your e-mail address", Value: "", Key: constants.MASTER_EMAILADDRESS},
+		"password":           {Name: "A strong password", Value: "", Key: constants.MASTER_PASSWORD},
+		"telegram_bot_token": {Name: "Your telegram bot token", Value: "", Key: constants.TELEGRAM_BOT_TOKEN},
 	}
 
+	presets := map[string]string{}
+	if installUsingPresets {
+		contents, err := os.ReadFile(d9tPresetsFileName)
+		if err != nil {
+			log.Warning("Could not read any presets")
+		}
+		pairs := strings.Split(string(contents), "\n")
+		for i := range pairs {
+			pair := strings.Split(pairs[i], "=")
+			presets[pair[0]] = pair[1]
+		}
+	}
 	for _, input := range inputs {
-		input.promptUser()
+		if installUsingPresets {
+			if presets[input.Key] == "" {
+				log.Warning("Could not find preset for " + input.Key)
+				input.promptUser()
+			} else {
+				log.Info("Using preset for " + input.Key)
+				input.Value = presets[input.Key]
+			}
+		} else {
+			input.promptUser()
+		}
 	}
 
 	repo := file_repo.NewRepoRemote()
@@ -238,6 +264,15 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 			readable += fmt.Sprintf("%-"+strconv.Itoa(maxL)+"s: %s\n", key, variables[key])
 		}
 		log.Info("Using the following environment variables:\n" + readable)
+	}
+
+	newPresets := ""
+	for key := range presets {
+		newPresets += fmt.Sprintf("%s=%s\n", key, presets[key])
+	}
+	err = os.WriteFile(d9tPresetsFileName, []byte(newPresets), 0644)
+	if err != nil {
+		log.Error("Could not store this preset")
 	}
 }
 

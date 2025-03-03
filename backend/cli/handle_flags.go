@@ -23,6 +23,7 @@ func HandleFlags() {
 	forceFlag := actionsFlagSet.Bool("force", false, "Apply fixes upon a failure during the installation")
 	helpFlag := actionsFlagSet.Bool("help", false, "Prints this help message")
 	installFlag := actionsFlagSet.String("install", "", "Install ")
+	installUsingPresetsFlag := actionsFlagSet.Bool("install-with-presets", false, "Install using presets from a previous installation (usually stored under .d9t-presets)")
 	migrateDBFlag := actionsFlagSet.Bool("migrate-db", false, "Migrate the database to something that is compatible with the current version")
 	replaceWithFlag := actionsFlagSet.String("replace-with", "", "Replace with a specific version")
 	runFlag := actionsFlagSet.Bool("run", false, "Deploy")
@@ -82,7 +83,7 @@ func HandleFlags() {
 		if status.Err() {
 			fmt.Println("Error installing artifacts:", status.Message)
 		}
-		Install(sysService, installFlag, *forceFlag, *verbose)
+		Install(sysService, installFlag, *forceFlag, *verbose, *installUsingPresetsFlag)
 		err := os.RemoveAll("/tmp/testd9t/")
 		if err != nil {
 			fmt.Println(err)
