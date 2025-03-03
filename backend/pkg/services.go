@@ -63,6 +63,7 @@ func InitiateServices(live bool) *Services {
 
 func DoFirstTimeStuff(services *Services) {
 	log.Info("Doing first time stuff")
+	services.SysService.SetBotToken(os.Getenv(constants.TELEGRAM_BOT_TOKEN))
 	emailAddress := os.Getenv(constants.MASTER_EMAILADDRESS)
 	id := uuid.MustParse("00000000-0000-0000-0000-000000000000")
 	status := services.PostService.UpdateEmailAddresses(&id, &post_domain.EmailAddressWrite{

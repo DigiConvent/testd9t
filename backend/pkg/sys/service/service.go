@@ -21,6 +21,8 @@ type SysServiceInterface interface {
 
 	ListReleaseTags() ([]sys_domain.ReleaseTag, *core.Status)
 	InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status
+
+	SetBotToken(botId string) *core.Status
 }
 
 type SysService struct {
