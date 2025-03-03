@@ -268,8 +268,9 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	}
 
 	newPresets := ""
-	for key := range presets {
-		newPresets += fmt.Sprintf("%s=%s\n", key, presets[key])
+	for key := range inputs {
+		input := inputs[key]
+		newPresets += fmt.Sprintf("%s=%s\n", input.Key, input.Value)
 	}
 	err = os.WriteFile(d9tPresetsFileName, []byte(newPresets), 0644)
 	if err != nil {
