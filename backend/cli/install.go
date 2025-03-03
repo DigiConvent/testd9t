@@ -182,6 +182,9 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		} else {
 			pairs := strings.Split(string(contents), "\n")
 			for i := range pairs {
+				if pairs[i] == "" {
+					continue
+				}
 				pair := strings.Split(pairs[i], "=")
 				presets[pair[0]] = pair[1]
 			}
