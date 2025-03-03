@@ -16,6 +16,7 @@ import (
 	"blitiri.com.ar/go/spf"
 	"github.com/DigiConvent/testd9t/core"
 	constants "github.com/DigiConvent/testd9t/core/const"
+	core_utils "github.com/DigiConvent/testd9t/core/utils"
 	post_setup "github.com/DigiConvent/testd9t/pkg/post/setup"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 	"github.com/go-telegram/bot"
@@ -116,6 +117,9 @@ func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) 
 			}
 		}
 	}
+
+	systemStatus.BuiltAt = sys_domain.CompiledAt
+	systemStatus.OnlineSince = sys_domain.StartTime.Format(core_utils.FormattedTime)
 
 	return systemStatus, core.StatusSuccess()
 }

@@ -178,12 +178,13 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	if installUsingPresets {
 		contents, err := os.ReadFile(d9tPresetsFileName)
 		if err != nil {
-			log.Warning("Could not read any presets")
-		}
-		pairs := strings.Split(string(contents), "\n")
-		for i := range pairs {
-			pair := strings.Split(pairs[i], "=")
-			presets[pair[0]] = pair[1]
+			log.Warning("Could not read any presets but not to worry, the prompts will be stored in " + d9tPresetsFileName + " and you can use it next time")
+		} else {
+			pairs := strings.Split(string(contents), "\n")
+			for i := range pairs {
+				pair := strings.Split(pairs[i], "=")
+				presets[pair[0]] = pair[1]
+			}
 		}
 	}
 	for _, input := range inputs {
