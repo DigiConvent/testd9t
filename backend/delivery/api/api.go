@@ -9,13 +9,16 @@ import (
 )
 
 func RegisterRoutes(router *gin.Engine, s *services.Services) {
+	iam := api_middleware.NewIamMiddleware(s.IamService)
+
 	iamRouter := iam_router.NewIamRouter(s.IamService)
 	iamRoutes := router.Group("/iam")
 	iamRoutes.POST("/login/credentials", iamRouter.LoginWithCredentials)
 	iamRoutes.POST("/login/telegram", iamRouter.LoginWithTelegram)
-	iamRoutes.POST("/jwt/refresh", iamRouter.)
+	// iamRoutes.POST("/jwt/refresh", iamRouter.)
 
-	sys_router.SetupSysRoutes(router, s.SysService, s.PostService)
+	
+	sysRouter := sys_router.NewSysRouter(s.SysService, s.PostService)
 	apiRoutes := router.Group("/api")
 
 	apiRoutes.Use(api_middleware.JWTAuthMiddleware())
@@ -30,4 +33,5 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 	sysRoutes := apiRoutes.Group("/sys")
 
 	sysRoutes.GET("/status", sysRouter.SystemStatusGet)
+	sysRoutes.GET("/status/super", iam.RequiresPermission("super"), sysRouter.SystemStatusGet)
 }
