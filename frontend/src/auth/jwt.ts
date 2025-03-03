@@ -1,6 +1,7 @@
 import getWebApp from "./telegram";
 
 export default class JwtAuthenticator {
+    private static instance: JwtAuthenticator | undefined;
     private token: string | undefined;
     constructor() {
         const t = localStorage.getItem('token');
@@ -9,10 +10,16 @@ export default class JwtAuthenticator {
         }
     }
 
+    static getInstance() : JwtAuthenticator {
+        if (this.instance == undefined) {
+            this.instance = new JwtAuthenticator();
+        }
+        return this.instance;
+    }
+
     async loginUsingTelegram() {
         const body: BodyInit = new FormData();
-        body.set('hash', getWebApp().initData);
-        const hash = getWebApp().initData;
+        body.set('payload', getWebApp().initData);
         this.login(await fetch("/api/auth/telegram", {
             method: "POST",
             body: body,
@@ -35,6 +42,7 @@ export default class JwtAuthenticator {
             this.token = data.token;
             localStorage.setItem('token', data.token);
         }
+        console.log("Logged in with token " + this.token);
     }
 
     async loginUsingToken() {

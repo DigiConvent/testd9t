@@ -17,9 +17,9 @@
       </table>
     </div>
     <span>{{ telegramLoginStatus }}</span>
-    <div v-if="tgWebApp != null">
+    <div v-if="tgWebApp">
       <pre>
-        {{ JSON.stringify(tgWebApp, null, 2) }}
+        {{ JSON.stringify(tgWebApp.initDataUnsafe, null, 2) }}
       </pre>
     </div>
   </header>
@@ -30,6 +30,7 @@ import { ref } from 'vue';
 import api from './api'
 import type { SystemStatus } from './api/sys/sys.get_status';
 import getWebApp, { type TelegramWebApp } from './auth/telegram';
+import JwtAuthenticator from './auth/jwt';
 
 let status = ref<SystemStatus>()
 let tgWebApp = ref<TelegramWebApp>()
@@ -37,10 +38,12 @@ const telegramLoginStatus = ref<string>('')
 
 api.sys.getStatus().then(result => {
   tgWebApp.value = getWebApp();
+  const auth = JwtAuthenticator.getInstance();
   if (tgWebApp.value.initData == "") {
     telegramLoginStatus.value = "Not using telegram as auth"
   } else {
     telegramLoginStatus.value = "Using telegram as auth"
+    auth.loginUsingTelegram();
   }
   result.fold(() => {
     console.log('API is down')
