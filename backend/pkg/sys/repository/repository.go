@@ -13,6 +13,7 @@ type SysRepositoryInterface interface {
 	SetBotToken(botId string) core.Status
 	GetBotToken() (string, core.Status)
 
+	SetDomain(domain string) core.Status
 	GetConfiguration() (*sys_domain.Configuration, core.Status)
 
 	IsInitialised() bool

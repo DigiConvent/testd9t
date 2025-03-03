@@ -23,6 +23,7 @@ type SysServiceInterface interface {
 	InstallArtifacts(tag *sys_domain.ReleaseTag) *core.Status
 
 	SetBotToken(botId string) *core.Status
+	SetDomain(domain string) *core.Status
 }
 
 type SysService struct {

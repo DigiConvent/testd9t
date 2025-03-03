@@ -7,10 +7,10 @@ import (
 	constants "github.com/DigiConvent/testd9t/core/const"
 )
 
-func (s *SysService) SetBotToken(botId string) *core.Status {
-	status := s.repository.SetBotToken(botId)
+func (s *SysService) SetDomain(domain string) *core.Status {
+	status := s.repository.SetDomain(domain)
 	if !status.Err() {
-		os.Setenv(constants.TELEGRAM_BOT_TOKEN, botId)
+		os.Setenv(constants.DOMAIN, domain)
 	}
 	return &status
 }
