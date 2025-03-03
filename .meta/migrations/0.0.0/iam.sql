@@ -1,7 +1,7 @@
 -- backend/pkg/iam/db/0.0.0/00_create_user_table.sql 
 create table users (
   id uuid primary key not null,
-  email varchar unique default '',
+  emailaddress varchar unique default '',
   password varchar default '',
   telegram_id bigint default 0,
   title varchar default '',
@@ -285,7 +285,7 @@ begin
 end;
 
 -- backend/pkg/iam/db/0.0.0/30_create_admin.sql 
-insert into users (id, email, enabled) values
+insert into users (id, emailaddress, enabled) values
 ('00000000-0000-0000-0000-000000000000', '', true);
 
 insert into permissions (name) values ('super');
