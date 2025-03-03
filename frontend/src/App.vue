@@ -16,6 +16,7 @@
         </tr>
       </table>
     </div>
+    <span>{{ telegramLoginStatus }}</span>
     <div v-if="tgWebApp != null">
       <pre>
         {{ JSON.stringify(tgWebApp, null, 2) }}
@@ -32,11 +33,15 @@ import getWebApp, { type TelegramWebApp } from './auth/telegram';
 
 let status = ref<SystemStatus>()
 let tgWebApp = ref<TelegramWebApp>()
+const telegramLoginStatus = ref<string>('')
 
 api.sys.getStatus().then(result => {
-  alert("API is up")
   tgWebApp.value = getWebApp();
-  console.dir(tgWebApp.value)
+  if (tgWebApp.value.initData == "") {
+    telegramLoginStatus.value = "Not using telegram as auth"
+  } else {
+    telegramLoginStatus.value = "Using telegram as auth"
+  }
   result.fold(() => {
     console.log('API is down')
   }, (data) => {

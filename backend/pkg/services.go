@@ -83,4 +83,8 @@ func DoFirstTimeStuff(services *Services) {
 	status = services.IamService.UpdateUser(&id, &iam_domain.UserWrite{
 		Emailaddress: emailAddress,
 	})
+
+	if status.Err() {
+		log.Error("Could not update super user: " + status.Message)
+	}
 }
