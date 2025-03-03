@@ -3,14 +3,8 @@ package post_service
 
 import (
 	"bufio"
-	"encoding/base64"
 	"fmt"
-	"io"
-	"mime/multipart"
-	"mime/quotedprintable"
 	"net"
-	"net/mail"
-	"strconv"
 	"strings"
 
 	"github.com/DigiConvent/testd9t/core/log"
@@ -25,8 +19,6 @@ func (s *PostService) smtpReceiveServer() {
 		return
 	}
 	defer listener.Close()
-
-	fmt.Println("SMTP server listening on port 25...")
 
 	for {
 		conn, err := listener.Accept()
@@ -50,8 +42,6 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		fmt.Println("Received:", line)
-
 		if strings.HasPrefix(line, "HELO") {
 			fmt.Fprintf(conn, "250\r\n")
 		} else if strings.HasPrefix(line, "MAIL FROM") {
@@ -82,8 +72,6 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				body += line + "\n"
 
 				if line == "" || line == "\r\n" || line == "\n" {
-
-					log.Info("End of headers, starting to read body. Read separator: '" + line + "'")
 					scanBody = true
 					continue
 				}
@@ -102,7 +90,6 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 				}
 			}
 
-			log.Info("Trying to parse email" + body)
 			emailContents, err := mime.ParseEmail(body)
 			if err != nil {
 				log.Error("Error parsing email: " + err.Error())
@@ -110,11 +97,11 @@ func (s *PostService) handleSMTPConnection(conn net.Conn) {
 			}
 
 			status := s.repository.StoreEmail(&post_domain.EmailWrite{
-				From:        from,
-				To:          to,
-				Subject:     subject,
-				Body:        emailContents.HTMLText,
-				Attachments: emailContents.Attachments,
+				Correspondent: from,
+				Mailbox:       to,
+				Subject:       subject,
+				Html:          emailContents.HTMLText,
+				Attachments:   emailContents.Attachments,
 			})
 
 			if status.Err() {
@@ -147,71 +134,4 @@ func extractEmail(line string) string {
 	}
 
 	return email
-}
-
-func extractEmailContents(raw string) (string, string, map[string][]byte, []string) {
-	log.Info("Extracting email contents from " + strconv.Itoa(len(raw)))
-	msg, err := mail.ReadMessage(strings.NewReader(raw))
-	if err != nil {
-		log.Error("Error parsing email: " + err.Error())
-		return "", "", nil, nil
-	}
-
-	var textContent, htmlContent string
-	attachments := make(map[string][]byte)
-
-	var notes []string
-	contentType := msg.Header.Get("Content-Type")
-	log.Info("Content type: " + contentType)
-	if strings.Contains(contentType, "multipart") {
-		mr := multipart.NewReader(msg.Body, msg.Header.Get("Boundary"))
-		for {
-			part, err := mr.NextPart()
-			if err != nil {
-				break
-			} else {
-				log.Info("Part: " + part.Header.Get("Content-Type") + " (" + part.FileName() + ")")
-			}
-
-			if part.Header.Get("Content-Type") == "text/plain" {
-				data, _ := io.ReadAll(part)
-				textContent = string(data)
-			} else if part.Header.Get("Content-Type") == "text/html" {
-				data, _ := io.ReadAll(part)
-				htmlContent = string(data)
-			} else if strings.Contains(part.Header.Get("Content-Disposition"), "attachment") {
-				filename := part.FileName()
-				if filename != "" {
-					encoding := part.Header.Get("Content-Transfer-Encoding")
-
-					rawAttachmentData, _ := io.ReadAll(part)
-					var attachmentData []byte
-					if encoding == "base64" {
-						attachmentData, err = base64.StdEncoding.DecodeString(string(rawAttachmentData))
-						if err != nil {
-							notes = append(notes, fmt.Sprintf("Failed to decode attachment %s: %s", filename, err.Error()))
-						}
-					} else if encoding == "quoted-printable" {
-						attachmentData, err = io.ReadAll(quotedprintable.NewReader(strings.NewReader(string(rawAttachmentData))))
-						if err != nil {
-							notes = append(notes, fmt.Sprintf("Failed to decode attachment %s: %s", filename, err.Error()))
-						}
-					} else {
-						attachmentData = []byte(string(rawAttachmentData))
-					}
-					attachments[filename] = attachmentData
-				}
-			}
-		}
-	} else {
-		data, err := io.ReadAll(msg.Body)
-		if err != nil {
-			return "", "", nil, notes
-		}
-		textContent = string(data)
-	}
-
-	log.Info("Notes: " + strings.Join(notes, ", "))
-
-	return textContent, htmlContent, attachments, notes
 }

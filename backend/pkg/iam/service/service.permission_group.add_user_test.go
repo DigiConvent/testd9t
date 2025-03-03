@@ -23,10 +23,10 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 	}
 
 	user, _ := testService.CreateUser(&iam_domain.UserWrite{
-		Email:       "PermissionGroupAddUser@test.test",
-		FirstName:   "Test",
-		LastName:    "McTest",
-		DateOfBirth: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+		Emailaddress: "PermissionGroupAddUser@test.test",
+		FirstName:    "Test",
+		LastName:     "McTest",
+		DateOfBirth:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 	})
 
 	if user == nil {

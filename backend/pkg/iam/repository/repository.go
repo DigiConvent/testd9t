@@ -22,19 +22,20 @@ type IAMRepository struct {
 type IAMRepositoryInterface interface {
 	CreateUser(user *iam_domain.UserWrite) (*uuid.UUID, core.Status)
 	GetTelegramRegistrationCode(userId *uuid.UUID) (string, core.Status)
-	GetUserByEmail(email string) (*iam_domain.UserRead, core.Status)
+	GetUserByEmailaddress(emailaddress string) (*iam_domain.UserRead, core.Status)
 	GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.Status)
 	ListUserPermissions(id *uuid.UUID) ([]*iam_domain.PermissionFacade, core.Status)
 	ListUsers(*iam_domain.UserFilterSort) (*pagination.Page[*iam_domain.UserFacade], core.Status)
-	RegisterTelegramUser(telegramId int, email, code string) core.Status
+	RegisterTelegramUser(telegramId int, emailaddress, code string) core.Status
 	SetEnabled(id *uuid.UUID, enabled bool) core.Status
 	UpdateUser(id *uuid.UUID, user *iam_domain.UserWrite) core.Status
 	UserHasPermission(userId *uuid.UUID, permission string) bool
-	VerifyTelegramUser(body string) (*uuid.UUID, core.Status)
+	GetUserByTelegramID(id *int) (*uuid.UUID, core.Status)
+	GetTelegramID(dataString, botToken string) (*int, core.Status)
 
-	GetCredentials(email, password string) (*uuid.UUID, core.Status)
+	GetCredentials(emailaddress string) (*uuid.UUID, string, core.Status)
 	SetCredentialPassword(id *uuid.UUID, password string) core.Status
-	SetCredentialEmail(id *uuid.UUID, email string) core.Status
+	SetCredentialEmailaddress(id *uuid.UUID, emailaddress string) core.Status
 	ResetCredentials(id *uuid.UUID) (string, core.Status)
 
 	AddUserStatusToUser(arg *iam_domain.AddUserStatusToUser) core.Status
@@ -64,7 +65,7 @@ type IAMRepositoryInterface interface {
 	GetPrivateKey() *rsa.PrivateKey
 }
 
-func NewIAMRepository(db db.DatabaseInterface) IAMRepositoryInterface {
+func NewIamRepository(db db.DatabaseInterface) IAMRepositoryInterface {
 	privateKeyPem, err := os.ReadFile(iam_setup.JwtPrivateKeyPath())
 	if err != nil {
 		panic(err)

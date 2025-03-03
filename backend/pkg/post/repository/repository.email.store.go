@@ -18,11 +18,11 @@ func (p PostRepository) StoreEmail(email *post_domain.EmailWrite) core.Status {
 		return *core.UnprocessableContentError("email is required")
 	}
 
-	if email.To == "" {
-		return *core.UnprocessableContentError("email to is required")
+	if email.Correspondent == "" {
+		return *core.UnprocessableContentError("correspondent is required")
 	}
 
-	toId, status := p.GetEmailAddressByName(strings.Split(email.To, "@")[0])
+	mailbox, status := p.GetEmailAddressByName(strings.Split(email.Mailbox, "@")[0])
 
 	if status.Err() {
 		return status
@@ -46,20 +46,18 @@ func (p PostRepository) StoreEmail(email *post_domain.EmailWrite) core.Status {
 		}
 	}
 
-	err = os.WriteFile(path.Join(emailFolder, "body"), []byte(email.Body), 0644)
+	err = os.WriteFile(path.Join(emailFolder, "html"), []byte(email.Html), 0644)
 	if err != nil {
 		notes = append(notes, "Could not store email body: "+err.Error())
-	} else {
-		log.Info("Stored email body " + email.Body)
 	}
 
 	log.Info("Notes: " + strings.Join(notes, "\n"))
-	_, err = p.db.Exec("insert into emails (id, from_email_address, to_email_address, subject, notes) values (?, ?, ?, ?, ?)",
+	_, err = p.db.Exec("insert into emails (id, correspondent, mailbox, subject, notes) values (?, ?, ?, ?, ?)",
 		id.String(),
-		email.From,
-		toId.ID,
+		email.Correspondent,
+		mailbox.ID,
 		email.Subject,
-		email.Body,
+		email.Html,
 		strings.Join(notes, "\n"))
 	if err != nil {
 		return *core.InternalError(err.Error())

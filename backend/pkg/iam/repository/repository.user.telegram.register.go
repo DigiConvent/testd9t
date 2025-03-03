@@ -57,14 +57,14 @@ func VerifyCode(uuid string, t time.Time, validityPeriod time.Duration, code str
 	return false
 }
 
-func (r *IAMRepository) RegisterTelegramUser(telegramId int, email string, code string) core.Status {
-	email = strings.ToLower(email)
-	row := r.db.QueryRow("select id from users where email = ?", email)
+func (r *IAMRepository) RegisterTelegramUser(telegramId int, emailaddress string, code string) core.Status {
+	emailaddress = strings.ToLower(emailaddress)
+	row := r.db.QueryRow("select id from users where emailaddress = ?", emailaddress)
 
 	var userId uuid.UUID
 	err := row.Scan(&userId)
 	if err != nil {
-		return *core.InternalError("Failed to find user with email")
+		return *core.InternalError("Failed to find user with emailaddress")
 	}
 
 	if !VerifyCode(userId.String(), time.Now(), 10*time.Minute, code) {

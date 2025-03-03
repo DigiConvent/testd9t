@@ -11,6 +11,7 @@ type SysRepositoryInterface interface {
 	ListFlavoursForVersion() ([]string, core.Status)
 
 	SetBotToken(botId string) core.Status
+	GetBotToken() (string, core.Status)
 
 	GetConfiguration() (*sys_domain.Configuration, core.Status)
 

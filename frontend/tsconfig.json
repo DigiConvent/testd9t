@@ -1,14 +1,16 @@
 {
-  
   "compilerOptions": {
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "skipLibCheck": true,
     "strict": true,
-    "jsx": "preserve",
-    "esModuleInterop": true,
-    "moduleResolution": "nodenext",
     "target": "esnext",
-    "module": "NodeNext",
-    "baseUrl": ".",
+    "types": [
+      "./node_modules/telegram-webapps"
+    ],
     "paths": {
       "@/*": ["src/*"]
     }

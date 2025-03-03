@@ -37,17 +37,14 @@ type IAMServiceInterface interface {
 	ListUserPermissions(id *uuid.UUID) ([]*iam_domain.PermissionFacade, *core.Status)
 	UserHasPermission(id *uuid.UUID, permission string) bool
 
-	// telegram and stuff
-	LoginTelegramUser(body string) (*uuid.UUID, *core.Status)
+	LoginTelegramUser(body, botToken string) (*uuid.UUID, *core.Status)
 	GetTelegramRegistrationCode(userId *uuid.UUID) (string, *core.Status)
-	RegisterTelegramUser(telegramId int, email, code string) *core.Status
+	RegisterTelegramUser(telegramId int, emailaddress, code string) *core.Status
 
-	// password and stuff
-	ResetPassword(email string) (string, *core.Status)
+	ResetPassword(emailaddress string) (string, *core.Status)
 	SetUserPassword(id *uuid.UUID, password string) *core.Status
-	LoginUser(email, password string) (*uuid.UUID, *core.Status)
+	LoginUser(emailaddress, password string) (*uuid.UUID, *core.Status)
 
-	// jwt stuff
 	GenerateJwt(userId *uuid.UUID) (string, *core.Status)
 	VerifyJwt(token string) (*uuid.UUID, *core.Status)
 }
@@ -56,7 +53,7 @@ type IAMService struct {
 	repository iam_repository.IAMRepositoryInterface
 }
 
-func NewIAMService(userRepository iam_repository.IAMRepositoryInterface) IAMServiceInterface {
+func NewIamService(userRepository iam_repository.IAMRepositoryInterface) IAMServiceInterface {
 	return &IAMService{
 		repository: userRepository,
 	}

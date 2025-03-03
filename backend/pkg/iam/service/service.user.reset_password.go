@@ -4,8 +4,8 @@ import (
 	"github.com/DigiConvent/testd9t/core"
 )
 
-func (service *IAMService) ResetPassword(email string) (string, *core.Status) {
-	user, status := service.repository.GetUserByEmail(email)
+func (service *IAMService) ResetPassword(emailaddress string) (string, *core.Status) {
+	user, status := service.repository.GetUserByEmailaddress(emailaddress)
 	if status.Err() {
 		return "", &status
 	}

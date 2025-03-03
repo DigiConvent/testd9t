@@ -27,6 +27,12 @@ func TlsCaCertificatePath() string {
 func TlsCaPrivateKeyPath() string {
 	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "", "capk.pem")
 }
+func DkimPrivateKeyPath() string {
+	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "privkey.pem")
+}
+func DkimPublicKeyPath() string {
+	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "pubkey.pem")
+}
 
 func Setup() {
 	log.Info("Executing setup for post")
@@ -41,8 +47,8 @@ func Setup() {
 		cert := &x509.Certificate{
 			SerialNumber: big.NewInt(0),
 			Subject: pkix.Name{
-				CommonName:   os.Getenv("DOMAIN"),
-				Organization: []string{os.Getenv("DOMAIN")},
+				CommonName:   os.Getenv(constants.DOMAIN),
+				Organization: []string{os.Getenv(constants.DOMAIN)},
 			},
 			NotBefore:             time.Now(),
 			NotAfter:              time.Now().AddDate(10, 0, 0),
@@ -62,6 +68,26 @@ func Setup() {
 		err = os.WriteFile(TlsPrivateKeyPath(), pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}), 0644)
 		if err != nil {
 			log.Error("Cannot create private key for jwt: " + err.Error())
+		}
+	}
+
+	if _, err := os.Stat(DkimPrivateKeyPath()); os.IsNotExist(err) {
+		err := os.MkdirAll(path.Dir(DkimPrivateKeyPath()), 0755)
+		if err != nil {
+			log.Error("Cannot create folders for dkim: " + err.Error())
+		}
+		// create privkey.pem
+		privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+		if err != nil {
+			log.Error(err)
+		}
+		err = os.WriteFile(DkimPrivateKeyPath(), pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}), 0644)
+		if err != nil {
+			log.Error("Cannot create private key for dkim: " + err.Error())
+		}
+		err = os.WriteFile(DkimPublicKeyPath(), pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: x509.MarshalPKCS1PublicKey(&privateKey.PublicKey)}), 0644)
+		if err != nil {
+			log.Error("Cannot create public key for dkim: " + err.Error())
 		}
 	}
 }
@@ -103,8 +129,8 @@ func getOrCreateCaCert() (*x509.Certificate, *rsa.PrivateKey) {
 	certTemplate := x509.Certificate{
 		SerialNumber: big.NewInt(0),
 		Subject: pkix.Name{
-			CommonName:   os.Getenv("DOMAIN"),
-			Organization: []string{os.Getenv("DOMAIN")},
+			CommonName:   os.Getenv(constants.DOMAIN),
+			Organization: []string{os.Getenv(constants.DOMAIN)},
 		},
 		NotBefore:             time.Now(),
 		NotAfter:              time.Now().AddDate(10, 0, 0),
@@ -112,7 +138,7 @@ func getOrCreateCaCert() (*x509.Certificate, *rsa.PrivateKey) {
 		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
 		BasicConstraintsValid: true,
 		IsCA:                  true,
-		DNSNames:              []string{os.Getenv("DOMAIN")},
+		DNSNames:              []string{os.Getenv(constants.DOMAIN)},
 	}
 
 	caCert, err := x509.CreateCertificate(rand.Reader, &certTemplate, &certTemplate, &privateKey.PublicKey, privateKey)

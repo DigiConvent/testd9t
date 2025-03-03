@@ -11,10 +11,10 @@ func TestGetTelegramRegistrationCode(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	userId, _ := iamService.CreateUser(&iam_domain.UserWrite{
-		Email:       "GetTelegramRegistrationCode@test.test",
-		FirstName:   "Test",
-		LastName:    "McTest",
-		DateOfBirth: time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
+		Emailaddress: "GetTelegramRegistrationCode@test.test",
+		FirstName:    "Test",
+		LastName:     "McTest",
+		DateOfBirth:  time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
 	})
 
 	code, _ := iamService.GetTelegramRegistrationCode(userId)

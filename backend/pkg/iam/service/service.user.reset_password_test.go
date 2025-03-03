@@ -11,10 +11,10 @@ func TestResetPassword(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	uid, status := iamService.CreateUser(&iam_domain.UserWrite{
-		Email:       "TestResetPassword@test.test",
-		FirstName:   "Test",
-		LastName:    "McTest",
-		DateOfBirth: time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
+		Emailaddress: "TestResetPassword@test.test",
+		FirstName:    "Test",
+		LastName:     "McTest",
+		DateOfBirth:  time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
 	})
 
 	if status.Err() {

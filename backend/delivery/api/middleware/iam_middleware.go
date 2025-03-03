@@ -9,7 +9,11 @@ import (
 	"github.com/google/uuid"
 )
 
-func permissionMiddleware(iamService iam_service.IAMServiceInterface, permissions ...string) gin.HandlerFunc {
+type IamMiddleware struct {
+	IamService iam_service.IAMServiceInterface
+}
+
+func (i *IamMiddleware) RequiresPermission(permissions ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		rawUserId := c.GetString(ContextField)
 		userId, err := uuid.Parse(rawUserId)
@@ -31,7 +35,7 @@ func permissionMiddleware(iamService iam_service.IAMServiceInterface, permission
 				}
 				permission = strings.Join(segments, ".")
 			}
-			exists := iamService.UserHasPermission(&userId, permission)
+			exists := i.IamService.UserHasPermission(&userId, permission)
 			if exists {
 				c.Set("permission", permission)
 				c.Next()
@@ -39,7 +43,7 @@ func permissionMiddleware(iamService iam_service.IAMServiceInterface, permission
 			}
 		}
 
-		exists := iamService.UserHasPermission(&userId, "super")
+		exists := i.IamService.UserHasPermission(&userId, "super")
 		if exists {
 			c.Set("permission", "super")
 			c.Next()
@@ -48,5 +52,15 @@ func permissionMiddleware(iamService iam_service.IAMServiceInterface, permission
 
 		c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
 		c.Abort()
+	}
+}
+
+type IamMiddlewareInterface interface {
+	RequiresPermission(permissions ...string) gin.HandlerFunc
+}
+
+func NewIamMiddleware(iamService iam_service.IAMServiceInterface) IamMiddlewareInterface {
+	return &IamMiddleware{
+		IamService: iamService,
 	}
 }

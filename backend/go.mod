@@ -5,6 +5,9 @@ go 1.20
 require github.com/mattn/go-sqlite3 v1.14.24
 
 require (
+	blitiri.com.ar/go/spf v1.5.1 // indirect
+	github.com/emersion/go-msgauth v0.6.8 // indirect
+	github.com/go-telegram/bot v1.14.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect

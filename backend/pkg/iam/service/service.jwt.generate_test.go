@@ -11,10 +11,10 @@ func TestGenerateJwt(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	testUser := &iam_domain.UserWrite{
-		Email:       "GenerateJwt@test.test",
-		FirstName:   "Test",
-		LastName:    "McTest",
-		DateOfBirth: time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
+		Emailaddress: "GenerateJwt@test.test",
+		FirstName:    "Test",
+		LastName:     "McTest",
+		DateOfBirth:  time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
 	}
 	id, _ := iamService.CreateUser(testUser)
 
@@ -31,5 +31,4 @@ func TestGenerateJwt(t *testing.T) {
 	if !status.Err() {
 		t.Fatal("Expected an error")
 	}
-
 }

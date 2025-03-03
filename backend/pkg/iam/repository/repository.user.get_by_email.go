@@ -7,21 +7,22 @@ import (
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
-func (r *IAMRepository) GetUserByEmail(email string) (*iam_domain.UserRead, core.Status) {
+func (r *IAMRepository) GetUserByEmailaddress(emailaddress string) (*iam_domain.UserRead, core.Status) {
 	var user = &iam_domain.UserRead{}
-	row := r.db.QueryRow(`select id, email, first_name, last_name, date_of_birth, enabled from users where email = ?`, strings.ToLower(email))
+	row := r.db.QueryRow(`select id, first_name, last_name, date_of_birth, enabled from users where emailaddress = ?`, strings.ToLower(emailaddress))
 
 	err := row.Scan(
 		&user.ID,
-		&user.Email,
 		&user.FirstName,
 		&user.LastName,
 		&user.DateOfBirth,
 		&user.Enabled,
 	)
 	if err != nil {
-		return nil, *core.NotFoundError("No user found with email: " + email)
+		return nil, *core.NotFoundError("No user found with email: " + emailaddress)
 	}
+
+	user.Emailaddress = emailaddress
 
 	return user, *core.StatusSuccess()
 }

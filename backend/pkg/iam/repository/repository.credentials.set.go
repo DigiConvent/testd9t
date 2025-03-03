@@ -5,7 +5,7 @@ import (
 	uuid "github.com/google/uuid"
 )
 
-func (r *IAMRepository) SetCredentialEmail(id *uuid.UUID, email string) core.Status {
+func (r *IAMRepository) SetCredentialEmailaddress(id *uuid.UUID, email string) core.Status {
 	panic("unimplemented")
 }
 

@@ -8,10 +8,10 @@ import (
 )
 
 var testUser = &iam_domain.UserWrite{
-	FirstName:   "FirstName",
-	LastName:    "LastName",
-	Email:       "a@a.a",
-	DateOfBirth: time.Now(),
+	FirstName:    "FirstName",
+	LastName:     "LastName",
+	Emailaddress: "a@a.a",
+	DateOfBirth:  time.Now(),
 }
 
 func TestCreateUser(t *testing.T) {

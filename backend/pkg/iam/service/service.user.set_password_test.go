@@ -11,10 +11,10 @@ func TestSetUserPassword(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	testUser, _ := iamService.CreateUser(&iam_domain.UserWrite{
-		Email:       "TestSetUserPassword@test.test",
-		FirstName:   "Test",
-		LastName:    "McTest",
-		DateOfBirth: time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
+		Emailaddress: "TestSetUserPassword@test.test",
+		FirstName:    "Test",
+		LastName:     "McTest",
+		DateOfBirth:  time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
 	})
 
 	status := iamService.SetUserPassword(testUser, "password123")

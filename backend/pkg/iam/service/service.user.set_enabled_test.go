@@ -12,10 +12,10 @@ func TestSetEnabled(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	user := &iam_domain.UserWrite{
-		Email:       "SetUserEnabled@test.test",
-		FirstName:   "Test",
-		LastName:    "McTest",
-		DateOfBirth: time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
+		Emailaddress: "SetUserEnabled@test.test",
+		FirstName:    "Test",
+		LastName:     "McTest",
+		DateOfBirth:  time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
 	}
 	userId, _ := iamService.CreateUser(user)
 

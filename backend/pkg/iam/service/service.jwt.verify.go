@@ -4,17 +4,15 @@ import (
 	"errors"
 
 	"github.com/DigiConvent/testd9t/core"
-	"github.com/DigiConvent/testd9t/core/log"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 )
 
 func (service *IAMService) VerifyJwt(token string) (*uuid.UUID, *core.Status) {
-	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-		log.Success("Verified JWT")
 		return &service.repository.GetPrivateKey().PublicKey, nil
 	})
 

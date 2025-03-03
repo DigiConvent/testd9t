@@ -12,10 +12,10 @@ func TestGetUser(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	fakeUser := iam_domain.UserWrite{
-		Email:       "TestGetUser@test.test",
-		FirstName:   "Test",
-		LastName:    "GetUser",
-		DateOfBirth: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+		Emailaddress: "TestGetUser@test.test",
+		FirstName:    "Test",
+		LastName:     "GetUser",
+		DateOfBirth:  time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 	}
 
 	id, _ := iamService.CreateUser(&fakeUser)
@@ -34,7 +34,7 @@ func TestGetUser(t *testing.T) {
 		t.Errorf("ID is not equal")
 	}
 
-	if user.Email != fakeUser.Email {
+	if user.Emailaddress != fakeUser.Emailaddress {
 		t.Errorf("Email is not equal")
 	}
 
@@ -91,7 +91,7 @@ func TestGetUser(t *testing.T) {
 		t.Fatal("User is nil")
 	}
 
-	if user.Email != "" {
+	if user.Emailaddress != "" {
 		t.Errorf("Email is not empty")
 	}
 

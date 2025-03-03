@@ -6,6 +6,8 @@ import (
 	"os"
 	"time"
 
+	constants "github.com/DigiConvent/testd9t/core/const"
+	"github.com/DigiConvent/testd9t/core/log"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -24,7 +26,7 @@ func GenerateJWT(id string, user *iam_domain.UserRead, permissions []*iam_domain
 		"permissions": permissionsString,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(os.Getenv("TELEGRAM_BOT_TOKEN")))
+	return token.SignedString([]byte(os.Getenv(constants.MASTER_PASSWORD)))
 }
 
 func JWTAuthMiddleware() gin.HandlerFunc {
@@ -36,22 +38,22 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
-			return []byte(os.Getenv("TELEGRAM_BOT_TOKEN")), nil
+			return []byte(os.Getenv(constants.MASTER_PASSWORD)), nil
 		})
 
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Error(err.Error())
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.Abort()
 			return
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			c.Set(ContextField, claims["id"])
+			c.Set(ContextField, claims[ContextField])
 		} else {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})
 			c.Abort()

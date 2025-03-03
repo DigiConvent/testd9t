@@ -7,19 +7,19 @@ import (
 )
 
 type UserRead struct {
-	ID          uuid.UUID  `json:"id"`
-	Email       string     `json:"email"`
-	FirstName   string     `json:"first_name"`
-	LastName    string     `json:"last_name"`
-	DateOfBirth *time.Time `json:"date_of_birth"`
-	Enabled     bool       `json:"enabled"`
+	ID           uuid.UUID  `json:"id"`
+	Emailaddress string     `json:"emailaddress"`
+	FirstName    string     `json:"first_name"`
+	LastName     string     `json:"last_name"`
+	DateOfBirth  *time.Time `json:"date_of_birth"`
+	Enabled      bool       `json:"enabled"`
 }
 
 type UserWrite struct {
-	Email       string    `json:"email" validate:"required,email"`
-	FirstName   string    `json:"first_name" validate:"required"`
-	LastName    string    `json:"last_name" validate:"required"`
-	DateOfBirth time.Time `json:"date_of_birth" validate:"required"`
+	Emailaddress string    `json:"emailaddress" validate:"required,email"`
+	FirstName    string    `json:"first_name" validate:"required"`
+	LastName     string    `json:"last_name" validate:"required"`
+	DateOfBirth  time.Time `json:"date_of_birth" validate:"required"`
 }
 
 type UserSetEnabled struct {
@@ -43,10 +43,10 @@ type UserProfile struct {
 
 type UserFilterSort struct {
 	Filter struct {
-		Email       *string
-		FirstName   *string
-		LastName    *string
-		DateOfBirth *string
+		Emailaddress *string
+		FirstName    *string
+		LastName     *string
+		DateOfBirth  *string
 	}
 	Sort struct {
 		Field string

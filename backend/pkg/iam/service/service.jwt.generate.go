@@ -14,7 +14,7 @@ func (service *IAMService) GenerateJwt(userId *uuid.UUID) (string, *core.Status)
 	}
 	privKey := service.repository.GetPrivateKey()
 
-	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodRS512, jwt.MapClaims{
 		"id":  userId.String(),
 		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	})

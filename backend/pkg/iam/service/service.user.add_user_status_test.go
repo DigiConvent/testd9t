@@ -11,10 +11,10 @@ func TestUserAddUserStatus(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	testUser := &iam_domain.UserWrite{
-		Email:       "UserAddUserStatus@test.test",
-		FirstName:   "Test",
-		LastName:    "McTest",
-		DateOfBirth: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+		Emailaddress: "UserAddUserStatus@test.test",
+		FirstName:    "Test",
+		LastName:     "McTest",
+		DateOfBirth:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 	}
 
 	id, status := iamService.CreateUser(testUser)

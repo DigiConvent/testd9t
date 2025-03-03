@@ -20,11 +20,21 @@ func TestVerifyJwt(t *testing.T) {
 	}
 
 	someId, _ := uuid.NewV7()
-	token, _ := iamService.GenerateJwt(&someId)
-
-	_, status = iamService.VerifyJwt(token)
+	token, status := iamService.GenerateJwt(&someId)
 	if status.Err() {
 		t.Fatal(status.Message)
 	}
 
+	theId, status := iamService.VerifyJwt(token)
+	if status.Err() {
+		t.Fatal(status.Message)
+	}
+
+	if theId == nil {
+		t.Fatal("Expected a result")
+	}
+
+	if theId.String() != someId.String() {
+		t.Fatal("Expected ", someId.String(), " instead I got ", theId.String())
+	}
 }

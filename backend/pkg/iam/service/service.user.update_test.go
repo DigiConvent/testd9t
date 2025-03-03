@@ -11,14 +11,14 @@ func TestUpdateUser(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	user := &iam_domain.UserWrite{
-		Email:       "TestUpdateUser@test.test",
-		FirstName:   "Test",
-		LastName:    "McTest",
-		DateOfBirth: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+		Emailaddress: "TestUpdateUser@test.test",
+		FirstName:    "Test",
+		LastName:     "McTest",
+		DateOfBirth:  time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 	}
 	userId, _ := iamService.CreateUser(user)
 
-	user.Email = "TestUpdateUser@test.test1"
+	user.Emailaddress = "TestUpdateUser@test.test1"
 	user.FirstName = "Updated"
 	user.LastName = "McUpdated"
 	user.DateOfBirth = time.Date(2001, 2, 2, 0, 0, 0, 0, time.UTC)
@@ -31,7 +31,7 @@ func TestUpdateUser(t *testing.T) {
 	updatedUser, _ := iamService.GetUser(userId)
 	if updatedUser.FirstName != user.FirstName ||
 		updatedUser.LastName != user.LastName ||
-		updatedUser.Email != user.Email ||
+		updatedUser.Emailaddress != user.Emailaddress ||
 		updatedUser.DateOfBirth.String() != time.Date(2001, 2, 2, 0, 0, 0, 0, time.UTC).String() {
 		t.Fatal("User not updated")
 	}

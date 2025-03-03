@@ -1,16 +1,19 @@
 package iam_repository
 
 import (
+	"strings"
+
 	"github.com/DigiConvent/testd9t/core"
 	uuid "github.com/google/uuid"
 )
 
-func (r *IAMRepository) GetCredentials(email string, password string) (*uuid.UUID, core.Status) {
-	result := r.db.QueryRow("select id from users where email = ? and password = ?", email, password)
+func (r *IAMRepository) GetCredentials(emailaddress string) (*uuid.UUID, string, core.Status) {
+	result := r.db.QueryRow("select id, password from users where emailaddress = ?", strings.ToLower(emailaddress))
 	var id uuid.UUID
-	err := result.Scan(&id)
+	var hashedPassword string
+	err := result.Scan(&id, &hashedPassword)
 	if err != nil {
-		return nil, *core.NotFoundError("User not found")
+		return nil, "", *core.NotFoundError("User not found")
 	}
-	return &id, *core.StatusSuccess()
+	return &id, hashedPassword, *core.StatusSuccess()
 }

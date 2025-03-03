@@ -19,8 +19,8 @@ func GetTestIAMService(dbName string) iam_service.IAMServiceInterface {
 		iam_setup.Setup()
 		testDB = db.NewTestSqliteDB(dbName)
 	}
-	repo := iam_repository.NewIAMRepository(testDB)
-	return iam_service.NewIAMService(repo)
+	repo := iam_repository.NewIamRepository(testDB)
+	return iam_service.NewIamService(repo)
 }
 
 func TestMain(m *testing.M) {

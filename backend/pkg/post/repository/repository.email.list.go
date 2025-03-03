@@ -13,18 +13,18 @@ func (p PostRepository) ListEmails(fs *post_domain.EmailFilterSort) (*pagination
 
 	recipientClause := ""
 	if fs.Filter.Recipient != nil {
-		recipientClause = "where to_email_address = '" + fs.Filter.Recipient.String() + "'"
+		recipientClause = "where mailbox = '" + fs.Filter.Recipient.String() + "'"
 	}
 
 	emails := []*post_domain.EmailFacade{}
-	rows, err := p.db.Query("select id, to_email_address, from, subject, sent_at from emails " + recipientClause)
+	rows, err := p.db.Query("select id, mailbox, correspondent, subject, sent_at from emails " + recipientClause)
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}
 
 	for rows.Next() {
 		email := &post_domain.EmailFacade{}
-		err := rows.Scan(&email.ID, &email.To, &email.From, &email.Subject, &email.SentAt)
+		err := rows.Scan(&email.ID, &email.Mailbox, &email.Correspondent, &email.Subject, &email.SentAt)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
 		}

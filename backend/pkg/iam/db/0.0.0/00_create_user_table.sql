@@ -1,6 +1,6 @@
 create table users (
   id uuid primary key not null,
-  email varchar unique default '',
+  emailaddress varchar unique default '',
   password varchar default '',
   telegram_id bigint default 0,
   title varchar default '',

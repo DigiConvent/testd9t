@@ -6,6 +6,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 
+	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/log"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 	"github.com/gin-gonic/gin"
@@ -13,10 +14,10 @@ import (
 
 func serveFrontend(router *gin.Engine) {
 	if sys_domain.ProgramVersion != "dev" {
-		router.Static("/assets", "/home/testd9t/frontend/assets")
-		router.StaticFile("/favicon.ico", "/home/testd9t/frontend/favicon.ico")
-		router.StaticFile("/index.html", "/home/testd9t/frontend/index.html")
-		router.StaticFile("/", "/home/testd9t/frontend/index.html")
+		router.Static("/assets", constants.HOME_PATH+"frontend/assets")
+		router.StaticFile("/favicon.ico", constants.HOME_PATH+"frontend/favicon.ico")
+		router.StaticFile("/index.html", constants.HOME_PATH+"frontend/index.html")
+		router.StaticFile("/", constants.HOME_PATH+"frontend/index.html")
 	} else {
 		router.Use(proxyHandler("http://localhost:5173"))
 	}

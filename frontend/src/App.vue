@@ -16,6 +16,11 @@
         </tr>
       </table>
     </div>
+    <div v-if="tgWebApp != null">
+      <pre>
+        {{ JSON.stringify(tgWebApp, null, 2) }}
+      </pre>
+    </div>
   </header>
 </template>
 
@@ -23,15 +28,20 @@
 import { ref } from 'vue';
 import api from './api'
 import type { SystemStatus } from './api/sys/sys.get_status';
+import getWebApp, { type TelegramWebApp } from './auth/telegram';
 
 let status = ref<SystemStatus>()
+let tgWebApp = ref<TelegramWebApp>()
 
 api.sys.getStatus().then(result => {
+  tgWebApp.value = getWebApp();
   result.fold(() => {
     console.log('API is down')
   }, (data) => {
-    console.log('API is up:'+ data)
+    console.log('API is up:' + data)
     status.value = data;
   })
 });
+
+
 </script>

@@ -34,7 +34,6 @@ func NewPostService(repository post_repository.PostRepositoryInterface, startSmt
 
 	if startSmtpServer {
 		log.Info("Starting smtp server on " + postService.address)
-		go postService.smtpSendServer()
 		go postService.smtpReceiveServer()
 	} else {
 		log.Info("Skipping smtp server start")

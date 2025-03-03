@@ -11,12 +11,12 @@ func (r *IAMRepository) GetTelegramRegistrationCode(userId *uuid.UUID) (string, 
 	if userId == nil {
 		return "", *core.UnprocessableContentError("ID is required")
 	}
-	user := r.db.QueryRow(`select email from users where id = ?`, userId.String())
+	user := r.db.QueryRow(`select emailaddress from users where id = ?`, userId.String())
 
-	var email string
-	err := user.Scan(&email)
+	var emailaddress string
+	err := user.Scan(&emailaddress)
 	if err != nil {
-		return "", core.Status{Code: 500, Message: "Failed to find user with email"}
+		return "", core.Status{Code: 500, Message: "Failed to find user with emailaddress " + emailaddress}
 	}
 
 	code := GenerateCode(userId.String(), time.Now(), 10*time.Minute)

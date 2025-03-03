@@ -1,4 +1,4 @@
-insert into users (id, email, enabled) values
+insert into users (id, emailaddress, enabled) values
 ('00000000-0000-0000-0000-000000000000', '', true);
 
 insert into permissions (name) values ('super');

@@ -165,9 +165,9 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	}
 
 	inputs := map[string]*Input{
-		"domain":   {Name: "Domain", Value: ""},
-		"email":    {Name: "Your e-mailaddress", Value: ""},
-		"password": {Name: "A strong password", Value: ""},
+		"domain":       {Name: "Domain", Value: ""},
+		"emailaddress": {Name: "Your e-mail address", Value: ""},
+		"password":     {Name: "A strong password", Value: ""},
 	}
 
 	for _, input := range inputs {

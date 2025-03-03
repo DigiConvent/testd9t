@@ -19,7 +19,7 @@ import (
 )
 
 type Services struct {
-	IAMService  iam_service.IAMServiceInterface
+	IamService  iam_service.IAMServiceInterface
 	SysService  sys_service.SysServiceInterface
 	PostService post_service.PostServiceInterface
 }
@@ -32,8 +32,8 @@ func InitiateServices(live bool) *Services {
 
 	iam_setup.Setup()
 	iamDB := db.NewSqliteDB("iam")
-	iamRepo := iam_repository.NewIAMRepository(iamDB)
-	iamService := iam_service.NewIAMService(iamRepo)
+	iamRepo := iam_repository.NewIamRepository(iamDB)
+	iamService := iam_service.NewIamService(iamRepo)
 
 	post_setup.Setup()
 	postDB := db.NewSqliteDB("post")
@@ -42,7 +42,7 @@ func InitiateServices(live bool) *Services {
 
 	services := &Services{
 		SysService:  sysService,
-		IAMService:  iamService,
+		IamService:  iamService,
 		PostService: postService,
 	}
 
@@ -62,7 +62,7 @@ func InitiateServices(live bool) *Services {
 
 func DoFirstTimeStuff(services *Services) {
 	log.Info("Doing first time stuff")
-	emailAddress := os.Getenv("EMAIL")
+	emailAddress := os.Getenv(constants.MASTER_EMAILADDRESS)
 	id := uuid.MustParse("00000000-0000-0000-0000-000000000000")
 	status := services.PostService.UpdateEmailAddresses(&id, &post_domain.EmailAddressWrite{
 		Name:   "Admin",
