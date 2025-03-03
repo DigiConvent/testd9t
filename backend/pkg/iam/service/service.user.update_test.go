@@ -20,7 +20,7 @@ func TestUpdateUser(t *testing.T) {
 
 	user.Emailaddress = "TestUpdateUser@test.test1"
 	user.FirstName = "Updated"
-	user.LastName = "McUpdated"
+	// user.LastName = "McUpdated2"
 	user.DateOfBirth = time.Date(2001, 2, 2, 0, 0, 0, 0, time.UTC)
 
 	status := iamService.UpdateUser(userId, user)
