@@ -35,7 +35,7 @@ func (router *IamRouter) LoginWithTelegram(ctx *gin.Context) {
 		}
 
 		ctx.JSON(status.Code, gin.H{
-			"jwt": jwt,
+			"token": jwt,
 		})
 	}
 }

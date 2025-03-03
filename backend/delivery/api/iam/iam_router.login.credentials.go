@@ -33,7 +33,7 @@ func (r *IamRouter) LoginWithCredentials(ctx *gin.Context) {
 		}
 
 		ctx.JSON(status.Code, gin.H{
-			"jwt": jwt,
+			"token": jwt,
 		})
 	}
 }
