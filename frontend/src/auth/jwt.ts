@@ -1,4 +1,6 @@
+import { api } from "@/api";
 import getWebApp from "./telegram";
+import type Either from "@/api/core/either";
 
 export default class JwtAuthenticator {
     private static instance: JwtAuthenticator | undefined;
@@ -17,40 +19,27 @@ export default class JwtAuthenticator {
         return this.instance;
     }
 
+    getToken(data: any) : string {
+        return data.token;
+    }
+
     async loginUsingTelegram() {
-        const body: BodyInit = new FormData();
-        body.set('payload', getWebApp().initData);
-        this.login(await fetch("/api/auth/telegram", {
-            method: "POST",
-            body: body,
-        }));
+        this.login(api.iam.login.telegram(getWebApp().initData));
     }
 
     async loginUsingCredentials(emailaddress: string, password: string) {
-        const body: BodyInit = new FormData();
-        body.set('emailaddress', emailaddress);
-        body.set('password', password);
-        this.login(await fetch("/api/auth/credentials", {
-            method: "POST",
-            body: body,
-        }));
+        this.login(api.iam.login.credentials(emailaddress, password));
     }
 
-    async login(response: Response) {
-        if (response.ok) {
-            const data = await response.json();
-            this.token = data.token;
-            localStorage.setItem('token', data.token);
-        }
-        console.log("Logged in with token " + this.token);
+    async login(response: Promise<Either<string,string>>) {
+        (await response).fold((err: string) => {
+            console.error(err);
+        }, (token: string) => {
+            this.token = token;
+        });
     }
 
     async loginUsingToken() {
-        const body: BodyInit = new FormData();
-        body.set('token', this.token!);
-        this.login(await fetch("/api/auth/token", {
-            method: "POST",
-            body: body,
-        }));
+        this.login(api.iam.jwt.refresh(this.token!));
     }
 }

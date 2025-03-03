@@ -1,7 +1,7 @@
-import { sys } from "./sys";
+import { sys } from "typescript";
+import { iam } from "./iam";
 
-const api = {
-    sys: sys,
+export const api = {
+    iam: iam,
+    sys: sys
 }
-
-export default api;
