@@ -26,9 +26,9 @@ func ListVersions(sysService sys_service.SysServiceInterface) {
 		os.Exit(1)
 	}
 
-	if sysStatus.ProgramVersion.Major == -1 {
+	if sysStatus.Version.ProgramVersion.Major == -1 {
 		fmt.Println("Program version: dev")
-		if sysStatus.DatabaseVersion.Equals(&sysStatus.ProgramVersion) {
+		if sysStatus.Version.DatabaseVersion.Equals(&sysStatus.Version.ProgramVersion) {
 			fmt.Println("No migrations found, run with --migrate-db to migrate to a compatible version")
 		}
 	}
@@ -38,10 +38,10 @@ func ListVersions(sysService sys_service.SysServiceInterface) {
 
 	for _, tag := range versions {
 		var program, migrationExecuted string
-		if tag.Tag == sysStatus.ProgramVersion.String() {
+		if tag.Tag == sysStatus.Version.ProgramVersion.String() {
 			program = "✓"
 		}
-		if tag.Tag == sysStatus.DatabaseVersion.String() {
+		if tag.Tag == sysStatus.Version.DatabaseVersion.String() {
 			migrationExecuted = "✓"
 		}
 		fmt.Println("┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━━━┫")

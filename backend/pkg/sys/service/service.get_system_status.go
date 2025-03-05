@@ -27,19 +27,19 @@ func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) 
 
 	programVersion, databaseVersion, status := s.repository.GetCurrentVersion()
 	if status.Err() {
-		systemStatus.ProgramVersion = sys_domain.Version{
+		systemStatus.Version.ProgramVersion = sys_domain.Version{
 			Major: -1,
 			Minor: -1,
 			Patch: -1,
 		}
-		systemStatus.DatabaseVersion = sys_domain.Version{
+		systemStatus.Version.DatabaseVersion = sys_domain.Version{
 			Major: -1,
 			Minor: -1,
 			Patch: -1,
 		}
 	} else {
-		systemStatus.ProgramVersion = *programVersion
-		systemStatus.DatabaseVersion = *databaseVersion
+		systemStatus.Version.ProgramVersion = *programVersion
+		systemStatus.Version.DatabaseVersion = *databaseVersion
 	}
 
 	var stat syscall.Statfs_t
@@ -48,78 +48,78 @@ func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) 
 	syscall.Statfs("/", &stat)
 	syscall.Statfs(constants.HOME_PATH, &testd9tStat)
 
-	systemStatus.TotalSpace = stat.Blocks * uint64(stat.Bsize)
-	systemStatus.FreeSpace = stat.Bfree * uint64(stat.Bsize)
+	systemStatus.Server.TotalSpace = stat.Blocks * uint64(stat.Bsize)
+	systemStatus.Server.FreeSpace = stat.Bfree * uint64(stat.Bsize)
 
 	cmd := exec.Command("du", "-sb", constants.HOME_PATH)
 	out, _ := cmd.Output()
 	outString := string(out)
 	outBytes, _ := strconv.Atoi(outString)
-	systemStatus.DataSpace = uint64(outBytes)
+	systemStatus.Server.DataSpace = uint64(outBytes)
 
 	botToken, status := s.repository.GetBotToken()
 	if status.Err() || botToken == "" {
-		systemStatus.TelegramBotStatus = "false"
-		systemStatus.TelegramBotHint = "No Telegram Bot Token not found"
+		systemStatus.TelegramBot.TelegramBotStatus = "false"
+		systemStatus.TelegramBot.TelegramBotHint = "No Telegram Bot Token not found"
 	} else {
 		bot, err := bot.New(botToken)
 		if err != nil {
-			systemStatus.TelegramBotStatus = "false"
-			systemStatus.TelegramBotHint = err.Error()
+			systemStatus.TelegramBot.TelegramBotStatus = "false"
+			systemStatus.TelegramBot.TelegramBotHint = err.Error()
 		} else {
 			defer bot.Close(context.TODO())
-			systemStatus.TelegramBotStatus = botToken[0:4] + "...." + botToken[len(botToken)-4:]
-			systemStatus.TelegramBotHint = "Telegram bot token found and working"
+			systemStatus.TelegramBot.TelegramBotStatus = botToken[0:4] + "...." + botToken[len(botToken)-4:]
+			systemStatus.TelegramBot.TelegramBotHint = "Telegram bot token found and working"
 		}
 	}
 
 	ips, err := net.LookupHost(os.Getenv(constants.DOMAIN))
 	if err != nil || len(ips) == 0 {
-		systemStatus.DnsStatus = "false"
-		systemStatus.DnsHint = "Add an A record for " + os.Getenv(constants.DOMAIN)
+		systemStatus.Dns.DnsStatus = "false"
+		systemStatus.Dns.DnsHint = "Add an A record for " + os.Getenv(constants.DOMAIN)
 	} else {
-		systemStatus.DnsStatus = strings.Join(ips, ", ")
+		systemStatus.Dns.DnsStatus = strings.Join(ips, ", ")
 		mxStatus, err := net.LookupMX(os.Getenv(constants.DOMAIN))
 		if err != nil {
-			systemStatus.MxStatus = "false"
-			systemStatus.MxHint = err.Error()
+			systemStatus.Dns.MxStatus = "false"
+			systemStatus.Dns.MxHint = err.Error()
 		} else {
 			if len(mxStatus) == 0 {
-				systemStatus.MxStatus = "false"
-				systemStatus.MxHint = "MX record not found"
+				systemStatus.Dns.MxStatus = "false"
+				systemStatus.Dns.MxHint = "MX record not found"
 			} else {
-				systemStatus.MxStatus = mxStatus[0].Host
-				systemStatus.MxHint = "MX record present"
+				systemStatus.Dns.MxStatus = mxStatus[0].Host
+				systemStatus.Dns.MxHint = "MX record present"
 			}
 		}
 	}
 
 	txtRecords, err := net.LookupTXT(os.Getenv(constants.DOMAIN))
 	if err != nil {
-		systemStatus.DkimStatus = "false"
-		systemStatus.DkimHint = err.Error()
-		systemStatus.SpfStatus = "false"
-		systemStatus.SpfHint = err.Error()
+		systemStatus.Dns.DkimStatus = "false"
+		systemStatus.Dns.DkimHint = err.Error()
+		systemStatus.Dns.SpfStatus = "false"
+		systemStatus.Dns.SpfHint = err.Error()
 	} else {
 		if len(txtRecords) == 0 {
-			systemStatus.DkimStatus = "false"
-			systemStatus.DkimHint = "DKIM record not found"
+			systemStatus.Dns.DkimStatus = "false"
+			systemStatus.Dns.DkimHint = "DKIM record not found"
 		} else {
 			for _, value := range txtRecords {
 				// https://datatracker.ietf.org/doc/html/rfc6376/#section-7.5
 				if strings.HasPrefix(value, "v=DKIM1") {
-					systemStatus.DkimStatus, systemStatus.DkimHint = getDkimStatus(value)
+					systemStatus.Dns.DkimStatus, systemStatus.Dns.DkimHint = getDkimStatus(value)
 				}
 				// https://datatracker.ietf.org/doc/html/rfc7208#section-4.5
 				if strings.HasPrefix(value, "v=spf1") {
-					systemStatus.SpfStatus, systemStatus.SpfHint = getSpfStatus(value, ips)
+					systemStatus.Dns.SpfStatus, systemStatus.Dns.SpfHint = getSpfStatus(value, ips)
 				}
 			}
 		}
 	}
 
-	systemStatus.BuiltAt = sys_domain.CompiledAt
-	systemStatus.OnlineSince = sys_domain.StartTime.Format(core_utils.FormattedTime)
+	systemStatus.Version.BuiltAt = sys_domain.CompiledAt
+	systemStatus.Version.OnlineSince = sys_domain.StartTime.Format(core_utils.FormattedTime)
 
 	return systemStatus, core.StatusSuccess()
 }

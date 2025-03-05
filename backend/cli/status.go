@@ -22,11 +22,11 @@ func ShowStatus(sysService sys_service.SysServiceInterface) {
 		fmt.Println("Production")
 	}
 
-	currentVersion := &sysStatus.DatabaseVersion
+	currentVersion := &sysStatus.Version.DatabaseVersion
 
 	fmt.Println("Migration  :", currentVersion.String())
 
-	fmt.Println("Environment:", sysStatus.ProgramVersion.String())
+	fmt.Println("Environment:", sysStatus.Version.ProgramVersion.String())
 
 	cli_helpers.ListPackages(sysService)
 }
