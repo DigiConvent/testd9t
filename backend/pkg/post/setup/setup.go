@@ -16,16 +16,16 @@ import (
 )
 
 func TlsPrivateKeyPath() string {
-	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "", "privkey.pem")
+	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "tls", "privkey.pem")
 }
 func TlsPublicKeyPath() string {
-	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "", "fullchain.pem")
+	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "tls", "fullchain.pem")
 }
 func TlsCaCertificatePath() string {
-	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "", "cacert.pem")
+	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "tls", "cacert.pem")
 }
 func TlsCaPrivateKeyPath() string {
-	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "", "capk.pem")
+	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "tls", "capk.pem")
 }
 func DkimPrivateKeyPath() string {
 	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "privkey.pem")
@@ -63,12 +63,18 @@ func Setup() {
 
 		if err != nil {
 			log.Error("Cannot create public key for jwt: " + err.Error())
+		} else {
+			log.Info("Created public key for JWT at " + TlsPublicKeyPath())
 		}
 		// create privkey.pem
 		err = os.WriteFile(TlsPrivateKeyPath(), pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}), 0644)
 		if err != nil {
 			log.Error("Cannot create private key for jwt: " + err.Error())
+		} else {
+			log.Info("Created private key for JWT at " + TlsPrivateKeyPath())
 		}
+	} else {
+		log.Info("JWT keypair found")
 	}
 
 	if _, err := os.Stat(DkimPrivateKeyPath()); os.IsNotExist(err) {
@@ -81,14 +87,22 @@ func Setup() {
 		if err != nil {
 			log.Error(err)
 		}
+
 		err = os.WriteFile(DkimPrivateKeyPath(), pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}), 0644)
 		if err != nil {
 			log.Error("Cannot create private key for dkim: " + err.Error())
+		} else {
+			log.Info("Created private key for DKIM")
 		}
+
 		err = os.WriteFile(DkimPublicKeyPath(), pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: x509.MarshalPKCS1PublicKey(&privateKey.PublicKey)}), 0644)
 		if err != nil {
 			log.Error("Cannot create public key for dkim: " + err.Error())
+		} else {
+			log.Info("Created public key for DKIM")
 		}
+	} else {
+		log.Info("DKIM keypair exists at " + DkimPrivateKeyPath() + " and " + DkimPublicKeyPath())
 	}
 }
 

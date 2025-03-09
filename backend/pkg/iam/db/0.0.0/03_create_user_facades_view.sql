@@ -8,5 +8,6 @@ select
 from users u
 left join user_became_status ubs on u.id = ubs.user
 left join user_status us on us.id = ubs.status
-where ubs.start <= current_timestamp
+-- learned the hard way that 'or' != '||'
+where ubs.start <= current_timestamp or ubs.start is null
 order by u.id, ubs.start desc;

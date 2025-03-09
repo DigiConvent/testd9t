@@ -6,16 +6,16 @@ var StartTime time.Time
 
 type SystemStatus struct {
 	Dns struct {
-		DkimHint    string `json:"dkim_hint"`
-		DkimStatus  string `json:"dkim_status"`
-		DmarcHint   string `json:"dmarc_hint"`
-		DmarcStatus string `json:"dmarc_status"`
-		DnsHint     string `json:"dns_hint"`
-		DnsStatus   string `json:"dns_status"`
-		MxHint      string `json:"mx_hint"`
-		MxStatus    string `json:"mx_status"`
-		SpfHint     string `json:"spf_hint"`
-		SpfStatus   string `json:"spf_status"`
+		DkimIs      string `json:"dkim_is"`
+		DkimShould  string `json:"dkim_should"`
+		DmarcIs     string `json:"dmarc_is"`
+		DmarcShould string `json:"dmarc_should"`
+		DnsIs       string `json:"dns_is"`
+		DnsShould   string `json:"dns_should"`
+		MxIs        string `json:"mx_is"`
+		MxShould    string `json:"mx_should"`
+		SpfIs       string `json:"spf_is"`
+		SpfShould   string `json:"spf_should"`
 	} `json:"dns"`
 	Server struct {
 		DataSpace  uint64 `json:"data_space"`
@@ -24,7 +24,7 @@ type SystemStatus struct {
 	} `json:"server"`
 	TelegramBot struct {
 		TelegramBotHint   string `json:"telegram_bot_hint"`
-		TelegramBotStatus string `json:"telegram_bot_status"`
+		TelegramBotStatus string `json:"telegram_bot"`
 	} `json:"telegram_bot"`
 	Version struct {
 		BuiltAt         string  `json:"built_at"`

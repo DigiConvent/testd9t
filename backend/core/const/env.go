@@ -20,6 +20,7 @@ const TELEGRAM_BOT_TOKEN = "TELEGRAM_BOT_TOKEN"
 
 const HOME_PATH = "/home/testd9t/"
 const ENV_PATH = HOME_PATH + "env"
+const DkimPrefix = "default._domainkey."
 
 func CheckEnv() {
 	shouldContinue := true

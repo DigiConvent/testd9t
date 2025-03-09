@@ -4,30 +4,36 @@ interface FromJSON<T> {
   (data: any): T;
 }
 
-export async function apiGetRequest<T>(url: string): Promise<Either<string, T>> {
+export async function api_get<T>(url: string, format_data: FromJSON<T>): Promise<Either<string, T>> {
   const result = new Either<string, T>();
   const request = await fetch(url, {
     method: "GET",
     mode: "same-origin",
     headers: {
-      "Authorization": "" + (localStorage.getItem('jwt') || "")
+      "Authorization": "" + (localStorage.getItem('token') || "")
     }
   });
 
-  const data = await request.json();
-
   if (request.ok) {
-    return result.right(data);
+    let data: any = {};
+    try {
+      data = await request.json();
+    } catch (e: any) {
+      return result.left("Could not read json from request " + e);
+    }
+    const formatted_data = format_data(data);
+    return result.right(formatted_data);
   } else {
-    return result.left(request.status + ": " + data['message']);
+    return result.left(request.status + ": ");
   }
 }
-export async function apiPostRequest<T>(url: string, body: any, formatData: FromJSON<T>): Promise<Either<string, T>> {
+export async function api_post<T>(url: string, payload: any, format_data?: FromJSON<T>, expects?: number): Promise<Either<string, T>> {
   const result = new Either<string, T>();
-  body = JSON.stringify(body);
+  const body = JSON.stringify(payload);
+  
   const request = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem('jwt') || "" },
+    headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem('token') || "" },
     mode: "same-origin",
     body: body
   });
@@ -37,23 +43,29 @@ export async function apiPostRequest<T>(url: string, body: any, formatData: From
     try {
       data = await request.json();
     } catch (e: any) {
-      console.error(e);
+      return result.left("Could not read json from request " + e);
     }
   }
 
   if (request.ok) {
-    const formattedData = formatData(data);
-    return result.right(formattedData);
+    if (expects && expects == request.status) {
+      return result.right(true as T);
+    } else if (format_data != undefined){
+      const formatted_data = format_data(data);
+      return result.right(formatted_data);
+    } else {
+      return result.left("Malfunction")
+    }
   } else {
-    return result.left(request.status + ": " + data['message']);
+    return result.left(request.status + ": " + data['error']);
   }
 }
 
-export async function apiMultipartPostRequest<T>(url: string, body: any, callback?: FromJSON<T>): Promise<Either<string, T>> {
+export async function api_multipart<T>(url: string, body: any): Promise<Either<string, T>> {
   const result = new Either<string, T>();
   const request = await fetch(url, {
     method: "POST",
-    headers: { "Authorization": "" + (localStorage.getItem('jwt') || "") },
+    headers: { "Authorization": "" + (localStorage.getItem('token') || "") },
     mode: "same-origin",
     body: body
   });
@@ -74,20 +86,19 @@ export async function apiMultipartPostRequest<T>(url: string, body: any, callbac
   }
 }
 
-export async function apiDeleteRequest(url: string): Promise<Either<string, void>> {
-  const result = new Either<string, void>();
+export async function api_delete(url: string, expects?: number): Promise<Either<string, boolean>> {
+  const result = new Either<string, boolean>();
   const request = await fetch(url, {
     method: "DELETE",
     mode: "same-origin",
     headers: {
-      "Authorization": "" + (localStorage.getItem('jwt') || "")
+      "Authorization": "" + (localStorage.getItem('token') || "")
     }
   });
 
-  if (request.ok) {
-    return result.right();
+  if (expects && expects == request.status) {
+    return result.right(true);
   } else {
-    const data = await request.json();
-    return result.left(request.status + ": " + data['message']);
+    return result.left(request.status + ": ");
   }
 }

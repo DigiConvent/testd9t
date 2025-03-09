@@ -1,4 +1,4 @@
-import { sys } from "typescript";
+import { sys } from "./sys";
 import { iam } from "./iam";
 
 export const api = {

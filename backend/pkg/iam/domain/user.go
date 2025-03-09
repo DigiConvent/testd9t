@@ -20,6 +20,7 @@ type UserWrite struct {
 	FirstName    string    `json:"first_name" validate:"required"`
 	LastName     string    `json:"last_name" validate:"required"`
 	DateOfBirth  time.Time `json:"date_of_birth" validate:"required"`
+	UserStatus   uuid.UUID `json:"status_id"`
 }
 
 type UserSetEnabled struct {

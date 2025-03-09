@@ -31,4 +31,12 @@ export default class Either<E, T> {
   isRight(): boolean {
     return this._type == 'right';
   }
+
+  getLeft(): E | undefined {
+    return this._dataL;
+  }
+
+  getRight(): T | undefined {
+    return this._dataR;
+  }
 }

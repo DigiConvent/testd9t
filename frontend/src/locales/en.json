@@ -1,0 +1,11 @@
+{
+  "iam": {
+    "auth": {
+      "LoginForm": {
+        "email": "E-Mailaddress",
+        "password": "Password",
+        "submit": "Login"
+      }
+    }
+  }
+}

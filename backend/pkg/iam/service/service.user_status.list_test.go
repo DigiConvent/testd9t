@@ -5,7 +5,7 @@ import "testing"
 func TestListUserStatuses(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
-	userStatusses, status := iamService.ListUserStatuses(nil)
+	userStatusses, status := iamService.ListUserStatuses()
 
 	if status.Err() {
 		t.Errorf("ListUserStatusses() failed: %s", status.Message)

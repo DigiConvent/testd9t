@@ -1,6 +1,9 @@
 package api_middleware
 
 import (
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
 	"fmt"
 	"net/http"
 	"os"
@@ -9,6 +12,7 @@ import (
 	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/log"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
+	iam_setup "github.com/DigiConvent/testd9t/pkg/iam/setup"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 )
@@ -29,6 +33,30 @@ func GenerateJWT(id string, user *iam_domain.UserRead, permissions []*iam_domain
 	return token.SignedString([]byte(os.Getenv(constants.MASTER_PASSWORD)))
 }
 
+var pubkey *rsa.PublicKey = nil
+
+func getPubKey() *rsa.PublicKey {
+	if pubkey == nil {
+		c, err := os.ReadFile(iam_setup.JwtPublicKeyPath())
+		if err != nil {
+			log.Error(err.Error())
+		}
+
+		block, _ := pem.Decode(c)
+		if block == nil {
+			log.Error("Could not decode public key")
+			return nil
+		}
+		pPubKey, err := x509.ParsePKIXPublicKey(block.Bytes)
+		if err != nil {
+			log.Error(err.Error())
+		}
+
+		pubkey = pPubKey.(*rsa.PublicKey)
+	}
+	return pubkey
+}
+
 func JWTAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
@@ -39,10 +67,10 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		}
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
-			return []byte(os.Getenv(constants.MASTER_PASSWORD)), nil
+			return getPubKey(), nil
 		})
 
 		if err != nil {

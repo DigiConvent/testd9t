@@ -1,5 +1,5 @@
-insert into users (id, emailaddress, enabled) values
-('00000000-0000-0000-0000-000000000000', '', true);
+insert into users (id, emailaddress, first_name, last_name, enabled) values
+('00000000-0000-0000-0000-000000000000', '', 'Admin', 'McAdmin', true);
 
 insert into permissions (name) values ('super');
 insert into permission_groups (id, name, abbr, is_group, is_node, description, "generated") values ('00000000-0000-0000-0000-000000000000', 'Super', 'super', true, true, 'Super user', true);

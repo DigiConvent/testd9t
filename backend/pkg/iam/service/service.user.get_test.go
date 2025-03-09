@@ -81,26 +81,18 @@ func TestGetUser(t *testing.T) {
 
 	// also test admin user
 	adminId := uuid.Nil
-	user, status = iamService.GetUser(&adminId)
+	admin, status := iamService.GetUser(&adminId)
 
 	if status.Err() {
 		t.Errorf("Error: %v", status.Message)
 	}
 
-	if user == nil {
+	if admin == nil {
 		t.Fatal("User is nil")
 	}
 
-	if user.Emailaddress != "" {
+	if admin.Emailaddress != "" {
 		t.Errorf("Email is not empty")
-	}
-
-	if user.FirstName != "" {
-		t.Errorf("FirstName is not empty")
-	}
-
-	if user.LastName != "" {
-		t.Errorf("LastName is not empty")
 	}
 
 	profile, status := iamService.GetUserProfile(&adminId)

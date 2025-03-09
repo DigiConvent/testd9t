@@ -17,7 +17,7 @@ type IAMServiceInterface interface {
 	UpdateUser(id *uuid.UUID, user *iam_domain.UserWrite) *core.Status
 	SetEnabled(id *uuid.UUID, enabled bool) *core.Status
 
-	ListUserStatuses(fs *iam_domain.UserFilterSort) ([]*iam_domain.UserStatusRead, *core.Status)
+	ListUserStatuses() ([]*iam_domain.UserStatusRead, *core.Status)
 	CreateUserStatus(status *iam_domain.UserStatusWrite) (*uuid.UUID, *core.Status)
 	GetUserStatus(id *uuid.UUID) (*iam_domain.UserStatusProfile, *core.Status)
 	DeleteUserStatus(id *uuid.UUID) *core.Status

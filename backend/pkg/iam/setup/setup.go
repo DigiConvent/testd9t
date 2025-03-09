@@ -20,19 +20,19 @@ func Setup() {
 	if _, err := os.Stat(JwtPublicKeyPath()); os.IsNotExist(err) {
 		err := os.MkdirAll(path.Dir(JwtPublicKeyPath()), 0755)
 		if err != nil {
-			panic("Cannot create folders for jwt: " + err.Error())
+			log.Error("Cannot create folders for jwt: " + err.Error())
 		}
 
 		privatePem, publicPem, _ := sec.GenerateRSAKeyPair(1024)
 
 		err = os.WriteFile(JwtPrivateKeyPath(), []byte(privatePem), 0644)
 		if err != nil {
-			panic("Cannot create private key for jwt: " + err.Error())
+			log.Error("Cannot create private key for jwt: " + err.Error())
 		}
 
 		err = os.WriteFile(JwtPublicKeyPath(), []byte(publicPem), 0644)
 		if err != nil {
-			panic("Cannot create public key for jwt: " + err.Error())
+			log.Error("Cannot create public key for jwt: " + err.Error())
 		}
 	}
 }

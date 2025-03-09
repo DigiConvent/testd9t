@@ -6,7 +6,8 @@ with recursive relevant_groups as (select
     pg.parent
   from permission_group_has_user pghu
   join permission_groups pg on pghu.permission_group = pg.id
-  where pghu.start <= datetime('now') and (pghu.end is null or pghu.end >= datetime('now'))
+  where (pghu.start <= datetime('now') or pghu.start is null) 
+  and (pghu.end is null or datetime('now') < pghu.end)
   union all
   select 
     s.user,

@@ -3,4 +3,6 @@ DOMAIN=digiconvent.de
 CERTIFICATES_PATH=/tmp/testd9t/certs/
 SMTP_PORT=587
 HTTPS_PORT=443
-HTTP_PORT=80
+HTTP_PORT=8080
+PASSWORD=a
+EMAILADDRESS=albert.j.dewit@gmail.com

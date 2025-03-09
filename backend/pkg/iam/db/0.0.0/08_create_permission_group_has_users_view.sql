@@ -20,6 +20,6 @@ with recursive relevant_groups as (
 select rg.root, rg.descendant as implied, rg.id as permission_group, uf.id as "user", uf.name 
 from relevant_groups rg
 join permission_group_has_user pghu on pghu.permission_group = rg.id 
-and pghu.start <= datetime('now') 
-and (pghu.end is null or pghu.end >= datetime('now'))
+and (pghu.start <= datetime('now') or pghu.start is null)
+and (pghu.end is null or datetime('now') < pghu.end)
 join user_facades uf on uf.id = pghu."user";

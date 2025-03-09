@@ -1,0 +1,70 @@
+{
+  "admin": { "title": "Administration" },
+  "sys": {
+    "title": "System",
+    "data": "Datenverbrauch",
+    "total": "Insgesamt",
+    "occupied": "Besetzt",
+    "free": "Frei",
+    "dns": {
+      "abbr": "DNS",
+      "title": "Domain Name Service",
+      "invalid": "Der Eintrag für {dns} ist ungültig.",
+      "fix": "Geben Sie den folgenden {type} Eintrag in ihrem DNS für {domain} ein.",
+      "copied_to_clipboard": "In Zwischenablage gespeichert",
+      "valid": "Der Eintrag für {dns} sieht korrekt aus."
+    }
+  },
+  "iam": {
+    "pg": {
+      "update": {
+        "title": "Gruppeninformationen",
+        "name": "Name",
+        "abbr": "Abkürzung",
+        "description": "Beschreibung",
+        "submit": "Speichern"
+      }
+    },
+    "title": "Zugriffskontrolle",
+    "auth": {
+      "login_form": {
+        "title": "Anmelden",
+        "email": "E-Mailadresse",
+        "required": "{field} erforderlich",
+        "password": "Kennwort",
+        "login_unsuccessful": "Ungültige Anmeldedaten",
+        "login_successful": "Anmeldung erfolgreich",
+        "submit": "Anmelden",
+        "logout": "Abmelden"
+      }
+    },
+    "user": {
+      "create": {
+        "title": "Nutzer anlegen",
+        "email": "E-Mailadresse",
+        "required": "{field} ist erforderlich",
+        "invalid": "{field} ist ungültig",
+        "first_name": "Vorname",
+        "last_name": "Nachname",
+        "date_of_birth": "Geburtsdatum",
+        "submit": "Einladen"
+      },
+      "list": {
+        "title": "Benutzer"
+      }
+    },
+    "user_status": {
+      "picker": {
+        "placeholder": "Mitgliedsstatus",
+        "empty": "Kein Mitgliedsstatus gefunden"
+      },
+      "new": "Neuer Mitgliedsstatus",
+      "create": {
+        "title": "Mitgliedsstatus anlegen",
+        "name": "Name",
+        "required": "{field} ist erforderlich",
+        "submit": "Anlegen"
+      }
+    }
+  }
+}

@@ -11,8 +11,8 @@ type PermissionGroupWrite struct {
 	Abbr        string   `json:"abbr"`
 	Description string   `json:"description"`
 	Parent      string   `json:"parent"`
-	IsGroup     bool     `json:"is_group"`
-	IsNode      bool     `json:"is_node"`
+	IsGroup     bool     `json:"is_group"` // IsGroup if this permission_group only has other permission_groups, no members
+	IsNode      bool     `json:"is_node"`  // IsNode if this permission_group only has members
 	Permissions []string `json:"permissions"`
 }
 
@@ -22,14 +22,15 @@ type PermissionGroupSetParent struct {
 }
 
 type PermissionGroupRead struct {
-	ID          uuid.UUID  `json:"id"`
-	Name        string     `json:"name"`
-	Abbr        string     `json:"abbr"`
-	Description string     `json:"description"`
-	Parent      *uuid.UUID `json:"parent"`
-	IsGroup     bool       `json:"is_group"`
-	IsNode      bool       `json:"is_node"`
-	Generated   bool       `json:"generated"`
+	ID          uuid.UUID           `json:"id"`
+	Name        string              `json:"name"`
+	Abbr        string              `json:"abbr"`
+	Description string              `json:"description"`
+	Parent      *uuid.UUID          `json:"parent"`
+	IsGroup     bool                `json:"is_group"`
+	IsNode      bool                `json:"is_node"`
+	Generated   bool                `json:"generated"`
+	Permissions []*PermissionFacade `json:"permissions"`
 }
 
 type PermissionGroupFacade struct {

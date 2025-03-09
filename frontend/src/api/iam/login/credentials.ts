@@ -1,8 +1,20 @@
-import type Either from "@/api/core/either"
-import { apiPostRequest } from "@/api/core/fetch"
+import Either from "@/api/core/either"
 
 export default async function credentials(emailaddress: string, password: string) : Promise<Either<string, string>> {
-    return apiPostRequest<string>("/api/iam/login/credentials", { emailaddress, password }, (data) => {
-        return data.jwt
-    })
-}   
+    const url = "/api/iam/login/credentials"
+    const body = JSON.stringify({ emailaddress, password });
+    const request = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        mode: "same-origin",
+        body: body
+    });
+
+    const data = await request.json();
+    
+    if (request.ok) {
+        return new Either<string, string>().right(data.token);
+    } else {
+        return new Either<string, string>().left(request.status + ": " + data['message']);
+    }
+}

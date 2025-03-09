@@ -27,6 +27,10 @@ func (r *SysRepository) MigratePackage(pkgName string, toVersion *sys_domain.Ver
 	versionsToInstall := make([]sys_domain.Version, 0)
 
 	for i := range versions {
+		if toVersion.Major == -1 && fromVersion.Major == -1 {
+			versionsToInstall = append(versionsToInstall, versions[i])
+			continue
+		}
 		version := versions[i]
 		if version.SmallerThan(&fromVersion) {
 			continue

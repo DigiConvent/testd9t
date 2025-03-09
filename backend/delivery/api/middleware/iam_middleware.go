@@ -15,6 +15,7 @@ type IamMiddleware struct {
 
 func (i *IamMiddleware) RequiresPermission(permissions ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		permissions = append(permissions, "super")
 		rawUserId := c.GetString(ContextField)
 		userId, err := uuid.Parse(rawUserId)
 		if err != nil {
@@ -41,13 +42,6 @@ func (i *IamMiddleware) RequiresPermission(permissions ...string) gin.HandlerFun
 				c.Next()
 				return
 			}
-		}
-
-		exists := i.IamService.UserHasPermission(&userId, "super")
-		if exists {
-			c.Set("permission", "super")
-			c.Next()
-			return
 		}
 
 		c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})

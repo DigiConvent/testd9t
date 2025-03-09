@@ -7,7 +7,7 @@ type DatabaseInterface interface {
 	Query(query string, args ...interface{}) (*sql.Rows, error)
 	QueryRow(query string, args ...interface{}) *sql.Row
 	pkgDir() string
-	MigratePackage() error
+	MigratePackage(verbose bool) error
 	DeleteDatabase()
 	Close()
 }

@@ -31,7 +31,7 @@ func (r *SysRepository) InitDatabase() core.Status {
 
 	_, err := r.db.Exec(string(script))
 	if err != nil {
-		return *core.InternalError("Could not initialise")
+		return *core.InternalError("Could not initialise " + err.Error())
 	}
 
 	_, err = r.db.Exec("insert into packages (name, major, minor, patch) values ('sys', 0, 0, 0)")

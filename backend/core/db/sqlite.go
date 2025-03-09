@@ -25,13 +25,15 @@ func NewTestSqliteDB(dbName string) DatabaseInterface {
 		databases[dbName].Close()
 		delete(databases, dbName)
 	}
-	connection := SqliteConnection(dbName, true)
+	connection, _ := SqliteConnection(dbName, true)
 
 	if connection.pkgDir() != "" {
-		err := connection.MigratePackage()
-		if err != nil {
-			connection.DeleteDatabase()
-			panic(err)
+		if _, err := os.Stat(connection.pkgDir()); err == nil {
+			err := connection.MigratePackage(false)
+			if err != nil {
+				connection.DeleteDatabase()
+				panic(err.Error() + ": " + connection.pkgDir())
+			}
 		}
 	}
 
@@ -39,10 +41,13 @@ func NewTestSqliteDB(dbName string) DatabaseInterface {
 }
 
 func NewSqliteDB(dbName string) DatabaseInterface {
-	return SqliteConnection(dbName, false)
+	connection, _ := SqliteConnection(dbName, false)
+
+	return connection
 }
 
-func SqliteConnection(dbName string, test bool) DatabaseInterface {
+func SqliteConnection(dbName string, test bool) (DatabaseInterface, bool) {
+	fresh := true
 	dbName = strings.ToLower(dbName)
 	is_alphanumeric := regexp.MustCompile(`^[a-zA-Z\.]*$`).MatchString(dbName)
 	if !is_alphanumeric {
@@ -58,12 +63,12 @@ func SqliteConnection(dbName string, test bool) DatabaseInterface {
 
 		if err != nil {
 			log.Error("Could not create database directory: " + dbPath)
-			panic(err)
 		}
 
 		dbPath = path.Join(dbPath, "database.db")
 		if _, err := os.Stat(dbPath); err == nil {
 			log.Success("Loading existing database at " + dbPath)
+			fresh = false
 		}
 
 		db, err = sql.Open("sqlite3", dbPath)
@@ -80,7 +85,7 @@ func SqliteConnection(dbName string, test bool) DatabaseInterface {
 		}
 	}
 
-	return databases[dbName]
+	return databases[dbName], fresh
 }
 
 type SqliteDatabase struct {
@@ -99,16 +104,6 @@ func ListPackages() []string {
 	return packages
 }
 
-func packageName() string {
-	thisPath, _ := os.Getwd()
-	segments := strings.Split(thisPath, "/testd9t/backend/pkg/")
-	if len(segments) < 2 {
-		return ""
-	}
-	packageName := strings.Split(segments[1], "/")[0]
-	return packageName
-}
-
 func (s *SqliteDatabase) pkgDir() string {
 	// project dir
 	workingDir, _ := os.Getwd()
@@ -122,11 +117,8 @@ func (s *SqliteDatabase) pkgDir() string {
 	return dir
 }
 
-func (s *SqliteDatabase) MigratePackage() error {
-	pkgName := packageName()
-	if pkgName == "" {
-		return nil
-	}
+func (s *SqliteDatabase) MigratePackage(verbose bool) error {
+	log.Info("Migrating package " + s.name)
 	dbPath := path.Join(s.pkgDir(), "db")
 
 	versions, err := os.ReadDir(dbPath)
@@ -154,6 +146,10 @@ func (s *SqliteDatabase) MigratePackage() error {
 				if err != nil {
 					log.Error("❌ " + s.name + ":" + migration.Name())
 					return err
+				} else {
+					if verbose {
+						log.Success("✅ " + s.name + ":" + migration.Name())
+					}
 				}
 
 				if result == nil {

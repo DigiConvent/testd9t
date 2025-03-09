@@ -51,18 +51,18 @@ func InitiateServices(live bool) *Services {
 		log.Info("Migrating databases to newest version")
 		status := sysService.MigratePackageDatabases(nil)
 		if status.Err() {
-			log.Error("Could not migrate databases to newest version: " + status.Message)
+			log.Error("Could not migrate system database to newest version: " + status.Message)
 		}
 		DoFirstTimeStuff(services)
 	} else {
-		log.Warning("Could not migrate system database to newest version")
+		log.Warning("Could not migrate system database to newest version: " + initStatus.Message)
 	}
 
 	return services
 }
 
+// initialise the things that sqlite can't do on its own
 func DoFirstTimeStuff(services *Services) {
-	log.Info("Doing first time stuff")
 	services.SysService.SetBotToken(os.Getenv(constants.TELEGRAM_BOT_TOKEN))
 	emailAddress := os.Getenv(constants.MASTER_EMAILADDRESS)
 	id := uuid.MustParse("00000000-0000-0000-0000-000000000000")
@@ -75,7 +75,6 @@ func DoFirstTimeStuff(services *Services) {
 		log.Error("Could not update email admin address: " + status.Message)
 	}
 
-	// enable the super user
 	status = services.IamService.SetEnabled(&id, true)
 	if status.Err() {
 		log.Error("Could not enable super user: " + status.Message)
@@ -83,9 +82,38 @@ func DoFirstTimeStuff(services *Services) {
 
 	status = services.IamService.UpdateUser(&id, &iam_domain.UserWrite{
 		Emailaddress: emailAddress,
+		FirstName:    "admin",
+		LastName:     "admin",
 	})
 
 	if status.Err() {
 		log.Error("Could not update super user: " + status.Message)
+	}
+
+	status = services.IamService.SetUserPassword(&id, os.Getenv(constants.MASTER_PASSWORD))
+	if status.Err() {
+		log.Error("Could not set super user password: " + status.Message)
+	}
+
+	// create a root permission_group
+	rootId, status := services.IamService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
+		Name:        "root",
+		Abbr:        "root",
+		IsGroup:     true,
+		IsNode:      false,
+		Description: "",
+	})
+
+	if status.Err() {
+		log.Error("Could not create root permission group: " + status.Message)
+	}
+
+	status = services.IamService.SetParentPermissionGroup(&iam_domain.PermissionGroupSetParent{
+		ID:     &id,
+		Parent: rootId,
+	})
+
+	if status.Err() {
+		log.Error("Could not set super user as root permission group: " + status.Message)
 	}
 }
