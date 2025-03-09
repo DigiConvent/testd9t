@@ -52,7 +52,8 @@ select
 from users u
 left join user_became_status ubs on u.id = ubs.user
 left join user_status us on us.id = ubs.status
-where ubs.start <= current_timestamp
+-- learned the hard way that 'or' != '||'
+where ubs.start <= current_timestamp or ubs.start is null
 order by u.id, ubs.start desc;
 
 -- backend/pkg/iam/db/0.0.0/04_create_permissions_table.sql 
@@ -116,8 +117,8 @@ with recursive relevant_groups as (
 select rg.root, rg.descendant as implied, rg.id as permission_group, uf.id as "user", uf.name 
 from relevant_groups rg
 join permission_group_has_user pghu on pghu.permission_group = rg.id 
-and pghu.start <= datetime('now') 
-and (pghu.end is null or pghu.end >= datetime('now'))
+and (pghu.start <= datetime('now') or pghu.start is null)
+and (pghu.end is null or datetime('now') < pghu.end)
 join user_facades uf on uf.id = pghu."user";
 
 
@@ -130,7 +131,8 @@ with recursive relevant_groups as (select
     pg.parent
   from permission_group_has_user pghu
   join permission_groups pg on pghu.permission_group = pg.id
-  where pghu.start <= datetime('now') and (pghu.end is null or pghu.end >= datetime('now'))
+  where (pghu.start <= datetime('now') or pghu.start is null) 
+  and (pghu.end is null or datetime('now') < pghu.end)
   union all
   select 
     s.user,
@@ -285,8 +287,8 @@ begin
 end;
 
 -- backend/pkg/iam/db/0.0.0/30_create_admin.sql 
-insert into users (id, emailaddress, enabled) values
-('00000000-0000-0000-0000-000000000000', '', true);
+insert into users (id, emailaddress, first_name, last_name, enabled) values
+('00000000-0000-0000-0000-000000000000', '', 'Admin', 'McAdmin', true);
 
 insert into permissions (name) values ('super');
 insert into permission_groups (id, name, abbr, is_group, is_node, description, "generated") values ('00000000-0000-0000-0000-000000000000', 'Super', 'super', true, true, 'Super user', true);
