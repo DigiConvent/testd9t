@@ -1,23 +1,19 @@
 package sys_repository
 
 import (
-	"strconv"
-
 	"github.com/DigiConvent/testd9t/core"
 	"github.com/DigiConvent/testd9t/core/log"
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
 func (r *SysRepository) IsInitialised() bool {
-	resultSet := r.db.QueryRow("select major, minor, patch from packages where name = 'sys'")
-	var major, minor, patch int = -1, -1, -1
-	err := resultSet.Scan(&major, &minor, &patch)
-	if err != nil {
+	resultSet := r.db.QueryRow("select count(*) from sqlite_master where type='table' and name=?", "versions")
+	var count = 0
+	err := resultSet.Scan(&count)
+	if err != nil || count == 0 {
 		return false
-	} else {
-		log.Success("System is initialised at version " + strconv.Itoa(major) + "." + strconv.Itoa(minor) + "." + strconv.Itoa(patch))
 	}
-	return err == nil && major >= 0 && minor >= 0 && patch >= 0
+	return true
 }
 
 func (r *SysRepository) InitDatabase() core.Status {
