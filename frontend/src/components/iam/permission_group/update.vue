@@ -32,14 +32,13 @@ import { to_permission_group_write } from "@/api/iam/permission_group/utils"
 import JwtAuthenticator from "@/auth/jwt"
 import { useToast } from "primevue"
 import { ref } from "vue"
-import PermissionGroupPicker from "./picker.vue"
-import PermissionPicker from "./../permission/list.vue"
 
 import FormTextInput from "@/components/form/text_input.vue"
 
 const auth = JwtAuthenticator.get_instance()
 
-const props = defineProps(["modelValue"])
+// eslint-disable-next-line vue/prop-name-casing
+const props = defineProps<{ modelValue: string }>()
 
 const pg = ref<PermissionGroupWrite | null>(null)
 

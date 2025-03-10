@@ -12,7 +12,7 @@ import router from "./router"
 
 import Toast from "primevue/toast"
 import { Form } from "@primevue/forms"
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel, Badge, Button, Card, Checkbox, Dialog, FloatLabel, InputGroup, InputGroupAddon, InputMask, InputText, Knob, Listbox, Menubar, Message, OrganizationChart, Popover, Ripple, Select, ToastService, ToggleSwitch, Tree, TreeSelect } from "primevue"
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel, Badge, Button, Card, Checkbox, Dialog, FloatLabel, InputGroup, InputGroupAddon, InputMask, InputText, Knob, Listbox, Menubar, Message, OrganizationChart, Popover, Ripple, Select, ToastService, ToggleSwitch, TreeSelect } from "primevue"
 
 const app = createApp(App)
 
