@@ -38,8 +38,7 @@ type IAMServiceInterface interface {
 	UserHasPermission(id *uuid.UUID, permission string) bool
 
 	LoginTelegramUser(body, botToken string) (*uuid.UUID, *core.Status)
-	GetTelegramRegistrationCode(userId *uuid.UUID) (string, *core.Status)
-	RegisterTelegramUser(telegramId int, emailaddress, code string) *core.Status
+	ConnectTelegramUser(body, botToken string, userId *uuid.UUID) *core.Status
 
 	ResetPassword(emailaddress string) (string, *core.Status)
 	SetUserPassword(id *uuid.UUID, password string) *core.Status

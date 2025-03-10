@@ -2,6 +2,7 @@ package iam_router
 
 import (
 	iam_service "github.com/DigiConvent/testd9t/pkg/iam/service"
+	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -40,11 +41,12 @@ type IamRouterInterface interface {
 	SetPasswordUser(ctx *gin.Context)
 
 	GetCodeForTelegramUser(ctx *gin.Context)
-	RegisterTelegramUser(ctx *gin.Context)
+	ConnectTelegramUser(ctx *gin.Context)
 }
 
 type IamRouter struct {
 	iamService iam_service.IAMServiceInterface
+	sysService sys_service.SysServiceInterface
 }
 
 // AddUserPermissionGroup implements IamRouterInterface.
@@ -97,11 +99,6 @@ func (router *IamRouter) ProfileUser(ctx *gin.Context) {
 	panic("unimplemented")
 }
 
-// RegisterTelegramUser implements IamRouterInterface.
-func (router *IamRouter) RegisterTelegramUser(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
 // ResetPasswordUser implements IamRouterInterface.
 func (router *IamRouter) ResetPasswordUser(ctx *gin.Context) {
 	panic("unimplemented")
@@ -132,8 +129,9 @@ func (router *IamRouter) UpdateUserStatus(ctx *gin.Context) {
 	panic("unimplemented")
 }
 
-func NewIamRouter(iamService iam_service.IAMServiceInterface) IamRouterInterface {
+func NewIamRouter(iamService iam_service.IAMServiceInterface, sysService sys_service.SysServiceInterface) IamRouterInterface {
 	return &IamRouter{
 		iamService: iamService,
+		sysService: sysService,
 	}
 }

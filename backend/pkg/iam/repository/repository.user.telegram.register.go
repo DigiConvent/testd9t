@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/DigiConvent/testd9t/core"
@@ -57,20 +56,7 @@ func VerifyCode(uuid string, t time.Time, validityPeriod time.Duration, code str
 	return false
 }
 
-func (r *IAMRepository) RegisterTelegramUser(telegramId int, emailaddress string, code string) core.Status {
-	emailaddress = strings.ToLower(emailaddress)
-	row := r.db.QueryRow("select id from users where emailaddress = ?", emailaddress)
-
-	var userId uuid.UUID
-	err := row.Scan(&userId)
-	if err != nil {
-		return *core.InternalError("Failed to find user with emailaddress")
-	}
-
-	if !VerifyCode(userId.String(), time.Now(), 10*time.Minute, code) {
-		return *core.InternalError("Invalid code")
-	}
-
+func (r *IAMRepository) RegisterTelegramUser(telegramId int, userId *uuid.UUID) core.Status {
 	result, err := r.db.Exec("update users set telegram_id = ? where id = ?", telegramId, userId.String())
 	if err != nil {
 		return *core.InternalError("Failed to update user")

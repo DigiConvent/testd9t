@@ -13,7 +13,7 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 	iam := api_middleware.NewIamMiddleware(s.IamService)
 
 	sysRouter := sys_router.NewSysRouter(s.SysService, s.PostService)
-	iamRouter := iam_router.NewIamRouter(s.IamService)
+	iamRouter := iam_router.NewIamRouter(s.IamService, s.SysService)
 
 	apiRoutes := router.Group("/api")
 

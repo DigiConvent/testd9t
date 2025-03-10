@@ -26,7 +26,7 @@ type IAMRepositoryInterface interface {
 	GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.Status)
 	ListUserPermissions(id *uuid.UUID) ([]*iam_domain.PermissionFacade, core.Status)
 	ListUsers(*iam_domain.UserFilterSort) (*pagination.Page[*iam_domain.UserFacade], core.Status)
-	RegisterTelegramUser(telegramId int, emailaddress, code string) core.Status
+	RegisterTelegramUser(telegramId int, userId *uuid.UUID) core.Status
 	SetEnabled(id *uuid.UUID, enabled bool) core.Status
 	UpdateUser(id *uuid.UUID, user *iam_domain.UserWrite) core.Status
 	UserHasPermission(userId *uuid.UUID, permission string) bool
