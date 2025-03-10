@@ -65,7 +65,8 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 		})
 	})
 	sysRoutes := apiRoutes.Group("/sys")
+	{
+		sysRoutes.GET("/status", iam.RequiresPermission("sys"), sysRouter.SystemStatusGet)
+	}
 
-	sysRoutes.GET("/status", sysRouter.SystemStatusGet)
-	sysRoutes.GET("/status/super", iam.RequiresPermission("super"), sysRouter.SystemStatusGet)
 }

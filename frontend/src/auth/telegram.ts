@@ -43,8 +43,15 @@ export interface TelegramWebApp {
   close(): void
 }
 
+declare global {
+    interface Window {
+        Telegram:any;
+    }
+}
+
+
 export function is_mini_app(): boolean {
-  return window.Telegram != undefined && window.Telegram.WebApp.initData != ""
+  return window["Telegram"] != undefined && window.Telegram.WebApp.initData != ""
 }
 
 export default function get_web_app(): TelegramWebApp {

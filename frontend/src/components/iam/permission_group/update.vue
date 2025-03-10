@@ -11,10 +11,10 @@
             name="description"
          />
          <div class="flex flex-col gap-1">
-            <PermissionPicker></PermissionPicker>
+            <!-- <PermissionPicker></PermissionPicker> -->
          </div>
          <div class="flex flex-col gap-1">
-            <PermissionGroupPicker v-model="pg.parent" @picked="pg.parent = $event" />
+            <!-- <PermissionGroupPicker v-model="pg.parent" @picked="pg.parent = $event" /> -->
          </div>
          <Button type="submit" severity="secondary" :label="$t('iam.auth.login_form.submit')" />
       </Form>

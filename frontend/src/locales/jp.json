@@ -1,53 +1,81 @@
 {
-  "admin": { "title": "管理" },
-  "sys": {
-    "title": "システム",
-    "data": "データ使用量",
-    "total": "合計",
-    "occupied": "使用中",
-    "free": "空き"
-  },
-  "iam": {
-    "title": "アクセス制御",
-    "auth": {
-      "login_form": {
-        "title": "ログイン",
-        "email": "メールアドレス",
-        "required": "{field} は必須です",
-        "password": "パスワード",
-        "login_unsuccessful": "無効なログイン情報",
-        "login_successful": "ログイン成功",
-        "submit": "ログイン",
-        "logout": "ログアウト"
+   "admin": { "title": "管理" },
+   "sys": {
+      "title": "システム",
+      "data": "データ使用量",
+      "total": "合計",
+      "occupied": "使用中",
+      "free": "空き",
+      "dns": {
+         "abbr": "DNS",
+         "title": "ドメインネームサービス",
+         "invalid": "{dns}のエントリが無効です。",
+         "fix": "{domain}のDNSに以下の{type}エントリを入力してください。",
+         "copied_to_clipboard": "クリップボードにコピーされました",
+         "valid": "{dns}のエントリは正しいようです。"
       }
-    },
-    "user": {
-      "create": {
-        "title": "ユーザーを作成",
-        "email": "メールアドレス",
-        "required": "{field} は必須です",
-        "invalid": "{field} は無効です",
-        "first_name": "名",
-        "last_name": "姓",
-        "date_of_birth": "生年月日",
-        "submit": "招待する"
+   },
+   "iam": {
+      "p": {
+         "show_more": "もっと表示",
+         "show_fewer": "減らして表示"
       },
-      "list": {
-        "title": "ユーザー"
-      }
-    },
-    "user_status": {
-      "picker": {
-        "placeholder": "会員ステータス",
-        "empty": "会員ステータスが見つかりません"
+      "pg": {
+         "update": {
+            "title": "グループ情報",
+            "name": "名前",
+            "abbr": "略称",
+            "description": "説明",
+            "submit": "保存"
+         }
       },
-      "new": "新しい会員ステータス",
-      "create": {
-        "title": "会員ステータスを作成",
-        "name": "名前",
-        "required": "{field} は必須です",
-        "submit": "作成"
+      "title": "アクセス制御",
+      "auth": {
+         "login_form": {
+            "title": "ログイン",
+            "email": "メールアドレス",
+            "required": "{field}は必須です",
+            "password": "パスワード",
+            "login_unsuccessful": "無効なログイン情報",
+            "login_successful": "ログイン成功",
+            "submit": "ログイン",
+            "logout": "ログアウト"
+         },
+         "connect_telegram_user": {
+            "title": "Telegramユーザーを接続",
+            "description": "Telegramユーザーを接続するには、以下のボタンを使用してください。",
+            "button": "Telegramユーザーを接続",
+            "restart_required": "Telegramユーザーを接続するには、ページを再読み込みする必要があります。アプリケーションは5秒後に終了します。",
+            "restart": "今すぐ再読み込み"
+         }
+      },
+      "user": {
+         "create": {
+            "title": "ユーザーを作成",
+            "email": "メールアドレス",
+            "required": "{field}は必須です",
+            "invalid": "{field}は無効です",
+            "first_name": "名",
+            "last_name": "姓",
+            "date_of_birth": "生年月日",
+            "submit": "招待"
+         },
+         "list": {
+            "title": "ユーザー"
+         }
+      },
+      "user_status": {
+         "picker": {
+            "placeholder": "会員ステータス",
+            "empty": "会員ステータスが見つかりません"
+         },
+         "new": "新しい会員ステータス",
+         "create": {
+            "title": "会員ステータスを作成",
+            "name": "名前",
+            "required": "{field}は必須です",
+            "submit": "作成"
+         }
       }
-    }
-  }
+   }
 }

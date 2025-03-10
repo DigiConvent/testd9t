@@ -74,7 +74,7 @@ func Setup() {
 			log.Info("Created private key for JWT at " + TlsPrivateKeyPath())
 		}
 	} else {
-		log.Info("JWT keypair found")
+		log.Info("JWT keypair exists at " + TlsPrivateKeyPath() + " and " + TlsPublicKeyPath())
 	}
 
 	if _, err := os.Stat(DkimPrivateKeyPath()); os.IsNotExist(err) {

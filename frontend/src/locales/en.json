@@ -1,11 +1,81 @@
 {
-  "iam": {
-    "auth": {
-      "LoginForm": {
-        "email": "E-Mailaddress",
-        "password": "Password",
-        "submit": "Login"
+   "admin": { "title": "Administration" },
+   "sys": {
+      "title": "System",
+      "data": "Data Usage",
+      "total": "Total",
+      "occupied": "Occupied",
+      "free": "Free",
+      "dns": {
+         "abbr": "DNS",
+         "title": "Domain Name Service",
+         "invalid": "The entry for {dns} is invalid.",
+         "fix": "Enter the following {type} entry in your DNS for {domain}.",
+         "copied_to_clipboard": "Copied to clipboard",
+         "valid": "The entry for {dns} looks correct."
       }
-    }
-  }
+   },
+   "iam": {
+      "p": {
+         "show_more": "Show more",
+         "show_fewer": "Show fewer"
+      },
+      "pg": {
+         "update": {
+            "title": "Group Information",
+            "name": "Name",
+            "abbr": "Abbreviation",
+            "description": "Description",
+            "submit": "Save"
+         }
+      },
+      "title": "Access Control",
+      "auth": {
+         "login_form": {
+            "title": "Login",
+            "email": "Email Address",
+            "required": "{field} is required",
+            "password": "Password",
+            "login_unsuccessful": "Invalid login credentials",
+            "login_successful": "Login successful",
+            "submit": "Login",
+            "logout": "Logout"
+         },
+         "connect_telegram_user": {
+            "title": "Connect Telegram User",
+            "description": "To connect your Telegram user, please use the button below.",
+            "button": "Connect Telegram User",
+            "restart_required": "To connect Telegram users, the page must be reloaded. The application will close in 5 seconds.",
+            "restart": "Reload now"
+         }
+      },
+      "user": {
+         "create": {
+            "title": "Create User",
+            "email": "Email Address",
+            "required": "{field} is required",
+            "invalid": "{field} is invalid",
+            "first_name": "First Name",
+            "last_name": "Last Name",
+            "date_of_birth": "Date of Birth",
+            "submit": "Invite"
+         },
+         "list": {
+            "title": "Users"
+         }
+      },
+      "user_status": {
+         "picker": {
+            "placeholder": "Membership Status",
+            "empty": "No membership status found"
+         },
+         "new": "New Membership Status",
+         "create": {
+            "title": "Create Membership Status",
+            "name": "Name",
+            "required": "{field} is required",
+            "submit": "Create"
+         }
+      }
+   }
 }
