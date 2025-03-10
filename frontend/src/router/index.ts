@@ -8,6 +8,11 @@ const router = createRouter({
       name: "home",
       children: [
         {
+          path: "connect-telegram-user",
+          name: "connect-telegram-user",
+          component: () => import("../views/auth/connect_telegram_user.vue")
+        },
+        {
           path: "admin",
           name: "admin",
           component: () => import("../views/admin/admin.vue"),

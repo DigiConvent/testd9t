@@ -32,6 +32,7 @@ type IAMRepositoryInterface interface {
 	UserHasPermission(userId *uuid.UUID, permission string) bool
 	GetUserByTelegramID(id *int) (*uuid.UUID, core.Status)
 	GetTelegramID(dataString, botToken string) (*int, core.Status)
+	GetUserTelegramID(id *uuid.UUID) (*int, core.Status)
 
 	GetCredentials(emailaddress string) (*uuid.UUID, string, core.Status)
 	SetCredentialPassword(id *uuid.UUID, password string) core.Status

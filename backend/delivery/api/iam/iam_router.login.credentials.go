@@ -3,7 +3,6 @@ package iam_router
 import (
 	"net/http"
 
-	"github.com/DigiConvent/testd9t/core/log"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,7 +32,6 @@ func (r *IamRouter) LoginWithCredentials(ctx *gin.Context) {
 			return
 		}
 
-		log.Info("Generated JWT: " + jwt)
 		ctx.JSON(status.Code, gin.H{
 			"token": jwt,
 		})

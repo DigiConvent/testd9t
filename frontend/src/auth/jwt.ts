@@ -21,6 +21,19 @@ export default class JwtAuthenticator {
         }
     }
 
+    public get_token() : { id: string, exp: number, tgid: number } | null {
+        try {
+            if (this.token == undefined) {
+                return null;
+            }
+            const payload_base64 = this.token.split(".")[1];
+            const payload_json = atob(payload_base64);
+            return JSON.parse(payload_json);
+        } catch {
+            return null;
+        }
+    }
+
     public has_permission(permission: Exclude<string, 'super'>) : boolean {
         if (this.permissions.value.includes("super")) {
             return true;
@@ -52,7 +65,12 @@ export default class JwtAuthenticator {
     }
 
     async login_using_credentials(emailaddress: string, password: string) : Promise<boolean> {
-        return this.login(api.iam.login.credentials(emailaddress, password);
+        return this.login(api.iam.login.credentials(emailaddress, password));
+    }
+
+    async connect_telegram_user() : Promise<boolean>{
+        const result = await api.iam.user.connect_telegram(get_web_app().initData);
+        return result.isRight();
     }
 
     async login(response: Promise<Either<string,string>>) : Promise<boolean> {

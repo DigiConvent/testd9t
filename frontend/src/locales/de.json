@@ -40,6 +40,13 @@
             "login_successful": "Anmeldung erfolgreich",
             "submit": "Anmelden",
             "logout": "Abmelden"
+         },
+         "connect_telegram_user": {
+            "title": "Telegram-Benutzer verbinden",
+            "description": "Um deinen Telegram-Benutzer zu verbinden, benutze bitte die untenstehende Schaltfläche.",
+            "button": "Telegram-Benutzer verbinden",
+            "restart_required": "Um Telegram-Benutzer zu verbinden, muss die Seite neu geladen werden. Die Applikation schließt in 5 Sekunden.",
+            "restart": "Jetzt neu laden"
          }
       },
       "user": {

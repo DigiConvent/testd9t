@@ -28,7 +28,6 @@ const value_facade = computed({
 })
 
 const handle_input = (event: any) => {
-   console.log(event)
    emit("update:modelValue", event.target!.value)
 }
 </script>
