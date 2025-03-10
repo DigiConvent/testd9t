@@ -48,8 +48,7 @@
             </div>
          </template>
       </Dialog>
-      <PermissionPicker @picked="handle_picked" :multiple="true"></PermissionPicker>
-      <!-- <PermissionOrgChart></PermissionOrgChart> -->
+      <PermissionPicker :multiple="true" @picked="handle_picked"></PermissionPicker>
    </div>
 </template>
 

@@ -43,24 +43,35 @@ export class PermissionTree<T extends { name: string }> {
         this.children.push(new_child);
     }
 
-    public to_tree_node(): CustomTreeNode {
-        return new CustomTreeNode(this.key, this.label, this.children.length == 0, this.children.map((child) => child.to_tree_node()))
+    public to_tree_node(parent: CustomTreeNode| null): CustomTreeNode {
+        const c = new CustomTreeNode(parent, this.key, this.label, this.children.length == 0)
+        const children = this.children.map((child) => child.to_tree_node(c))
+        for (const child of children) {
+            c.add_child(child)
+        }
+        return c
     }
 }
 
 export class CustomTreeNode {
     public checked: boolean
-    public children: CustomTreeNode[]
+    public children: CustomTreeNode[] = []
     public key: string
     public label: string
     public leaf: boolean
+    public parent: CustomTreeNode | null
 
-    constructor(key: string, name: string, leaf: boolean, children: CustomTreeNode[] = []) {
+    constructor(parent: CustomTreeNode | null, key: string, name: string, leaf: boolean) {
+        this.parent = parent;
         this.checked = false
-        this.children = children
         this.key = key
         this.label = name
         this.leaf = leaf
+    }
+
+    public add_child(child: CustomTreeNode) {
+        this.children.push(child)
+        this.children.sort((child1, child2) => child1.label.localeCompare(child2.label))
     }
 
     public partially_checked(): boolean {

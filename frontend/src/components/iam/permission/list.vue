@@ -2,13 +2,12 @@
    <Toast />
    <div v-if="node" class="card">
       <PermissionOption
-         v-for="child of node.children"
+         v-for="child of node.children.sort((a, b) => a.label.localeCompare(b.label))"
          :key="child.key"
          :node="child"
-         :parent_hovered="false"
          :multiple="multiple"
-         :picker="true"
-         @selected="console.log($event)"
+         :parent_hovered="false"
+         :summarised="false"
       />
    </div>
 </template>
@@ -38,7 +37,8 @@ onMounted(() => {
          },
          (permissions: PermissionFacade[]) => {
             const tree = to_permission_tree(permissions)
-            node.value = tree.to_tree_node()
+
+            node.value = tree.to_tree_node(null)
          },
       )
    })
@@ -51,15 +51,20 @@ watch(
       // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
       const props = instance?.vnode.props!
       const data = node.value?.get_checked()
-      if (props.onPicked) {
-         if (data != undefined && props.picked && props.multiple && data.length > 0) {
-            emit("picked", data[0])
-         } else {
-            emit("picked", data)
+      let sorted = data?.sort((a: string, b: string) => a.localeCompare(b))
+      if (sorted != null && sorted.length == 1) {
+         if (sorted[0] == "") {
+            sorted = node.value?.children.map((child) => child.key)
          }
       }
-
-      if (instance?.vnode.props) if (data == undefined) return
+      console.log(sorted)
+      if (props.onPicked) {
+         if (sorted != undefined && props.picked && !props.multiple && sorted.length > 0) {
+            emit("picked", sorted[0])
+         } else {
+            emit("picked", sorted)
+         }
+      }
    },
    { deep: true },
 )
