@@ -1,4 +1,4 @@
-// excempt from testing
+// exempt from testing
 package iam_service
 
 import (
