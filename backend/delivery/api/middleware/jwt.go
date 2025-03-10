@@ -7,31 +7,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
-	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/log"
-	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	iam_setup "github.com/DigiConvent/testd9t/pkg/iam/setup"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 )
-
-func GenerateJWT(id string, user *iam_domain.UserRead, permissions []*iam_domain.PermissionFacade) (string, error) {
-	permissionsString := make([]string, len(permissions))
-	for i, permission := range permissions {
-		permissionsString[i] = permission.Name
-	}
-	claims := jwt.MapClaims{
-		"id":          id,
-		"last_name":   user.LastName,
-		"exp":         time.Now().Add(time.Hour * 24).Unix(),
-		"iat":         time.Now().Unix(),
-		"permissions": permissionsString,
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(os.Getenv(constants.MASTER_PASSWORD)))
-}
 
 var pubkey *rsa.PublicKey = nil
 

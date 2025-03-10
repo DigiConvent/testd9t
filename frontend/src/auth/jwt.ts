@@ -61,7 +61,9 @@ export default class JwtAuthenticator {
     }
 
     async login_using_telegram() : Promise<boolean> {
-        return this.login(api.iam.login.telegram(get_web_app().initData));
+        const data = get_web_app().initData
+        confirm(data)
+        return this.login(api.iam.login.telegram(data));
     }
 
     async login_using_credentials(emailaddress: string, password: string) : Promise<boolean> {
