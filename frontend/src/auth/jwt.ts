@@ -52,7 +52,7 @@ export default class JwtAuthenticator {
     }
 
     async login_using_credentials(emailaddress: string, password: string) : Promise<boolean> {
-        return this.login(api.iam.login.credentials(emailaddress, password, get_web_app().initData));
+        return this.login(api.iam.login.credentials(emailaddress, password);
     }
 
     async login(response: Promise<Either<string,string>>) : Promise<boolean> {

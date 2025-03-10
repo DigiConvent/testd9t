@@ -23,6 +23,7 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 		{
 			loginRoutes.POST("/credentials", iamRouter.LoginWithCredentials)
 			loginRoutes.POST("/telegram", iamRouter.LoginWithTelegram)
+			loginRoutes.POST("/telegram/connect", iamRouter.ConnectTelegramUser)
 		}
 
 		userRoutes := iamRoutes.Group("/user")
