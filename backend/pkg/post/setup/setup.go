@@ -28,10 +28,10 @@ func TlsCaPrivateKeyPath() string {
 	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "tls", "capk.pem")
 }
 func DkimPrivateKeyPath() string {
-	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "privkey.pem")
+	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "dkim", "privkey.pem")
 }
 func DkimPublicKeyPath() string {
-	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "pubkey.pem")
+	return path.Join(os.Getenv(constants.CERTIFICATES_PATH), "dkim", "pubkey.pem")
 }
 
 func Setup() {
