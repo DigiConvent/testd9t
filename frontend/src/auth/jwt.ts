@@ -62,7 +62,6 @@ export default class JwtAuthenticator {
 
     async login_using_telegram() : Promise<boolean> {
         const data = get_web_app().initData
-        confirm(data)
         return this.login(api.iam.login.telegram(data));
     }
 

@@ -7,6 +7,7 @@
       }}</Button>
       <Dialog v-model:visible="show_message" modal header="Restart">
          <p>{{ $t("iam.auth.connect_telegram_user.restart_required") }}</p>
+         <ProgressBar :value="countup" :show-value="false"></ProgressBar>
          <Button @click="restart">{{ $t("iam.auth.connect_telegram_user.restart") }}</Button>
       </Dialog>
    </div>
@@ -32,11 +33,16 @@ function get_status() {
 
 get_status()
 
+const countup = ref(0)
 const show_message = ref(false)
 async function connect_telegram_user() {
    const success = await JwtAuthenticator.get_instance().connect_telegram_user()
    if (success) {
       show_message.value = true
+      countup.value = 0
+      setInterval(() => {
+         countup.value += 20
+      }, 1000)
    }
 }
 

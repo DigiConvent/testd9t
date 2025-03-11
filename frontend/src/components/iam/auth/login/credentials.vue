@@ -40,6 +40,8 @@ import get_web_app from "@/auth/telegram"
 import router from "@/router"
 const t = useI18n().t
 
+const emit = defineEmits(["logged_in"])
+
 const email = ref<string>("")
 const password = ref<string>("")
 const errors = ref<{ email: string; password: string }>({
@@ -70,6 +72,7 @@ const handle_submit = async () => {
       )
 
       if (success) {
+         emit("logged_in", true)
          // we used credentials so now we can check if a telegram user is logged in
          const data = get_web_app().initData
          if (data != "") {
