@@ -1,41 +1,27 @@
 <template>
-   <div class="card flex justify-center">
-      <Menu :model="items" class="w-full md:w-60">
-         <template #start></template>
-         <template #item="{ item }">
-            <router-link
-               v-ripple
-               class="flex items-center"
-               :to="item.to ? { name: item.to, params: {} } : {}"
-            >
+   {{
+      t("iam.auth.user_menu.logged_in_as", {
+         user: JwtAuthenticator.get_instance().get_token()!.user.last_name,
+      })
+   }}
+   <Button
+      type="button"
+      icon="pi pi-user"
+      aria-controls="overlay-menu"
+      aria-haspopup="true"
+      severity="secondary"
+      @click="show_user_menu.show($event)"
+   ></Button>
+   <Menu ref="show_user_menu" :model="items" :popup="true" class="justify-center">
+      <template #item="{ item, props }">
+         <router-link v-if="item.to" v-slot="{ href, navigate }" :to="{ name: item.to }" custom>
+            <a v-ripple :href="href" v-bind="props.action" @click="navigate">
                <span :class="item.icon" />
-               <span>{{ item.label }}</span>
-               <Badge v-if="item.badge" class="ml-auto" :value="item.badge" />
-               <span
-                  v-if="item.shortcut"
-                  class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
-                  >{{ item.shortcut }}</span
-               >
-            </router-link>
-         </template>
-         <template #end>
-            <button
-               v-ripple
-               class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-none cursor-pointer transition-colors duration-200"
-            >
-               <Avatar
-                  image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
-                  class="mr-2"
-                  shape="circle"
-               />
-               <span class="inline-flex flex-col items-start">
-                  <span class="font-bold">Amy Elsner</span>
-                  <span class="text-sm">Admin</span>
-               </span>
-            </button>
-         </template>
-      </Menu>
-   </div>
+               <span class="ml-2">{{ item.label }}</span>
+            </a>
+         </router-link>
+      </template>
+   </Menu>
 </template>
 
 <script lang="ts" setup>
@@ -45,30 +31,23 @@ import { useI18n } from "vue-i18n"
 
 const t = useI18n().t
 
+const show_user_menu = ref()
+
 const items = ref([
    {
-      label: t("iam.auth.user_menu.logged_in_as", {
-         user: JwtAuthenticator.get_instance().get_token()!.user.last_name,
-      }),
-      items: [
-         {
-            label: "Settings",
-            icon: "pi pi-cog",
-         },
-         {
-            label: "Messages",
-            icon: "pi pi-inbox",
-            badge: 2,
-         },
-         {
-            label: "Logout",
-            icon: "pi pi-sign-out",
-            to: "logout",
-         },
-      ],
+      label: "Settings",
+      icon: "pi pi-cog",
+      to: "user.settings",
    },
    {
-      separator: true,
+      label: t("iam.auth.user_menu.my_profile"),
+      icon: "pi pi-id-card",
+      to: "user.profile",
+   },
+   {
+      label: "Logout",
+      icon: "pi pi-sign-out",
+      to: "logout",
    },
 ])
 </script>

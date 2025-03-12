@@ -28,31 +28,15 @@
             </router-link>
          </template>
          <template #end>
-            {{ logged_in }}
-            <span v-if="logged_in">
-               <UserMenu></UserMenu>
-               <Button
-                  type="button"
-                  icon="pi pi-user"
-                  aria-controls="overlay-menu"
-                  aria-haspopup="true"
-                  severity="secondary"
-                  @click="toggle"
-               />
-               <Menu id="overlay-menu" ref="menu" :model="user_menu_items" :popup="true" />
-            </span>
-            <div v-else>
-               <Button
-                  :label="$t('iam.auth.login_form.title')"
-                  severity="secondary"
-                  @click="op.show($event)"
-               ></Button>
-               <Popover ref="op">
-                  <LoginForm @logged_in="generate_menu_items()"></LoginForm>
-               </Popover>
-            </div>
+            <UserMenu></UserMenu>
          </template>
       </Menubar>
+      <div v-else class="absolute">
+         <div class="right-0">
+            <Button @click="show_login_form = true"><i class="pi pi-user"></i></Button>
+            <LoginForm v-if="show_login_form" @logged_in="generate_menu_items()"></LoginForm>
+         </div>
+      </div>
       <header>
          <router-view v-slot="{ Component, route }">
             <component :is="Component" :key="route.path" />
@@ -78,6 +62,8 @@ const auth = JwtAuthenticator.get_instance()
 const logged_in = auth.is_authenticated
 
 const t = useI18n().t
+
+const show_login_form = ref(false)
 
 const menu = ref()
 const user_menu_items = ref([

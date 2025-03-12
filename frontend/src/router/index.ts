@@ -53,6 +53,22 @@ const router = createRouter({
                   },
                ],
             },
+            {
+               path: "user",
+               name: "user",
+               children: [
+                  {
+                     path: "settings",
+                     name: "user.settings",
+                     component: () => import("../views/user/settings.vue"),
+                  },
+                  {
+                     path: "profile",
+                     name: "user.profile",
+                     component: () => import("../views/user/profile.vue")
+                  }
+               ]
+            }
          ],
       },
    ],
