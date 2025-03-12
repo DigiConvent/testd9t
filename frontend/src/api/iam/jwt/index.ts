@@ -1,5 +1,5 @@
-import refresh from "./refresh";
+import refresh from "./refresh"
 
 export const jwt = {
-    refresh: refresh
+   refresh: refresh,
 }

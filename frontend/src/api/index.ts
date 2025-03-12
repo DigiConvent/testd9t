@@ -1,7 +1,7 @@
-import { sys } from "./sys";
-import { iam } from "./iam";
+import { sys } from "./sys"
+import { iam } from "./iam"
 
 export const api = {
-    iam: iam,
-    sys: sys
+   iam: iam,
+   sys: sys,
 }

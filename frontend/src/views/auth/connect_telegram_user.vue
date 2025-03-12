@@ -42,6 +42,9 @@ async function connect_telegram_user() {
       countup.value = 0
       setInterval(() => {
          countup.value += 20
+         if (countup.value >= 100) {
+            restart()
+         }
       }, 1000)
    }
 }

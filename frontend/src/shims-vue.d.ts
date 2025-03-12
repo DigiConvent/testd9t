@@ -1,7 +1,7 @@
-import { I18n } from "vue-i18n";
+import { I18n } from "vue-i18n"
 
 declare module "@vue/runtime-core" {
-    interface ComponentCustomProperties {
-        $t: I18n['t']
-    }
+   interface ComponentCustomProperties {
+      $t: I18n["t"]
+   }
 }

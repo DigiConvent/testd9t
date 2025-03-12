@@ -1,5 +1,5 @@
-import list_permissions from "./list";
+import list_permissions from "./list"
 
 export const permission = {
-    list: list_permissions
+   list: list_permissions,
 }

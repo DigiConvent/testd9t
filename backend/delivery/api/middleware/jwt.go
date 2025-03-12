@@ -55,10 +55,21 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		})
 
 		if err != nil {
-			log.Error(err.Error())
-			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			c.Abort()
-			return
+			error := ""
+			if ve, ok := err.(*jwt.ValidationError); ok {
+				if ve.Errors&jwt.ValidationErrorExpired != 0 {
+					error = fmt.Sprintln("Token has expired")
+				} else {
+					error = fmt.Sprintln("Token validation error:", err)
+				}
+			} else {
+				error = fmt.Sprintln("Failed to parse token:", err)
+			}
+			log.Error(error)
+			c.JSON(
+				http.StatusUnauthorized,
+				gin.H{"error": error},
+			)
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {

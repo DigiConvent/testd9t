@@ -1,23 +1,23 @@
-import { jwt } from "./jwt";
-import { login } from "./login";
-import { permission } from "./permission";
-import { permission_group } from "./permission_group";
-import { user } from "./user";
-import { user_status } from "./user_status";
+import { jwt } from "./jwt"
+import { login } from "./login"
+import { permission } from "./permission"
+import { permission_group } from "./permission_group"
+import { user } from "./user"
+import { user_status } from "./user_status"
 
 export const iam = {
-    jwt: jwt,
-    login: login,
-    permission_group: permission_group,
-    permission: permission,
-    user_status: user_status,
-    user: user,
+   jwt: jwt,
+   login: login,
+   permission_group: permission_group,
+   permission: permission,
+   user_status: user_status,
+   user: user,
 }
 
 export type UserStatusRead = {
-    id: string;
-    name: string;
-    abbr: string;
-    description: string;
-    archived: boolean;
+   id: string
+   name: string
+   abbr: string
+   description: string
+   archived: boolean
 }

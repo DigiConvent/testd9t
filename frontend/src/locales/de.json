@@ -31,6 +31,11 @@
       },
       "title": "Zugriffskontrolle",
       "auth": {
+         "user_menu": {
+            "my_profile": "Mein Profil",
+            "logged_in_as": "Angemeldet als {user}",
+            "logout": "Abmelden"
+         },
          "login_form": {
             "title": "Anmelden",
             "email": "E-Mailadresse",

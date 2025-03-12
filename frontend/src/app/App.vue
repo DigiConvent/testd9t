@@ -23,12 +23,18 @@
             </router-link>
          </template>
          <template #end>
+            {{ logged_in }}
             <span v-if="logged_in">
+               <UserMenu></UserMenu>
                <Button
-                  :label="$t('iam.auth.login_form.logout')"
+                  type="button"
+                  icon="pi pi-user"
+                  aria-controls="overlay-menu"
+                  aria-haspopup="true"
                   severity="secondary"
-                  @click="auth.logout()"
-               ></Button>
+                  @click="toggle"
+               />
+               <Menu id="overlay-menu" ref="menu" :model="user_menu_items" :popup="true" />
             </span>
             <div v-else>
                <Button
@@ -56,13 +62,35 @@ import JwtAuthenticator from "../auth/jwt"
 import LoginForm from "@/components/iam/auth/login/credentials.vue"
 import type { MenuItem } from "primevue/menuitem"
 import { useI18n } from "vue-i18n"
+import UserMenu from "./user_menu.vue"
 const op = ref()
 const auth = JwtAuthenticator.get_instance()
 const logged_in = auth.is_authenticated
 
-const items = ref<MenuItem[]>([])
-
 const t = useI18n().t
+
+const menu = ref()
+const user_menu_items = ref([
+   {
+      label: t("iam.auth.user_menu.logged_in_as", { user: auth.get_token()?.id }),
+      items: [
+         {
+            label: t("iam.auth.user_menu.my_profile"),
+            icon: "pi pi-id-card",
+         },
+         {
+            label: t("iam.auth.user_menu.logout"),
+            icon: "pi pi-sign-out",
+         },
+      ],
+   },
+])
+
+const toggle = (event: any) => {
+   menu.value.toggle(event)
+}
+
+const items = ref<MenuItem[]>([])
 
 const admin_items = ref<MenuItem[]>([])
 function generate_menu_items() {

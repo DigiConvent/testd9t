@@ -1,5 +1,5 @@
-import { get_status } from "./status";
+import { get_status } from "./status"
 
 export const sys = {
-    status: get_status,
+   status: get_status,
 }
