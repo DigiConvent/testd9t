@@ -5,17 +5,22 @@ const router = createRouter({
    routes: [
       {
          path: "/",
+         name: "",
+         redirect: "/app",
+      },
+      {
+         path: "/logout",
+         name: "logout",
+         component: () => import("../views/auth/logout.vue"),
+      },
+      {
+         path: "/app",
          name: "home",
          children: [
             {
                path: "connect-telegram-user",
                name: "connect-telegram-user",
                component: () => import("../views/auth/connect_telegram_user.vue"),
-            },
-            {
-               path: "logout",
-               name: "logout",
-               component: () => import("../views/auth/logout.vue"),
             },
             {
                path: "admin",
@@ -29,7 +34,7 @@ const router = createRouter({
                      children: [
                         {
                            path: "user",
-                           name: "iam.user",
+                           name: "iam.user.list",
                            component: () => import("../views/admin/iam/user/list.vue"),
                            children: [
                               {

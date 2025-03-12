@@ -36,8 +36,8 @@ onMounted(() => {
             toast.add({ severity: "error", summary: "Error", detail: error, life: 3000 })
          },
          (permissions: PermissionFacade[]) => {
+            console.log(permissions)
             const tree = to_permission_tree(permissions)
-
             node.value = tree.to_tree_node(null)
          },
       )

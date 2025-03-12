@@ -1,12 +1,17 @@
 <template>
    <div>
-      <Menubar :model="items">
+      <Menubar v-if="logged_in" :model="items">
          <template #start>
-            <router-link to="/">Logo</router-link>
+            <router-link :to="{ name: 'home' }">Logo</router-link>
          </template>
          <template #item="{ item, props, hasSubmenu, root }">
             <a v-if="item.hasSubmenu" v-bind="props.action">{{ item.label }}</a>
-            <router-link v-else :to="item.route" v-bind="props.action" class="p-0">
+            <router-link
+               v-else
+               :to="{ name: item.route, params: {} }"
+               v-bind="props.action"
+               class="p-0"
+            >
                <span>{{ item.label }}</span>
                <span
                   v-if="item.shortcut"
@@ -53,6 +58,11 @@
             <component :is="Component" :key="route.path" />
          </router-view>
       </header>
+      <footer class="fixed bottom-0">
+         <a href="https://github.com/DigiConvent/testd9t" target="_blank"
+            ><i class="pi pi-github"></i
+         ></a>
+      </footer>
    </div>
 </template>
 
@@ -98,20 +108,20 @@ function generate_menu_items() {
    if (auth.has_permission("iam")) {
       admin_items.value.push({
          label: t("iam.title"),
-         route: "/admin/iam",
+         route: "iam",
       })
    }
    if (auth.has_permission("sys")) {
       admin_items.value.push({
          label: t("sys.title"),
-         route: "/admin/sys",
+         route: "sys",
       })
    }
 
    if (auth.has_permission("iam.user.list")) {
       items.value.push({
          label: t("iam.user.list.title"),
-         route: "/admin/iam/user",
+         route: "iam.user.list",
          badge: 1,
       })
    }

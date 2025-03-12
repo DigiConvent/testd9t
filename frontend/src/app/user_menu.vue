@@ -3,7 +3,11 @@
       <Menu :model="items" class="w-full md:w-60">
          <template #start></template>
          <template #item="{ item }">
-            <router-link v-ripple class="flex items-center" :to="item.to ? item.to : null">
+            <router-link
+               v-ripple
+               class="flex items-center"
+               :to="item.to ? { name: item.to, params: {} } : {}"
+            >
                <span :class="item.icon" />
                <span>{{ item.label }}</span>
                <Badge v-if="item.badge" class="ml-auto" :value="item.badge" />
