@@ -57,34 +57,13 @@ import LoginForm from "@/components/iam/auth/login/credentials.vue"
 import type { MenuItem } from "primevue/menuitem"
 import { useI18n } from "vue-i18n"
 import UserMenu from "./user_menu.vue"
-const op = ref()
+
 const auth = JwtAuthenticator.get_instance()
 const logged_in = auth.is_authenticated
 
 const t = useI18n().t
 
 const show_login_form = ref(false)
-
-const menu = ref()
-const user_menu_items = ref([
-   {
-      label: t("iam.auth.user_menu.logged_in_as", { user: auth.get_token()?.id }),
-      items: [
-         {
-            label: t("iam.auth.user_menu.my_profile"),
-            icon: "pi pi-id-card",
-         },
-         {
-            label: t("iam.auth.user_menu.logout"),
-            icon: "pi pi-sign-out",
-         },
-      ],
-   },
-])
-
-const toggle = (event: any) => {
-   menu.value.toggle(event)
-}
 
 const items = ref<MenuItem[]>([])
 
