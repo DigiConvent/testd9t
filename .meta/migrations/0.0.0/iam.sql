@@ -286,6 +286,30 @@ begin
     where user = old.user and permission_group = old.status;
 end;
 
+-- backend/pkg/iam/db/0.0.0/22_create_trigger_for_permission.sql 
+create trigger insert_parent_permissions
+after insert on permissions
+for each row
+begin
+    with recursive split_permission as (
+        select 
+            new.permission as full_permission,
+            substr(new.permission, 1, instr(new.permission || '.', '.') - 1) as parent_permission,
+            substr(new.permission, instr(new.permission || '.', '.') + 1) as remaining_permission
+        union all
+        select 
+            full_permission,
+            substr(remaining_permission, 1, instr(remaining_permission || '.', '.') - 1) as parent_permission,
+            substr(remaining_permission, instr(remaining_permission || '.', '.') + 1) as remaining_permission
+        from split_permission
+        where remaining_permission != ''
+    )
+    insert or ignore into permissions (permission)
+    select parent_permission
+    from split_permission
+    where parent_permission != '';
+end;
+
 -- backend/pkg/iam/db/0.0.0/30_create_admin.sql 
 insert into users (id, emailaddress, first_name, last_name, enabled) values
 ('00000000-0000-0000-0000-000000000000', '', 'Admin', 'McAdmin', true);
