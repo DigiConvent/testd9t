@@ -62,6 +62,8 @@ type IAMRepositoryInterface interface {
 	UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.PermissionGroupWrite) core.Status
 
 	ListPermissions() ([]*iam_domain.PermissionRead, core.Status)
+	CreatePermission(permission *iam_domain.PermissionWrite) core.Status
+	DeletePermission(name string) core.Status
 
 	GetPrivateKey() *rsa.PrivateKey
 }

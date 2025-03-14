@@ -11,7 +11,7 @@ func (r *IAMRepository) GetUserTelegramID(id *uuid.UUID) (*int, core.Status) {
 	err := result.Scan(&telegramID)
 
 	if err != nil {
-		return nil, *core.NotFoundError("User not found")
+		return nil, *core.NotFoundError("Telegram user not found")
 	}
 
 	return &telegramID, *core.StatusSuccess()

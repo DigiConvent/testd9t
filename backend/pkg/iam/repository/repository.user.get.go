@@ -22,7 +22,7 @@ func (r *IAMRepository) GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.S
 		&user.Enabled,
 	)
 	if err != nil {
-		return nil, *core.NotFoundError("User not found")
+		return nil, *core.NotFoundError("User not found with that id")
 	}
 
 	return user, *core.StatusSuccess()

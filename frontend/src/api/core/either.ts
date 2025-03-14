@@ -23,19 +23,19 @@ export default class Either<E, T> {
       return this
    }
 
-   isLeft(): boolean {
+   is_left(): boolean {
       return this._type == "left"
    }
 
-   isRight(): boolean {
+   is_right(): boolean {
       return this._type == "right"
    }
 
-   getLeft(): E | undefined {
+   get_left(): E | undefined {
       return this._dataL
    }
 
-   getRight(): T | undefined {
+   get_right(): T | undefined {
       return this._dataR
    }
 }

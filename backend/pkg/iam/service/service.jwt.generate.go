@@ -21,7 +21,7 @@ func (service *IAMService) GenerateJwt(userId *uuid.UUID) (string, *core.Status)
 		"id":   userId.String(),
 		"user": user,
 		"tgid": telegramId,
-		"exp":  time.Now().Add(time.Hour * 24).Unix(),
+		"exp":  time.Now().Add(time.Second * 15).Unix(),
 	})
 
 	tokenString, err := token.SignedString(privKey)

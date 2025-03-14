@@ -34,6 +34,9 @@ type IAMServiceInterface interface {
 	AddUserToPermissionGroup(permissionGroup *uuid.UUID, userId *uuid.UUID) *core.Status
 
 	ListPermissions() ([]*iam_domain.PermissionRead, *core.Status)
+	CreatePermission(permission *iam_domain.PermissionWrite) *core.Status
+	DeletePermission(name string) *core.Status
+
 	ListUserPermissions(id *uuid.UUID) ([]*iam_domain.PermissionFacade, *core.Status)
 	UserHasPermission(id *uuid.UUID, permission string) bool
 

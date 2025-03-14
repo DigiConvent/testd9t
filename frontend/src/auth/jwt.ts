@@ -14,13 +14,26 @@ export default class JwtAuthenticator {
       const t = localStorage.getItem("token")
       if (t != null) {
          this.token = t
+         this.refresh_token()
          this.is_authenticated.value = true
          this.load_permissions()
       } else {
-         console.log("not authenticated")
-         console.log(t)
          this.is_authenticated.value = false
       }
+   }
+
+   private refresh_token() {
+      const expiration = this.get_token()?.exp
+      const now = Math.floor(new Date().getTime()/1000)
+      if (expiration == undefined || now > expiration - 5) {
+         this.logout()
+         return
+      }
+      
+      const timeout = expiration! - now
+      setTimeout(async () => {
+         this.login(api.iam.jwt.refresh())
+      }, (timeout - 5) * 1000)
    }
 
    public get_token(): {
@@ -36,16 +49,9 @@ export default class JwtAuthenticator {
          enabled: boolean
       }
    } | null {
-      try {
-         if (this.token == undefined) {
-            return null
-         }
-         const payload_base64 = this.token.split(".")[1]
-         const payload_json = atob(payload_base64)
-         return JSON.parse(payload_json)
-      } catch {
-         return null
-      }
+      if (this.token != undefined)
+         return JSON.parse(atob(this.token.split(".")[1])) 
+      return null
    }
 
    public has_permission(permission: Exclude<string, "super">): boolean {
@@ -85,15 +91,16 @@ export default class JwtAuthenticator {
 
    async connect_telegram_user(): Promise<boolean> {
       const result = await api.iam.user.connect_telegram(get_web_app().initData)
-      return result.isRight()
+      return result.is_right()
    }
 
    async login(response: Promise<Either<string, string>>): Promise<boolean> {
       const result = await response
-      if (result.isRight()) {
-         const token = result.getRight()
+      if (result.is_right()) {
+         const token = result.get_right()
          this.token = token
          localStorage.setItem("token", token!)
+         this.refresh_token()
          this.is_authenticated.value = true
          await this.load_permissions()
          return true
@@ -103,7 +110,7 @@ export default class JwtAuthenticator {
    }
 
    async login_using_token() {
-      this.login(api.iam.jwt.refresh(this.token!))
+      this.login(api.iam.jwt.refresh())
    }
 
    logout() {

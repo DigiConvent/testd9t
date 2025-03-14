@@ -1,7 +1,7 @@
 <template>
    {{
       t("iam.auth.user_menu.logged_in_as", {
-         user: JwtAuthenticator.get_instance().get_token()!.user.last_name,
+         user: last_name,
       })
    }}
    <Button
@@ -32,6 +32,12 @@ import { useI18n } from "vue-i18n"
 const t = useI18n().t
 
 const show_user_menu = ref()
+
+const last_name = ref("")
+const user = JwtAuthenticator.get_instance().get_token()
+if (user != null) {
+   last_name.value = user.user.last_name
+}
 
 const items = ref([
    {

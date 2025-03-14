@@ -9,6 +9,7 @@ import (
 type IamRouterInterface interface {
 	LoginWithTelegram(ctx *gin.Context)
 	LoginWithCredentials(ctx *gin.Context)
+	LoginWithJwt(ctx *gin.Context)
 
 	AddUserPermissionGroup(ctx *gin.Context)
 	CreatePermissionGroup(ctx *gin.Context)
@@ -40,7 +41,6 @@ type IamRouterInterface interface {
 	SetEnabledUser(ctx *gin.Context)
 	SetPasswordUser(ctx *gin.Context)
 
-	GetCodeForTelegramUser(ctx *gin.Context)
 	ConnectTelegramUser(ctx *gin.Context)
 }
 
@@ -71,11 +71,6 @@ func (router *IamRouter) DeletePermissionGroup(ctx *gin.Context) {
 
 // DeleteUserStatus implements IamRouterInterface.
 func (router *IamRouter) DeleteUserStatus(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
-// GetCodeForTelegramUser implements IamRouterInterface.
-func (router *IamRouter) GetCodeForTelegramUser(ctx *gin.Context) {
 	panic("unimplemented")
 }
 

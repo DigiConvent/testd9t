@@ -19,6 +19,11 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 
 	iamRoutes := apiRoutes.Group("/iam")
 	{
+		jwtRoutes := iamRoutes.Group("/jwt")
+		{
+			jwtRoutes.POST("/refresh", iamRouter.LoginWithJwt)
+
+		}
 		loginRoutes := iamRoutes.Group("/login")
 		{
 			loginRoutes.POST("/credentials", iamRouter.LoginWithCredentials)

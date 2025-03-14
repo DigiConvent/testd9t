@@ -1,23 +1,29 @@
 <template>
    <div>
       <Toast />
-      <div v-if="!logged_in" class="card flex justify-center">
-         <Form class="flex flex-col gap-4 w-full sm:w-56" @submit="handle_submit">
-            <FormTextInput
-               v-model="email"
-               label="iam.auth.login_form"
-               :error="errors.email"
-               name="email"
-            />
-            <FormPasswordInput
-               v-model="password"
-               label="iam.auth.login_form"
-               :error="errors.password"
-               name="password"
-            />
-            <Button type="submit" severity="secondary" :label="$t('iam.auth.login_form.submit')" />
-         </Form>
-      </div>
+      <Card v-if="!logged_in" class="flex justify-center">
+         <template #content>
+            <Form class="flex flex-col gap-4 w-full sm:w-56" @submit="handle_submit">
+               <FormTextInput
+                  v-model="email"
+                  label="iam.auth.login_form"
+                  :error="errors.email"
+                  name="email"
+               />
+               <FormPasswordInput
+                  v-model="password"
+                  label="iam.auth.login_form"
+                  :error="errors.password"
+                  name="password"
+               />
+               <Button
+                  type="submit"
+                  severity="secondary"
+                  :label="$t('iam.auth.login_form.submit')"
+               />
+            </Form>
+         </template>
+      </Card>
       <div v-else class="card flex justify-center">
          <Button @click="JwtAuthenticator.get_instance().logout()">{{
             $t("iam.auth.login_form.logout")

@@ -27,7 +27,7 @@ func (r *SysRepository) GetPackageMigrationScript(pkgName string, getVersion *sy
 				return "", *core.InternalError(err.Error())
 			}
 
-			script += string(contents)
+			script += "\n\n" + string(contents) + "\n\n"
 		}
 	} else {
 		contents, err := file_repo.NewRepoRemote().ReadRawFile(".meta/migrations/" + getVersion.String() + "/" + pkgName + ".sql")
