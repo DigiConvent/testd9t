@@ -21,7 +21,6 @@ type IAMRepository struct {
 
 type IAMRepositoryInterface interface {
 	CreateUser(user *iam_domain.UserWrite) (*uuid.UUID, core.Status)
-	GetTelegramRegistrationCode(userId *uuid.UUID) (string, core.Status)
 	GetUserByEmailaddress(emailaddress string) (*iam_domain.UserRead, core.Status)
 	GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.Status)
 	ListUserPermissions(id *uuid.UUID) ([]*iam_domain.PermissionFacade, core.Status)
