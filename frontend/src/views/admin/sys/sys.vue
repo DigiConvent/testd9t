@@ -55,9 +55,6 @@
                               <Badge>{{ record.is.type }}</Badge>
                               <Badge severity="secondary">{{ record.is.domain }}</Badge>
                               <Badge severity="info">{{ record.is.shortened }}</Badge>
-                              <!-- <Badge severity="danger" v-if="record.is.value != record.should.value">{{
-                      record.should.shortened
-                    }}</Badge> -->
                            </InputGroup>
                            <div v-else>{{ record.is }}</div>
                            {{ record.is.value }}<br />

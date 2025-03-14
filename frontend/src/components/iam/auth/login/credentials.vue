@@ -79,7 +79,7 @@ const handle_submit = async () => {
 
       if (success) {
          emit("logged_in", true)
-         // we used credentials so now we can check if a telegram user is logged in
+
          const data = get_web_app().initData
          if (data != "") {
             const telegram_id = get_web_app().initDataUnsafe.user.id

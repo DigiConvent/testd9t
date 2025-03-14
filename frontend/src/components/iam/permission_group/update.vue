@@ -10,12 +10,8 @@
             :error="errors.description"
             name="description"
          />
-         <div class="flex flex-col gap-1">
-            <!-- <PermissionPicker></PermissionPicker> -->
-         </div>
-         <div class="flex flex-col gap-1">
-            <!-- <PermissionGroupPicker v-model="pg.parent" @picked="pg.parent = $event" /> -->
-         </div>
+         <div class="flex flex-col gap-1"></div>
+         <div class="flex flex-col gap-1"></div>
          <Button type="submit" severity="secondary" :label="$t('iam.auth.login_form.submit')" />
       </Form>
    </div>
