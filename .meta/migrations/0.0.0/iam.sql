@@ -188,18 +188,58 @@ select pghp.permission as name, pghpgs.id as permission_group, pghpgs.name as pe
 from permission_group_has_permission_groups pghpgs
 join permission_group_has_permission pghp on pghpgs.id = pghp.permission_group;
 
--- backend/pkg/iam/db/0.0.0/13_create_permissions.sql 
+-- backend/pkg/iam/db/0.0.0/13_create_triggers_for_permission.sql 
+drop view if exists _permission_check;
+create view _permission_check as 
+with recursive hierarchy(value, str, accumulated) as (
+    select
+        '',
+        name || '.',
+        ''
+    from permissions
+    union all
+    select
+        substr(str, 1, instr(str, '.') - 1),
+        substr(str, instr(str, '.') + 1),
+        accumulated || case when accumulated = '' then '' else '.' end || substr(str, 1, instr(str, '.') - 1)
+    from hierarchy
+    where str != ''
+)
+select 
+    distinct(accumulated), 
+    (select count(*) from permissions where name = accumulated) as "exists" from hierarchy where value != '' and "exists" = 0;
+select * from _permission_check;
+
+create trigger if not exists after_insert_permission
+after insert on permissions
+for each row
+begin
+    insert into permissions (name, 'meta') select accumulated, '->after_insert_permission:' || accumulated from _permission_check;
+end;
+
+-- backend/pkg/iam/db/0.0.0/14_create_user_has_permission_view.sql 
+create view user_has_permissions as 
+select uhpg.user, pghp.permission
+from user_has_permission_groups uhpg
+join permission_group_has_permission pghp on uhpg.permission_group = pghp.permission_group;
+
+-- backend/pkg/iam/db/0.0.0/15_insert_permissions.sql 
 insert into permissions (name) values 
+('iam'),
+('iam.user'),
 ('iam.user.write'),
 ('iam.user.read'),
 ('iam.user.list'),
+('iam.user_status'),
 ('iam.user_status.write'),
 ('iam.user_status.read'),
 ('iam.user_status.list'),
 ('iam.user_status.update'),
 ('iam.user_status.delete'),
 ('iam.user_status.add'),
+('iam.permission'),
 ('iam.permission.list'),
+('iam.permission_group'),
 ('iam.permission_group.write'),
 ('iam.permission_group.read'),
 ('iam.permission_group.list'),
@@ -207,12 +247,6 @@ insert into permissions (name) values
 ('iam.permission_group.add_user'),
 ('iam.permission_group.update_permissions'),
 ('iam.permission_group.update_users');
-
--- backend/pkg/iam/db/0.0.0/14_create_user_has_permission_view.sql 
-create view user_has_permissions as 
-select uhpg.user, pghp.permission
-from user_has_permission_groups uhpg
-join permission_group_has_permission pghp on uhpg.permission_group = pghp.permission_group;
 
 -- backend/pkg/iam/db/0.0.0/20_create_triggers_for_user_status.sql 
 create trigger after_insert_user_status
@@ -284,30 +318,6 @@ begin
             where permission_group_has_user.permission_group = user_status_interval.status
         )
     where user = old.user and permission_group = old.status;
-end;
-
--- backend/pkg/iam/db/0.0.0/22_create_trigger_for_permission.sql 
-create trigger insert_parent_permissions
-after insert on permissions
-for each row
-begin
-    with recursive split_permission as (
-        select 
-            new.permission as full_permission,
-            substr(new.permission, 1, instr(new.permission || '.', '.') - 1) as parent_permission,
-            substr(new.permission, instr(new.permission || '.', '.') + 1) as remaining_permission
-        union all
-        select 
-            full_permission,
-            substr(remaining_permission, 1, instr(remaining_permission || '.', '.') - 1) as parent_permission,
-            substr(remaining_permission, instr(remaining_permission || '.', '.') + 1) as remaining_permission
-        from split_permission
-        where remaining_permission != ''
-    )
-    insert or ignore into permissions (permission)
-    select parent_permission
-    from split_permission
-    where parent_permission != '';
 end;
 
 -- backend/pkg/iam/db/0.0.0/30_create_admin.sql 
