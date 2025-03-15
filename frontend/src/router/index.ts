@@ -65,10 +65,10 @@ const router = createRouter({
                   {
                      path: "profile",
                      name: "user.profile",
-                     component: () => import("../views/user/profile.vue")
-                  }
-               ]
-            }
+                     component: () => import("../views/user/profile.vue"),
+                  },
+               ],
+            },
          ],
       },
    ],

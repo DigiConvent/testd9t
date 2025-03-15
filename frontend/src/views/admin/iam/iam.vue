@@ -1,11 +1,11 @@
 <template>
-  <div>
-    <h2 class="text-2xl">{{ $t("iam.title") }}</h2>
-    <router-view v-slot="{ Component, route }">
-      <component :is="Component" :key="route.path" />
-    </router-view>
-    <PermissionGroupList></PermissionGroupList>
-  </div>
+   <div>
+      <h2 class="text-2xl">{{ $t("iam.title") }}</h2>
+      <router-view v-slot="{ Component, route }">
+         <component :is="Component" :key="route.path" />
+      </router-view>
+      <PermissionGroupList></PermissionGroupList>
+   </div>
 </template>
 
 <script lang="ts" setup>

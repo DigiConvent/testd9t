@@ -24,16 +24,19 @@ export default class JwtAuthenticator {
 
    private refresh_token() {
       const expiration = this.get_token()?.exp
-      const now = Math.floor(new Date().getTime()/1000)
+      const now = Math.floor(new Date().getTime() / 1000)
       if (expiration == undefined || now > expiration - 5) {
          this.logout()
          return
       }
-      
+
       const timeout = expiration! - now
-      setTimeout(async () => {
-         this.login(api.iam.jwt.refresh())
-      }, (timeout - 5) * 1000)
+      setTimeout(
+         async () => {
+            this.login(api.iam.jwt.refresh())
+         },
+         (timeout - 5) * 1000,
+      )
    }
 
    public get_token(): {
@@ -49,8 +52,7 @@ export default class JwtAuthenticator {
          enabled: boolean
       }
    } | null {
-      if (this.token != undefined)
-         return JSON.parse(atob(this.token.split(".")[1])) 
+      if (this.token != undefined) return JSON.parse(atob(this.token.split(".")[1]))
       return null
    }
 

@@ -32,10 +32,6 @@
          <Button type="submit" severity="secondary" :label="$t('iam.auth.login_form.submit')" />
       </Form>
    </div>
-   <div v-else class="card flex justify-center">
-      {{ $t("iam.auth.no_permission") }}
-      {{ auth.has_permission("super") }}
-   </div>
 </template>
 
 <script lang="ts" setup>
