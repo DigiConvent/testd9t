@@ -1,29 +1,30 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnType": true,
-  "editor.formatOnPaste": true,
-  "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "file",
-  "files.autoSave": "onFocusChange",
-  "vs-code-prettier-eslint.prettierLast": true,
-  "[go]": {
-    "editor.defaultFormatter": "golang.go"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "editor.tabSize": 3,
-  "editor.insertSpaces": true,
-  "prettier.vueIndentScriptAndStyle": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always"
-  },
-  "editor.detectIndentation": false,
-  "gopls": {}
+   "[go]": {
+      "editor.defaultFormatter": "golang.go"
+   },
+   "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+   },
+   "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+   },
+   "[vue]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+   },
+   "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "always"
+   },
+   "editor.defaultFormatter": "esbenp.prettier-vscode",
+   "editor.detectIndentation": false,
+   "editor.formatOnPaste": true,
+   "editor.formatOnSave": true,
+   "editor.formatOnSaveMode": "file",
+   "editor.formatOnType": true,
+   "editor.insertSpaces": true,
+   "editor.tabSize": 3,
+   "files.autoSave": "onFocusChange",
+   "git.enabled": false,
+   "gopls": {},
+   "prettier.vueIndentScriptAndStyle": true,
+   "vs-code-prettier-eslint.prettierLast": true
 }
