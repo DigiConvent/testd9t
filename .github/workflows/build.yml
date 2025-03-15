@@ -1,233 +1,234 @@
 name: Build and Package Release
 
 on:
-  release:
-    types: [created]
+   release:
+      types: [created]
 
 jobs:
-  valid-tag:
-    name: Validate tag format
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Extract the tag name
-        id: extract_tag
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-      - name: Validate the tag format
-        id: validate_semver
-        run: |
-          if [[ ! "${{ env.tag }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Error: Tag '${{ env.tag }}' does not conform to SemVer."
-            exit 1
-          else
-            echo "Tag ${{ env.tag }} is a valid tag."
-          fi
+   validate:
+      name: Validate prerequisites
+      runs-on: ubuntu-latest
+      steps:
+         - name: Checkout the repository
+           uses: actions/checkout@v3
+           with:
+              fetch-depth: 0
+         - name: Extract the tag name
+           id: extract_tag
+           run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+         - name: Validate the tag format
+           id: validate_semver
+           run: |
+              if [[ ! "${{ env.tag }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                echo "Error: Tag '${{ env.tag }}' does not conform to SemVer."
+                exit 1
+              else
+                echo "Tag ${{ env.tag }} is a valid tag."
+              fi
+         - name: Check if prettier is adhered to
+           uses: creyD/prettier_action@v4.3
+           with:
+              prettier_options: --check .
 
-  summarised-migrations:
-    name: Summarise migrations for each package
-    needs: valid-tag
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      actions: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Extract tag version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-      - name: Create migrations folder
-        run: mkdir -p .meta/migrations/${VERSION}
-      - name: Generate SQL summaries
-        run: |
-          for pkg in backend/pkg/*; do
-            if [[ ! -d "$pkg" ]]; then
-              continue
-            fi
-            pkg_name=$(basename "$pkg")
-            sql_dir="$pkg/db/$VERSION"
-            mkdir -p ".meta/migrations/${VERSION}"
-            output_file=".meta/migrations/${VERSION}/${pkg_name}.sql"
-            rm -f "$output_file"
-            touch "$output_file"
-            
-            for file in "$sql_dir"/*.sql; do
-              echo "Summarising $file"
-              echo "-- $file " >> "$output_file"
-              cat "$file" >> "$output_file"
-              printf "\n\n" >> "$output_file"
-            done
-          done
+   summarised-migrations:
+      name: Summarise migrations for each package
+      needs: validate
+      runs-on: ubuntu-latest
+      permissions:
+         contents: write
+         actions: read
+      steps:
+         - name: Checkout repository
+           uses: actions/checkout@v4
+         - name: Extract tag version
+           run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+         - name: Create migrations folder
+           run: mkdir -p .meta/migrations/${VERSION}
+         - name: Generate SQL summaries
+           run: |
+              for pkg in backend/pkg/*; do
+                if [[ ! -d "$pkg" ]]; then
+                  continue
+                fi
+                pkg_name=$(basename "$pkg")
+                sql_dir="$pkg/db/$VERSION"
+                mkdir -p ".meta/migrations/${VERSION}"
+                output_file=".meta/migrations/${VERSION}/${pkg_name}.sql"
+                rm -f "$output_file"
+                touch "$output_file"
+                
+                for file in "$sql_dir"/*.sql; do
+                  echo "Summarising $file"
+                  echo "-- $file " >> "$output_file"
+                  cat "$file" >> "$output_file"
+                  printf "\n\n" >> "$output_file"
+                done
+              done
 
-      - name: Commit and push changes to the main branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git checkout main
-          git add .meta/migrations/${VERSION}
+         - name: Commit and push changes to the main branch
+           run: |
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git fetch origin main
+              git checkout main
+              git add .meta/migrations/${VERSION}
 
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Summarise migrations for packages"
-            git push origin main
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              if git diff --cached --quiet; then
+                echo "No changes to commit"
+              else
+                git commit -m "Summarise migrations for packages"
+                git push origin main
+              fi
+           env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  compiled-artifacts:
-    name: Build backend and frontend artifacts
-    needs: summarised-migrations
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      actions: read
+   compiled-artifacts:
+      name: Build backend and frontend artifacts
+      needs: summarised-migrations
+      runs-on: ubuntu-latest
+      permissions:
+         contents: write
+         actions: read
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      steps:
+         - name: Checkout code
+           uses: actions/checkout@v2
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.21"
+         - name: Set up Go
+           uses: actions/setup-go@v5
+           with:
+              go-version: "1.21"
 
-      - name: Install Musl cross-compiler
-        run: |
-          sudo apt update
-          sudo apt install -y musl musl-dev musl-tools gcc
+         - name: Install Musl cross-compiler
+           run: |
+              sudo apt update
+              sudo apt install -y musl musl-dev musl-tools gcc
 
-      - name: Get version tag
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-      - name: Test Go code
-        run: |
-          cd backend
-          go test
+         - name: Get version tag
+           run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+         - name: Test Go code
+           run: |
+              cd backend
+              go test
 
-      - name: Build Go binary
-        run: |
-          cd backend
-          CGO_ENABLED=1 CC=musl-gcc go build -ldflags "-s -w -linkmode external -extldflags '-static' -X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}' -X 'github.com/${{ github.repository }}/pkg/sys/domain.CompiledAt=$(date -u +'%Y.%m.%dT%H:%M:%S')'" -o main .
+         - name: Build Go binary
+           run: |
+              cd backend
+              CGO_ENABLED=1 CC=musl-gcc go build -ldflags "-s -w -linkmode external -extldflags '-static' -X 'github.com/${{ github.repository }}/pkg/sys/domain.ProgramVersion=${VERSION}' -X 'github.com/${{ github.repository }}/pkg/sys/domain.CompiledAt=$(date -u +'%Y.%m.%dT%H:%M:%S')'" -o main .
 
-      - name: Install UPX
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y upx
-          upx --best --lzma ${{ github.workspace }}/backend/main
+         - name: Install UPX
+           run: |
+              sudo apt-get update
+              sudo apt-get install -y upx
+              upx --best --lzma ${{ github.workspace }}/backend/main
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
+         - name: Set up Node.js
+           uses: actions/setup-node@v3
+           with:
+              node-version: "18"
 
-      - name: Build Vue frontend
-        run: |
-          cd frontend
-          npm install
-          npx eslint . --max-warnings 0
-          npm run build-only
+         - name: Build Vue frontend
+           run: |
+              cd frontend
+              npm install
+              npx eslint . --max-warnings 0
+              npm run build-only
 
-      - name: Create a zip file with the frontend artifacts
-        run: |
-          zip -r vue3-app.zip frontend/dist
+         - name: Create a zip file with the frontend artifacts
+           run: |
+              zip -r vue3-app.zip frontend/dist
 
-      - name: Upload binary to release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: backend/main
-          asset_name: main
-          asset_content_type: application/octet-stream
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         - name: Upload binary to release
+           uses: actions/upload-release-asset@v1
+           with:
+              upload_url: ${{ github.event.release.upload_url }}
+              asset_path: backend/main
+              asset_name: main
+              asset_content_type: application/octet-stream
+           env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload frontend to release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: vue3-app.zip
-          asset_name: frontend.zip
-          asset_content_type: application/zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         - name: Upload frontend to release
+           uses: actions/upload-release-asset@v1
+           with:
+              upload_url: ${{ github.event.release.upload_url }}
+              asset_path: vue3-app.zip
+              asset_name: frontend.zip
+              asset_content_type: application/zip
+           env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  generated-tags-file:
-    name: Update .meta folder
-    needs: compiled-artifacts
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
+   generated-tags-file:
+      name: Update .meta folder
+      needs: compiled-artifacts
+      runs-on: ubuntu-latest
+      permissions:
+         contents: write
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      steps:
+         - name: Checkout repository
+           uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
+         - name: Set up Node.js
+           uses: actions/setup-node@v3
+           with:
+              node-version: "16"
 
-      - name: Install dependencies
-        run: npm install @octokit/rest node-fetch jq
+         - name: Install dependencies
+           run: npm install @octokit/rest node-fetch jq
 
-      - name: Generate JSON tags file for all tags
-        run: |
-          export OWNER="${{ github.repository_owner }}"
-          export REPO="${{ github.event.repository.name }}"
+         - name: Generate JSON tags file for all tags
+           run: |
+              export OWNER="${{ github.repository_owner }}"
+              export REPO="${{ github.event.repository.name }}"
 
-          mkdir -p .meta
+              mkdir -p .meta
 
-          echo "[" > .meta/release_tags.json
+              echo "[" > .meta/release_tags.json
 
-          tags=$(curl -s \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/$OWNER/$REPO/tags")
+              tags=$(curl -s \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/$OWNER/$REPO/tags")
 
-          sorted_tags=$(echo "$tags" | jq -r '.[].name' | sort -V)
-          for tag in $sorted_tags; do
-            assets=$(curl -s \
-              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '[.assets[].name]')
-            
-            migrations_folder=".meta/migrations/$tag"
-            if [ -d "$migrations_folder" ]; then
-              migrations=$(find "$migrations_folder" -type f -name "*.sql" -exec basename {} \; | jq -R . | jq -s .)
-            else
-              migrations="[]"
-            fi
-            
-            echo "{\"tag\": \"$tag\", \"assets\": $assets, \"migrations\": $migrations}," >> .meta/release_tags.json
-          done
+              sorted_tags=$(echo "$tags" | jq -r '.[].name' | sort -V)
+              for tag in $sorted_tags; do
+                assets=$(curl -s \
+                  -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                  "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$tag" | jq '[.assets[].name]')
+                
+                migrations_folder=".meta/migrations/$tag"
+                if [ -d "$migrations_folder" ]; then
+                  migrations=$(find "$migrations_folder" -type f -name "*.sql" -exec basename {} \; | jq -R . | jq -s .)
+                else
+                  migrations="[]"
+                fi
+                
+                echo "{\"tag\": \"$tag\", \"assets\": $assets, \"migrations\": $migrations}," >> .meta/release_tags.json
+              done
 
-          sed -i '$ s/,$//' .meta/release_tags.json
-          echo "]" >> .meta/release_tags.json
+              sed -i '$ s/,$//' .meta/release_tags.json
+              echo "]" >> .meta/release_tags.json
 
-          folders=$(find "install/" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R . | jq -s .)
-          echo "$folders" > .meta/flavours.json
+              folders=$(find "install/" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R . | jq -s .)
+              echo "$folders" > .meta/flavours.json
 
-          jq . .meta/release_tags.json > .meta/tmp.json && mv .meta/tmp.json .meta/release_tags.json
-          jq . .meta/flavours.json > .meta/tmp.json && mv .meta/tmp.json .meta/flavours.json
+              jq --indent 3 . .meta/release_tags.json > .meta/tmp.json && mv .meta/tmp.json .meta/release_tags.json
+              jq --indent 3 . .meta/flavours.json > .meta/tmp.json && mv .meta/tmp.json .meta/flavours.json
 
-      - name: Configure Git
-        run: |
+         - name: Commit and push changes to the main branch
+           run: |
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git fetch origin main
+              git checkout main
+              git add .meta/release_tags.json
+              git add .meta/flavours.json
 
-      - name: Commit and push changes to the main branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git checkout main
-          git add .meta/release_tags.json
-          git add .meta/flavours.json
-
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Update release_tags.json with all release tags and assets"
-            git push origin main
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              if git diff --cached --quiet; then
+                echo "No changes to commit"
+              else
+                git commit -m "Update release_tags.json with all release tags and assets"
+                git push origin main
+              fi
+           env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
