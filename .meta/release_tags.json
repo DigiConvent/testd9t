@@ -1,14 +1,14 @@
 [
-  {
-    "tag": "0.0.0",
-    "assets": [
-      "frontend.zip",
-      "main"
-    ],
-    "migrations": [
-      "post.sql",
-      "iam.sql",
-      "sys.sql"
-    ]
-  }
+   {
+      "tag": "0.0.0",
+      "assets": [
+         "frontend.zip",
+         "main"
+      ],
+      "migrations": [
+         "post.sql",
+         "iam.sql",
+         "sys.sql"
+      ]
+   }
 ]
