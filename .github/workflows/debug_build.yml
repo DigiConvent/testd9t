@@ -1,59 +1,59 @@
 name: Recreate Release on Go File Changes
 
 on:
-  push:
-    branches:
-      - main
+   push:
+      branches:
+         - main
 
 jobs:
-  check-go-files:
-    runs-on: ubuntu-latest
-    outputs:
-      go_files_changed: ${{ steps.changed-backend-files.outputs.any_changed }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+   check-go-files:
+      runs-on: ubuntu-latest
+      outputs:
+         go_files_changed: ${{ steps.changed-backend-files.outputs.any_changed }}
+      steps:
+         - name: Checkout Repository
+           uses: actions/checkout@v4
 
-      - name: Get changed files in the backend folder
-        id: changed-backend-files
-        uses: tj-actions/changed-files@v45
-        with:
-          files: backend/**/**.go
+         - name: Get changed files in the backend folder
+           id: changed-backend-files
+           uses: tj-actions/changed-files@v45
+           with:
+              files: backend/**/**.go
 
-      - name: Run step if any file(s) in the backend folder change
-        if: steps.changed-backend-files.outputs.any_changed == 'true'
-        run: |
-          echo "One or more files in the backend folder has changed."
-          echo "List all the files that have changed: $ALL_CHANGED_FILES"
+         - name: Run step if any file(s) in the backend folder change
+           if: steps.changed-backend-files.outputs.any_changed == 'true'
+           run: |
+              echo "One or more files in the backend folder has changed."
+              echo "List all the files that have changed: $ALL_CHANGED_FILES"
 
-  recreate-release:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    env:
-      GH_TOKEN: ${{ secrets.PAT }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+   recreate-release:
+      runs-on: ubuntu-latest
+      permissions:
+         contents: write
+      env:
+         GH_TOKEN: ${{ secrets.PAT }}
+      steps:
+         - name: Checkout Repository
+           uses: actions/checkout@v4
 
-      - name: Delete the release
-        run: |
-          if gh release view "0.0.0" > /dev/null 2>&1; then
-            gh release delete "0.0.0" --cleanup-tag --yes
-          else
-            echo "Release 0.0.0 does not exist. Skipping deletion."
-          fi
+         - name: Delete the release
+           run: |
+              if gh release view "0.0.0" > /dev/null 2>&1; then
+                gh release delete "0.0.0" --cleanup-tag --yes
+              else
+                echo "Release 0.0.0 does not exist. Skipping deletion."
+              fi
 
-          git tag 0.0.0
-          git push origin 0.0.0
-          
-          gh release create "0.0.0" --notes "This is an automated release"
+              git tag 0.0.0
+              git push origin 0.0.0
 
-          RELEASE_ID=$(gh release view "0.0.0" --json id -q '.id')
-          
-          echo "Release ID: $RELEASE_ID"
+              gh release create "0.0.0" --notes "This is an automated release"
 
-          curl -X PATCH -H "Authorization: token ${{ secrets.PAT }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -d '{"draft": false}' \
-              "https://api.github.com/repos/DigiConvent/testd9t/releases/${RELEASE_ID}"
+              RELEASE_ID=$(gh release view "0.0.0" --json id -q '.id')
+
+              echo "Release ID: $RELEASE_ID"
+
+              curl -X PATCH -H "Authorization: token ${{ secrets.PAT }}" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  -d '{"draft": false}' \
+                  "https://api.github.com/repos/DigiConvent/testd9t/releases/${RELEASE_ID}"
