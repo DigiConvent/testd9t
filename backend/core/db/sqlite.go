@@ -7,12 +7,12 @@ import (
 	"regexp"
 	"strings"
 
+	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/log"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 var databases = map[string]DatabaseInterface{}
-var DatabasePath string = "/tmp/testd9t/db/"
 
 func CloseAllDatabases() {
 	for _, db := range databases {
@@ -54,7 +54,7 @@ func SqliteConnection(dbName string, test bool) (DatabaseInterface, bool) {
 		panic("Database name must be alphanumeric")
 	}
 
-	dbPath := path.Join(DatabasePath, dbName)
+	dbPath := path.Join(os.Getenv(constants.DATABASE_PATH), dbName)
 
 	if databases[dbName] == nil {
 		var db *sql.DB
@@ -164,7 +164,7 @@ func (s *SqliteDatabase) MigratePackage(verbose bool) error {
 }
 
 func (s *SqliteDatabase) Dir() string {
-	return path.Join(DatabasePath, s.name)
+	return path.Join(os.Getenv(constants.DATABASE_PATH), s.name)
 }
 
 func (s *SqliteDatabase) DeleteDatabase() {
