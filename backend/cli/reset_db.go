@@ -5,14 +5,14 @@ import (
 	"os"
 	"path"
 
-	"github.com/DigiConvent/testd9t/core/db"
+	constants "github.com/DigiConvent/testd9t/core/const"
 )
 
 func ResetDB() {
 
 	fmt.Println("--reset-db")
 
-	dbPath := db.DatabasePath
+	dbPath := os.Getenv(constants.DATABASE_PATH)
 	entries, err := os.ReadDir(dbPath)
 	if err != nil {
 		fmt.Println("Could not find db directory", dbPath)

@@ -8,7 +8,6 @@ import (
 )
 
 var ProgramVersion string = "dev"
-var DatabasePath string = "/tmp/d9t/db/"
 var CompiledAt string = ""
 
 func DevPath() string {
