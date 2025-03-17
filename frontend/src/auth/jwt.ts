@@ -1,22 +1,25 @@
 import { api } from "@/api"
 import get_web_app from "./telegram"
 import type Either from "@/api/core/either"
-import { ref } from "vue"
+import { ref, type Ref } from "vue"
 import type { PermissionFacade } from "@/api/iam/permission/types"
+import { info, warn } from "@/composables/toast"
 
 export default class JwtAuthenticator {
    private static instance: JwtAuthenticator | undefined
    private token: string | undefined
-   public is_authenticated = ref<boolean>(false)
+   public is_authenticated: Ref<boolean> = ref<boolean>(false)
    private permissions = ref<string[]>([])
+   public countdown = ref<number>(0)
 
    constructor() {
       const t = localStorage.getItem("token")
       if (t != null) {
          this.token = t
          this.refresh_token()
-         this.is_authenticated.value = true
-         this.load_permissions()
+         this.load_permissions().then(() => {
+            this.is_authenticated.value = true
+         })
       } else {
          this.is_authenticated.value = false
       }
@@ -31,9 +34,16 @@ export default class JwtAuthenticator {
       }
 
       const timeout = expiration! - now
+
+      this.countdown.value = (timeout - 5) * 1000
       setTimeout(
          async () => {
-            this.login(api.iam.jwt.refresh())
+            const result = await this.login(api.iam.jwt.refresh())
+            if (result) {
+               info("Token refreshed", "")
+            } else {
+               warn("Could not refresh token", "")
+            }
          },
          (timeout - 5) * 1000,
       )
@@ -43,6 +53,7 @@ export default class JwtAuthenticator {
       id: string
       exp: number
       tgid: number
+      iat: number
       user: {
          id: string
          emailaddress: string
@@ -103,8 +114,8 @@ export default class JwtAuthenticator {
          this.token = token
          localStorage.setItem("token", token!)
          this.refresh_token()
-         this.is_authenticated.value = true
          await this.load_permissions()
+         this.is_authenticated.value = true
          return true
       } else {
          return false

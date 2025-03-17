@@ -57,11 +57,8 @@ const errors = ref<{ email: string; password: string }>({
 
 const toast = useToast()
 
-const email_validation = v.pipe(v.string(), v.nonEmpty(t("iam.auth.login_form.emailRequired")))
-const password_validation = v.pipe(
-   v.string(),
-   v.nonEmpty(t("iam.auth.login_form.passwordRequired")),
-)
+const email_validation = v.pipe(v.string(), v.nonEmpty())
+const password_validation = v.pipe(v.string(), v.nonEmpty())
 
 const login_form = v.object({
    email: email_validation,

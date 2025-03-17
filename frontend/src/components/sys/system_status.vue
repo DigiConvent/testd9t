@@ -19,7 +19,6 @@
          </tbody>
       </table>
    </div>
-   <div v-else>No sys data for you</div>
 </template>
 
 <script setup lang="ts">
@@ -31,7 +30,7 @@ import type { SystemStatus } from "@/api/sys/types"
 
 const toast = useToast()
 
-const status = ref<SystemStatus>()
+const status = ref<SystemStatus | null>(null)
 
 api.sys.status().then((result: Either<string, SystemStatus>) => {
    result.fold(

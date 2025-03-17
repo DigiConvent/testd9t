@@ -1,5 +1,6 @@
 import router from "@/router"
 import Either from "./either"
+import JwtAuthenticator from "@/auth/jwt"
 
 interface FromJSON<T> {
    (data: any): T
@@ -18,6 +19,10 @@ export async function api_get<T>(
          page: router.currentRoute.value.fullPath,
       },
    })
+
+   if (request.status == 401) {
+      JwtAuthenticator.get_instance().logout()
+   }
 
    if (request.ok) {
       let data: any = {}
@@ -59,6 +64,10 @@ export async function api_post<T>(
       } catch (e: any) {
          return result.left("Could not read json from request " + e)
       }
+   }
+
+   if (request.status == 401) {
+      JwtAuthenticator.get_instance().logout()
    }
 
    if (request.ok) {

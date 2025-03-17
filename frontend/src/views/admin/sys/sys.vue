@@ -1,32 +1,73 @@
 <template>
    <div>
-      <h2 class="text-2xl">System</h2>
+      <h2 class="text-2xl mb-4">System</h2>
       <Toast />
       <div v-if="system_status">
-         <Card>
+         <Card class="p-4">
             <template #header>
                <h3>{{ $t("sys.data") }}</h3>
             </template>
             <template #content>
-               <Knob
-                  v-model="space.taken_in_perc"
-                  readonly
-                  :show-value="true"
-                  value-template="{value}%"
-                  :value-color="'#ff8000'"
-               />
-               <span
-                  >{{ $t("sys.total") }}:
-                  {{ (space.total / (1024 * 1024 * 1024)).toFixed(2) }}GB</span
-               ><br />
-               <span
-                  >{{ $t("sys.occupied") }}:
-                  {{ (space.taken / (1024 * 1024 * 1024)).toFixed(2) }}GB</span
-               ><br />
-               <span
-                  >{{ $t("sys.free") }}:
-                  {{ ((space.total - space.taken) / (1024 * 1024 * 1024)).toFixed(2) }}GB</span
-               ><br />
+               testd9t
+               <MeterGroup
+                  :value="installation_disk_usage"
+                  label-position="start"
+                  :max="space.total_home"
+               >
+                  <template #label="{ value }">
+                     <div class="flex flex-wrap gap-4">
+                        <template v-for="val of value" :key="val.label">
+                           <Card
+                              class="flex-1 border border-surface shadow-none"
+                              :style="`border-color: ${val.color}`"
+                           >
+                              <template #content>
+                                 <div class="flex justify-between gap-8">
+                                    <div class="flex flex-col gap-1">
+                                       <span
+                                          class="text-surface-500 dark:text-surface-400 text-sm"
+                                          >{{ val.label }}</span
+                                       >
+                                       <span class="font-bold text-lg">{{
+                                          format_bytes(val.value)
+                                       }}</span>
+                                    </div>
+                                    <div
+                                       class="w-8 h-8 rounded-full inline-flex justify-center items-center text-center"
+                                       :style="`background-color: ${val.color};color: #ffffff;`"
+                                    >
+                                       <i :class="val.icon" />
+                                    </div>
+                                 </div>
+                              </template>
+                           </Card>
+                        </template>
+                     </div>
+                  </template>
+                  <template #meter="slotProps">
+                     <span
+                        :class="slotProps.class"
+                        :style="`background-color: ${slotProps.value.color}; width: ${slotProps.size}; border-left: ${slotProps.index == 0 ? '0px' : '3px white solid;'}`"
+                     />
+                  </template>
+                  <template #end="{ totalPercent }">
+                     <div class="flex justify-between mt-4 mb-2 relative">
+                        <span :style="{ width: totalPercent + '%' }"></span>
+                        <span class="font-medium"
+                           >{{ format_bytes(space.total_home) }}/{{
+                              format_bytes(space.total_server - space.rest)
+                           }}
+                           <br />
+                           ({{
+                              (
+                                 (100 / (space.total_server - space.rest)) *
+                                 space.total_home
+                              ).toFixed(3)
+                           }}%)
+                        </span>
+                     </div>
+                  </template>
+               </MeterGroup>
             </template>
          </Card>
          <Card>
@@ -105,10 +146,10 @@ const t = useI18n().t
 const system_status = ref<SystemStatus>()
 const toast = useToast()
 
-const space = ref<{ total: number; taken: number; taken_in_perc: number }>({
-   total: 0,
-   taken: 0,
-   taken_in_perc: 0,
+const space = ref<{ total_server: number; total_home: number; rest: number }>({
+   total_server: 0,
+   total_home: 0,
+   rest: 0,
 })
 
 type DnsEntry = {
@@ -140,6 +181,9 @@ const dns_checklist = ref<
    }[]
 >([])
 
+const installation_disk_usage = ref<
+   { label: string; color: string; value: number; icon: string }[]
+>([])
 api.sys.status().then((fold) => {
    fold.fold(
       (err: string) => {
@@ -151,13 +195,35 @@ api.sys.status().then((fold) => {
       },
       (data: SystemStatus) => {
          system_status.value = data
-         space.value.taken = data.server.total_space - data.server.free_space
+         installation_disk_usage.value = fill_colours_and_sort([
+            {
+               label: "Backend",
+               color: "",
+               value: data.space.program.backend,
+               icon: "pi pi-server",
+            },
+            {
+               label: "Frontend",
+               color: "",
+               value: data.space.program.frontend,
+               icon: "pi pi-globe",
+            },
+            { label: "Iam", color: "", value: data.space.data.iam, icon: "pi pi-key" },
+            { label: "Sys", color: "", value: data.space.data.sys, icon: "pi pi-cog" },
+            { label: "Post", color: "", value: data.space.data.post, icon: "pi pi-inbox" },
+            {
+               label: "Certificates",
+               color: "",
+               value: data.space.data.certificates,
+               icon: "pi pi-shield",
+            },
+         ])
+
          space.value = {
-            total: data.server.total_space,
-            taken: data.server.total_space - data.server.free_space,
-            taken_in_perc: 0,
+            total_server: data.space.total_server,
+            total_home: data.space.total_home,
+            rest: data.space.os,
          }
-         space.value.taken_in_perc = Math.round((space.value.taken / space.value.total) * 100)
 
          for (const record of ["mx", "dkim", "spf", "dns", "dmarc"]) {
             const j = JSON.parse(JSON.stringify(data.dns))
@@ -195,5 +261,47 @@ const shortened_value = (value: string) => {
       }
    }
    return result.join("; ")
+}
+
+const colours = [
+   "#ef4444",
+   "#f59e0b",
+   "#84cc16",
+   "#10b981",
+   "#06b6d4",
+   "#3b82f6",
+   "#8b5cf6",
+   "#d946ef",
+   "#f43f5e",
+   "#f97316",
+   "#eab308",
+   "#22c55e",
+   "#14b8a6",
+   "#0ea5e9",
+   "#6366f1",
+   "#a855f7",
+   "#ec4899",
+]
+function fill_colours_and_sort<T>(
+   entries: { color: string; value: number; [key: string]: any }[] & T[],
+): T[] {
+   for (let i = 0; i < entries.length; i++) {
+      entries[i].color = colours[i % colours.length]
+   }
+   // sort
+   entries.sort((a, b) => {
+      return b.value - a.value
+   })
+
+   return entries
+}
+
+// https://gist.github.com/zentala/1e6f72438796d74531803cc3833c039c
+function format_bytes(bytes: number) {
+   if (bytes == 0) return "0 Bytes"
+   const k = 1024,
+      sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
+      i = Math.floor(Math.log(bytes) / Math.log(k))
+   return parseFloat((bytes / Math.pow(k, i)).toFixed(0)) + sizes[i]
 }
 </script>

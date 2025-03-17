@@ -17,11 +17,7 @@ type SystemStatus struct {
 		SpfIs       string `json:"spf_is"`
 		SpfShould   string `json:"spf_should"`
 	} `json:"dns"`
-	Server struct {
-		DataSpace  uint64 `json:"data_space"`
-		FreeSpace  uint64 `json:"free_space"`
-		TotalSpace uint64 `json:"total_space"`
-	} `json:"server"`
+	Space       DiskUsage `json:"space"`
 	TelegramBot struct {
 		TelegramBotHint   string `json:"telegram_bot_hint"`
 		TelegramBotStatus string `json:"telegram_bot"`
@@ -32,4 +28,21 @@ type SystemStatus struct {
 		DatabaseVersion Version `json:"database_version"`
 		ProgramVersion  Version `json:"version"`
 	} `json:"version"`
+}
+
+type DiskUsage struct {
+	Program struct {
+		Backend  int `json:"backend"`
+		Frontend int `json:"frontend"`
+	} `json:"program"`
+	Data struct {
+		IamSize      int `json:"iam"`
+		SysSize      int `json:"sys"`
+		PostSize     int `json:"post"`
+		Certificates int `json:"certificates"`
+	} `json:"data"`
+	TotalHome   int `json:"total_home"`
+	TotalServer int `json:"total_server"`
+	Free        int `json:"free"`
+	OS          int `json:"os"`
 }

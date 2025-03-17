@@ -34,7 +34,7 @@
       <div v-else class="absolute">
          <div class="right-0">
             <Button @click="show_login_form = true"><i class="pi pi-user"></i></Button>
-            <LoginForm v-if="show_login_form" @logged_in="generate_menu_items()"></LoginForm>
+            <LoginForm v-if="show_login_form"></LoginForm>
          </div>
       </div>
       <header>
@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue"
+import { onMounted, ref, watch } from "vue"
 import JwtAuthenticator from "../auth/jwt"
 import LoginForm from "@/components/iam/auth/login/credentials.vue"
 import type { MenuItem } from "primevue/menuitem"
@@ -67,8 +67,14 @@ const show_login_form = ref(false)
 
 const items = ref<MenuItem[]>([])
 
+watch(logged_in, () => {
+   generate_menu_items()
+})
+
 const admin_items = ref<MenuItem[]>([])
 function generate_menu_items() {
+   items.value = []
+
    admin_items.value = []
    if (auth.has_permission("iam")) {
       admin_items.value.push({

@@ -15,8 +15,8 @@ import (
 	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
-const targetBinaryPath = constants.HOME_PATH + "backend/main"
-const targetFrontendPath = constants.HOME_PATH + "frontend"
+var targetBinaryPath = constants.HOME_PATH + "backend/main"
+var targetFrontendPath = constants.HOME_PATH + "frontend"
 
 const sourceFrontendZipPath = "/tmp/testd9t/frontend.zip"
 

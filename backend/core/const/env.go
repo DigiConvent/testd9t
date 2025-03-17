@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/DigiConvent/testd9t/core/log"
+	sys_domain "github.com/DigiConvent/testd9t/pkg/sys/domain"
 )
 
 const CERTIFICATES_PATH = "CERTIFICATES_PATH"
@@ -18,8 +19,10 @@ const MASTER_EMAILADDRESS = "EMAILADDRESS"
 const SMTP_PORT = "SMTP_PORT"
 const TELEGRAM_BOT_TOKEN = "TELEGRAM_BOT_TOKEN"
 
-const HOME_PATH = "/home/testd9t/"
-const ENV_PATH = HOME_PATH + "env"
+var HOME_PATH = "/home/testd9t/"
+
+var ENV_PATH = HOME_PATH + "env"
+
 const DkimPrefix = "default._domainkey."
 
 func CheckEnv() {
@@ -35,6 +38,10 @@ func CheckEnv() {
 	shouldContinue = CheckIfSet(MASTER_EMAILADDRESS, false, "") && shouldContinue
 
 	shouldContinue = CheckIfSet(TELEGRAM_BOT_TOKEN, true, "") && shouldContinue
+
+	if sys_domain.ProgramVersion == "dev" {
+		HOME_PATH = "/tmp/testd9t/"
+	}
 
 	if !shouldContinue {
 		os.Exit(1)

@@ -77,6 +77,7 @@ import * as v from "valibot"
 import { useI18n } from "vue-i18n"
 import { api } from "@/api"
 import UserStatusPicker from "../user_status/picker.vue"
+import { error, success } from "@/composables/toast"
 
 const t = useI18n().t
 
@@ -152,13 +153,11 @@ const check_date_of_birth = (date: string) => {
       v.parse(date_of_birth_check, date)
       errors.value.date_of_birth = ""
    } catch (e: any) {
-      console.log(e)
       errors.value.date_of_birth = e.message
    }
 }
 
 const handle_submit = async () => {
-   console.log(user_create)
    const re = v.safeParse(user_create, {
       email: email.value,
       first_name: first_name.value,
@@ -176,14 +175,12 @@ const handle_submit = async () => {
          })
       ).fold(
          (l) => {
-            console.log(l)
+            error(l, "")
          },
-         (r) => {
-            console.log(r)
+         (user_id: string) => {
+            success("User: " + user_id, "")
          },
       )
-   } else {
-      console.log(re)
    }
 }
 </script>

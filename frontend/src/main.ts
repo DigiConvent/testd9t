@@ -27,16 +27,18 @@ import {
    InputGroupAddon,
    InputMask,
    InputText,
-   Knob,
    Listbox,
    Menu,
    Menubar,
    Message,
+   MeterGroup,
    OrganizationChart,
    Popover,
    ProgressBar,
+   ProgressSpinner,
    Ripple,
    Select,
+   Skeleton,
    ToastService,
    ToggleSwitch,
    TreeSelect,
@@ -81,18 +83,20 @@ app.component("InputGroupAddon", InputGroupAddon)
 app.component("InputGroup", InputGroup)
 app.component("InputMask", InputMask)
 app.component("InputText", InputText)
-app.component("Knob", Knob)
 app.component("Listbox", Listbox)
 app.component("Menu", Menu)
 app.component("Menubar", Menubar)
+app.component("MeterGroup", MeterGroup)
 app.component("Message", Message)
 app.component("OrganizationChart", OrganizationChart)
 app.component("Popover", Popover)
 app.component("ProgressBar", ProgressBar)
+app.component("ProgressSpinner", ProgressSpinner)
 app.component("Toast", Toast)
 app.component("ToggleSwitch", ToggleSwitch)
 app.component("TreeSelect", TreeSelect)
 app.component("Select", Select)
+app.component("Skeleton", Skeleton)
 
 app.directive("ripple", Ripple)
 

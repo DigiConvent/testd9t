@@ -36,7 +36,6 @@ onMounted(() => {
             toast.add({ severity: "error", summary: "Error", detail: error, life: 3000 })
          },
          (permissions: PermissionFacade[]) => {
-            console.log(permissions)
             const tree = to_permission_tree(permissions)
             node.value = tree.to_tree_node(null)
          },
@@ -57,7 +56,7 @@ watch(
             sorted = node.value?.children.map((child) => child.key)
          }
       }
-      console.log(sorted)
+
       if (props.onPicked) {
          if (sorted != undefined && props.picked && !props.multiple && sorted.length > 0) {
             emit("picked", sorted[0])

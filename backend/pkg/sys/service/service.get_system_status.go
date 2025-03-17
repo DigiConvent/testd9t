@@ -9,10 +9,7 @@ import (
 	"errors"
 	"net"
 	"os"
-	"os/exec"
-	"strconv"
 	"strings"
-	"syscall"
 
 	"github.com/DigiConvent/testd9t/core"
 	constants "github.com/DigiConvent/testd9t/core/const"
@@ -24,7 +21,10 @@ import (
 )
 
 func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) {
-	systemStatus := &sys_domain.SystemStatus{}
+	size, _ := s.repository.GetDiskUsage()
+	systemStatus := &sys_domain.SystemStatus{
+		Space: *size,
+	}
 
 	programVersion, databaseVersion, status := s.repository.GetCurrentVersion()
 	if status.Err() {
@@ -42,27 +42,6 @@ func (s *SysService) GetSystemStatus() (*sys_domain.SystemStatus, *core.Status) 
 		systemStatus.Version.ProgramVersion = *programVersion
 		systemStatus.Version.DatabaseVersion = *databaseVersion
 	}
-
-	var testd9tStat syscall.Statfs_t
-
-	syscall.Statfs(constants.HOME_PATH, &testd9tStat)
-
-	var stat syscall.Statfs_t
-	err := syscall.Statfs("/", &stat)
-
-	if err != nil {
-		systemStatus.Server.FreeSpace = 0
-		systemStatus.Server.TotalSpace = 0
-	} else {
-		systemStatus.Server.FreeSpace = stat.Bfree * uint64(stat.Bsize)
-		systemStatus.Server.TotalSpace = stat.Blocks * uint64(stat.Bsize)
-	}
-
-	cmd := exec.Command("du", "-sb", constants.HOME_PATH)
-	out, _ := cmd.Output()
-	outString := string(out)
-	outBytes, _ := strconv.Atoi(outString)
-	systemStatus.Server.DataSpace = uint64(outBytes)
 
 	botToken, status := s.repository.GetBotToken()
 	if status.Err() || botToken == "" {

@@ -1,5 +1,5 @@
 export function to_system_status(data: any): SystemStatus {
-   console.log(data)
+   console.dir(data)
    return {
       dns: {
          dkim_is: data.dns.dkim_is,
@@ -13,10 +13,21 @@ export function to_system_status(data: any): SystemStatus {
          spf_is: data.dns.spf_is,
          spf_should: data.dns.spf_should,
       },
-      server: {
-         data_space: data.server.data_space,
-         free_space: data.server.free_space,
-         total_space: data.server.total_space,
+      space: {
+         free: data.space.free,
+         total_server: data.space.total_server,
+         total_home: data.space.total_home,
+         os: data.space.os,
+         data: {
+            certificates: data.space.data.certificates,
+            iam: data.space.data.iam,
+            sys: data.space.data.sys,
+            post: data.space.data.post,
+         },
+         program: {
+            backend: data.space.program.backend,
+            frontend: data.space.program.frontend,
+         },
       },
       telegram_bot: {
          telegram_bot_hint: data.telegram_bot.telegram_bot_hint,
@@ -44,10 +55,21 @@ export type SystemStatus = {
       spf_is: string
       spf_should: string
    }
-   server: {
-      data_space: number
-      free_space: number
-      total_space: number
+   space: {
+      total_home: number
+      total_server: number
+      free: number
+      data: {
+         certificates: number
+         iam: number
+         sys: number
+         post: number
+      }
+      program: {
+         backend: number
+         frontend: number
+      }
+      os: number
    }
    telegram_bot: {
       telegram_bot_hint: string

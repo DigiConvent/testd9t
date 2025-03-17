@@ -26,6 +26,8 @@ type SysRepositoryInterface interface {
 	MigratePackage(pkgName string, toVersion *sys_domain.Version) core.Status
 
 	ListReleaseTags() ([]sys_domain.ReleaseTag, *core.Status)
+
+	GetDiskUsage() (*sys_domain.DiskUsage, *core.Status)
 }
 
 type SysRepository struct {

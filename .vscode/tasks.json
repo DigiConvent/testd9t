@@ -1,0 +1,27 @@
+{
+   "version": "2.0.0",
+   "tasks": [
+      {
+         "label": "Start All",
+         "dependsOn": ["Terminal 1 - Run Server", "Terminal 2 - Run Client"],
+         "problemMatcher": [],
+         "group": { "kind": "build", "isDefault": true }
+      },
+      {
+         "label": "Terminal 1 - Run Server",
+         "type": "shell",
+         "command": "cd backend && go run main.go --run",
+         "problemMatcher": [],
+         "group": { "kind": "build", "isDefault": true },
+         "panel": { "group": "server" }
+      },
+      {
+         "label": "Terminal 2 - Run Client",
+         "type": "shell",
+         "command": "cd frontend && npm run dev",
+         "problemMatcher": [],
+         "group": "build",
+         "panel": { "group": "client" }
+      }
+   ]
+}
