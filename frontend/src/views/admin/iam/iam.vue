@@ -1,5 +1,5 @@
 <template>
-   <div>
+   <div class="p-4">
       <h2 class="text-2xl">{{ $t("iam.title") }}</h2>
       <router-view v-slot="{ Component, route }">
          <component :is="Component" :key="route.path" />

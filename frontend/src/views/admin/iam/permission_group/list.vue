@@ -1,6 +1,5 @@
 <template>
    <div>
-      PermissionGroup List
       <OrganizationChart v-if="data" :value="data" collapsible>
          <template #default="slotProps">
             <span>{{ slotProps.node.data.name }}</span>
@@ -48,7 +47,7 @@
             </div>
          </template>
       </Dialog>
-      <PermissionPicker :multiple="true" @picked="handle_picked"></PermissionPicker>
+      <!-- <PermissionPicker :multiple="true" @picked="handle_picked"></PermissionPicker> -->
    </div>
 </template>
 
@@ -59,7 +58,6 @@ import type { PermissionGroupFacade } from "@/api/iam/permission_group/types"
 import { useToast } from "primevue"
 import { ref } from "vue"
 import PermissionGroupUpdate from "@/components/iam/permission_group/update.vue"
-import PermissionPicker from "@/components/iam/permission/list.vue"
 
 const data = ref<CustomNode<PermissionGroupFacade>>()
 const visible = ref(false)

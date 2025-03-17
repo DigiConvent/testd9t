@@ -17,9 +17,10 @@ export default defineConfig({
       rollupOptions: {
          output: {
             manualChunks: (id) => {
-               if (id.includes("node_modules")) {
-                  return "vendor"
-               }
+               if (id.includes("node_modules")) return "node_modules/"
+               if (id.includes("/components"))
+                  return "c/" + id.split("/components/")[1].split(".")[0]
+               if (id.includes("/views/")) return "v/" + id.split("/views/")[1].split(".")[0]
                return "main"
             },
          },
