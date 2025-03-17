@@ -35,7 +35,7 @@ func getDirSize(dir string) int64 {
 func (r *SysRepository) GetDiskUsage() (*sys_domain.DiskUsage, *core.Status) {
 	result := sys_domain.DiskUsage{}
 
-	dbPath := constants.HOME_PATH + "db/"
+	dbPath := os.Getenv(constants.DATABASE_PATH)
 
 	result.Data.IamSize = int(getDirSize(dbPath + "iam"))
 	result.Data.SysSize = int(getDirSize(dbPath + "sys"))
