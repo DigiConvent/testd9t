@@ -1,15 +1,6 @@
 <template>
    <div>
-      <OrganizationChart v-if="data" :value="data" collapsible>
-         <template #default="slotProps">
-            <span>{{ slotProps.node.data.name }}</span>
-            <Button
-               icon="pi pi-pencil"
-               class="p-button-rounded p-button-text"
-               @click="inspect_permission_group(slotProps.node.data.id)"
-            ></Button>
-         </template>
-      </OrganizationChart>
+      <PermissionGroupList @click="console.log($event)"></PermissionGroupList>
       <Dialog
          v-model:visible="visible"
          :dismissable-mask="true"
@@ -52,46 +43,9 @@
 </template>
 
 <script lang="ts" setup>
-import { api } from "@/api"
-import { create_tree_using_parent, type CustomNode } from "@/api/core/node"
-import type { PermissionGroupFacade } from "@/api/iam/permission_group/types"
-import { useToast } from "primevue"
+import PermissionGroupList from "@/components/iam/permission_group/list.vue"
 import { ref } from "vue"
 import PermissionGroupUpdate from "@/components/iam/permission_group/update.vue"
 
-const data = ref<CustomNode<PermissionGroupFacade>>()
-const visible = ref(false)
-const toast = useToast()
-
-const handle_picked = function (data: any) {
-   console.log("Picked")
-   console.dir(data)
-}
-
-async function load_permission_groups() {
-   ;(await api.iam.permission_group.list()).fold(
-      (error: string) => {
-         toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: error,
-         })
-      },
-      (permission_groups: PermissionGroupFacade[]) => {
-         const root = permission_groups.find((entry) => entry.parent == null)
-         if (!root) return
-         const root_node = create_tree_using_parent<PermissionGroupFacade>(root, permission_groups)
-
-         data.value = root_node
-      },
-   )
-}
-
-load_permission_groups()
-
 const focussed_permission_group = ref<string>("")
-const inspect_permission_group = async (id: string) => {
-   focussed_permission_group.value = id
-   visible.value = true
-}
 </script>
