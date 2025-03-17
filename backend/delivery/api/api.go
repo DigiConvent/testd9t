@@ -12,7 +12,7 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 	router.Use(api_middleware.JWTAuthMiddleware())
 	iam := api_middleware.NewIamMiddleware(s.IamService)
 
-	sysRouter := sys_router.NewSysRouter(s.SysService, s.PostService)
+	sysRouter := sys_router.NewSysRouter(s.SysService)
 	iamRouter := iam_router.NewIamRouter(s.IamService, s.SysService)
 
 	apiRoutes := router.Group("/api")
@@ -62,16 +62,10 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 		}
 	}
 
-	apiRoutes.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"sys": gin.H{
-				"status": "/api/sys/status",
-			},
-		})
-	})
 	sysRoutes := apiRoutes.Group("/sys")
 	{
-		sysRoutes.GET("/status", iam.RequiresPermission("sys"), sysRouter.SystemStatusGet)
+		sysRoutes.GET("/status", iam.RequiresPermission("sys"), sysRouter.GetStatus)
+		sysRoutes.POST("/logo/small", iam.RequiresPermission("sys"), sysRouter.SetSmallLogo)
+		sysRoutes.POST("/logo/large", iam.RequiresPermission("sys"), sysRouter.SetLargeLogo)
 	}
-
 }

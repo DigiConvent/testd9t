@@ -2,7 +2,9 @@
    <div>
       <Menubar v-if="logged_in" :model="items">
          <template #start>
-            <router-link :to="{ name: 'home' }">Logo</router-link>
+            <router-link :to="{ name: 'home' }">
+               <img class="h-16 rounded-full" src="@/assets/logo/small.jpg" />
+            </router-link>
          </template>
          <template #item="{ item, props, hasSubmenu, root }">
             <a v-if="item.hasSubmenu" v-bind="props.action">{{ item.label }}</a>

@@ -1,30 +1,29 @@
 package sys_router
 
 import (
-	post_service "github.com/DigiConvent/testd9t/pkg/post/service"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 	"github.com/gin-gonic/gin"
 )
 
 type SysRouterInterface interface {
-	LoginWithTelegram(ctx *gin.Context)
-	LoginWithCredentials(ctx *gin.Context)
+	SetSmallLogo(c *gin.Context)
+	SetLargeLogo(c *gin.Context)
+
+	GetStatus(c *gin.Context)
 }
 
 type SysRouter struct {
-	sysService  sys_service.SysServiceInterface
-	postService post_service.PostServiceInterface
+	sysService sys_service.SysServiceInterface
 }
 
-func NewSysRouter(sysService sys_service.SysServiceInterface, postService post_service.PostServiceInterface) *SysRouter {
+func NewSysRouter(sysService sys_service.SysServiceInterface) SysRouterInterface {
 	return &SysRouter{
-		sysService:  sysService,
-		postService: postService,
+		sysService: sysService,
 	}
 }
 
-func SetupSysRoutes(router *gin.Engine, sysService sys_service.SysServiceInterface, postService post_service.PostServiceInterface) {
-	sysRouter := NewSysRouter(sysService, postService)
+func SetupSysRoutes(router *gin.Engine, sysService sys_service.SysServiceInterface) {
+	sysRouter := NewSysRouter(sysService)
 
-	router.POST("/status/", sysRouter.SystemStatusGet)
+	router.POST("/status/", sysRouter.GetStatus)
 }

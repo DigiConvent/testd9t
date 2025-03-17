@@ -1,9 +1,9 @@
 <template>
    <div>
-      <h2 class="text-2xl mb-4">System</h2>
       <div v-if="system_status">
          <Card class="p-4">
             <template #header>
+               <h2 class="text-2xl mb-4">System</h2>
                <h3>{{ $t("sys.data") }}</h3>
             </template>
             <template #content>
@@ -134,12 +134,18 @@
                </Accordion>
             </template>
          </Card>
+         Sys
+         <LogoUpload />
+         <Card>
+            <template #content> </template>
+         </Card>
       </div>
       <ProgressBar v-else mode="indeterminate"></ProgressBar>
    </div>
 </template>
 
 <script lang="ts" setup>
+import LogoUpload from "@/components/sys/upload_logo.vue"
 import { api } from "@/api"
 import type { SystemStatus } from "@/api/sys/types"
 import { error, info } from "@/composables/toast"

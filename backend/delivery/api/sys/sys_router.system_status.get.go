@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (r *SysRouter) SystemStatusGet(c *gin.Context) {
+func (r *SysRouter) GetStatus(c *gin.Context) {
 	systemStatus, status := r.sysService.GetSystemStatus()
 
 	if status.Code != 200 {

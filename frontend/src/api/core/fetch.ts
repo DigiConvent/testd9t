@@ -84,7 +84,21 @@ export async function api_post<T>(
    }
 }
 
-export async function api_multipart<T>(url: string, body: any): Promise<Either<string, T>> {
+export async function api_multipart<T>(
+   url: string,
+   body: any,
+   files: Map<string, File>,
+   expects?: number,
+): Promise<Either<string, T>> {
+   const form_data = new FormData()
+   for (const key in body) {
+      form_data.append(key, body[key])
+   }
+
+   for (const key in files) {
+      form_data.append(key, files.get(key)!)
+   }
+
    const result = new Either<string, T>()
    const request = await fetch(url, {
       method: "POST",
@@ -97,7 +111,7 @@ export async function api_multipart<T>(url: string, body: any): Promise<Either<s
    })
 
    let data: any = {}
-   if (request.status != 204) {
+   if (request.status != expects) {
       try {
          data = await request.json()
       } catch (e: any) {

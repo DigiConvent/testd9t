@@ -24,6 +24,8 @@ type SysServiceInterface interface {
 
 	SetBotToken(botId string) *core.Status
 	SetDomain(domain string) *core.Status
+	SetLargeLogo(data []byte) *core.Status
+	SetSmallLogo(data []byte) *core.Status
 }
 
 type SysService struct {
