@@ -1,5 +1,4 @@
 <template>
-   <Toast />
    <div v-if="auth.has_permission('iam.permission_group.update')" class="card flex justify-center">
       <Form v-if="pg != null" class="flex flex-col gap-4 w-full sm:w-56" @submit="handle_submit">
          <FormTextInput v-model="pg.name" label="iam.pg.update" :error="errors.name" name="name" />

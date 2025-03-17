@@ -1,6 +1,5 @@
 <template>
    <div>
-      <Toast />
       <div class="card flex justify-center">
          <Form class="flex flex-col gap-4 w-full" @submit="handle_submit">
             <h2>{{ t("iam.user.create.title") }}</h2>
@@ -175,10 +174,10 @@ const handle_submit = async () => {
          })
       ).fold(
          (l) => {
-            error(l, "")
+            error(l)
          },
          (user_id: string) => {
-            success("User: " + user_id, "")
+            success("User: " + user_id)
          },
       )
    }

@@ -1,5 +1,4 @@
 <template>
-   <Toast />
    <div v-if="node" class="card">
       <PermissionOption
          v-for="child of node.children.sort((a, b) => a.label.localeCompare(b.label))"
@@ -14,7 +13,6 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, watch, getCurrentInstance } from "vue"
-import { useToast } from "primevue/usetoast"
 import { api } from "@/api"
 import {
    to_permission_tree,
@@ -23,17 +21,17 @@ import {
 } from "@/api/iam/permission/types"
 import type Either from "@/api/core/either"
 import PermissionOption from "./permission_option.vue"
+import { error } from "@/composables/toast"
 
 const node = ref<CustomTreeNode>()
-const toast = useToast()
 
 defineProps<{ multiple: boolean }>()
 
 onMounted(() => {
    api.iam.permission.list().then((result: Either<string, PermissionFacade[]>) => {
       result.fold(
-         (error: string) => {
-            toast.add({ severity: "error", summary: "Error", detail: error, life: 3000 })
+         (error_message: string) => {
+            error(error_message)
          },
          (permissions: PermissionFacade[]) => {
             const tree = to_permission_tree(permissions)

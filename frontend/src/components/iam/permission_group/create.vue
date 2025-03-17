@@ -1,5 +1,4 @@
 <template>
-   <Toast />
    <div v-if="auth.has_permission('iam.permission_group.update')" class="card flex justify-center">
       <Form v-if="pg != null" class="flex flex-col gap-4 w-full sm:w-56" @submit="handle_submit">
          <div class="flex flex-col gap-1">
@@ -39,7 +38,7 @@ import { api } from "@/api"
 import type { PermissionGroupRead, PermissionGroupWrite } from "@/api/iam/permission_group/types"
 import { to_permission_group_write } from "@/api/iam/permission_group/utils"
 import JwtAuthenticator from "@/auth/jwt"
-import { useToast } from "primevue"
+import { error } from "@/composables/toast"
 import { ref } from "vue"
 
 const auth = JwtAuthenticator.get_instance()
@@ -57,15 +56,10 @@ const errors = ref<{ name: string; abbr: string; description: string }>({
 
 const handle_submit = async () => {}
 
-const toast = useToast()
 const load_permission_group = async () => {
    ;(await api.iam.permission_group.get(props.modelValue)).fold(
-      (error: string) => {
-         toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: error,
-         })
+      (error_message: string) => {
+         error(error_message, "")
       },
       (permission_group: PermissionGroupRead) => {
          pg.value = to_permission_group_write(permission_group)

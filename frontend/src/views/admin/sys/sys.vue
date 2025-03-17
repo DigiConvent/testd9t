@@ -1,7 +1,6 @@
 <template>
    <div>
       <h2 class="text-2xl mb-4">System</h2>
-      <Toast />
       <div v-if="system_status">
          <Card class="p-4">
             <template #header>
@@ -143,14 +142,13 @@
 <script lang="ts" setup>
 import { api } from "@/api"
 import type { SystemStatus } from "@/api/sys/types"
-import { useToast } from "primevue/usetoast"
+import { error, info } from "@/composables/toast"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 
 const t = useI18n().t
 
 const system_status = ref<SystemStatus>()
-const toast = useToast()
 
 const space = ref<{ total_server: number; total_home: number; rest: number }>({
    total_server: 0,
@@ -167,15 +165,10 @@ type DnsEntry = {
 
 const copy_to_clipboard = (input: string) => {
    navigator.clipboard.writeText(input)
-   toast.add({
-      severity: "info",
-      detail:
-         input.substring(0, 4) +
-         "..." +
-         input.substring(input.length - 4) +
-         " " +
-         t("sys.dns.copied_to_clipboard"),
-   })
+   info(
+      input.substring(0, 4) + "..." + input.substring(input.length - 4),
+      t("sys.dns.copied_to_clipboard"),
+   )
 }
 
 const dns_checklist = ref<
@@ -192,12 +185,8 @@ const installation_disk_usage = ref<
 >([])
 api.sys.status().then((fold) => {
    fold.fold(
-      (err: string) => {
-         toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: err,
-         })
+      (error_message: string) => {
+         error(error_message)
       },
       (data: SystemStatus) => {
          system_status.value = data

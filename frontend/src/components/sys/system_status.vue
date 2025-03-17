@@ -1,5 +1,4 @@
 <template>
-   <Toast />
    <div v-if="status != null">
       <table>
          <tbody>
@@ -25,20 +24,18 @@
 import { ref } from "vue"
 import { api } from "./../../api"
 import type Either from "../../api/core/either"
-import { useToast } from "primevue/usetoast"
 import type { SystemStatus } from "@/api/sys/types"
-
-const toast = useToast()
+import { error, info } from "@/composables/toast"
 
 const status = ref<SystemStatus | null>(null)
 
 api.sys.status().then((result: Either<string, SystemStatus>) => {
    result.fold(
       () => {
-         toast.add({ severity: "error", summary: "API is down", life: 3000 })
+         error("API is down")
       },
       (data: SystemStatus) => {
-         toast.add({ severity: "info", summary: "Got system status", life: 3000 })
+         info("Got system status")
          status.value = data
       },
    )

@@ -1,6 +1,5 @@
 <template>
    <div>
-      <Toast />
       <Card v-if="!logged_in" class="flex justify-center">
          <template #content>
             <Form class="flex flex-col gap-4 w-full sm:w-56" @submit="handle_submit">
@@ -34,16 +33,15 @@
 
 <script lang="ts" setup>
 import { ref } from "vue"
-import { useToast } from "primevue/usetoast"
 import FormTextInput from "@/components/form/text_input.vue"
 import FormPasswordInput from "@/components/form/password_input.vue"
 import Button from "primevue/button"
-import Toast from "primevue/toast"
 import JwtAuthenticator from "@/auth/jwt"
 import * as v from "valibot"
 import { useI18n } from "vue-i18n"
 import get_web_app from "@/auth/telegram"
 import router from "@/router"
+import { error, success } from "@/composables/toast"
 const t = useI18n().t
 
 const emit = defineEmits(["logged_in"])
@@ -54,8 +52,6 @@ const errors = ref<{ email: string; password: string }>({
    email: "",
    password: "",
 })
-
-const toast = useToast()
 
 const email_validation = v.pipe(v.string(), v.nonEmpty())
 const password_validation = v.pipe(v.string(), v.nonEmpty())
@@ -69,12 +65,12 @@ const handle_submit = async () => {
    const re = v.safeParse(login_form, { email: email.value, password: password.value })
 
    if (re.success) {
-      const success = await JwtAuthenticator.get_instance().login_using_credentials(
+      const login_successful = await JwtAuthenticator.get_instance().login_using_credentials(
          re.output["email"],
          re.output["password"],
       )
 
-      if (success) {
+      if (login_successful) {
          emit("logged_in", true)
 
          const data = get_web_app().initData
@@ -86,19 +82,11 @@ const handle_submit = async () => {
                router.push({ name: "connect-telegram-user" })
             }
          }
-         toast.add({
-            severity: "success",
-            summary: t("iam.auth.login_form.login_successful"),
-            life: 3000,
-         })
+         success(t("iam.auth.login_form.login_successful"), "")
       }
    } else {
       for (const issue of re.issues) {
-         toast.add({
-            severity: "error",
-            summary: issue.message,
-            life: 3000,
-         })
+         error(issue.message, "")
       }
    }
 }
