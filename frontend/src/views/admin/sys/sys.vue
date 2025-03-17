@@ -86,8 +86,15 @@
                               class="pi pi-exclamation-circle text-red-400"
                            ></i>
                            <i v-else class="pi pi-question-circle text-yellow-400"></i>
-
-                           <span class="font-bold whitespace-nowrap">{{ record.name }}</span>
+                           <span class="font-bold whitespace-nowrap">
+                              <InputGroup v-if="record.done">
+                                 <Badge>{{ record.is.type }}</Badge>
+                                 <Badge severity="secondary">{{ record.is.domain }}</Badge>
+                                 <Badge severity="info">{{
+                                    record.is.shortened
+                                 }}</Badge> </InputGroup
+                              >{{ record.name }}</span
+                           >
                         </span>
                      </AccordionHeader>
                      <AccordionContent>
@@ -130,6 +137,7 @@
             </template>
          </Card>
       </div>
+      <ProgressBar v-else mode="indeterminate"></ProgressBar>
       <router-view />
    </div>
 </template>
