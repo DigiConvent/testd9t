@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/DigiConvent/testd9t/core/log"
 	iam_setup "github.com/DigiConvent/testd9t/pkg/iam/setup"
@@ -42,7 +43,8 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 
-		if tokenString == "" {
+		// custom auth method has no "Bearer " prefix but github does so we can't extract the user from this
+		if tokenString == "" || strings.HasPrefix(tokenString, "Bearer ") {
 			c.Next()
 			return
 		}
