@@ -22,7 +22,7 @@ func setLogo(variant string, data []byte) *core.Status {
 	logoFolder := constants.HOME_PATH + "db/sys/logo/"
 	logoPath := logoFolder + variant + ".jpg"
 	symlinkPath := constants.HOME_PATH + "frontend/assets/logo/" + variant + ".jpg"
-	os.MkdirAll(logoFolder, 0644)
+	os.MkdirAll(logoFolder, 0755)
 
 	if sys_domain.ProgramVersion != "dev" {
 		info, _ := os.Lstat(symlinkPath)
@@ -34,7 +34,7 @@ func setLogo(variant string, data []byte) *core.Status {
 	os.Remove(logoPath)
 	err := os.WriteFile(logoPath, data, 0644)
 	if err != nil {
-		return core.InternalError(err.Error())
+		return core.InternalError("Could not write logo:" + err.Error())
 	}
 
 	if sys_domain.ProgramVersion != "dev" {

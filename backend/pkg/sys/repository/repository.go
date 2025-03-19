@@ -9,6 +9,7 @@ import (
 type SysRepositoryInterface interface {
 	GetCurrentVersion() (*sys_domain.Version, *sys_domain.Version, core.Status)
 	ListFlavoursForVersion() ([]string, core.Status)
+	GetFlavour() (string, error)
 
 	SetBotToken(botId string) core.Status
 	GetBotToken() (string, core.Status)

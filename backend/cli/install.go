@@ -16,8 +16,6 @@ import (
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 )
 
-const d9tPresetsFileName = ".d9t_presets"
-
 type Script struct {
 	Step          int      `json:"step"`
 	Optional      bool     `json:"optional"`
@@ -135,7 +133,7 @@ type InstallationProtocol struct {
 	Files   []string `json:"path"`
 }
 
-func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool, installUsingPresets bool) {
+func Install(sysService sys_service.SysServiceInterface, flavour *string, force bool, verbose bool, d9tPresetsFileName string) {
 	uid := os.Geteuid()
 
 	if uid != 0 {
@@ -175,7 +173,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 	}
 
 	presets := map[string]string{}
-	if installUsingPresets {
+	if d9tPresetsFileName != "" {
 		contents, err := os.ReadFile(d9tPresetsFileName)
 		if err != nil {
 			log.Warning("Could not read any presets but not to worry, the prompts will be stored in " + d9tPresetsFileName + " and you can use it next time")
@@ -191,7 +189,7 @@ func Install(sysService sys_service.SysServiceInterface, flavour *string, force 
 		}
 	}
 	for _, input := range inputs {
-		if installUsingPresets {
+		if d9tPresetsFileName != "" {
 			if presets[input.Key] == "" {
 				log.Warning("Could not find preset for " + input.Key)
 				input.promptUser()

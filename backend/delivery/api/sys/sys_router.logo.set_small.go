@@ -7,7 +7,6 @@ import (
 )
 
 func (r *SysRouter) SetSmallLogo(c *gin.Context) {
-
 	bytes, err := getLogoBytes(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file: " + err.Error()})

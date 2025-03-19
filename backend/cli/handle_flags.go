@@ -23,7 +23,7 @@ func HandleFlags() {
 	forceFlag := actionsFlagSet.Bool("force", false, "Apply fixes upon a failure during the installation")
 	helpFlag := actionsFlagSet.Bool("help", false, "Prints this help message")
 	installFlag := actionsFlagSet.String("install", "", "Install ")
-	installUsingPresetsFlag := actionsFlagSet.Bool("use-presets", false, "Install using presets from a previous installation (usually stored under .d9t-presets)")
+	installUsingPresetsFlag := actionsFlagSet.String("presets", "", "Install using presets from a file")
 	migrateDBFlag := actionsFlagSet.Bool("migrate-db", false, "Migrate the database to something that is compatible with the current version")
 	replaceWithFlag := actionsFlagSet.String("replace-with", "", "Replace with a specific version")
 	runFlag := actionsFlagSet.Bool("run", false, "Deploy")

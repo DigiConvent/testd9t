@@ -134,11 +134,14 @@
                </Accordion>
             </template>
          </Card>
-         Sys
-         <LogoUpload />
-         <Card>
-            <template #content> </template>
-         </Card>
+         <label>
+            <img src="@/assets/logo/small.jpg" alt="" />
+            <LogoUpload variant="small" />
+         </label>
+         <label>
+            <img src="@/assets/logo/large.jpg" alt="" />
+            <LogoUpload variant="large" />
+         </label>
       </div>
       <ProgressBar v-else mode="indeterminate"></ProgressBar>
    </div>

@@ -1,9 +1,8 @@
 package sys_repository
 
 import (
-	"fmt"
-
 	"github.com/DigiConvent/testd9t/core"
+	"github.com/DigiConvent/testd9t/core/log"
 )
 
 func (r *SysRepository) SetBotToken(botId string) core.Status {
@@ -13,7 +12,7 @@ func (r *SysRepository) SetBotToken(botId string) core.Status {
 
 	_, err := r.db.Exec("update configurations set telegram_bot_token = ?", botId)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Error(err.Error())
 		return *core.InternalError("Failed to set telegram bot token")
 	}
 	return *core.StatusSuccess()

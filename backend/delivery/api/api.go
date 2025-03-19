@@ -65,6 +65,7 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 	sysRoutes := apiRoutes.Group("/sys")
 	{
 		sysRoutes.GET("/status", iam.RequiresPermission("sys"), sysRouter.GetStatus)
+		sysRoutes.GET("/installation/refresh", sysRouter.RefreshInstallation)
 		sysRoutes.POST("/logo/small", iam.RequiresPermission("sys"), sysRouter.SetSmallLogo)
 		sysRoutes.POST("/logo/large", iam.RequiresPermission("sys"), sysRouter.SetLargeLogo)
 	}

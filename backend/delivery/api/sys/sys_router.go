@@ -10,6 +10,7 @@ type SysRouterInterface interface {
 	SetLargeLogo(c *gin.Context)
 
 	GetStatus(c *gin.Context)
+	RefreshInstallation(c *gin.Context)
 }
 
 type SysRouter struct {

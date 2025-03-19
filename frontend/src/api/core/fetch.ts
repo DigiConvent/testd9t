@@ -53,7 +53,6 @@ export async function api_post<T>(
          Authorization: localStorage.getItem("token") || "",
          page: router.currentRoute.value.fullPath,
       },
-      mode: "same-origin",
       body: body,
    })
 
@@ -92,11 +91,11 @@ export async function api_multipart<T>(
 ): Promise<Either<string, T>> {
    const form_data = new FormData()
    for (const key in body) {
-      form_data.append(key, body[key])
+      form_data.set(key, body[key])
    }
 
-   for (const key in files) {
-      form_data.append(key, files.get(key)!)
+   for (const key of files.keys()) {
+      form_data.set(key, files.get(key)!)
    }
 
    const result = new Either<string, T>()
@@ -106,8 +105,7 @@ export async function api_multipart<T>(
          Authorization: "" + (localStorage.getItem("token") || ""),
          page: router.currentRoute.value.fullPath,
       },
-      mode: "same-origin",
-      body: body,
+      body: form_data,
    })
 
    let data: any = {}
@@ -130,7 +128,6 @@ export async function api_delete(url: string, expects?: number): Promise<Either<
    const result = new Either<string, boolean>()
    const request = await fetch(url, {
       method: "DELETE",
-      mode: "same-origin",
       headers: {
          Authorization: "" + (localStorage.getItem("token") || ""),
       },

@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -28,7 +27,6 @@ func serveFrontend(router *gin.Engine) {
 
 func proxyHandler(target string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println(c.Request.URL.Path)
 		remote, err := url.Parse(target)
 		if err != nil {
 			log.Error(err.Error())

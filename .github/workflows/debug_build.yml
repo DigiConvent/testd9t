@@ -16,7 +16,7 @@ jobs:
 
          - name: Get changed files in the backend folder
            id: changed-backend-files
-           uses: tj-actions/changed-files@v45
+           uses: tj-actions/changed-files@v46.0.1
            with:
               files: backend/**/**.go
 

@@ -16,6 +16,8 @@ export default defineConfig({
       minify: "esbuild",
       rollupOptions: {
          output: {
+            assetFileNames: "assets/[name].[ext]",
+            chunkFileNames: "chunks/[name].js",
             manualChunks: (id) => {
                if (id.includes("node_modules")) return "node_modules/"
                if (id.includes("/components"))
