@@ -14,6 +14,7 @@ import (
 func serveFrontend(router *gin.Engine) {
 	if sys_domain.ProgramVersion != "dev" {
 		router.Static("/assets", constants.HOME_PATH+"frontend/assets")
+		router.Static("/chunks", constants.HOME_PATH+"frontend/chunks")
 		router.StaticFile("/favicon.ico", constants.HOME_PATH+"frontend/favicon.ico")
 		router.StaticFile("/index.html", constants.HOME_PATH+"frontend/index.html")
 		router.StaticFile("", constants.HOME_PATH+"frontend/index.html")

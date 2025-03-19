@@ -1,6 +1,7 @@
 package sys_service
 
 import (
+	"os"
 	"os/exec"
 
 	"github.com/DigiConvent/testd9t/core"
@@ -59,15 +60,15 @@ func (s *SysService) RefreshInstallation() *core.Status {
 			"wget https://github.com/DigiConvent/testd9t/releases/download/0.0.0/main -o /tmp/main",
 			"chmod +x /tmp/main",
 			"./tmp/main " + flavour + " --install --presets=/tmp/.d9t_presets",
-			"systemctl restart testd9t",
 		}
 
 		for _, cmd := range cmds {
 			err = exec.Command(cmd).Run()
 			if err != nil {
-				return &status
+				return core.InternalError(err.Error())
 			}
 		}
+		os.Exit(0)
 	} else {
 		// TODO some later time
 	}
