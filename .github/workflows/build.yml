@@ -239,13 +239,13 @@ jobs:
          - name: Request OIDC Token
            id: oidc
            run: |
-               echo "TOKEN=$(curl -sSL -H 'Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN' \
-                  \"${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=digiconvent.de\" | jq -r '.value')" >> $GITHUB_ENV
+              echo "TOKEN=$(curl -sSL -H 'Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN' \
+                 \"${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=digiconvent.de\" | jq -r '.value')" >> $GITHUB_ENV
          - name: Send Webhook Request
            run: |
-           PAYLOAD='{"event": "build_complete"}'
-           curl -X POST "https://digiconvent.de/api/sys/installation/refresh" \
-               -H "Authorization: Bearer $TOKEN" \
-               -H "Content-Type: application/json" \
-               -H "User-Agent: GitHubActions" \
-               -d "$PAYLOAD"
+              PAYLOAD='{"event": "build_complete"}'
+              curl -X POST "https://digiconvent.de/api/sys/installation/refresh" \
+                 -H "Authorization: Bearer $TOKEN" \
+                 -H "Content-Type: application/json" \
+                 -H "User-Agent: GitHubActions" \
+                 -d "$PAYLOAD"
