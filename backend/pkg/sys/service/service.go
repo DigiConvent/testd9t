@@ -55,11 +55,12 @@ func (s *SysService) RefreshInstallation() *core.Status {
 
 	if currentVersion == "0.0.0" {
 		cmds := []string{
-			"systemctl restart testd9t",
 			"rm -rf /home/testd9t",
 			"wget https://github.com/DigiConvent/testd9t/releases/download/0.0.0/main -o /tmp/main",
 			"chmod +x /tmp/main",
-			"./tmp/main " + flavour + " --install --presets=/tmp/.d9t_presets"}
+			"./tmp/main " + flavour + " --install --presets=/tmp/.d9t_presets",
+			"systemctl restart testd9t",
+		}
 
 		for _, cmd := range cmds {
 			err = exec.Command(cmd).Run()
