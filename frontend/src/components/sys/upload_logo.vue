@@ -1,7 +1,7 @@
 <template>
    <Card>
       <template #header>
-         {{ variant }}
+         {{ label }}
       </template>
       <template #content>
          <label>
@@ -19,7 +19,7 @@ import { error, success } from "@/composables/toast"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 
-const props = defineProps<{ variant: "small" | "large" }>()
+const props = defineProps<{ variant: "small" | "large"; label: string }>()
 
 const t = useI18n().t
 let file: File

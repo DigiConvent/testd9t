@@ -4,7 +4,10 @@
       <Menubar v-if="logged_in" :model="items">
          <template #start>
             <router-link :to="{ name: 'home' }">
-               <img class="h-16 rounded-full" src="@/assets/logo/small.jpg" />
+               <img
+                  class="h-16 w-16 rounded-full"
+                  :src="`/assets/logo/small.jpg?v=${new Date().getTime()}`"
+               />
             </router-link>
          </template>
          <template #item="{ item, props, hasSubmenu, root }">

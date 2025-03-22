@@ -2,6 +2,8 @@
    "admin": { "title": "Administration" },
    "sys": {
       "upload_logo": {
+         "large_label": "Logo (groß)",
+         "small_label": "Logo (klein)",
          "success": "Logo erfolgreich hochgeladen",
          "fail": "Logo konnte nicht hochgeladen werden"
       },

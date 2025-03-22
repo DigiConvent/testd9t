@@ -135,10 +135,10 @@
             </template>
          </Card>
          <label>
-            <LogoUpload variant="small" />
+            <LogoUpload variant="small" :label="$t('sys.small_logo')" />
          </label>
          <label>
-            <LogoUpload variant="large" />
+            <LogoUpload variant="large" :label="$t('sys.large_logo')" />
          </label>
       </div>
       <ProgressBar v-else mode="indeterminate"></ProgressBar>
