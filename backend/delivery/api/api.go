@@ -1,6 +1,7 @@
 package api
 
 import (
+	constants "github.com/DigiConvent/testd9t/core/const"
 	iam_router "github.com/DigiConvent/testd9t/delivery/api/iam"
 	api_middleware "github.com/DigiConvent/testd9t/delivery/api/middleware"
 	sys_router "github.com/DigiConvent/testd9t/delivery/api/sys"
@@ -69,4 +70,8 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 		sysRoutes.POST("/logo/small", iam.RequiresPermission("sys"), sysRouter.SetSmallLogo)
 		sysRoutes.POST("/logo/large", iam.RequiresPermission("sys"), sysRouter.SetLargeLogo)
 	}
+
+	router.NoRoute(func(ctx *gin.Context) {
+		ctx.File(constants.HOME_PATH + "frontend/index.html")
+	})
 }

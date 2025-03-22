@@ -18,9 +18,6 @@ func serveFrontend(router *gin.Engine) {
 		router.StaticFile("/favicon.ico", constants.HOME_PATH+"frontend/favicon.ico")
 		router.StaticFile("/index.html", constants.HOME_PATH+"frontend/index.html")
 		router.StaticFile("", constants.HOME_PATH+"frontend/index.html")
-		router.NoRoute(func(ctx *gin.Context) {
-			ctx.File(constants.HOME_PATH + "frontend/index.html")
-		})
 	} else {
 		router.Use(proxyHandler("http://localhost:5173"))
 	}
