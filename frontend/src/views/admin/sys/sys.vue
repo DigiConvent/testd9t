@@ -2,7 +2,7 @@
    <div>
       <div v-if="system_status">
          <Card class="p-4">
-            <template #header>
+            <template #title>
                <h2 class="text-2xl mb-4">System</h2>
                <div>{{ $t("sys.built_at", { date: system_status.version.built_at }) }}</div>
                <div>{{ $t("sys.online_since", { date: system_status.version.online_since }) }}</div>
@@ -134,12 +134,14 @@
                </Accordion>
             </template>
          </Card>
-         <label>
-            <LogoUpload variant="small" :label="$t('sys.small_logo')" />
-         </label>
-         <label>
-            <LogoUpload variant="large" :label="$t('sys.large_logo')" />
-         </label>
+         <div class="grid grid-cols-2 gap-4 mt-4">
+            <div class="">
+               <LogoUpload variant="small" :label="$t('sys.upload_logo.small_label')" />
+            </div>
+            <div class="">
+               <LogoUpload variant="large" :label="$t('sys.upload_logo.large_label')" />
+            </div>
+         </div>
       </div>
       <ProgressBar v-else mode="indeterminate"></ProgressBar>
    </div>
