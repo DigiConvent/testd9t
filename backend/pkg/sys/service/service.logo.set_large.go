@@ -19,7 +19,7 @@ func setLogo(variant string, data []byte) *core.Status {
 		return core.BadRequestError("Invalid variant")
 	}
 
-	logoFolder := constants.HOME_PATH + "db/sys/logo/"
+	logoFolder := constants.HOME_PATH + "data/sys/logo/"
 	logoPath := logoFolder + variant + ".jpg"
 	symlinkPath := constants.HOME_PATH + "frontend/assets/logo/" + variant + ".jpg"
 	os.MkdirAll(logoFolder, 0755)
