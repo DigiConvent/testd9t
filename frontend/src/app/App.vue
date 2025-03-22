@@ -6,7 +6,7 @@
             <router-link :to="{ name: 'home' }">
                <img
                   class="h-16 w-16 rounded-full"
-                  :src="`/assets/logo/small.jpg?v=${new Date().getTime()}`"
+                  :src="`/assets/small.jpg?v=${new Date().getTime()}`"
                />
             </router-link>
          </template>
