@@ -21,7 +21,7 @@ func setLogo(variant string, data []byte) *core.Status {
 
 	logoFolder := constants.HOME_PATH + "data/sys/logo/"
 	logoPath := logoFolder + variant + ".jpg"
-	symlinkPath := constants.HOME_PATH + "frontend/assets/logo/" + variant + ".jpg"
+	symlinkPath := constants.HOME_PATH + "frontend/assets/" + variant + ".jpg"
 	os.MkdirAll(logoFolder, 0755)
 
 	if sys_domain.ProgramVersion != "dev" {

@@ -1,6 +1,8 @@
 {
    "admin": { "title": "Administration" },
    "sys": {
+      "built_at": "Erstellt am {date}",
+      "online_since": "Online seit {date}",
       "title": "System",
       "data": "Datenverbrauch",
       "total": "Insgesamt",

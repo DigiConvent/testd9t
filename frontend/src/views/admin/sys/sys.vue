@@ -4,10 +4,10 @@
          <Card class="p-4">
             <template #header>
                <h2 class="text-2xl mb-4">System</h2>
-               <h3>{{ $t("sys.data") }}</h3>
+               <div>{{ $t("sys.built_at", { date: system_status.version.built_at }) }}</div>
+               <div>{{ $t("sys.online_since", { date: system_status.version.online_since }) }}</div>
             </template>
             <template #content>
-               testd9t
                <MeterGroup
                   :value="installation_disk_usage"
                   label-position="start"
