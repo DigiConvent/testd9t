@@ -6,7 +6,7 @@
       <template #content>
          <label>
             {{ `@/assets/${variant}.jpg?v=${l}` }}
-            <img :src="`@/assets/${variant}.jpg?v=${l}`" alt="" />
+            <img :src="`/assets/${variant}.jpg?v=${l}`" alt="" />
             <input type="file" name="logo" accept="image/jpg" @input="on_upload" />
          </label>
       </template>

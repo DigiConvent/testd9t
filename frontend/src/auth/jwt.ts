@@ -4,6 +4,7 @@ import type Either from "@/api/core/either"
 import { ref, type Ref } from "vue"
 import type { PermissionFacade } from "@/api/iam/permission/types"
 import { info, warn } from "@/composables/toast"
+import router from "@/router"
 
 export default class JwtAuthenticator {
    private static instance: JwtAuthenticator | undefined
@@ -22,6 +23,7 @@ export default class JwtAuthenticator {
          })
       } else {
          this.is_authenticated.value = false
+         router.replace({ name: "home" })
       }
    }
 
