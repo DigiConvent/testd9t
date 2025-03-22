@@ -135,11 +135,9 @@
             </template>
          </Card>
          <label>
-            <img src="@/assets/logo/small.jpg" alt="" />
             <LogoUpload variant="small" />
          </label>
          <label>
-            <img src="@/assets/logo/large.jpg" alt="" />
             <LogoUpload variant="large" />
          </label>
       </div>

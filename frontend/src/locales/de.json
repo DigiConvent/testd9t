@@ -1,6 +1,10 @@
 {
    "admin": { "title": "Administration" },
    "sys": {
+      "upload_logo": {
+         "success": "Logo erfolgreich hochgeladen",
+         "fail": "Logo konnte nicht hochgeladen werden"
+      },
       "built_at": "Erstellt am {date}",
       "online_since": "Online seit {date}",
       "title": "System",

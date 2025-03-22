@@ -4,6 +4,6 @@ import { api_multipart } from "../core/fetch"
 export default function upload_logo(
    variant: "small" | "large",
    file: File,
-): Promise<Either<string, string>> {
-   return api_multipart<string>("/api/sys/logo/" + variant, {}, new Map().set("file", file), 200)
+): Promise<Either<string, boolean>> {
+   return api_multipart<boolean>("/api/sys/logo/" + variant, {}, new Map().set("file", file), 200)
 }

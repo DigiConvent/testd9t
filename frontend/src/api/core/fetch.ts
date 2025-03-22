@@ -109,6 +109,10 @@ export async function api_multipart<T>(
    })
 
    let data: any = {}
+   if (expects != undefined && expects == request.status) {
+      return result.right(true as T)
+   }
+
    if (request.status != expects) {
       try {
          data = await request.json()
