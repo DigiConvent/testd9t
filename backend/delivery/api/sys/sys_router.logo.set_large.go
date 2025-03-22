@@ -1,6 +1,7 @@
 package sys_router
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -11,6 +12,7 @@ import (
 func (r *SysRouter) SetLargeLogo(c *gin.Context) {
 	c.Request.ParseMultipartForm(10 << 20)
 	bytes, err := getLogoBytes(c)
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file: " + err.Error()})
 		return
@@ -28,18 +30,13 @@ func (r *SysRouter) SetLargeLogo(c *gin.Context) {
 }
 
 func getLogoBytes(c *gin.Context) ([]byte, error) {
-	// err := c.Request.ParseMultipartForm(10 << 20)
-	// if err != nil {
-	// 	log.Error(err.Error())
-	// 	return nil, err
-	// }
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
 		return nil, err
 	}
 
 	if !strings.HasSuffix(header.Filename, ".jpg") {
-		return nil, err
+		return nil, errors.New("file must be a jpg")
 	}
 
 	bytes, err := io.ReadAll(file)

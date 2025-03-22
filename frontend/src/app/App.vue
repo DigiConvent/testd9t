@@ -1,5 +1,6 @@
 <template>
    <div>
+      <Toast></Toast>
       <Menubar v-if="logged_in" :model="items">
          <template #start>
             <router-link :to="{ name: 'home' }">

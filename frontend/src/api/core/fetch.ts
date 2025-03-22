@@ -108,17 +108,11 @@ export async function api_multipart<T>(
       body: form_data,
    })
 
-   let data: any = {}
-   if (expects != undefined && expects == request.status) {
-      return result.right(true as T)
-   }
-
-   if (request.status != expects) {
-      try {
-         data = await request.json()
-      } catch (e: any) {
-         console.error(e)
-      }
+   const data: any = await request.json()
+   console.log(data)
+   if (expects != undefined) {
+      if (expects == request.status) return result.right(true as T)
+      else return result.left(data["error"])
    }
 
    if (request.ok) {
