@@ -3,7 +3,6 @@ import "primeicons/primeicons.css"
 
 import { createApp } from "vue"
 import { createI18n } from "vue-i18n"
-import { createPinia } from "pinia"
 import PrimeVue from "primevue/config"
 import Aura from "@primevue/themes/aura"
 
@@ -39,6 +38,7 @@ import {
    Ripple,
    Select,
    Skeleton,
+   Textarea,
    ToastService,
    ToggleSwitch,
    TreeSelect,
@@ -46,7 +46,6 @@ import {
 
 const app = createApp(App)
 
-app.use(createPinia())
 app.use(PrimeVue, { theme: { preset: Aura } })
 
 import de from "./locales/de.json"
@@ -66,6 +65,7 @@ app.use(
       },
    }),
 )
+
 app.use(router)
 
 app.component("Accordion", Accordion)
@@ -92,6 +92,7 @@ app.component("OrganizationChart", OrganizationChart)
 app.component("Popover", Popover)
 app.component("ProgressBar", ProgressBar)
 app.component("ProgressSpinner", ProgressSpinner)
+app.component("Textarea", Textarea)
 app.component("Toast", Toast)
 app.component("ToggleSwitch", ToggleSwitch)
 app.component("TreeSelect", TreeSelect)
@@ -100,15 +101,26 @@ app.component("Skeleton", Skeleton)
 
 app.directive("ripple", Ripple)
 
+const remember = window.location.href.replace(window.location.origin, "")
 app.use(ToastService)
 
 const auth = JwtAuthenticator.get_instance()
 if (is_mini_app()) {
    auth.login_using_telegram().then(() => {
-      app.mount("#app")
+      mount()
    })
 } else {
    auth.load_permissions().then(() => {
-      app.mount("#app")
+      mount()
    })
+}
+
+function mount() {
+   app.mount("#app")
+   if (JwtAuthenticator.get_instance().is_authenticated.value) {
+      router.replace({ path: remember })
+   } else {
+      console.log("Not authenticated")
+      router.replace({ name: "home" })
+   }
 }

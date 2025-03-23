@@ -28,13 +28,26 @@
          "show_more": "mehr anzeigen",
          "show_fewer": "weniger anzeigen"
       },
+      "us": {
+         "list": {
+            "title": "Mitgliedschaften"
+         }
+      },
       "pg": {
+         "list": {
+            "title": "Gruppen"
+         },
          "update": {
             "title": "Gruppeninformationen",
+            "submit": "Speichern"
+         },
+         "fields": {
             "name": "Name",
             "abbr": "Abkürzung",
             "description": "Beschreibung",
-            "submit": "Speichern"
+            "parent": "Übergeordnete Gruppe",
+            "is_leaf": "Endgruppe",
+            "is_group": "Gruppe"
          }
       },
       "title": "Zugriffskontrolle",

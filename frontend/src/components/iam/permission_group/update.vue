@@ -1,11 +1,11 @@
 <template>
    <div v-if="auth.has_permission('iam.permission_group.update')" class="card flex justify-center">
       <Form v-if="pg != null" class="flex flex-col gap-4 w-full sm:w-56" @submit="handle_submit">
-         <FormTextInput v-model="pg.name" label="iam.pg.update" :error="errors.name" name="name" />
-         <FormTextInput v-model="pg.abbr" label="iam.pg.update" :error="errors.abbr" name="abbr" />
+         <FormTextInput v-model="pg.name" label="iam.pg.fields" :error="errors.name" name="name" />
+         <FormTextInput v-model="pg.abbr" label="iam.pg.fields" :error="errors.abbr" name="abbr" />
          <FormTextInput
             v-model="pg.description"
-            label="iam.pg.update"
+            label="iam.pg.fields"
             :error="errors.description"
             name="description"
          />
@@ -26,7 +26,7 @@ import type { PermissionGroupRead, PermissionGroupWrite } from "@/api/iam/permis
 import { to_permission_group_write } from "@/api/iam/permission_group/utils"
 import JwtAuthenticator from "@/auth/jwt"
 import { useToast } from "primevue"
-import { ref } from "vue"
+import { ref, watch } from "vue"
 
 import FormTextInput from "@/components/form/text_input.vue"
 
@@ -62,4 +62,8 @@ const load_permission_group = async () => {
 }
 
 load_permission_group()
+
+watch(props, () => {
+   load_permission_group()
+})
 </script>

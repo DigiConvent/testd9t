@@ -38,10 +38,9 @@ Open a new terminal, navigate to the backend folder, install and migrate the bac
 cd ../backend
 # flavour being one of the supported linux flavours mentioned under install/<flavour>/
 go run main.go --install <flavour>
-# migrates using local migration files under /data/migrations/ to version .env -> VERSION
 # use --force to force migrating. This will reset data in the database
 go run main.go --migrate-db
-go run main.go --run # runs the backend, open in the browser under localhost under port .env -> PORT
+air # runs the backend, open in the browser under localhost under port .env -> PORT
 ```
 
 ## Deployed development 🧪

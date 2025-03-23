@@ -48,7 +48,7 @@
             <component :is="Component" :key="route.path" />
          </router-view>
       </header>
-      <footer class="fixed bottom-0">
+      <footer class="mt-5">
          <a href="https://github.com/DigiConvent/testd9t" target="_blank"
             ><i class="pi pi-github"></i
          ></a>

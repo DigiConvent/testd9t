@@ -4,7 +4,14 @@
       <router-view v-slot="{ Component, route }">
          <component :is="Component" :key="route.path" />
       </router-view>
-      <PermissionGroupList></PermissionGroupList>
+      <Card>
+         <template #title>
+            {{ $t("iam.pg.list.title") }}
+         </template>
+         <template #content>
+            <PermissionGroupList></PermissionGroupList>
+         </template>
+      </Card>
    </div>
 </template>
 

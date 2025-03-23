@@ -27,9 +27,9 @@ import { ref } from "vue"
 
 defineProps<{
    // eslint-disable-next-line vue/prop-name-casing
-   modelValue: string
-   only_nodes: boolean
-   only_groups: boolean
+   modelValue: string | undefined
+   only_nodes?: boolean
+   only_groups?: boolean
 }>()
 
 const emit = defineEmits(["picked"])
