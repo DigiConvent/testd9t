@@ -2,8 +2,8 @@
 <template>
    <div class="text-2xl">
       <label
-         class="select-none block hover:underline cursor-pointer"
-         :class="`${is_checked && !is_indeterminate ? 'text-green-700' : is_indeterminate ? 'text-orange-600' : 'text-gray-500'} ${multiple && hovered ? 'bg-blue-100' : ''}`"
+         class="select-none block"
+         :class="`${is_checked && !is_indeterminate ? 'text-green-700' : is_indeterminate ? 'text-orange-600' : 'text-gray-500'} ${multiple && hovered && !readonly ? 'cursor-pointer bg-blue-100 underline' : ''}`"
          @mouseenter="hovered = true"
          @mouseleave="hovered = false"
       >
@@ -20,27 +20,37 @@
             class="hidden"
             type="checkbox"
             :checked="is_checked"
+            :readonly="(props.preselected || []).includes(props.node.key)"
             :indeterminate.prop="is_indeterminate"
-            @change="handle_change"
+            @change="handle_change($event)"
          />
          {{ node.label }}
-         <span v-if="node.checked != is_checked" class="text-red-500">glitched</span>
+         <span
+            v-if="(props.preselected || []).includes(props.node.key)"
+            class="text-grass-200 text-xs"
+            >({{ $t("inherited") }})</span
+         >
       </label>
-      <div v-if="node.children" class="pl-4">
+      <div v-if="node.children && !(preselected || []).includes(node.key)" class="pl-4">
+         <!-- this is a summarised view of the child nodes (only show the first and last child in a non-collapsed way) -->
          <template
             v-for="sorted of [children]"
             v-if="
+               // show if the parent is not checked and no summary is needed
                (is_checked && node.parent != null && !node.parent!.checked && show == false) ||
+               // or if summary is needed when the node is checked and visible
                (summarised && node.checked && show != true)
             "
             :key="sorted"
          >
             <template v-if="is_checked && node.children.length > 2">
                <PermissionOption
-                  :node="sorted[0]"
                   :multiple="props.multiple"
+                  :node="sorted[0]"
                   :parent_hovered="parent_hovered || hovered"
+                  :preselected="preselected"
                   :summarised="false"
+                  :readonly="(props.preselected || []).includes(props.node.key) || readonly"
                   @update:checked="update_child_checked(0, $event)"
                />
                <div class="text-2xl">
@@ -50,10 +60,12 @@
                   </div>
                </div>
                <PermissionOption
-                  :node="sorted[1]"
                   :multiple="props.multiple"
+                  :node="sorted[1]"
                   :parent_hovered="parent_hovered || hovered"
+                  :preselected="preselected"
                   :summarised="false"
+                  :readonly="(props.preselected || []).includes(props.node.key) || readonly"
                   @update:checked="update_child_checked(node.children.length - 1, $event)"
                />
             </template>
@@ -64,10 +76,12 @@
             <PermissionOption
                v-for="(child, index) in node.children"
                :key="index"
-               :node="child"
                :multiple="props.multiple"
-               :summarised="!summarised"
+               :node="child"
                :parent_hovered="parent_hovered || hovered"
+               :preselected="preselected"
+               :summarised="!summarised"
+               :readonly="(props.preselected || []).includes(props.node.key) || readonly"
                @update:checked="update_child_checked(index, $event)"
             />
             <div
@@ -93,6 +107,8 @@ const props = defineProps<{
    parent_hovered: boolean
    multiple: boolean
    summarised: boolean | null
+   preselected: string[]
+   readonly: boolean
 }>()
 const hovered = ref(false)
 
@@ -113,7 +129,9 @@ const children = computed(() => {
 
 const node = ref(props.node)
 
-const is_checked = computed(() => node.value.checked === true)
+const is_checked = computed(
+   () => node.value.checked === true || (props.preselected || []).includes(node.value.key),
+)
 
 const is_indeterminate = computed(() => {
    if (!node.value.children) return false
@@ -132,8 +150,10 @@ const update_node_and_children = (node: CustomTreeNode, is_checked: boolean | nu
 }
 
 const handle_change = (event: Event) => {
-   const previous = node.value.checked
+   if (event.target == null) return
    const target = event.target as HTMLInputElement
+   if (target.readOnly) return
+   const previous = node.value.checked
    const is_checked = target.checked
    update_node_and_children(node.value, is_checked)
    emit("update:checked", is_checked)
@@ -168,4 +188,8 @@ watch(
    },
    { deep: true },
 )
+
+if ((props.preselected || []).includes(props.node.key)) {
+   update_node_and_children(node.value, is_checked.value)
+}
 </script>

@@ -65,7 +65,13 @@ export default class JwtAuthenticator {
          enabled: boolean
       }
    } | null {
-      if (this.token != undefined) return JSON.parse(atob(this.token.split(".")[1]))
+      if (this.token != undefined) {
+         try {
+            return JSON.parse(atob(this.token.split(".")[1]))
+         } catch {
+            this.logout()
+         }
+      }
       return null
    }
 
@@ -113,12 +119,16 @@ export default class JwtAuthenticator {
       const result = await response
       if (result.is_right()) {
          const token = result.get_right()
-         this.token = token
-         localStorage.setItem("token", token!)
-         this.refresh_token()
-         await this.load_permissions()
-         this.is_authenticated.value = true
-         return true
+         if (token == undefined) {
+            return false
+         } else {
+            this.token = token
+            localStorage.setItem("token", token)
+            this.refresh_token()
+            await this.load_permissions()
+            this.is_authenticated.value = true
+            return true
+         }
       } else {
          return false
       }

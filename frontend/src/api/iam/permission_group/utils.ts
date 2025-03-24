@@ -68,6 +68,6 @@ export function to_permission_group_write(pg: PermissionGroupRead): PermissionGr
       parent: pg.parent,
       is_group: pg.is_group,
       is_node: pg.is_node,
-      permissions: pg.permissions,
+      permissions: pg.permissions.map((e) => e.name),
    }
 }

@@ -7,11 +7,11 @@
             :name="name"
             type="text"
             fluid
+            :readonly="readonly"
             @input="handle_input($event)"
          />
          <label :for="name">{{ $t(label + "." + name) }}</label>
       </FloatLabel>
-      <Message v-if="error">{{ error }}</Message>
    </div>
 </template>
 
@@ -19,7 +19,7 @@
 import { computed } from "vue"
 
 // eslint-disable-next-line vue/prop-name-casing
-const props = defineProps<{ modelValue: string; name: string; error: string; label: string }>()
+const props = defineProps<{ modelValue: string; name: string; label: string; readonly?: boolean }>()
 const emit = defineEmits(["update:modelValue"])
 
 const value_facade = computed({

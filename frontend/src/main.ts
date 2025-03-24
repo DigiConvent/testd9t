@@ -21,6 +21,7 @@ import {
    Card,
    Checkbox,
    Dialog,
+   Drawer,
    FloatLabel,
    InputGroup,
    InputGroupAddon,
@@ -76,6 +77,7 @@ app.component("Badge", Badge)
 app.component("Button", Button)
 app.component("Card", Card)
 app.component("Dialog", Dialog)
+app.component("Drawer", Drawer)
 app.component("Checkbox", Checkbox)
 app.component("FloatLabel", FloatLabel)
 app.component("Form", Form)

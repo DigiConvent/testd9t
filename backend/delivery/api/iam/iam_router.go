@@ -59,11 +59,6 @@ func (router *IamRouter) AddUserStatusUser(ctx *gin.Context) {
 	panic("unimplemented")
 }
 
-// CreatePermissionGroup implements IamRouterInterface.
-func (router *IamRouter) CreatePermissionGroup(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
 // DeletePermissionGroup implements IamRouterInterface.
 func (router *IamRouter) DeletePermissionGroup(ctx *gin.Context) {
 	panic("unimplemented")
@@ -111,11 +106,6 @@ func (router *IamRouter) SetParentPermissionGroup(ctx *gin.Context) {
 
 // SetPasswordUser implements IamRouterInterface.
 func (router *IamRouter) SetPasswordUser(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
-// UpdatePermissionGroup implements IamRouterInterface.
-func (router *IamRouter) UpdatePermissionGroup(ctx *gin.Context) {
 	panic("unimplemented")
 }
 

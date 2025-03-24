@@ -17,5 +17,5 @@ func (r *IAMRepository) UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.Per
 		return *core.NotFoundError("Permission group not found")
 	}
 
-	return *core.StatusSuccess()
+	return *core.StatusNoContent()
 }

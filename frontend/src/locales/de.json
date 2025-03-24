@@ -38,8 +38,16 @@
             "title": "Gruppen"
          },
          "update": {
-            "title": "Gruppeninformationen",
+            "title": "Gruppe aktualisieren",
             "submit": "Speichern"
+         },
+         "create": {
+            "title": "Gruppe erstellen",
+            "submit": "Erstellen"
+         },
+         "delete": {
+            "title": "Gruppe löschen",
+            "submit": "Löschen"
          },
          "fields": {
             "name": "Name",
@@ -47,7 +55,8 @@
             "description": "Beschreibung",
             "parent": "Übergeordnete Gruppe",
             "is_leaf": "Endgruppe",
-            "is_group": "Gruppe"
+            "is_group": "Gruppe",
+            "permissions": "Zugriffsrechte"
          }
       },
       "title": "Zugriffskontrolle",
@@ -103,5 +112,15 @@
             "submit": "Anlegen"
          }
       }
-   }
+   },
+   "actions": {
+      "create": "Erstellen",
+      "update": "Aktualisieren",
+      "delete": "Löschen",
+      "cancel": "Abbrechen",
+      "save": "Speichern",
+      "close": "Schließen",
+      "reset": "Zurücksetzen"
+   },
+   "unauthorised": "Fehlende Authorisierung ({permission})"
 }

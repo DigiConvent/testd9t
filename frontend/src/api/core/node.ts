@@ -4,6 +4,8 @@ export type CustomNode<T> = {
    key: string
    data: T
    children: CustomNode<T>[]
+   selectable?: boolean
+   styleClass?: string
 }
 
 type HasChildren = {
@@ -30,7 +32,7 @@ export function to_has_parent<T extends HasChildren>(data: T[]): (T | HasParent)
 
 type HasParent = {
    id: string
-   parent: string
+   parent?: string
 }
 
 export function create_tree_using_parent<T extends HasParent>(leaf: T, data: T[]): CustomNode<T> {

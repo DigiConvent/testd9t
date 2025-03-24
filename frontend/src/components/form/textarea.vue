@@ -3,20 +3,27 @@
       <FloatLabel variant="in">
          <Textarea
             :id="name"
-            :value="modelValue"
+            v-model="value_facade"
             :name="name"
-            type="text"
+            :label="$t(label + '.' + name)"
+            error=""
             fluid
-            @input="emit('update:modelValue', $event)"
+            @on-update:model-value="emit('update:modelValue', $event)"
          />
          <label :for="name">{{ $t(label + "." + name) }}</label>
       </FloatLabel>
-      <Message v-if="error">{{ error }}</Message>
    </div>
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue"
+
 // eslint-disable-next-line vue/prop-name-casing
-defineProps<{ modelValue: string; name: string; error: string; label: string }>()
+const props = defineProps<{ modelValue: string; name: string; label: string }>()
 const emit = defineEmits(["update:modelValue"])
+
+const value_facade = computed({
+   get: () => props.modelValue,
+   set: (value) => emit("update:modelValue", value),
+})
 </script>

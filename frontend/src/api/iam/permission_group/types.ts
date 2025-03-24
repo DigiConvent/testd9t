@@ -25,7 +25,7 @@ export type PermissionGroupFacade = {
    is_group: boolean
    is_node: boolean
    implied: boolean
-   parent: string
+   parent?: string
    generated: boolean
 }
 
@@ -34,9 +34,9 @@ export type PermissionGroupRead = {
    name: string
    abbr: string
    description: string
-   parent: string
+   parent?: string
    is_group: boolean
    is_node: boolean
    generated: boolean
-   permissions: string[]
+   permissions: PermissionFacade[]
 }

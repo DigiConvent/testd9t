@@ -19,6 +19,7 @@
       "@primevue/forms": "^4.2.5",
       "@primevue/themes": "^4.2.5",
       "@tailwindcss/vite": "^4.0.9",
+      "@vueuse/core": "^13.0.0",
       "pinia": "^2.1.7",
       "primeicons": "^7.0.0",
       "primevue": "^4.2.5",

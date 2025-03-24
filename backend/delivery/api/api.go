@@ -55,9 +55,11 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 
 		permissionGroupRoutes := iamRoutes.Group("/permission-group")
 		{
-			permissionGroupRoutes.POST("/", iam.RequiresPermission("iam.permission-group.create"), iamRouter.CreatePermissionGroup)
 			permissionGroupRoutes.GET("/", iam.RequiresPermission("iam.permission-group.list"), iamRouter.ListPermissionGroups)
 			permissionGroupRoutes.GET("/:id", iam.RequiresPermission("iam.permission-group.get", "iam.permission-group.get.:id"), iamRouter.GetPermissionGroup)
+
+			permissionGroupRoutes.POST("/", iam.RequiresPermission("iam.permission-group.create"), iamRouter.CreatePermissionGroup)
+			permissionGroupRoutes.POST("/:id", iam.RequiresPermission("iam.permission-group.update"), iamRouter.UpdatePermissionGroup)
 			permissionGroupRoutes.GET("/profile/:id", iam.RequiresPermission("iam.permission-group.get", "iam.permission-group.get.:id"), iamRouter.ProfilePermissionGroup)
 		}
 	}
