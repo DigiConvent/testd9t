@@ -81,7 +81,7 @@ create table permission_groups (
 -- backend/pkg/iam/db/0.0.0/06_create_permission_group_has_permission_table.sql 
 create table permission_group_has_permission (
   permission_group uuid not null references permission_groups(id) on delete cascade,
-  permission uuid not null references permissions(id) on delete cascade,
+  permission varchar not null references permissions("name") on delete cascade,
   primary key (permission_group, permission)
 );
 
