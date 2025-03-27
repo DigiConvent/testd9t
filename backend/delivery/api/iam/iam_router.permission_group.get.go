@@ -19,7 +19,6 @@ func (router *IamRouter) GetPermissionGroup(ctx *gin.Context) {
 		ctx.JSON(status.Code, gin.H{
 			"error": status.Message,
 		})
-		return
 	} else {
 		ctx.JSON(status.Code, permissionGroup)
 	}

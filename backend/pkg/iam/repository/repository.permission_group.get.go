@@ -16,7 +16,7 @@ func (r *IAMRepository) GetPermissionGroup(arg *uuid.UUID) (*iam_domain.Permissi
 
 	err := row.Scan(&pg.ID, &pg.Name, &pg.Abbr, &pg.Description, &pg.IsGroup, &pg.Parent, &pg.IsNode, &pg.Generated)
 
-	if *pg.Parent == uuid.Nil {
+	if pg.Parent == nil || *pg.Parent == uuid.Nil {
 		pg.Parent = nil
 	}
 

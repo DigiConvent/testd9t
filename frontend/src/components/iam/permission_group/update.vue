@@ -1,9 +1,6 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <div
-      v-else-if="auth.has_permission('iam.permission_group.update')"
-      class="card flex justify-center w-full"
-   >
+   <NeedsPermission v-else-if="pg" permission="iam.permission_group.update">
       <Form v-if="pg != null" class="flex flex-col gap-4" @submit="handle_submit">
          <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
          <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
@@ -23,7 +20,7 @@
          <Button @click="handle_submit">{{ $t("actions.save") }}</Button>
       </Form>
       <div v-else>Could not load permission group</div>
-   </div>
+   </NeedsPermission>
    <div v-else>
       {{ auth.has_permission("iam.permission_group.update") }}
       {{ $t("unauthorised", { permission: "iam.permission_group.update" }) }}

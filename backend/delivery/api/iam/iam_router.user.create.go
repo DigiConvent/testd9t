@@ -1,6 +1,8 @@
 package iam_router
 
 import (
+	"fmt"
+
 	"github.com/DigiConvent/testd9t/core/log"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	"github.com/gin-gonic/gin"
@@ -14,6 +16,8 @@ func (router *IamRouter) CreateUser(ctx *gin.Context) {
 		})
 		return
 	}
+
+	fmt.Println(createUser)
 
 	id, status := router.iamService.CreateUser(&createUser)
 	if status != nil && status.Err() {

@@ -1,59 +1,53 @@
 <template>
-   <div>
-      <Toast></Toast>
-      <Menubar v-if="logged_in" :model="items">
-         <template #start>
-            <router-link :to="{ name: 'home' }">
-               <img
-                  class="h-16 w-16 rounded-full"
-                  :src="`/assets/small.jpg?v=${new Date().getTime()}`"
-               />
-            </router-link>
-         </template>
-         <template #item="{ item, props, hasSubmenu, root }">
-            <a v-if="item.hasSubmenu" v-bind="props.action">{{ item.label }}</a>
-            <router-link
-               v-else
-               :to="{ name: item.route, params: {} }"
-               v-bind="props.action"
-               class="p-0"
+   <Toast></Toast>
+   <Menubar v-if="logged_in" :model="items">
+      <template #start>
+         <router-link :to="{ name: 'home' }">
+            <img
+               class="h-16 w-16 rounded-full"
+               :src="`/assets/small.jpg?v=${new Date().getTime()}`"
+            />
+         </router-link>
+      </template>
+      <template #item="{ item, props, hasSubmenu, root }">
+         <a v-if="item.hasSubmenu" v-bind="props.action">{{ item.label }}</a>
+         <router-link
+            v-else
+            :to="{ name: item.route, params: {} }"
+            v-bind="props.action"
+            class="p-0"
+         >
+            <span>{{ item.label }}</span>
+            <span
+               v-if="item.shortcut"
+               class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
+               >{{ item.shortcut }}</span
             >
-               <span>{{ item.label }}</span>
-               <span
-                  v-if="item.shortcut"
-                  class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
-                  >{{ item.shortcut }}</span
-               >
-               <i
-                  v-if="hasSubmenu"
-                  :class="[
-                     'pi pi-angle-down ml-auto',
-                     { 'pi-angle-down': root, 'pi-angle-right': !root },
-                  ]"
-               ></i>
-            </router-link>
-         </template>
-         <template #end>
-            <UserMenu></UserMenu>
-         </template>
-      </Menubar>
-      <div v-else class="absolute">
-         <div class="right-0">
-            <Button @click="show_login_form = true"><i class="pi pi-user"></i></Button>
-            <LoginForm v-if="show_login_form"></LoginForm>
-         </div>
+            <Fa v-if="hasSubmenu" :icon="`${root ? 'caret-down' : 'caret-up'}`" />
+         </router-link>
+      </template>
+      <template #end>
+         <UserMenu></UserMenu>
+      </template>
+   </Menubar>
+   <div v-else class="absolute">
+      <div class="right-0">
+         <Button @click="show_login_form = true"><Fa icon="user" />a</Button>
+         <Dialog v-model:visible="show_login_form" modal>
+            <LoginForm></LoginForm>
+         </Dialog>
       </div>
-      <header>
-         <router-view v-slot="{ Component, route }">
-            <component :is="Component" :key="route.path" />
-         </router-view>
-      </header>
-      <footer class="mt-5">
-         <a href="https://github.com/DigiConvent/testd9t" target="_blank"
-            ><i class="pi pi-github"></i
-         ></a>
-      </footer>
    </div>
+   <header>
+      <router-view v-slot="{ Component, route }">
+         <component :is="Component" :key="route.path" />
+      </router-view>
+   </header>
+   <footer class="mt-5">
+      <a href="https://github.com/DigiConvent/testd9t" target="_blank"
+         ><Fa icon="fab fa-github"></Fa
+      ></a>
+   </footer>
 </template>
 
 <script lang="ts" setup>
@@ -73,7 +67,7 @@ const show_login_form = ref(false)
 
 const items = ref<MenuItem[]>([])
 
-watch(logged_in, () => {
+watch(auth.is_authenticated, () => {
    generate_menu_items()
 })
 
@@ -99,7 +93,6 @@ function generate_menu_items() {
       items.value.push({
          label: t("iam.user.list.title"),
          route: "iam.user.list",
-         badge: 1,
       })
    }
 

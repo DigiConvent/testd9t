@@ -1,5 +1,4 @@
 export function to_system_status(data: any): SystemStatus {
-   console.dir(data)
    return {
       dns: {
          dkim_is: data.dns.dkim_is,

@@ -10,7 +10,7 @@ import router from "@/router"
 
 function logout() {
    JwtAuthenticator.get_instance().logout()
-   router.replace("/")
+   router.replace({ name: "home" })
 }
 logout()
 </script>

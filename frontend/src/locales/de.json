@@ -34,6 +34,9 @@
          }
       },
       "pg": {
+         "read": {
+            "title": "Gruppe ansehen"
+         },
          "list": {
             "title": "Gruppen"
          },
@@ -73,8 +76,7 @@
             "password": "Kennwort",
             "login_unsuccessful": "Ungültige Anmeldedaten",
             "login_successful": "Anmeldung erfolgreich",
-            "submit": "Anmelden",
-            "logout": "Abmelden"
+            "submit": "Anmelden"
          },
          "connect_telegram_user": {
             "title": "Telegram-Benutzer verbinden",
@@ -97,6 +99,9 @@
          },
          "list": {
             "title": "Benutzer"
+         },
+         "update": {
+            "submit": "Aktualisieren"
          }
       },
       "user_status": {

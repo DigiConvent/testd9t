@@ -9,3 +9,5 @@ create table permission_groups (
   parent uuid references permission_groups(id) on delete set null,
   "generated" boolean default false
 );
+
+create unique index one_null on permission_groups(parent) where parent is null;

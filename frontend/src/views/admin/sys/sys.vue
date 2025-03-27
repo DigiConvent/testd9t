@@ -1,150 +1,146 @@
 <template>
-   <div>
-      <div v-if="system_status">
-         <Card class="p-4">
-            <template #title>
-               <h2 class="text-2xl mb-4">System</h2>
-               <div>{{ $t("sys.built_at", { date: system_status.version.built_at }) }}</div>
-               <div>{{ $t("sys.online_since", { date: system_status.version.online_since }) }}</div>
-            </template>
-            <template #content>
-               <MeterGroup
-                  :value="installation_disk_usage"
-                  label-position="start"
-                  :max="space.total_home"
-               >
-                  <template #label="{ value }">
-                     <div class="flex flex-wrap gap-4">
-                        <template v-for="val of value" :key="val.label">
-                           <Card
-                              class="flex-1 border border-surface shadow-none"
-                              :style="`border-color: ${val.color}`"
-                           >
-                              <template #content>
-                                 <div class="flex justify-between gap-8">
-                                    <div class="flex flex-col gap-1">
-                                       <span
-                                          class="text-surface-500 dark:text-surface-400 text-sm"
-                                          >{{ val.label }}</span
-                                       >
-                                       <span class="font-bold text-lg">{{
-                                          format_bytes(val.value)
-                                       }}</span>
-                                    </div>
-                                    <div
-                                       class="w-8 h-8 rounded-full inline-flex justify-center items-center text-center"
-                                       :style="`background-color: ${val.color};color: #ffffff;`"
-                                    >
-                                       <i :class="val.icon" />
-                                    </div>
+   <ProgressBar v-if="loading" mode="indeterminate" />
+   <NeedsPermission v-else-if="system_status" :permission="'sys.status.read'">
+      <Card class="p-4">
+         <template #title>
+            <h2 class="text-2xl mb-4">System</h2>
+            <div>{{ $t("sys.built_at", { date: system_status.version.built_at }) }}</div>
+            <div>{{ $t("sys.online_since", { date: system_status.version.online_since }) }}</div>
+         </template>
+         <template #content>
+            <MeterGroup
+               :value="installation_disk_usage"
+               label-position="start"
+               :max="space.total_home"
+            >
+               <template #label="{ value }">
+                  <div class="flex flex-wrap gap-4">
+                     <template v-for="val of value" :key="val.label">
+                        <Card
+                           class="flex-1 border border-surface shadow-none"
+                           :style="`border-color: ${val.color}`"
+                        >
+                           <template #content>
+                              <div class="flex justify-between gap-8">
+                                 <div class="flex flex-col gap-1">
+                                    <span class="text-surface-500 dark:text-surface-400 text-sm">{{
+                                       val.label
+                                    }}</span>
+                                    <span class="font-bold text-lg">{{
+                                       format_bytes(val.value)
+                                    }}</span>
                                  </div>
-                              </template>
-                           </Card>
-                        </template>
-                     </div>
-                  </template>
-                  <template #meter="slotProps">
-                     <span
-                        :class="slotProps.class"
-                        :style="`background-color: ${slotProps.value.color}; width: ${slotProps.size}; border-left: ${slotProps.index == 0 ? '0px' : '3px white solid;'}`"
-                     />
-                  </template>
-                  <template #end="{ totalPercent }">
-                     <div class="flex justify-between mt-4 mb-2 relative">
-                        <span :style="{ width: totalPercent + '%' }"></span>
-                        <span class="font-medium"
-                           >{{ format_bytes(space.total_home) }}/{{
-                              format_bytes(space.total_server - space.rest)
-                           }}
-                           <br />
-                           ({{
-                              (
-                                 (100 / (space.total_server - space.rest)) *
-                                 space.total_home
-                              ).toFixed(3)
-                           }}%)
-                        </span>
-                     </div>
-                  </template>
-               </MeterGroup>
-            </template>
-         </Card>
-         <Card>
-            <template #title>
-               <h2 class="text-2xl">{{ $t("sys.dns.abbr") }}</h2>
-            </template>
-            <template #subtitle>{{ $t("sys.dns.title") }}</template>
-            <template #content>
-               <Accordion value="0">
-                  <AccordionPanel v-for="(record, i) of dns_checklist" :key="i" :value="i">
-                     <AccordionHeader>
-                        <span class="flex items-center gap-2 w-full">
-                           <i v-if="record.done" class="pi pi-check-circle text-green-500"></i>
-                           <i
-                              v-else-if="record.is.value == ''"
-                              class="pi pi-exclamation-circle text-red-400"
-                           ></i>
-                           <i v-else class="pi pi-question-circle text-yellow-400"></i>
-                           <span class="font-bold whitespace-nowrap flex gap-4"
-                              >{{ record.name }}
-                              <InputGroup v-if="record.done">
-                                 <Badge>{{ record.is.type }}</Badge>
-                                 <Badge severity="secondary">{{ record.is.domain }}</Badge>
-                                 <Badge severity="info">{{ record.is.shortened }}</Badge>
-                              </InputGroup></span
-                           >
-                        </span>
-                     </AccordionHeader>
-                     <AccordionContent>
-                        <div v-if="!record.done">
-                           <InputGroup v-if="record.is.type != ''">
+                                 <div
+                                    class="w-8 h-8 rounded-full inline-flex justify-center items-center text-center"
+                                    :style="`background-color: ${val.color};color: #ffffff;`"
+                                 >
+                                    <i :class="val.icon" />
+                                 </div>
+                              </div>
+                           </template>
+                        </Card>
+                     </template>
+                  </div>
+               </template>
+               <template #meter="slotProps">
+                  <span
+                     :class="slotProps.class"
+                     :style="`background-color: ${slotProps.value.color}; width: ${slotProps.size}; border-left: ${slotProps.index == 0 ? '0px' : '3px white solid;'}`"
+                  />
+               </template>
+               <template #end="{ totalPercent }">
+                  <div class="flex justify-between mt-4 mb-2 relative">
+                     <span :style="{ width: totalPercent + '%' }"></span>
+                     <span class="font-medium"
+                        >{{ format_bytes(space.total_home) }}/{{
+                           format_bytes(space.total_server - space.rest)
+                        }}
+                        <br />
+                        ({{
+                           ((100 / (space.total_server - space.rest)) * space.total_home).toFixed(
+                              3,
+                           )
+                        }}%)
+                     </span>
+                  </div>
+               </template>
+            </MeterGroup>
+         </template>
+      </Card>
+      <Card>
+         <template #title>
+            <h2 class="text-2xl">{{ $t("sys.dns.abbr") }}</h2>
+         </template>
+         <template #subtitle>{{ $t("sys.dns.title") }}</template>
+         <template #content>
+            <Accordion value="0">
+               <AccordionPanel v-for="(record, i) of dns_checklist" :key="i" :value="i">
+                  <AccordionHeader>
+                     <span class="flex items-center gap-2 w-full">
+                        <i v-if="record.done" class="pi pi-check-circle text-green-500"></i>
+                        <i
+                           v-else-if="record.is.value == ''"
+                           class="pi pi-exclamation-circle text-red-400"
+                        ></i>
+                        <i v-else class="pi pi-question-circle text-yellow-400"></i>
+                        <span class="font-bold whitespace-nowrap flex gap-4"
+                           >{{ record.name }}
+                           <InputGroup v-if="record.done">
                               <Badge>{{ record.is.type }}</Badge>
                               <Badge severity="secondary">{{ record.is.domain }}</Badge>
                               <Badge severity="info">{{ record.is.shortened }}</Badge>
+                           </InputGroup></span
+                        >
+                     </span>
+                  </AccordionHeader>
+                  <AccordionContent>
+                     <div v-if="!record.done">
+                        <InputGroup v-if="record.is.type != ''">
+                           <Badge>{{ record.is.type }}</Badge>
+                           <Badge severity="secondary">{{ record.is.domain }}</Badge>
+                           <Badge severity="info">{{ record.is.shortened }}</Badge>
+                        </InputGroup>
+                        <div v-else>{{ record.is }}</div>
+                        {{ record.is.value }}<br />
+                        {{ $t("sys.dns.invalid", { dns: record.name }) }}
+                        <p class="m-0">
+                           {{
+                              $t("sys.dns.fix", {
+                                 type: record.should.type,
+                                 domain: record.should.domain,
+                              })
+                           }}
+                        </p>
+                        <div>
+                           <InputGroup @click="copy_to_clipboard(record.should.value)">
+                              <InputText
+                                 :value="record.should.value"
+                                 readonly
+                                 class="w-full"
+                              ></InputText>
+                              <InputGroupAddon>
+                                 <i class="pi pi-copy"></i>
+                              </InputGroupAddon>
                            </InputGroup>
-                           <div v-else>{{ record.is }}</div>
-                           {{ record.is.value }}<br />
-                           {{ $t("sys.dns.invalid", { dns: record.name }) }}
-                           <p class="m-0">
-                              {{
-                                 $t("sys.dns.fix", {
-                                    type: record.should.type,
-                                    domain: record.should.domain,
-                                 })
-                              }}
-                           </p>
-                           <div>
-                              <InputGroup @click="copy_to_clipboard(record.should.value)">
-                                 <InputText
-                                    :value="record.should.value"
-                                    readonly
-                                    class="w-full"
-                                 ></InputText>
-                                 <InputGroupAddon>
-                                    <i class="pi pi-copy"></i>
-                                 </InputGroupAddon>
-                              </InputGroup>
-                           </div>
                         </div>
-                        <div v-else>
-                           {{ $t("sys.dns.valid", { dns: record.name }) }}
-                        </div>
-                     </AccordionContent>
-                  </AccordionPanel>
-               </Accordion>
-            </template>
-         </Card>
-         <div class="grid grid-cols-2 gap-4 mt-4">
-            <div class="">
-               <LogoUpload variant="small" :label="$t('sys.upload_logo.small_label')" />
-            </div>
-            <div class="">
-               <LogoUpload variant="large" :label="$t('sys.upload_logo.large_label')" />
-            </div>
+                     </div>
+                     <div v-else>
+                        {{ $t("sys.dns.valid", { dns: record.name }) }}
+                     </div>
+                  </AccordionContent>
+               </AccordionPanel>
+            </Accordion>
+         </template>
+      </Card>
+      <div class="grid grid-cols-2 gap-4 mt-4">
+         <div class="">
+            <LogoUpload variant="small" :label="$t('sys.upload_logo.small_label')" />
+         </div>
+         <div class="">
+            <LogoUpload variant="large" :label="$t('sys.upload_logo.large_label')" />
          </div>
       </div>
-      <ProgressBar v-else mode="indeterminate"></ProgressBar>
-   </div>
+   </NeedsPermission>
 </template>
 
 <script lang="ts" setup>
@@ -157,6 +153,7 @@ import { useI18n } from "vue-i18n"
 
 const t = useI18n().t
 
+const loading = ref(true)
 const system_status = ref<SystemStatus>()
 
 const space = ref<{ total_server: number; total_home: number; rest: number }>({
@@ -192,8 +189,10 @@ const dns_checklist = ref<
 const installation_disk_usage = ref<
    { label: string; color: string; value: number; icon: string }[]
 >([])
-api.sys.status().then((fold) => {
-   fold.fold(
+
+async function load_system_status() {
+   loading.value = true
+   ;(await api.sys.status()).fold(
       (error_message: string) => {
          error(error_message)
       },
@@ -250,9 +249,10 @@ api.sys.status().then((fold) => {
                done: j[record + "_is"] == j[record + "_should"],
             })
          }
+         loading.value = false
       },
    )
-})
+}
 
 const shortened_value = (value: string) => {
    const result: string[] = []
@@ -308,4 +308,6 @@ function format_bytes(bytes: number) {
       i = Math.floor(Math.log(bytes) / Math.log(k))
    return parseFloat((bytes / Math.pow(k, i)).toFixed(0)) + sizes[i]
 }
+
+load_system_status()
 </script>

@@ -33,7 +33,7 @@ const router = createRouter({
                      component: () => import("../views/admin/iam/iam.vue"),
                      children: [
                         {
-                           path: "user",
+                           path: "users",
                            name: "iam.user.list",
                            component: () => import("../views/admin/iam/user/list.vue"),
                            children: [
@@ -42,6 +42,23 @@ const router = createRouter({
                                  component: () => import("../components/iam/user/create.vue"),
                               },
                            ],
+                        },
+                        {
+                           path: "users/:id",
+                           name: "iam.user.profile",
+                           component: () => import("../views/admin/iam/user/profile.vue"),
+                           children: [
+                              {
+                                 path: "create",
+                                 component: () => import("../components/iam/user/create.vue"),
+                              },
+                           ],
+                        },
+                        {
+                           path: "permission-group/:id",
+                           name: "iam.pg.profile",
+                           component: () =>
+                              import("../views/admin/iam/permission_group/profile.vue"),
                         },
                      ],
                   },

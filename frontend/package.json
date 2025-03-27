@@ -15,6 +15,7 @@
       "generate:models": "npx openapi-typescript openapi.yaml --output src/models.ts"
    },
    "dependencies": {
+      "@DigiConvent/ff": "^1.0.2",
       "@fullhuman/postcss-purgecss": "^7.0.2",
       "@primevue/forms": "^4.2.5",
       "@primevue/themes": "^4.2.5",

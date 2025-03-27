@@ -1,3 +1,5 @@
+import type { PermissionGroupFacade } from "../permission_group/types"
+
 export type UserCreate = {
    emailaddress: string
    first_name: string
@@ -19,4 +21,11 @@ export type UserFacade = {
    implied: boolean
    status_id: string
    status_name: string
+}
+
+export type UserProfile = {
+   user: UserRead
+   status: null
+   groups: PermissionGroupFacade
+   permissions: string[]
 }

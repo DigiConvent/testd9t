@@ -1,12 +1,14 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
    <div v-else-if="node">
+      {{ modelValue }}
       <FormTextarea
          v-model="value_facade"
          label="iam.pg.fields"
          name="permissions"
          @click="show_permissions_dialog = true"
       ></FormTextarea>
+      {{ value_facade }}
       <Dialog
          v-model:visible="show_permissions_dialog"
          modal

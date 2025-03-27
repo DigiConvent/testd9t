@@ -12,15 +12,13 @@ export default class JwtAuthenticator {
    public is_authenticated: Ref<boolean> = ref<boolean>(false)
    private permissions = ref<string[]>([])
    public countdown = ref<number>(0)
+   private timeout: NodeJS.Timeout | undefined
 
    constructor() {
       const t = localStorage.getItem("token")
       if (t != null) {
          this.token = t
          this.refresh_token()
-         this.load_permissions().then(() => {
-            this.is_authenticated.value = true
-         })
       } else {
          this.is_authenticated.value = false
          router.replace({ name: "home" })
@@ -28,7 +26,12 @@ export default class JwtAuthenticator {
    }
 
    private refresh_token() {
-      const expiration = this.get_token()?.exp
+      const token = this.get_token()
+      if (token == null) {
+         return
+      }
+
+      const expiration = token.exp
       const now = Math.floor(new Date().getTime() / 1000)
       if (expiration == undefined || now > expiration - 5) {
          this.logout()
@@ -38,7 +41,7 @@ export default class JwtAuthenticator {
       const timeout = expiration! - now
 
       this.countdown.value = (timeout - 5) * 1000
-      setTimeout(
+      this.timeout = setTimeout(
          async () => {
             const result = await this.login(api.iam.jwt.refresh())
             if (result) {
@@ -82,14 +85,22 @@ export default class JwtAuthenticator {
       return this.permissions.value.includes(permission)
    }
 
+   has_permissions(permissions: string[]) {
+      for (const p of permissions) {
+         if (this.has_permission(p)) {
+            return true
+         }
+      }
+      return false
+   }
+
    public async load_permissions() {
       const result = await api.iam.user.list_permissions()
       result.fold(
-         (error: string) => {
-            console.error(error)
-         },
+         () => {},
          (permissions: PermissionFacade[]) => {
             this.permissions.value = permissions.map((p) => p.name)
+            this.is_authenticated.value = true
          },
       )
    }
@@ -126,7 +137,6 @@ export default class JwtAuthenticator {
             localStorage.setItem("token", token)
             this.refresh_token()
             await this.load_permissions()
-            this.is_authenticated.value = true
             return true
          }
       } else {
@@ -139,6 +149,7 @@ export default class JwtAuthenticator {
    }
 
    logout() {
+      clearTimeout(this.timeout)
       this.token = undefined
       localStorage.removeItem("token")
       this.is_authenticated.value = false

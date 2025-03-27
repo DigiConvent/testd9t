@@ -13,6 +13,17 @@ import (
 
 var testDB db.DatabaseInterface
 
+func getRootPermissionGroup() string {
+	testService := GetTestIAMService("iam")
+	facades, _ := testService.ListPermissionGroups()
+	for _, facade := range facades {
+		if facade.Name == "root" {
+			return facade.ID.String()
+		}
+	}
+	return ""
+}
+
 func GetTestIAMService(dbName string) iam_service.IAMServiceInterface {
 	os.Setenv(constants.CERTIFICATES_PATH, "/tmp/testd9t/certificates")
 	if testDB == nil {

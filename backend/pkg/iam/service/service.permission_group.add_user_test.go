@@ -16,6 +16,7 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 		Description: "test",
 		IsGroup:     true,
 		IsNode:      false,
+		Parent:      getRootPermissionGroup(),
 	})
 
 	if pg == nil {

@@ -15,6 +15,7 @@ func TestListPermissionGroups(t *testing.T) {
 		Description: "test",
 		IsGroup:     true,
 		IsNode:      false,
+		Parent:      getRootPermissionGroup(),
 	})
 	testService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
 		Name:        "PermissionGroupList2",
@@ -22,6 +23,7 @@ func TestListPermissionGroups(t *testing.T) {
 		Description: "test",
 		IsGroup:     true,
 		IsNode:      false,
+		Parent:      getRootPermissionGroup(),
 	})
 
 	permissionGroups, status := testService.ListPermissionGroups()

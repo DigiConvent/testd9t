@@ -4,7 +4,13 @@
          :refresh="refresh"
          @click="handle_click($event)"
       ></PermissionGroupTreeView>
-      <Menu ref="show_menu" :model="menu_items" :popup="true"></Menu>
+      <Menu ref="show_menu" :model="menu_items" :popup="true">
+         <template #item="{ item }">
+            <div class="hover:bg-gray-100 p-2 cursor-pointer">
+               <Fa :icon="item.icon" class="fa-fw mr" /> {{ item.label }}
+            </div>
+         </template>
+      </Menu>
       <Drawer
          :visible="edit_pg != null"
          modal
@@ -36,9 +42,7 @@ import CreatePermissionGroup from "@/components/iam/permission_group/create.vue"
 import { ref } from "vue"
 import JwtAuthenticator from "@/auth/jwt"
 import { useI18n } from "vue-i18n"
-import type { PermissionGroupRead } from "@/api/iam/permission_group/types"
-import { error } from "@/composables/toast"
-import { api } from "@/api"
+import router from "@/router"
 
 const pg = ref<string>()
 
@@ -70,24 +74,15 @@ const generate_menu_items = () => {
    if (auth.has_permission("iam.permission_group.read"))
       menu_items.value.push({
          label: t("iam.pg.read.title"),
-         icon: "pi pi-eye",
+         icon: "eye",
          command: () => {
-            api.iam.permission_group.get(pg.value!).then((result: any) => {
-               result.fold(
-                  (err: string) => {
-                     error(err)
-                  },
-                  (permission_group: PermissionGroupRead) => {
-                     console.log(permission_group)
-                  },
-               )
-            })
+            router.push({ name: "iam.pg.profile", params: { id: pg.value } })
          },
       })
    if (auth.has_permission("iam.permission_group.create"))
       menu_items.value.push({
          label: t("iam.pg.create.title"),
-         icon: "pi pi-plus",
+         icon: "plus",
          command: () => {
             add_pg_to_pg.value = pg.value
          },
@@ -95,17 +90,17 @@ const generate_menu_items = () => {
    if (auth.has_permission("iam.permission_group.update"))
       menu_items.value.push({
          label: t("iam.pg.update.title"),
-         icon: "pi pi-pencil",
+         icon: "pencil",
          command: () => {
             edit_pg.value = pg.value
          },
       })
-   if (auth.has_permission("iam.permission_group.delete"))
-      menu_items.value.push({
-         label: t("iam.pg.delete.title"),
-         icon: "pi pi-trash",
-         command: () => {},
-      })
+   // if (auth.has_permission("iam.permission_group.delete"))
+   //    menu_items.value.push({
+   //       label: t("iam.pg.delete.title"),
+   //       icon: "trash",
+   //       command: () => {},
+   //    })
 }
 
 const refresh = ref(0)

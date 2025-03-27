@@ -11,9 +11,6 @@ func (s *IAMService) UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.Permis
 	if arg.Parent == uuid.Nil.String() {
 		return core.BadRequestError("The super group cannot have descendants")
 	}
-	if arg.Parent == "" {
-		return core.BadRequestError("There can only be one root group")
-	}
 
 	currentPermissions, _ := s.repository.ListPermissionGroupPermissions(id)
 	impliedPermissions := []string{}

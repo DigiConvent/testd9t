@@ -8,13 +8,14 @@
          @mouseleave="hovered = false"
       >
          <template v-if="props.multiple">
-            <span
+            <Fa
                v-if="(is_checked && !is_indeterminate) || parent_hovered"
-               class="pi pi-check-circle"
+               icon="check-circle"
+               class="fa-fw"
                :class="`${parent_hovered && !is_checked ? 'text-gray-500' : 'text-green-700'}`"
-            ></span>
-            <span v-else-if="is_indeterminate" class="pi pi-minus-circle text-orange-600"></span>
-            <span v-else class="pi pi-circle text-slate-400"></span>
+            />
+            <Fa v-else-if="is_indeterminate" icon="minus-circle" class="text-orange-600 fa-fw" />
+            <Fa v-else icon="circle" class="text-slate-400 fa-fw" />
          </template>
          <input
             class="hidden"
@@ -55,7 +56,7 @@
                />
                <div class="text-2xl">
                   <div @click="show = true">
-                     <i class="pi pi-ellipsis-v text-green-700"></i>
+                     <Fa icon="ellipsis-v" class="text-green-700 fa-fw" />
                      <label class="text-lg cursor-pointer hover:underline">show more</label>
                   </div>
                </div>

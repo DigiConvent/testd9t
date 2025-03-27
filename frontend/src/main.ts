@@ -6,6 +6,11 @@ import { createI18n } from "vue-i18n"
 import PrimeVue from "primevue/config"
 import Aura from "@primevue/themes/aura"
 
+import { library, config } from "@DigiConvent/ff/fontawesome-svg-core"
+import { FontAwesomeIcon, FontAwesomeLayers } from "@DigiConvent/ff/vue-fontawesome"
+import { fasds } from "@DigiConvent/ff/sharp-duotone-solid-svg-icons"
+import { faGithub } from "@DigiConvent/ff/free-brands-svg-icons"
+
 import App from "./app/App.vue"
 import router from "./router"
 
@@ -22,6 +27,7 @@ import {
    Checkbox,
    Dialog,
    Drawer,
+   Fieldset,
    FloatLabel,
    InputGroup,
    InputGroupAddon,
@@ -40,6 +46,7 @@ import {
    Select,
    Skeleton,
    Textarea,
+   Timeline,
    ToastService,
    ToggleSwitch,
    TreeSelect,
@@ -54,6 +61,7 @@ import en from "./locales/en.json"
 import jp from "./locales/jp.json"
 import { is_mini_app } from "./auth/telegram"
 import JwtAuthenticator from "./auth/jwt"
+import Auth from "./components/auth.vue"
 
 app.use(
    createI18n({
@@ -67,6 +75,10 @@ app.use(
    }),
 )
 
+config.familyDefault = "sharp-duotone"
+library.add(fasds)
+library.add(faGithub)
+
 app.use(router)
 
 app.component("Accordion", Accordion)
@@ -79,6 +91,7 @@ app.component("Card", Card)
 app.component("Dialog", Dialog)
 app.component("Drawer", Drawer)
 app.component("Checkbox", Checkbox)
+app.component("Fieldset", Fieldset)
 app.component("FloatLabel", FloatLabel)
 app.component("Form", Form)
 app.component("InputGroupAddon", InputGroupAddon)
@@ -95,15 +108,19 @@ app.component("Popover", Popover)
 app.component("ProgressBar", ProgressBar)
 app.component("ProgressSpinner", ProgressSpinner)
 app.component("Textarea", Textarea)
+app.component("Timeline", Timeline)
 app.component("Toast", Toast)
 app.component("ToggleSwitch", ToggleSwitch)
 app.component("TreeSelect", TreeSelect)
 app.component("Select", Select)
 app.component("Skeleton", Skeleton)
+app.component("NeedsPermission", Auth)
 
 app.directive("ripple", Ripple)
 
-const remember = window.location.href.replace(window.location.origin, "")
+app.component("Fa", FontAwesomeIcon).component("fal", FontAwesomeLayers)
+
+let remember = window.location.href.replace(window.location.origin, "")
 app.use(ToastService)
 
 const auth = JwtAuthenticator.get_instance()
@@ -113,16 +130,18 @@ if (is_mini_app()) {
    })
 } else {
    auth.load_permissions().then(() => {
+      if (!auth.is_authenticated.value) {
+         remember = "/home"
+      }
       mount()
    })
 }
 
 function mount() {
    app.mount("#app")
-   if (JwtAuthenticator.get_instance().is_authenticated.value) {
+   if (auth.is_authenticated.value) {
       router.replace({ path: remember })
    } else {
-      console.log("Not authenticated")
       router.replace({ name: "home" })
    }
 }

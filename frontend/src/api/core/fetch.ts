@@ -117,7 +117,6 @@ export async function api_multipart<T>(
    })
 
    const data: any = await request.json()
-   console.log(data)
    if (expects != undefined) {
       if (expects == request.status) return result.right(true as T)
       else return result.left(data["error"])

@@ -11,3 +11,4 @@ create table users (
   super boolean default false,
   active boolean default false
 );
+

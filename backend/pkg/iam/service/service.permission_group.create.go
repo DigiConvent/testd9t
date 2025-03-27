@@ -8,10 +8,15 @@ import (
 )
 
 func (s *IAMService) CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite) (*uuid.UUID, *core.Status) {
+
 	validate := validator.New(validator.WithRequiredStructEnabled())
 	err := validate.Struct(arg)
 	if err != nil {
 		return nil, core.UnprocessableContentError(err.Error())
+	}
+
+	if arg.Parent == uuid.Nil.String() {
+		return nil, core.BadRequestError("The super group cannot have descendants")
 	}
 
 	id, status := s.repository.CreatePermissionGroup(arg)

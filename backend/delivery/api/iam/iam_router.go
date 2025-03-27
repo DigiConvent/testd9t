@@ -69,11 +69,6 @@ func (router *IamRouter) DeleteUserStatus(ctx *gin.Context) {
 	panic("unimplemented")
 }
 
-// GetUser implements IamRouterInterface.
-func (router *IamRouter) GetUser(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
 // GetUserStatus implements IamRouterInterface.
 func (router *IamRouter) GetUserStatus(ctx *gin.Context) {
 	panic("unimplemented")
@@ -81,11 +76,6 @@ func (router *IamRouter) GetUserStatus(ctx *gin.Context) {
 
 // HasPermissionUser implements IamRouterInterface.
 func (router *IamRouter) HasPermissionUser(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
-// ProfileUser implements IamRouterInterface.
-func (router *IamRouter) ProfileUser(ctx *gin.Context) {
 	panic("unimplemented")
 }
 

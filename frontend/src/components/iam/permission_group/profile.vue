@@ -1,37 +1,88 @@
 <template>
-   <div v-if="profile">
-      <pre>{{ JSON.stringify(profile, null, 2) }} </pre>
-   </div>
+   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+   <NeedsPermission v-else-if="profile" permission="iam.permission_group.read">
+      <div class="grid grid-cols-2 gap-4">
+         <Card>
+            <template #title> Hierarchy </template>
+            <template #content>
+               <Timeline :value="profile?.permission_groups.reverse()">
+                  <template #content="slotProps">
+                     <router-link
+                        :to="{ name: 'iam.pg.profile', params: { id: slotProps.item.id } }"
+                        >{{ slotProps.item.name }}</router-link
+                     >
+                  </template>
+               </Timeline>
+            </template>
+         </Card>
+         <Card>
+            <template #title>Permissions</template>
+            <template #content>
+               <div class="grid grid-cols-2">
+                  <div>
+                     Inherited
+                     <div
+                        v-for="p of profile?.permissions.filter((p) => p.implied)"
+                        :key="'inherited' + p.name"
+                     >
+                        {{ p.name }}
+                     </div>
+                  </div>
+                  <div>
+                     Owned
+                     <div
+                        v-for="p of profile?.permissions.filter((p) => !p.implied)"
+                        :key="'inherited' + p.name"
+                     >
+                        {{ p.name }}
+                     </div>
+                  </div>
+               </div>
+            </template>
+         </Card>
+         <Card>
+            <template #title>Data</template>
+            <template #content>
+               <UpdatePermissionGroup
+                  v-model="profile!.permission_group.id"
+               ></UpdatePermissionGroup>
+            </template>
+         </Card>
+         <Card>
+            <template #title>Members</template>
+            <template #content>
+               <UserFacades :users="profile!.members" />
+            </template>
+         </Card>
+      </div>
+   </NeedsPermission>
+   <div v-else>Something went wrong loading this permission group</div>
 </template>
 
 <script lang="ts" setup>
 import { api } from "@/api"
 import type { PermissionGroupProfile } from "@/api/iam/permission_group/types"
-import { useToast } from "primevue"
+import { error } from "@/composables/toast"
 import { ref } from "vue"
+import UpdatePermissionGroup from "@/components/iam/permission_group/update.vue"
+import UserFacades from "@/components/iam/user/facade.vue"
 
-// eslint-disable-next-line vue/prop-name-casing
-const props = defineProps<{ modelValue: string }>()
+const props = defineProps<{ id: string }>()
 
-const toast = useToast()
-
+const loading = ref(true)
 const profile = ref<PermissionGroupProfile | null>(null)
-function load() {
-   api.iam.permission_group.get_profile(props.modelValue).then((result) => {
-      result.fold(
-         (err: string) => {
-            toast.add({
-               severity: "error",
-               summary: "Error",
-               detail: err,
-            })
-         },
-         (data: PermissionGroupProfile) => {
-            profile.value = data
-         },
-      )
-   })
+async function load_profile() {
+   loading.value = true
+   ;(await api.iam.permission_group.get_profile(props.id)).fold(
+      (err: string) => {
+         error(err)
+      },
+      (pg: PermissionGroupProfile) => {
+         profile.value = pg
+         loading.value = false
+      },
+   )
 }
 
-load()
+load_profile()
 </script>

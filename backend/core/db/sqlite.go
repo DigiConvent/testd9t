@@ -54,7 +54,12 @@ func SqliteConnection(dbName string, test bool) (DatabaseInterface, bool) {
 		panic("Database name must be alphanumeric")
 	}
 
-	dbPath := path.Join(os.Getenv(constants.DATABASE_PATH), dbName)
+	var dbPath string
+	if test {
+		dbPath = path.Join("/tmp", "testd9t", "test", dbName)
+	} else {
+		dbPath = path.Join(os.Getenv(constants.DATABASE_PATH), dbName)
+	}
 
 	if databases[dbName] == nil {
 		var db *sql.DB
@@ -75,6 +80,12 @@ func SqliteConnection(dbName string, test bool) (DatabaseInterface, bool) {
 
 		if err != nil {
 			log.Error("Could not create/open database: " + dbPath)
+			panic(err)
+		}
+
+		_, err = db.Exec("PRAGMA foreign_keys = ON;")
+		if err != nil {
+			log.Error("Could not enable foreign keys")
 			panic(err)
 		}
 
@@ -105,7 +116,6 @@ func ListPackages() []string {
 }
 
 func (s *SqliteDatabase) pkgDir() string {
-	// project dir
 	workingDir, _ := os.Getwd()
 	sep := "/testd9t/testd9t"
 	segments := strings.Split(workingDir, sep)
@@ -164,6 +174,9 @@ func (s *SqliteDatabase) MigratePackage(verbose bool) error {
 }
 
 func (s *SqliteDatabase) Dir() string {
+	if s.test {
+		return path.Join("/tmp", "testd9t", "test", s.name)
+	}
 	return path.Join(os.Getenv(constants.DATABASE_PATH), s.name)
 }
 

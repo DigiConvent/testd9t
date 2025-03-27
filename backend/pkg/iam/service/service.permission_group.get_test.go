@@ -10,13 +10,19 @@ import (
 func TestGetPermissionGroup(t *testing.T) {
 	testService := GetTestIAMService("iam")
 
-	res, _ := testService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
+	res, status := testService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
 		Name:        "PermissionGroupGet",
 		Abbr:        "PG",
 		Description: "test",
 		IsGroup:     true,
 		IsNode:      false,
+		Parent:      getRootPermissionGroup(),
 	})
+
+	if res == nil {
+		t.Log(status.Message)
+		t.Fatal("Expected a result")
+	}
 
 	permissionGroup, status := testService.GetPermissionGroup(res)
 

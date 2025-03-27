@@ -15,6 +15,7 @@ func TestCreatePermissionGroup(t *testing.T) {
 		Description: "test",
 		IsGroup:     true,
 		IsNode:      false,
+		Parent:      getRootPermissionGroup(),
 	}
 
 	res, status := testService.CreatePermissionGroup(testPermissionGroup)

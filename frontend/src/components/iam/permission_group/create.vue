@@ -1,8 +1,5 @@
 <template>
-   <div
-      v-if="auth.has_permission('iam.permission_group.create')"
-      class="card flex justify-center w-full"
-   >
+   <NeedsPermission permission="iam.permission_group.create">
       <Form class="flex flex-col gap-4" @submit="handle_submit">
          <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
          <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
@@ -19,13 +16,12 @@
          ></PermissionPicker>
          <Button @click="handle_submit">{{ $t("actions.save") }}</Button>
       </Form>
-   </div>
+   </NeedsPermission>
 </template>
 
 <script lang="ts" setup>
 import { api } from "@/api"
 import type { PermissionGroupRead, PermissionGroupWrite } from "@/api/iam/permission_group/types"
-import JwtAuthenticator from "@/auth/jwt"
 import { ref, watch } from "vue"
 import FormTextInput from "@/components/form/text_input.vue"
 import FormTextareaInput from "@/components/form/textarea.vue"
@@ -33,7 +29,6 @@ import PermissionGroupPicker from "./picker.vue"
 import PermissionPicker from "@/components/iam/permission/picker.vue"
 import { error } from "@/composables/toast"
 
-const auth = JwtAuthenticator.get_instance()
 const emit = defineEmits(["created"])
 
 const props = defineProps<{ parent: string }>()

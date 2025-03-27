@@ -1,15 +1,18 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <OrganizationChart v-else-if="data" :value="data" collapsible>
-      <template #default="slotProps">
-         <span>{{ slotProps.node.data.name }}</span>
-         <Button
-            icon="pi pi-ellipsis-v"
-            class="p-button-rounded p-button-text"
-            @click="emit('click', { event: $event, id: slotProps.node.data.id })"
-         ></Button>
-      </template>
-   </OrganizationChart>
+   <NeedsPermission v-else-if="data" permission="iam.permission_group.list">
+      <OrganizationChart :value="data" collapsible>
+         <template #default="slotProps">
+            <span>{{ slotProps.node.data.name }}</span>
+            <Button
+               class="p-button-rounded p-button-text"
+               @click="emit('click', { event: $event, id: slotProps.node.data.id })"
+            >
+               <Fa icon="fa-ellipsis-v"></Fa>
+            </Button>
+         </template>
+      </OrganizationChart>
+   </NeedsPermission>
 </template>
 
 <script lang="ts" setup>

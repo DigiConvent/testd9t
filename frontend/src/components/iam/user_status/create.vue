@@ -47,6 +47,7 @@ import { ref } from "vue"
 import * as v from "valibot"
 import { useI18n } from "vue-i18n"
 import { api } from "@/api"
+import { error } from "@/composables/toast"
 
 const t = useI18n().t
 
@@ -99,10 +100,9 @@ async function create_user_status() {
          })
       ).fold(
          (l) => {
-            console.log(l)
+            error(l)
          },
          (id: string) => {
-            console.log(id)
             emit("created", id)
          },
       )
