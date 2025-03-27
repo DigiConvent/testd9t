@@ -13,6 +13,8 @@ create table users (
   active boolean default false
 );
 
+
+
 -- backend/pkg/iam/db/0.0.0/01_create_user_status_table.sql 
 create table user_status (
   id uuid primary key not null,
@@ -21,6 +23,10 @@ create table user_status (
   description varchar default '',
   archived boolean default false
 );
+
+-- there are triggers for this table in 20_create_triggers_for_user_status.sql
+-- where the user_status is assigned a permission_group with the same id thus
+-- enforcing a hierarchy
 
 -- backend/pkg/iam/db/0.0.0/02_create_user_became_status_table.sql 
 create table user_became_status (
@@ -77,6 +83,8 @@ create table permission_groups (
   parent uuid references permission_groups(id) on delete set null,
   "generated" boolean default false
 );
+
+create unique index one_null on permission_groups(parent) where parent is null;
 
 -- backend/pkg/iam/db/0.0.0/06_create_permission_group_has_permission_table.sql 
 create table permission_group_has_permission (
@@ -184,9 +192,9 @@ select * from ancestors;
 
 -- backend/pkg/iam/db/0.0.0/12_create_permission_group_has_permissions_view.sql 
 create view permission_group_has_permissions as
-select pghp.permission as name, pghpgs.id as permission_group, pghpgs.name as permission_group_name
-from permission_group_has_permission_groups pghpgs
-join permission_group_has_permission pghp on pghpgs.id = pghp.permission_group;
+select distinct implied, permission, child_id as permission_group
+from permission_group_has_permission_groups pghpg 
+right join permission_group_has_permission as pghp on pghp.permission_group = pghpg.id;
 
 -- backend/pkg/iam/db/0.0.0/13_create_triggers_for_permission.sql 
 drop view if exists _permission_check;
