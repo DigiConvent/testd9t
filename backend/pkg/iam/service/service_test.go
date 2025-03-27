@@ -6,6 +6,7 @@ import (
 
 	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/db"
+	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	iam_repository "github.com/DigiConvent/testd9t/pkg/iam/repository"
 	iam_service "github.com/DigiConvent/testd9t/pkg/iam/service"
 	iam_setup "github.com/DigiConvent/testd9t/pkg/iam/setup"
@@ -21,7 +22,13 @@ func getRootPermissionGroup() string {
 			return facade.ID.String()
 		}
 	}
-	return ""
+
+	testRepo := getTestRepo("iam")
+	id, _ := testRepo.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
+		Name: "root",
+	})
+
+	return id.String()
 }
 
 func GetTestIAMService(dbName string) iam_service.IAMServiceInterface {
@@ -32,6 +39,16 @@ func GetTestIAMService(dbName string) iam_service.IAMServiceInterface {
 	}
 	repo := iam_repository.NewIamRepository(testDB)
 	return iam_service.NewIamService(repo)
+}
+
+func getTestRepo(dbName string) iam_repository.IAMRepositoryInterface {
+	os.Setenv(constants.CERTIFICATES_PATH, "/tmp/testd9t/certificates")
+	if testDB == nil {
+		iam_setup.Setup()
+		testDB = db.NewTestSqliteDB(dbName)
+	}
+	repo := iam_repository.NewIamRepository(testDB)
+	return repo
 }
 
 func TestMain(m *testing.M) {

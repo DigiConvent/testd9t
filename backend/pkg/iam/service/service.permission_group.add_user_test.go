@@ -37,17 +37,25 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 	status := testService.AddUserToPermissionGroup(pg, user)
 
 	if status.Err() {
+		t.Log("Cannot add user to permission group")
 		t.Fatal(status.Message)
+	} else {
+		t.Log("Added user to permission group")
 	}
 
 	// check if a user can be added to a generated permission group
 
-	userStatus, _ := testService.CreateUserStatus(&iam_domain.UserStatusWrite{
+	userStatus, status := testService.CreateUserStatus(&iam_domain.UserStatusWrite{
 		Name:        "PermissionGroupAddUserTest",
 		Abbr:        "PGAUT",
 		Description: "testxs",
 		Archived:    true,
 	})
+
+	if status.Err() {
+		t.Log("Cannot create user status")
+		t.Fatal(status.Message)
+	}
 
 	if userStatus == nil {
 		t.Fatal("Expected a result")
@@ -56,6 +64,7 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 	status = testService.AddUserToPermissionGroup(userStatus, user)
 
 	if !status.Err() {
+		t.Log("Cannot add user to permission group")
 		t.Fatal(status.Message)
 	}
 }
