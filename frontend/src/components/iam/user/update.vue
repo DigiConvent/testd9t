@@ -11,14 +11,13 @@
 </template>
 
 <script lang="ts" setup>
-import * as v from "valibot"
 import { useI18n } from "vue-i18n"
 import FormTextInput from "@/components/form/text_input.vue"
 
 import type { UserRead } from "@/api/iam/user/types"
 import { api } from "@/api"
 import { error } from "@/composables/toast"
-import { ref, watch } from "vue"
+import { ref } from "vue"
 
 const props = defineProps<{ id: string }>()
 
