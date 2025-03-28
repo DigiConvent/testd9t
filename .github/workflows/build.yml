@@ -96,6 +96,22 @@ jobs:
          - name: Checkout code
            uses: actions/checkout@v2
 
+         - name: Set up Node.js
+           uses: actions/setup-node@v3
+           with:
+              node-version: "18"
+
+         - name: Build Vue frontend
+           run: |
+              cd frontend
+              npm install
+              npx eslint . --max-warnings 0
+              npm run build-only
+
+         - name: Create a zip file with the frontend artifacts
+           run: |
+              zip -r vue3-app.zip frontend/dist
+
          - name: Set up Go
            uses: actions/setup-go@v5
            with:
@@ -123,22 +139,6 @@ jobs:
               sudo apt-get update
               sudo apt-get install -y upx
               upx --best --lzma ${{ github.workspace }}/backend/main
-
-         - name: Set up Node.js
-           uses: actions/setup-node@v3
-           with:
-              node-version: "18"
-
-         - name: Build Vue frontend
-           run: |
-              cd frontend
-              npm install
-              npx eslint . --max-warnings 0
-              npm run build-only
-
-         - name: Create a zip file with the frontend artifacts
-           run: |
-              zip -r vue3-app.zip frontend/dist
 
          - name: Upload binary to release
            uses: actions/upload-release-asset@v1
