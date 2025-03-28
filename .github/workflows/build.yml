@@ -86,8 +86,6 @@ jobs:
       name: Build backend and frontend artifacts
       needs: summarised-migrations
       runs-on: ubuntu-latest
-      env:
-         NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
       permissions:
          contents: write
          actions: read
@@ -100,8 +98,12 @@ jobs:
            uses: actions/setup-node@v3
            with:
               node-version: "18"
+              registry-url: "https://npg.pkg.github.com"
+              scope: "@DigiConvent"
 
          - name: Build Vue frontend
+           env:
+              NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
            run: |
               cd frontend
               npm install
