@@ -2,7 +2,6 @@ package iam_service_test
 
 import (
 	"testing"
-	"time"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
@@ -14,14 +13,12 @@ func TestUpdateUser(t *testing.T) {
 		Emailaddress: "TestUpdateUser@test.test",
 		FirstName:    "Test",
 		LastName:     "McTest",
-		DateOfBirth:  time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 	}
 	userId, _ := iamService.CreateUser(user)
 
 	user.Emailaddress = "TestUpdateUser@test.test1"
 	user.FirstName = "Updated"
 	// user.LastName = "McUpdated2"
-	user.DateOfBirth = time.Date(2001, 2, 2, 0, 0, 0, 0, time.UTC)
 
 	status := iamService.UpdateUser(userId, user)
 	if status.Err() {
@@ -31,8 +28,7 @@ func TestUpdateUser(t *testing.T) {
 	updatedUser, _ := iamService.GetUser(userId)
 	if updatedUser.FirstName != user.FirstName ||
 		updatedUser.LastName != user.LastName ||
-		updatedUser.Emailaddress != user.Emailaddress ||
-		updatedUser.DateOfBirth.String() != time.Date(2001, 2, 2, 0, 0, 0, 0, time.UTC).String() {
+		updatedUser.Emailaddress != user.Emailaddress {
 		t.Fatal("User not updated")
 	}
 

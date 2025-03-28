@@ -6,6 +6,7 @@ export type UserStatusCreate = {
    abbr: string
    description: string
    archived: boolean
+   parent: string
 }
 
 export default async function create_user_status(

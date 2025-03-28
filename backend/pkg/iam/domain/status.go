@@ -24,6 +24,7 @@ type UserStatusWrite struct {
 	Abbr        string `json:"abbr"`
 	Description string `json:"description"`
 	Archived    bool   `json:"archived"`
+	Parent      string `json:"parent"`
 }
 
 type AddUserStatusToUser struct {

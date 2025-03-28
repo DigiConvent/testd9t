@@ -1,24 +1,22 @@
 <template>
-   <div>
-      <div class="card flex justify-center">
-         <Form class="flex flex-col gap-4 w-full" @submit="handle_submit">
-            <h2>{{ t("iam.user.create.title") }}</h2>
-            <FormTextInput v-model="email" label="iam.user.create" name="email" />
-            <FormTextInput v-model="first_name" label="iam.user.create" name="first_name" />
-            <FormTextInput v-model="last_name" label="iam.user.create" name="last_name" />
-            <div class="flex flex-col gap-1">
-               <FloatLabel variant="in">
-                  <UserStatusPicker id="user_status" v-model="user_status"></UserStatusPicker>
-                  <label for="user_status">{{ $t("iam.user_status.picker.placeholder") }}</label>
-               </FloatLabel>
-               <Message v-if="errors.user_status" severity="error" size="small" variant="simple">{{
-                  errors.user_status
-               }}</Message>
-            </div>
-            <Button type="submit" severity="secondary" :label="$t('iam.user.create.submit')" />
-         </Form>
-      </div>
-   </div>
+   <NeedsPermission permission="iam.user.create">
+      <Form class="flex flex-col gap-4 w-full" @submit="handle_submit">
+         <h2 class="text-lg">{{ t("iam.user.create.title") }}</h2>
+         <FormTextInput v-model="email" label="iam.user.create" name="email" />
+         <FormTextInput v-model="first_name" label="iam.user.create" name="first_name" />
+         <FormTextInput v-model="last_name" label="iam.user.create" name="last_name" />
+         <div class="flex flex-col gap-1">
+            <FloatLabel variant="in">
+               <UserStatusPicker id="user_status" v-model="user_status"></UserStatusPicker>
+               <label for="user_status">{{ $t("iam.user_status.picker.placeholder") }}</label>
+            </FloatLabel>
+            <Message v-if="errors.user_status" severity="error" size="small" variant="simple">{{
+               errors.user_status
+            }}</Message>
+         </div>
+         <Button type="submit" severity="secondary" :label="$t('iam.user.create.submit')" />
+      </Form>
+   </NeedsPermission>
 </template>
 
 <script lang="ts" setup>

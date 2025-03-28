@@ -8,6 +8,7 @@
             type="text"
             fluid
             :readonly="readonly"
+            autocomplete="off"
             @input="handle_input($event)"
          />
          <label :for="name">{{ $t(label + "." + name) }}</label>

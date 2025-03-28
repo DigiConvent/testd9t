@@ -2,17 +2,13 @@
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
    <NeedsPermission v-else permission="iam.permission_group.list">
       <FormTextInput
-         v-model="selected!.name"
+         v-model="pg_name"
          readonly
          label="iam.pg.fields"
          name="parent"
-         @click="show_permission_group_dialog = true"
+         @click="show_picker_dialog = true"
       />
-      <Dialog
-         v-model:visible="show_permission_group_dialog"
-         modal
-         :header="$t('iam.pg.fields.parent')"
-      >
+      <Dialog v-model:visible="show_picker_dialog" modal :header="$t('iam.pg.fields.parent')">
          <OrganizationChart
             v-if="data"
             :value="data"
@@ -23,7 +19,7 @@
             <template #default="slotProps">
                <span :class="{ 'text-white': !slotProps.node.selectable }">
                   <i
-                     v-if="slotProps.node.data.id == selected!.id"
+                     v-if="selected != null && slotProps.node.data.id == selected!.id"
                      class="pi pi-check-circle mr-1"
                   ></i>
                   {{ slotProps.node.data.name }}</span
@@ -38,13 +34,15 @@
 import { api } from "@/api"
 import { create_tree_using_parent, type CustomNode } from "@/api/core/node"
 import type { PermissionGroupFacade } from "@/api/iam/permission_group/types"
-import { ref } from "vue"
+import { computed, ref } from "vue"
 
+const t = useI18n().t
 const loading = ref(true)
-const show_permission_group_dialog = ref(false)
+const show_picker_dialog = ref(false)
 
 import FormTextInput from "@/components/form/text_input.vue"
 import { error } from "@/composables/toast"
+import { useI18n } from "vue-i18n"
 
 const props = defineProps<{
    // eslint-disable-next-line vue/prop-name-casing
@@ -59,7 +57,11 @@ const emit = defineEmits(["picked"])
 
 const data = ref<CustomNode<PermissionGroupFacade & { selectable: boolean }>>()
 
-const selected = ref<PermissionGroupFacade>({ name: "" } as any)
+const selected = ref<PermissionGroupFacade | null>(null)
+const pg_name = computed(() => {
+   if (selected.value) return selected.value.name
+   return t("iam.pg.picker.none")
+})
 
 async function load_permission_groups() {
    ;(await api.iam.permission_group.list()).fold(
@@ -76,13 +78,15 @@ async function load_permission_groups() {
                }
             }
          }
+
          const selectable_permission_groups = permission_groups.map((pg) => {
             return {
                ...pg,
-               selectable: pg.id != selected.value.id,
+               selectable: selected.value == null || pg.id != selected.value.id,
                styleClass: "",
             }
          })
+         console.log(selectable_permission_groups)
 
          const root = selectable_permission_groups.find((entry) => entry.parent == null)
          if (!root) return
@@ -96,6 +100,7 @@ async function load_permission_groups() {
          }
 
          data.value = root_node
+         console.log(data.value)
 
          loading.value = false
       },
@@ -108,12 +113,14 @@ function handle_picked(event: any) {
    if (event.selectable) {
       selected.value = event.data
       emit("picked", event.key)
-      show_permission_group_dialog.value = false
+      show_picker_dialog.value = false
    }
 }
 
 function discriminate_descendant(
-   permission_group: CustomNode<PermissionGroupFacade & { selectable: boolean }>,
+   permission_group: CustomNode<
+      PermissionGroupFacade & { selectable: boolean; styleClass: string }
+   >,
    discriminate: boolean = false,
 ) {
    if (permission_group.key == props.discriminate_descendants) discriminate = true
@@ -126,7 +133,7 @@ function discriminate_descendant(
    if (permission_group.data.id == props.discriminate_descendants) {
       permission_group.styleClass = "!bg-sky-500"
    }
-   if (permission_group.data.id == selected.value.id) {
+   if (selected.value != null && permission_group.data.id == selected.value.id) {
       permission_group.styleClass = "!bg-emerald-500"
    }
    for (const child of permission_group.children) {

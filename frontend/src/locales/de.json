@@ -60,6 +60,9 @@
             "is_leaf": "Endgruppe",
             "is_group": "Gruppe",
             "permissions": "Zugriffsrechte"
+         },
+         "picker": {
+            "none": "Keine ausgewählt"
          }
       },
       "title": "Zugriffskontrolle",
@@ -108,10 +111,12 @@
             "placeholder": "Mitgliedsstatus",
             "empty": "Kein Mitgliedsstatus gefunden"
          },
-         "new": "Neuer Mitgliedsstatus",
          "create": {
             "title": "Mitgliedsstatus anlegen",
             "name": "Name",
+            "abbr": "Abkürzung",
+            "description": "Beschreibung",
+            "archived": "Archiviert",
             "required": "{field} ist erforderlich",
             "submit": "Anlegen"
          }

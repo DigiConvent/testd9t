@@ -1,40 +1,20 @@
 <template>
    <div class="card flex justify-center">
       <Form class="flex flex-col gap-4">
-         <div class="flex items-center gap-1 mb-4">
-            <FloatLabel variant="in">
-               <InputText id="name" class="flex-auto" autocomplete="off" />
-               <label for="name" class="font-semibold w-24">{{
-                  $t("iam.user_status.new.name")
-               }}</label>
-            </FloatLabel>
-         </div>
-         <div class="flex items-center gap-4 mb-4">
-            <FloatLabel variant="in">
-               <InputText id="abbr" class="flex-auto" autocomplete="off" />
-               <label for="abbr" class="font-semibold w-24">{{
-                  $t("iam.user_status.new.abbr")
-               }}</label>
-            </FloatLabel>
-         </div>
-         <div class="flex items-center gap-4 mb-4">
-            <FloatLabel>
-               <label for="description" class="font-semibold w-24">{{
-                  $t("iam.user_status.new.description")
-               }}</label>
-               <InputText id="description" class="flex-auto" autocomplete="off" />
-            </FloatLabel>
-         </div>
-         <div class="flex items-center gap-4 mb-8">
-            <ToggleSwitch />
-            <label for="archived" class="font-semibold w-24">{{
-               $t("iam.user_status.new.archived")
-            }}</label>
-         </div>
+         <FormTextInput v-model="name" label="iam.user_status.create" name="name" />
+         <FormTextInput v-model="abbr" label="iam.user_status.create" name="abbr" />
+         <FormTextarea v-model="description" label="iam.user_status.create" name="description" />
+         <FormSwitch v-model="archived" label="iam.user_status.create" name="archived" />
+         <PermissionGroupPicker
+            v-model="parent"
+            label="iam.user_status.create"
+            name="parent"
+            @picked="console.log('wowie')"
+         />
          <div class="flex justify-end gap-2">
             <Button
                type="button"
-               :label="$t('iam.user_status.new.submit')"
+               :label="$t('iam.user_status.create.submit')"
                @click="create_user_status"
             ></Button>
          </div>
@@ -48,6 +28,10 @@ import * as v from "valibot"
 import { useI18n } from "vue-i18n"
 import { api } from "@/api"
 import { error } from "@/composables/toast"
+import FormTextInput from "@/components/form/text_input.vue"
+import FormTextarea from "@/components/form/textarea.vue"
+import FormSwitch from "@/components/form/switch.vue"
+import PermissionGroupPicker from "@/components/iam/permission_group/picker.vue"
 
 const t = useI18n().t
 
@@ -72,6 +56,9 @@ const description_check = v.pipe(
 const archived = ref<boolean>(false)
 const archived_check = v.boolean()
 
+const parent = ref<string>()
+const parent_check = v.string()
+
 const emit = defineEmits(["created"])
 
 async function create_user_status() {
@@ -81,12 +68,14 @@ async function create_user_status() {
          abbr: abbr_check,
          description: description_check,
          archived: archived_check,
+         parent: parent_check,
       }),
       {
          name: name.value,
          abbr: abbr.value,
          description: description.value,
          archived: archived.value,
+         parent: parent.value,
       },
    )
 
@@ -97,6 +86,7 @@ async function create_user_status() {
             abbr: re.output["abbr"],
             description: re.output["description"],
             archived: re.output["archived"],
+            parent: re.output["parent"],
          })
       ).fold(
          (l) => {

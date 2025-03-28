@@ -10,6 +10,11 @@
             <td>{{ user.status_name }}</td>
          </tr>
       </table>
+      <NeedsPermission permission="iam.user.create">
+         <router-link :to="{ name: 'iam.user.create' }"
+            ><Fa icon="user-plus" /> {{ $t("iam.user.create.title") }}</router-link
+         ></NeedsPermission
+      >
    </NeedsPermission>
 </template>
 

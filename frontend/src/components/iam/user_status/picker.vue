@@ -24,7 +24,7 @@
          <template #footer>
             <div class="p-3">
                <Button
-                  :label="$t('iam.user_status.new')"
+                  :label="$t('iam.user_status.create.title')"
                   fluid
                   severity="secondary"
                   text
@@ -36,7 +36,7 @@
       <Dialog
          v-model:visible="show_new_user_status_form"
          modal
-         header="Edit Profile"
+         :header="$t('iam.user_status.create.title')"
          :style="{ width: '25rem' }"
       >
          <NewUserStatusForm @created="load_user_status()"></NewUserStatusForm>
@@ -47,29 +47,28 @@
 <script lang="ts" setup>
 import { ref, defineProps } from "vue"
 import type { UserStatusRead } from "@/api/iam"
-import { useToast } from "primevue"
 import { api } from "@/api"
 import NewUserStatusForm from "./create.vue"
+import { error } from "@/composables/toast"
 
-const toast = useToast()
 const user_status = ref<UserStatusRead[]>([])
 
 // eslint-disable-next-line vue/prop-name-casing
 defineProps<{ modelValue: string }>()
-const emit = defineEmits(["update:modelValue"])
+const emit = defineEmits(["update:modelValue", "empty"])
 
 async function load_user_status() {
    const result = await api.iam.user_status.list()
    result.fold(
-      (error: string) => {
-         toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: error,
-         })
+      (err: string) => {
+         error(err)
       },
       (result: UserStatusRead[]) => {
-         user_status.value = result
+         if (result.length == 0) {
+            emit("empty")
+         } else {
+            user_status.value = result
+         }
       },
    )
 }

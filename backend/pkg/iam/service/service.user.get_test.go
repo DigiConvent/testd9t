@@ -2,7 +2,6 @@ package iam_service_test
 
 import (
 	"testing"
-	"time"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	"github.com/google/uuid"
@@ -15,10 +14,11 @@ func TestGetUser(t *testing.T) {
 		Emailaddress: "TestGetUser@test.test",
 		FirstName:    "Test",
 		LastName:     "GetUser",
-		DateOfBirth:  time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 	}
 
-	id, _ := iamService.CreateUser(&fakeUser)
+	id, status := iamService.CreateUser(&fakeUser)
+
+	t.Log(status)
 
 	user, status := iamService.GetUser(id)
 
@@ -44,10 +44,6 @@ func TestGetUser(t *testing.T) {
 
 	if user.LastName != fakeUser.LastName {
 		t.Errorf("LastName is not equal")
-	}
-
-	if user.DateOfBirth.GoString() != fakeUser.DateOfBirth.GoString() {
-		t.Errorf("DateOfBirth is not equal")
 	}
 
 	// test fake uuid

@@ -14,7 +14,6 @@ func TestUserAddUserStatus(t *testing.T) {
 		Emailaddress: "UserAddUserStatus@test.test",
 		FirstName:    "Test",
 		LastName:     "McTest",
-		DateOfBirth:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 	}
 
 	id, status := iamService.CreateUser(testUser)

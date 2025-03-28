@@ -2,7 +2,6 @@ package iam_service_test
 
 import (
 	"testing"
-	"time"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
@@ -27,7 +26,6 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 		Emailaddress: "PermissionGroupAddUser@test.test",
 		FirstName:    "Test",
 		LastName:     "McTest",
-		DateOfBirth:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 	})
 
 	if user == nil {

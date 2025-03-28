@@ -37,6 +37,8 @@ type HasParent = {
 
 export function create_tree_using_parent<T extends HasParent>(leaf: T, data: T[]): CustomNode<T> {
    const node: CustomNode<T> = {
+      selectable: true,
+      styleClass: "",
       key: leaf.id,
       data: leaf,
       children: [],

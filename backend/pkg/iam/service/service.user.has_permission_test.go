@@ -14,7 +14,6 @@ func TestUserHasPermission(t *testing.T) {
 		Emailaddress: "UserHasPermission@test.test",
 		FirstName:    "Test",
 		LastName:     "McTest",
-		DateOfBirth:  time.Date(1990, 1, 1, 0, 0, 0, 0, time.UTC),
 	}
 	id, _ := iamService.CreateUser(&testUser)
 

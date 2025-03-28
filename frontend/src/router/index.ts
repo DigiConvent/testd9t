@@ -33,13 +33,23 @@ const router = createRouter({
                      component: () => import("../views/admin/iam/iam.vue"),
                      children: [
                         {
+                           name: "iam.user",
                            path: "users",
-                           name: "iam.user.list",
-                           component: () => import("../views/admin/iam/user/list.vue"),
                            children: [
                               {
+                                 name: "iam.user.list",
+                                 path: "",
+                                 component: () => import("../views/admin/iam/user/list.vue"),
+                              },
+                              {
+                                 name: "iam.user.create",
                                  path: "create",
                                  component: () => import("../components/iam/user/create.vue"),
+                              },
+                              {
+                                 name: "iam.user.update",
+                                 path: ":id/update",
+                                 component: () => import("../components/iam/user/update.vue"),
                               },
                            ],
                         },
