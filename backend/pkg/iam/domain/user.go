@@ -1,25 +1,21 @@
 package iam_domain
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
 type UserRead struct {
-	ID           uuid.UUID  `json:"id"`
-	Emailaddress string     `json:"emailaddress"`
-	FirstName    string     `json:"first_name"`
-	LastName     string     `json:"last_name"`
-	DateOfBirth  *time.Time `json:"date_of_birth"`
-	Enabled      bool       `json:"enabled"`
+	ID           uuid.UUID `json:"id"`
+	Emailaddress string    `json:"emailaddress"`
+	FirstName    string    `json:"first_name"`
+	LastName     string    `json:"last_name"`
+	Enabled      bool      `json:"enabled"`
 }
 
 type UserWrite struct {
 	Emailaddress string         `json:"emailaddress" validate:"required,email"`
 	FirstName    string         `json:"first_name" validate:"required"`
 	LastName     string         `json:"last_name" validate:"required"`
-	DateOfBirth  time.Time      `json:"date_of_birth" validate:"required"`
 	UserStatus   uuid.UUID      `json:"status_id"`
 	Extra        map[string]any `json:"-"`
 }
@@ -48,7 +44,6 @@ type UserFilterSort struct {
 		Emailaddress *string
 		FirstName    *string
 		LastName     *string
-		DateOfBirth  *string
 	}
 	Sort struct {
 		Field string

@@ -4,7 +4,6 @@ export type UserCreate = {
    emailaddress: string
    first_name: string
    last_name: string
-   date_of_birth: string
 }
 
 export type UserRead = {
@@ -12,7 +11,6 @@ export type UserRead = {
    emailaddress: string
    first_name: string
    last_name: string
-   date_of_birth: string
 }
 
 export type UserFacade = {

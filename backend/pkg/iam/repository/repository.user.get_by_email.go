@@ -9,13 +9,12 @@ import (
 
 func (r *IAMRepository) GetUserByEmailaddress(emailaddress string) (*iam_domain.UserRead, core.Status) {
 	var user = &iam_domain.UserRead{}
-	row := r.db.QueryRow(`select id, first_name, last_name, date_of_birth, enabled from users where emailaddress = ?`, strings.ToLower(emailaddress))
+	row := r.db.QueryRow(`select id, first_name, last_name, enabled from users where emailaddress = ?`, strings.ToLower(emailaddress))
 
 	err := row.Scan(
 		&user.ID,
 		&user.FirstName,
 		&user.LastName,
-		&user.DateOfBirth,
 		&user.Enabled,
 	)
 	if err != nil {

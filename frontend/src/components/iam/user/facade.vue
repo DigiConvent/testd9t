@@ -1,14 +1,14 @@
 <template>
-   membas
    <template v-if="users">
       <template v-for="_user in users" :key="_user.id">
-         {{ _user.name }}
+         <router-link :to="{ name: 'iam.user.profile', params: { id: _user.id } }">{{
+            _user.name
+         }}</router-link>
       </template>
    </template>
    <template v-else-if="user">
       {{ user.name }}
    </template>
-   {{ users }}
 </template>
 
 <script lang="ts" setup>

@@ -32,7 +32,7 @@
    </Menubar>
    <div v-else class="absolute">
       <div class="right-0">
-         <Button @click="show_login_form = true"><Fa icon="user" />a</Button>
+         <Button @click="show_login_form = true"><Fa icon="user" /></Button>
          <Dialog v-model:visible="show_login_form" modal>
             <LoginForm></LoginForm>
          </Dialog>

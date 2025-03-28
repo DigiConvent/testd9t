@@ -11,14 +11,13 @@ func (r *IAMRepository) GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.S
 		return nil, *core.UnprocessableContentError("ID is required")
 	}
 	var user = &iam_domain.UserRead{}
-	row := r.db.QueryRow(`select id, emailaddress, first_name, last_name, date_of_birth, enabled from users where id = ?`, id.String())
+	row := r.db.QueryRow(`select id, emailaddress, first_name, last_name, enabled from users where id = ?`, id.String())
 
 	err := row.Scan(
 		&user.ID,
 		&user.Emailaddress,
 		&user.FirstName,
 		&user.LastName,
-		&user.DateOfBirth,
 		&user.Enabled,
 	)
 	if err != nil {

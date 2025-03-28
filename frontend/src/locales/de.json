@@ -94,7 +94,6 @@
             "invalid": "{field} ist ungültig",
             "first_name": "Vorname",
             "last_name": "Nachname",
-            "date_of_birth": "Geburtsdatum",
             "submit": "Einladen"
          },
          "list": {

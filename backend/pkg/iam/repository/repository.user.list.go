@@ -7,7 +7,7 @@ import (
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
-var allowedSortBy = []string{"last_name", "first_name", "emailaddress", "date_of_birth"}
+var allowedSortBy = []string{"last_name", "first_name", "emailaddress"}
 
 func (r *IAMRepository) ListUsers(filter *iam_domain.UserFilterSort) (*pagination.Page[*iam_domain.UserFacade], core.Status) {
 	sortClause := ""
