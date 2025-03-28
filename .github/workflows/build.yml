@@ -94,12 +94,19 @@ jobs:
          - name: Checkout code
            uses: actions/checkout@v2
 
+         - name: Set up authentication for GitHub Packages
+           run: |
+              echo "@OWNER:registry=https://npm.pkg.github.com/" > ~/.npmrc
+              echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_TOKEN }}" >> ~/.npmrc
+
+         - name: Install dependencies
+           env:
+              NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+
          - name: Set up Node.js
            uses: actions/setup-node@v3
            with:
               node-version: "18"
-              registry-url: "https://npg.pkg.github.com"
-              scope: "@DigiConvent"
 
          - name: Build Vue frontend
            env:
