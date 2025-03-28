@@ -40,6 +40,12 @@ func (i *IamMiddleware) RequiresPermission(permissions ...string) gin.HandlerFun
 
 			exists := i.IamService.UserHasPermission(&userId, permission)
 			if exists {
+				isEnabled, _ := i.IamService.IsEnabled(&userId)
+				if !isEnabled {
+					c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+					c.Abort()
+					return
+				}
 				c.Set("permission", permission)
 				c.Next()
 				return

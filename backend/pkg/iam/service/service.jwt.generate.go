@@ -16,6 +16,10 @@ func (service *IAMService) GenerateJwt(userId *uuid.UUID) (string, *core.Status)
 
 	user, _ := service.repository.GetUserByID(userId)
 
+	if user == nil || !user.Enabled {
+		return "", core.UnauthorizedError("User is not enabled")
+	}
+
 	telegramId, _ := service.repository.GetUserTelegramID(userId)
 	token := jwt.NewWithClaims(jwt.SigningMethodRS512, jwt.MapClaims{
 		"id":   userId.String(),

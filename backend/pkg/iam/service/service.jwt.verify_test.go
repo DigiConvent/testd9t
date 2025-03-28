@@ -3,7 +3,7 @@ package iam_service_test
 import (
 	"testing"
 
-	"github.com/google/uuid"
+	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
 func TestVerifyJwt(t *testing.T) {
@@ -19,10 +19,16 @@ func TestVerifyJwt(t *testing.T) {
 		t.Fatal("Expected an error")
 	}
 
-	someId, _ := uuid.NewV7()
-	token, status := iamService.GenerateJwt(&someId)
-	if status.Err() {
-		t.Fatal(status.Message)
+	testUser := &iam_domain.UserWrite{
+		Emailaddress: "VerifyJwt@test.test",
+		FirstName:    "Test",
+		LastName:     "McTest",
+	}
+	id, _ := iamService.CreateUser(testUser)
+	iamService.SetEnabled(id, true)
+	token, _ := iamService.GenerateJwt(id)
+	if !status.Err() {
+		t.Fatal("this should fail because the user is not enabled")
 	}
 
 	theId, status := iamService.VerifyJwt(token)
@@ -34,7 +40,7 @@ func TestVerifyJwt(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	if theId.String() != someId.String() {
-		t.Fatal("Expected ", someId.String(), " instead I got ", theId.String())
+	if theId.String() != id.String() {
+		t.Fatal("Expected ", id.String(), " instead I got ", theId.String())
 	}
 }

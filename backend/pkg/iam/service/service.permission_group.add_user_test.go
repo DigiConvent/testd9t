@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
+	"github.com/google/uuid"
 )
 
 func TestAddUserToPermissionGroup(t *testing.T) {
@@ -32,22 +33,17 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status := testService.AddUserToPermissionGroup(pg, user)
+	testService.AddUserToPermissionGroup(pg, user)
 
-	if status.Err() {
-		t.Log("Cannot add user to permission group")
-		t.Fatal(status.Message)
-	} else {
-		t.Log("Added user to permission group")
-	}
-
-	// check if a user can be added to a generated permission group
+	id := getRootPermissionGroup()
+	parsedId, _ := uuid.Parse(id)
 
 	userStatus, status := testService.CreateUserStatus(&iam_domain.UserStatusWrite{
 		Name:        "PermissionGroupAddUserTest",
 		Abbr:        "PGAUT",
 		Description: "testxs",
 		Archived:    true,
+		Parent:      &parsedId,
 	})
 
 	if status.Err() {

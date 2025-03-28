@@ -16,10 +16,16 @@ func TestGenerateJwt(t *testing.T) {
 	}
 	id, _ := iamService.CreateUser(testUser)
 
-	token, status := iamService.GenerateJwt(id)
-	if status.Err() {
+	// this will fail if the user is not enabled
+	_, status := iamService.GenerateJwt(id)
+
+	if !status.Err() {
 		t.Fatal(status.Message)
 	}
+
+	iamService.SetEnabled(id, true)
+
+	token, _ := iamService.GenerateJwt(id)
 
 	if token == "" {
 		t.Fatal("Expected a token")

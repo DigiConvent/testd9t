@@ -50,7 +50,7 @@ func TestUserHasPermission(t *testing.T) {
 
 	hasPermission := iamService.UserHasPermission(id, permissions[0].Name)
 	if !hasPermission {
-		t.Errorf("User should have permission")
+		t.Errorf("User should have permission " + permissions[0].Name)
 	}
 
 	hasPermission = iamService.UserHasPermission(id, permissions[1].Name)

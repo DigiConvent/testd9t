@@ -6,11 +6,11 @@ import (
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
-func TestSetEnabled(t *testing.T) {
+func TestIsEnabled(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	user := &iam_domain.UserWrite{
-		Emailaddress: "SetUserEnabled@test.test",
+		Emailaddress: "UserIsEnabled@test.test",
 		FirstName:    "Test",
 		LastName:     "McTest",
 	}
@@ -22,16 +22,19 @@ func TestSetEnabled(t *testing.T) {
 	}
 
 	// this has to be called before a user is disabled or something because there is a map (let's call it simple cache) that needs to be initialised first
-	iamService.IsEnabled(userId)
+	isEnabled, _ := iamService.IsEnabled(userId)
+	if isEnabled {
+		t.Errorf("User should be disabled initially")
+	}
 
 	status := iamService.SetEnabled(userId, true)
 	if status.Err() {
 		t.Errorf("Error enabling user: %v", status)
 	}
 
-	userRead, _ = iamService.GetUser(userId)
-	if !userRead.Enabled {
-		t.Errorf("User should be enabled, instead got: %v", userRead.Enabled)
+	isEnabled, _ = iamService.IsEnabled(userId)
+	if !isEnabled {
+		t.Errorf("User should be enabled")
 	}
 
 	status = iamService.SetEnabled(userId, false)
@@ -39,13 +42,21 @@ func TestSetEnabled(t *testing.T) {
 		t.Errorf("Error disabling user: %v", status)
 	}
 
-	userRead, _ = iamService.GetUser(userId)
-	if userRead.Enabled {
+	isEnabled, _ = iamService.IsEnabled(userId)
+	if isEnabled {
 		t.Errorf("User should be disabled")
 	}
 
 	status = iamService.SetEnabled(nil, true)
 	if !status.Err() {
 		t.Errorf("Expected error when setting enabled for nil user")
+	}
+
+	isEnabled, status = iamService.IsEnabled(nil)
+	if !status.Err() {
+		t.Errorf("Expected error when getting enabled for nil user")
+	}
+	if isEnabled {
+		t.Errorf("Expected false when getting enabled for nil user")
 	}
 }
