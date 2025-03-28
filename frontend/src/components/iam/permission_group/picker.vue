@@ -1,6 +1,6 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <NeedsPermission v-else permission="iam.permission_group.list">
+   <NeedsPermission v-else-if="data" permission="iam.permission_group.list">
       <FormTextInput
          v-model="pg_name"
          readonly
@@ -53,7 +53,7 @@ const props = defineProps<{
    discriminate_descendants?: string
 }>()
 
-const emit = defineEmits(["picked"])
+const emit = defineEmits(["update:modelValue"])
 
 const data = ref<CustomNode<PermissionGroupFacade & { selectable: boolean }>>()
 
@@ -86,7 +86,6 @@ async function load_permission_groups() {
                styleClass: "",
             }
          })
-         console.log(selectable_permission_groups)
 
          const root = selectable_permission_groups.find((entry) => entry.parent == null)
          if (!root) return
@@ -100,7 +99,6 @@ async function load_permission_groups() {
          }
 
          data.value = root_node
-         console.log(data.value)
 
          loading.value = false
       },
@@ -112,7 +110,7 @@ load_permission_groups()
 function handle_picked(event: any) {
    if (event.selectable) {
       selected.value = event.data
-      emit("picked", event.key)
+      emit("update:modelValue", event.key)
       show_picker_dialog.value = false
    }
 }

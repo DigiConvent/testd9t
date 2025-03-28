@@ -32,18 +32,8 @@ export function to_permission_group_profile(data: any): PermissionGroupProfile {
       members: data.members.map((entry: any) => {
          return to_user_facade(entry)
       }),
-      permission_groups: data.permission_groups.map((entry: any) => {
-         return {
-            id: entry.id,
-            name: entry.name,
-            abbr: entry.abbr,
-            description: entry.description,
-            parent: entry.parent,
-            is_group: entry.is_group,
-            is_node: entry.is_node,
-            generated: entry.generated,
-         }
-      }),
+      ancestors: data.ancestors.map((entry: any) => to_permission_group_facade(entry)),
+      descendants: data.descendants.map((entry: any) => to_permission_group_facade(entry)),
    }
 }
 

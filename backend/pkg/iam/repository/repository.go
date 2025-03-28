@@ -27,6 +27,7 @@ type IAMRepositoryInterface interface {
 	ListUsers(*iam_domain.UserFilterSort) (*pagination.Page[*iam_domain.UserFacade], core.Status)
 	RegisterTelegramUser(telegramId int, userId *uuid.UUID) core.Status
 	SetEnabled(id *uuid.UUID, enabled bool) core.Status
+	IsEnabled(id *uuid.UUID) (bool, core.Status)
 	UpdateUser(id *uuid.UUID, user *iam_domain.UserWrite) core.Status
 	UserHasPermission(userId *uuid.UUID, permission string) bool
 	GetUserByTelegramID(id *int) (*uuid.UUID, core.Status)
@@ -53,7 +54,8 @@ type IAMRepositoryInterface interface {
 	DeletePermissionGroup(arg *uuid.UUID) core.Status
 	GetPermissionGroup(arg *uuid.UUID) (*iam_domain.PermissionGroupRead, core.Status)
 	ListGroupUsers(groupId *uuid.UUID) ([]*iam_domain.UserFacade, core.Status)
-	ListPermissionGroupPermissionGroups(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)
+	ListPermissionGroupAncestors(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)
+	ListPermissionGroupDescendants(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)
 	ListPermissionGroupPermissions(arg *uuid.UUID) ([]*iam_domain.PermissionFacade, core.Status)
 	ListPermissionGroups() ([]*iam_domain.PermissionGroupFacade, core.Status)
 	SetParentPermissionGroup(arg *iam_domain.PermissionGroupSetParent) core.Status

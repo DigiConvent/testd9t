@@ -5,7 +5,7 @@
          <Card>
             <template #title> Hierarchy </template>
             <template #content>
-               <Timeline :value="profile?.permission_groups.reverse()">
+               <Timeline :value="profile?.ancestors.reverse()">
                   <template #content="slotProps">
                      <router-link
                         :to="{ name: 'iam.pg.profile', params: { id: slotProps.item.id } }"
@@ -51,7 +51,10 @@
          <Card>
             <template #title>Members</template>
             <template #content>
-               <UserFacades :users="profile!.members" />
+               <UserFacades v-if="profile.members.length > 0" :users="profile!.members" />
+               <span v-else>
+                  {{ $t("iam.pg.profile.no_members") }}
+               </span>
             </template>
          </Card>
       </div>

@@ -4,6 +4,7 @@ import get_user from "./get"
 import list_users from "./list"
 import list_permissions from "./list_permissions"
 import get_user_profile from "./profile"
+import set_enabled from "./set_enabled"
 
 export const user = {
    connect_telegram: connect_telegram,
@@ -12,4 +13,5 @@ export const user = {
    profile: get_user_profile,
    list_permissions: list_permissions,
    list: list_users,
+   set_enabled: set_enabled,
 }

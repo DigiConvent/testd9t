@@ -1,79 +1,72 @@
 <template>
-   <div class="card flex justify-center">
-      <Select
-         :value="modelValue"
-         :options="user_status"
-         option-label="name"
-         class="w-full"
-         :empty-message="$t('iam.user_status.picker.empty')"
-         @input="emit('update:modelValue', $event.target.value)"
-      >
-         <template #value="slotProps">
-            <div v-if="slotProps.value" class="flex items-center">
-               <div>{{ slotProps.value.name }}</div>
-            </div>
-            <span v-else>
-               {{ slotProps.placeholder }}
-            </span>
-         </template>
-         <template #option="slotProps">
-            <div class="flex items-center">
-               <div>{{ slotProps.option.name }}</div>
-            </div>
-         </template>
-         <template #footer>
-            <div class="p-3">
-               <Button
-                  :label="$t('iam.user_status.create.title')"
-                  fluid
-                  severity="secondary"
-                  text
-                  @click="show_new_user_status_form = true"
-               />
-            </div>
-         </template>
-      </Select>
-      <Dialog
-         v-model:visible="show_new_user_status_form"
-         modal
-         :header="$t('iam.user_status.create.title')"
-         :style="{ width: '25rem' }"
-      >
-         <NewUserStatusForm @created="load_user_status()"></NewUserStatusForm>
-      </Dialog>
-   </div>
+   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+   <Select
+      v-else-if="user_status"
+      v-model="value_facade"
+      class="w-full"
+      :options="user_status"
+      option-label="name"
+      option-value="id"
+      :empty-message="$t('iam.user_status.picker.empty')"
+   >
+      <template #footer>
+         <div class="p-3">
+            <Button
+               :label="$t('iam.user_status.create.title')"
+               fluid
+               severity="secondary"
+               text
+               @click="show_new_user_status_form = true"
+            />
+         </div>
+      </template>
+   </Select>
+   <Dialog
+      v-model:visible="show_new_user_status_form"
+      modal
+      :header="$t('iam.user_status.create.title')"
+      :style="{ width: '25rem' }"
+   >
+      <NewUserStatusForm @created="load_user_status($event)"></NewUserStatusForm>
+   </Dialog>
 </template>
 
 <script lang="ts" setup>
-import { ref, defineProps } from "vue"
+import { ref, defineProps, computed } from "vue"
 import type { UserStatusRead } from "@/api/iam"
 import { api } from "@/api"
 import NewUserStatusForm from "./create.vue"
 import { error } from "@/composables/toast"
 
+const loading = ref(true)
 const user_status = ref<UserStatusRead[]>([])
+const show_new_user_status_form = ref(false)
 
 // eslint-disable-next-line vue/prop-name-casing
-defineProps<{ modelValue: string }>()
-const emit = defineEmits(["update:modelValue", "empty"])
+const props = defineProps<{ modelValue: string }>()
+const emit = defineEmits(["update:modelValue"])
+const value_facade = computed({
+   get: () => props.modelValue,
+   set: (value: string) => emit("update:modelValue", value),
+})
 
-async function load_user_status() {
+async function load_user_status(selected: string = "") {
+   show_new_user_status_form.value = false
+   loading.value = true
    const result = await api.iam.user_status.list()
    result.fold(
       (err: string) => {
          error(err)
       },
       (result: UserStatusRead[]) => {
-         if (result.length == 0) {
-            emit("empty")
-         } else {
-            user_status.value = result
+         user_status.value = result
+         loading.value = false
+         if (selected != "") {
+            emit("update:modelValue", selected)
          }
       },
    )
 }
 
 load_user_status()
-
-const show_new_user_status_form = ref(false)
 </script>

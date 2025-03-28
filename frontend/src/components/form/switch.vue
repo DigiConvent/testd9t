@@ -1,14 +1,22 @@
 <template>
    <div class="flex flex-col gap-1" @click="toggle">
-      <label :for="name">{{ $t(label + "." + name) }}</label>
-      <ToggleSwitch
-         :id="name"
-         v-model="value_facade"
-         :name="name"
-         fluid
-         :readonly="readonly"
-         @input="toggle"
-      />
+      <Button :severity="'secondary'" class="!py-2 !px-1">
+         <div
+            class="w-full -m-1 rounded-md"
+            :class="{ 'bg-gray-100': !modelValue, 'bg-white': modelValue }"
+         >
+            <Fa v-if="icon_on && modelValue" :icon="icon_on" />
+            <Fa v-if="icon_off != undefined && !modelValue" :icon="icon_off" />
+            {{ modelValue ? label_on : label_off }}
+            <ProgressSpinner
+               v-if="loading"
+               class="inline"
+               style="height: 10px; width: 10px"
+               :class="{ hidden: !loading }"
+               stroke-width="8"
+            />
+         </div>
+      </Button>
    </div>
 </template>
 
@@ -18,9 +26,12 @@ import { computed } from "vue"
 const props = defineProps<{
    // eslint-disable-next-line vue/prop-name-casing
    modelValue: boolean
-   name: string
-   label: string
+   label_on: string
+   label_off: string
    readonly?: boolean
+   loading?: boolean
+   icon_on?: string
+   icon_off?: string
 }>()
 const emit = defineEmits(["update:modelValue"])
 
@@ -29,6 +40,7 @@ const value_facade = computed<boolean>({
    set: (value) => emit("update:modelValue", value),
 })
 function toggle() {
+   if (props.loading) return
    value_facade.value = !value_facade.value
 }
 </script>

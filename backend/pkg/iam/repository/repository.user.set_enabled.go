@@ -19,5 +19,8 @@ func (r *IAMRepository) SetEnabled(id *uuid.UUID, enabled bool) core.Status {
 	if rowsAffected == 0 {
 		return *core.NotFoundError("user not found")
 	}
+	if rowsAffected == 1 && !enabled {
+		disableUser(id)
+	}
 	return *core.StatusNoContent()
 }

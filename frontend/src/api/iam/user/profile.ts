@@ -10,6 +10,7 @@ export default async function get_user_profile(id: string): Promise<Either<strin
             emailaddress: data.user.emailaddress,
             first_name: data.user.first_name,
             last_name: data.user.last_name,
+            enabled: data.user.enabled,
          },
          status: data.status,
          groups: data.groups,

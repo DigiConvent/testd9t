@@ -5,12 +5,7 @@
          <FormTextInput v-model="abbr" label="iam.user_status.create" name="abbr" />
          <FormTextarea v-model="description" label="iam.user_status.create" name="description" />
          <FormSwitch v-model="archived" label="iam.user_status.create" name="archived" />
-         <PermissionGroupPicker
-            v-model="parent"
-            label="iam.user_status.create"
-            name="parent"
-            @picked="console.log('wowie')"
-         />
+         <PermissionGroupPicker v-model="parent" label="iam.user_status.create" name="parent" />
          <div class="flex justify-end gap-2">
             <Button
                type="button"
@@ -27,7 +22,7 @@ import { ref } from "vue"
 import * as v from "valibot"
 import { useI18n } from "vue-i18n"
 import { api } from "@/api"
-import { error } from "@/composables/toast"
+import { error, warn } from "@/composables/toast"
 import FormTextInput from "@/components/form/text_input.vue"
 import FormTextarea from "@/components/form/textarea.vue"
 import FormSwitch from "@/components/form/switch.vue"
@@ -96,6 +91,9 @@ async function create_user_status() {
             emit("created", id)
          },
       )
+   } else {
+      console.log(re.issues)
+      warn(re.issues[0].message)
    }
 }
 </script>

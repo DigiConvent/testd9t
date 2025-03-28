@@ -60,7 +60,7 @@ func TestSetPermissionGroupParent(t *testing.T) {
 		t.Fatalf("No permission group found")
 	}
 
-	if len(pgProfile.PermissionGroups) != 3 {
-		t.Fatalf("Expected 1 permission group, instead got %v", len(pgProfile.PermissionGroups))
+	if len(pgProfile.Ancestors) != 3 {
+		t.Fatalf("Expected 1 permission group, instead got %v", len(pgProfile.Ancestors))
 	}
 }

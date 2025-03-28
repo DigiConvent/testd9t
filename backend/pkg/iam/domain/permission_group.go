@@ -45,10 +45,11 @@ type PermissionGroupFacade struct {
 }
 
 type PermissionGroupProfile struct {
-	PermissionGroup  *PermissionGroupRead     `json:"permission_group"`
-	Permissions      []*PermissionFacade      `json:"permissions"`
-	Members          []*UserFacade            `json:"members"`
-	PermissionGroups []*PermissionGroupFacade `json:"permission_groups"`
+	PermissionGroup *PermissionGroupRead     `json:"permission_group"`
+	Permissions     []*PermissionFacade      `json:"permissions"`
+	Members         []*UserFacade            `json:"members"`
+	Ancestors       []*PermissionGroupFacade `json:"ancestors"`
+	Descendants     []*PermissionGroupFacade `json:"descendants"`
 }
 
 type AddUserToPermissionGroupWrite struct {

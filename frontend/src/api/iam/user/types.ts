@@ -11,6 +11,7 @@ export type UserRead = {
    emailaddress: string
    first_name: string
    last_name: string
+   enabled: boolean
 }
 
 export type UserFacade = {

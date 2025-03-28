@@ -52,6 +52,9 @@
             "title": "Gruppe löschen",
             "submit": "Löschen"
          },
+         "profile": {
+            "no_members": "Keine Mitglieder"
+         },
          "fields": {
             "name": "Name",
             "abbr": "Abkürzung",
@@ -93,18 +96,20 @@
          "create": {
             "title": "Nutzer anlegen",
             "email": "E-Mailadresse",
-            "required": "{field} ist erforderlich",
-            "invalid": "{field} ist ungültig",
             "first_name": "Vorname",
             "last_name": "Nachname",
-            "submit": "Einladen"
+            "user_status_start": "Seit/Ab",
+            "submit": "Einladen",
+            "success": "Benutzer erfolgreich hinzugefügt"
          },
          "list": {
             "title": "Benutzer"
          },
          "update": {
             "submit": "Aktualisieren"
-         }
+         },
+         "enabled": "Konto ist aktiviert",
+         "disabled": "Konto ist deaktiviert"
       },
       "user_status": {
          "picker": {

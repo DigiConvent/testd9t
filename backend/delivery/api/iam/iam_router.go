@@ -84,11 +84,6 @@ func (router *IamRouter) ResetPasswordUser(ctx *gin.Context) {
 	panic("unimplemented")
 }
 
-// SetEnabledUser implements IamRouterInterface.
-func (router *IamRouter) SetEnabledUser(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
 // SetParentPermissionGroup implements IamRouterInterface.
 func (router *IamRouter) SetParentPermissionGroup(ctx *gin.Context) {
 	panic("unimplemented")

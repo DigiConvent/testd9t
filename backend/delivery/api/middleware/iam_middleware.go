@@ -18,6 +18,7 @@ func (i *IamMiddleware) RequiresPermission(permissions ...string) gin.HandlerFun
 		permissions = append(permissions, "super")
 		rawUserId := c.GetString(ContextField)
 		userId, err := uuid.Parse(rawUserId)
+
 		if err != nil {
 			c.JSON(403, gin.H{"error": "Not logged in"})
 			c.Abort()
@@ -36,6 +37,7 @@ func (i *IamMiddleware) RequiresPermission(permissions ...string) gin.HandlerFun
 				}
 				permission = strings.Join(segments, ".")
 			}
+
 			exists := i.IamService.UserHasPermission(&userId, permission)
 			if exists {
 				c.Set("permission", permission)

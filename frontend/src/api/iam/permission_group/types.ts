@@ -15,7 +15,8 @@ export type PermissionGroupProfile = {
    permission_group: PermissionGroupRead
    permissions: PermissionFacade[]
    members: UserFacade[]
-   permission_groups: PermissionGroupFacade[]
+   ancestors: PermissionGroupFacade[]
+   descendants: PermissionGroupFacade[]
 }
 
 export type PermissionGroupFacade = {

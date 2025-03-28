@@ -6,9 +6,9 @@ import (
 	uuid "github.com/google/uuid"
 )
 
-func (r *IAMRepository) ListPermissionGroupPermissionGroups(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status) {
+func (r *IAMRepository) ListPermissionGroupAncestors(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status) {
 	var permissionGroups = make([]*iam_domain.PermissionGroupFacade, 0)
-	rows, err := r.db.Query(`select id, name, parent, implied from permission_group_has_permission_groups where child_id = ?`, arg.String())
+	rows, err := r.db.Query(`select id, name, parent, implied from permission_group_has_permission_group_ancestors where child_id = ?`, arg.String())
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

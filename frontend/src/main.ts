@@ -45,10 +45,12 @@ import {
    Ripple,
    Select,
    Skeleton,
+   Splitter,
+   SplitterPanel,
    Textarea,
    Timeline,
    ToastService,
-   ToggleSwitch,
+   ToggleButton,
    TreeSelect,
 } from "primevue"
 
@@ -110,10 +112,12 @@ app.component("ProgressSpinner", ProgressSpinner)
 app.component("Textarea", Textarea)
 app.component("Timeline", Timeline)
 app.component("Toast", Toast)
-app.component("ToggleSwitch", ToggleSwitch)
+app.component("ToggleButton", ToggleButton)
 app.component("TreeSelect", TreeSelect)
 app.component("Select", Select)
 app.component("Skeleton", Skeleton)
+app.component("Splitter", Splitter)
+app.component("SplitterPanel", SplitterPanel)
 app.component("NeedsPermission", Auth)
 
 app.directive("ripple", Ripple)

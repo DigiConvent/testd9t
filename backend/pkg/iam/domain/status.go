@@ -20,11 +20,11 @@ type UserStatusRead struct {
 }
 
 type UserStatusWrite struct {
-	Name        string `json:"name"`
-	Abbr        string `json:"abbr"`
-	Description string `json:"description"`
-	Archived    bool   `json:"archived"`
-	Parent      string `json:"parent"`
+	Name        string     `json:"name"`
+	Abbr        string     `json:"abbr"`
+	Description string     `json:"description"`
+	Archived    bool       `json:"archived"`
+	Parent      *uuid.UUID `json:"parent"`
 }
 
 type AddUserStatusToUser struct {
