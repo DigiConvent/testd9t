@@ -18,10 +18,10 @@
          >
             <template #default="slotProps">
                <span :class="{ 'text-white': !slotProps.node.selectable }">
-                  <i
+                  <Fa
                      v-if="selected != null && slotProps.node.data.id == selected!.id"
-                     class="pi pi-check-circle mr-1"
-                  ></i>
+                     icon="circle-check"
+                  />
                   {{ slotProps.node.data.name }}</span
                >
             </template>

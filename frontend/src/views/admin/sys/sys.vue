@@ -77,12 +77,13 @@
                <AccordionPanel v-for="(record, i) of dns_checklist" :key="i" :value="i">
                   <AccordionHeader>
                      <span class="flex items-center gap-2 w-full">
-                        <i v-if="record.done" class="pi pi-check-circle text-green-500"></i>
-                        <i
+                        <Fa v-if="record.done" icon="circle-check" class="text-green-500" />
+                        <Fa
                            v-else-if="record.is.value == ''"
-                           class="pi pi-exclamation-circle text-red-400"
-                        ></i>
-                        <i v-else class="pi pi-question-circle text-yellow-400"></i>
+                           icon="circle-exclamation"
+                           class="text-red-400"
+                        />
+                        <Fa icon="circle-question" class="text-yellow-400" />
                         <span class="font-bold whitespace-nowrap flex gap-4"
                            >{{ record.name }}
                            <InputGroup v-if="record.done">
@@ -119,7 +120,7 @@
                                  class="w-full"
                               ></InputText>
                               <InputGroupAddon>
-                                 <i class="pi pi-copy"></i>
+                                 <Fa icon="copy" />
                               </InputGroupAddon>
                            </InputGroup>
                         </div>
@@ -203,22 +204,22 @@ async function load_system_status() {
                label: "Backend",
                color: "",
                value: data.space.program.backend,
-               icon: "pi pi-server",
+               icon: "server",
             },
             {
                label: "Frontend",
                color: "",
                value: data.space.program.frontend,
-               icon: "pi pi-globe",
+               icon: "browser",
             },
-            { label: "Iam", color: "", value: data.space.data.iam, icon: "pi pi-key" },
-            { label: "Sys", color: "", value: data.space.data.sys, icon: "pi pi-cog" },
-            { label: "Post", color: "", value: data.space.data.post, icon: "pi pi-inbox" },
+            { label: "Iam", color: "", value: data.space.data.iam, icon: "id-card-clip" },
+            { label: "Sys", color: "", value: data.space.data.sys, icon: "hard-drive" },
+            { label: "Post", color: "", value: data.space.data.post, icon: "mailbox" },
             {
                label: "Certificates",
                color: "",
                value: data.space.data.certificates,
-               icon: "pi pi-shield",
+               icon: "file-certificate",
             },
          ])
 

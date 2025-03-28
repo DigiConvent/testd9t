@@ -1,5 +1,4 @@
 import "./assets/main.css"
-import "primeicons/primeicons.css"
 
 import { createApp } from "vue"
 import { createI18n } from "vue-i18n"
