@@ -168,7 +168,7 @@ with recursive relevant_groups as (select
 select * from relevant_groups;
 
 -- backend/pkg/iam/db/0.0.0/11_create_permission_group_has_permission_groups_view.sql 
-create view permission_group_has_permission_groups as
+create view permission_group_has_permission_group_ancestors as
 with recursive ancestors as (select
     pg.id,
     pg.name, 
@@ -187,10 +187,29 @@ with recursive ancestors as (select
   inner join ancestors s on parent.id = s.parent)
 select * from ancestors;
 
+create view permission_group_has_permission_group_descendants as
+with recursive descendants as (select
+    pg.id,
+    pg.name, 
+    0 as implied,
+    pg.parent,
+    pg.id as parent_id
+  from permission_groups pg
+  union all
+  select 
+    child.id,
+    child.name,
+    1 as implied,
+    child.parent,
+    s.parent_id
+  from permission_groups child
+  inner join descendants s on child.parent = s.id)
+select * from descendants;
+
 -- backend/pkg/iam/db/0.0.0/12_create_permission_group_has_permissions_view.sql 
 create view permission_group_has_permissions as
 select distinct implied, permission, child_id as permission_group
-from permission_group_has_permission_groups pghpg 
+from permission_group_has_permission_group_ancestors pghpg 
 right join permission_group_has_permission as pghp on pghp.permission_group = pghpg.id;
 
 -- backend/pkg/iam/db/0.0.0/13_create_triggers_for_permission.sql 
