@@ -14,16 +14,18 @@
          modal
          @hide="show_permissions_dialog = false"
       >
-         <PermissionOption
-            v-for="child of node.children.sort((a, b) => a.label.localeCompare(b.label))"
-            :key="child.key"
-            :node="child"
-            :multiple="multiple"
-            :parent_hovered="false"
-            :preselected="preselected"
-            :summarised="false"
-            :readonly="(preselected || []).includes(child.key)"
-         />
+         <template #default>
+            <PermissionOption
+               v-for="child of node.children.sort((a, b) => a.label.localeCompare(b.label))"
+               :key="child.key"
+               :node="child"
+               :multiple="multiple"
+               :parent_hovered="false"
+               :preselected="preselected"
+               :summarised="false"
+               :readonly="(preselected || []).includes(child.key)"
+            />
+         </template>
          <template #footer>
             <Button @click="show_permissions_dialog = false">{{ $t("actions.close") }} </Button>
          </template>

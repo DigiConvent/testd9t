@@ -53,7 +53,13 @@
             "submit": "Löschen"
          },
          "profile": {
-            "no_members": "Keine Mitglieder"
+            "no_members": "Keine Mitglieder",
+            "hierarchy": "Gruppenhierarchie",
+            "permissions": "Zugriffsrechte",
+            "members": "Mitglieder",
+            "inherited": "Vererbt",
+            "owned": "Eigene",
+            "properties": "Eigenschaften"
          },
          "fields": {
             "name": "Name",

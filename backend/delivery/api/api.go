@@ -42,6 +42,8 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 
 			userRoutes.GET("/permission", iamRouter.ListPermissionsUser)
 			userRoutes.GET("/permission/:id", iam.RequiresPermission("iam.user.get", "iam.user.get.:id"), iamRouter.ListPermissionsUser)
+
+			userRoutes.POST("/:id/password", iam.RequiresPermission("iam.user.set_password"), iamRouter.SetPasswordUser)
 		}
 
 		userStatusRoutes := iamRoutes.Group("/user-status")

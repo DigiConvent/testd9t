@@ -1,33 +1,35 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <NeedsPermission v-else-if="data" permission="iam.permission_group.list">
-      <FormTextInput
-         v-model="pg_name"
-         readonly
-         label="iam.pg.fields"
-         name="parent"
-         @click="show_picker_dialog = true"
-      />
-      <Dialog v-model:visible="show_picker_dialog" modal :header="$t('iam.pg.fields.parent')">
-         <OrganizationChart
-            v-if="data"
-            :value="data"
-            collapsible
-            :selection-mode="'single'"
-            @node-select="handle_picked($event)"
-         >
-            <template #default="slotProps">
-               <span :class="{ 'text-white': !slotProps.node.selectable }">
-                  <Fa
-                     v-if="selected != null && slotProps.node.data.id == selected!.id"
-                     icon="circle-check"
-                  />
-                  {{ slotProps.node.data.name }}</span
-               >
-            </template>
-         </OrganizationChart>
-      </Dialog>
-   </NeedsPermission>
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <NeedsPermission v-else-if="data" permission="iam.permission_group.list">
+         <FormTextInput
+            v-model="pg_name"
+            readonly
+            label="iam.pg.fields"
+            name="parent"
+            @click="show_picker_dialog = true"
+         />
+         <Dialog v-model:visible="show_picker_dialog" modal :header="$t('iam.pg.fields.parent')">
+            <OrganizationChart
+               v-if="data"
+               :value="data"
+               collapsible
+               :selection-mode="'single'"
+               @node-select="handle_picked($event)"
+            >
+               <template #default="slotProps">
+                  <span :class="{ 'text-white': !slotProps.node.selectable }">
+                     <Fa
+                        v-if="selected != null && slotProps.node.data.id == selected!.id"
+                        icon="circle-check"
+                     />
+                     {{ slotProps.node.data.name }}</span
+                  >
+               </template>
+            </OrganizationChart>
+         </Dialog>
+      </NeedsPermission>
+   </div>
 </template>
 
 <script lang="ts" setup>

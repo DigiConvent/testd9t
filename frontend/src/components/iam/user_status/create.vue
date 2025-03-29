@@ -4,7 +4,12 @@
          <FormTextInput v-model="name" label="iam.user_status.create" name="name" />
          <FormTextInput v-model="abbr" label="iam.user_status.create" name="abbr" />
          <FormTextarea v-model="description" label="iam.user_status.create" name="description" />
-         <FormSwitch v-model="archived" label="iam.user_status.create" name="archived" />
+         <FormSwitch
+            v-model="archived"
+            label_on="iam.user_status.create.archived"
+            label_off="iam.user_status.create.unarchived"
+            name="archived"
+         />
          <PermissionGroupPicker v-model="parent" label="iam.user_status.create" name="parent" />
          <div class="flex justify-end gap-2">
             <Button
@@ -92,7 +97,6 @@ async function create_user_status() {
          },
       )
    } else {
-      console.log(re.issues)
       warn(re.issues[0].message)
    }
 }

@@ -3,9 +3,9 @@
    <NeedsPermission v-else-if="profile" permission="iam.permission_group.read">
       <div class="grid grid-cols-2 gap-4">
          <Card>
-            <template #title> Hierarchy </template>
+            <template #title> {{ $t("iam.pg.profile.hierarchy") }} </template>
             <template #content>
-               <Timeline :value="profile?.ancestors.reverse()">
+               <Timeline :value="ancestors">
                   <template #content="slotProps">
                      <router-link
                         :to="{ name: 'iam.pg.profile', params: { id: slotProps.item.id } }"
@@ -16,24 +16,18 @@
             </template>
          </Card>
          <Card>
-            <template #title>Permissions</template>
+            <template #title>{{ $t("iam.pg.profile.permissions") }}</template>
             <template #content>
                <div class="grid grid-cols-2">
                   <div>
-                     Inherited
-                     <div
-                        v-for="p of profile?.permissions.filter((p) => p.implied)"
-                        :key="'inherited' + p.name"
-                     >
+                     {{ $t("iam.pg.profile.inherited") }}
+                     <div v-for="p of profile?.permissions.filter((p) => p.implied)" :key="p.name">
                         {{ p.name }}
                      </div>
                   </div>
                   <div>
-                     Owned
-                     <div
-                        v-for="p of profile?.permissions.filter((p) => !p.implied)"
-                        :key="'inherited' + p.name"
-                     >
+                     {{ $t("iam.pg.profile.owned") }}
+                     <div v-for="p of profile?.permissions.filter((p) => !p.implied)" :key="p.name">
                         {{ p.name }}
                      </div>
                   </div>
@@ -41,7 +35,7 @@
             </template>
          </Card>
          <Card>
-            <template #title>Data</template>
+            <template #title>{{ $t("iam.pg.profile.properties") }}</template>
             <template #content>
                <UpdatePermissionGroup
                   v-model="profile!.permission_group.id"
@@ -49,7 +43,7 @@
             </template>
          </Card>
          <Card>
-            <template #title>Members</template>
+            <template #title>{{ $t("iam.pg.profile.members") }}</template>
             <template #content>
                <UserFacades v-if="profile.members.length > 0" :users="profile!.members" />
                <span v-else>
@@ -64,9 +58,12 @@
 
 <script lang="ts" setup>
 import { api } from "@/api"
-import type { PermissionGroupProfile } from "@/api/iam/permission_group/types"
+import type {
+   PermissionGroupFacade,
+   PermissionGroupProfile,
+} from "@/api/iam/permission_group/types"
 import { error } from "@/composables/toast"
-import { ref } from "vue"
+import { computed, ref } from "vue"
 import UpdatePermissionGroup from "@/components/iam/permission_group/update.vue"
 import UserFacades from "@/components/iam/user/facade.vue"
 
@@ -74,6 +71,16 @@ const props = defineProps<{ id: string }>()
 
 const loading = ref(true)
 const profile = ref<PermissionGroupProfile | null>(null)
+const ancestors = computed({
+   get: () => {
+      const ancestors: PermissionGroupFacade[] = []
+      for (const pg of profile.value!.ancestors) {
+         ancestors.push(pg)
+      }
+      return ancestors.reverse()
+   },
+   set: () => {},
+})
 async function load_profile() {
    loading.value = true
    ;(await api.iam.permission_group.get_profile(props.id)).fold(

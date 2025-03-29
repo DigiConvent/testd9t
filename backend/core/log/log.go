@@ -15,19 +15,19 @@ var yellow = "\033[33m"
 var cyan = "\033[36m"
 var white = "\033[97m"
 
-func Error(msg interface{}) {
+func Error(msg any) {
 	fmt.Println(white+getTime()+":"+red, prep(msg), reset)
 }
 
-func Warning(msg interface{}) {
+func Warning(msg any) {
 	fmt.Println(white+getTime()+":"+yellow, prep(msg), reset)
 }
 
-func Info(msg interface{}) {
+func Info(msg any) {
 	fmt.Println(white+getTime()+":"+cyan, prep(msg), reset)
 }
 
-func Success(msg interface{}) {
+func Success(msg any) {
 	fmt.Println(white+getTime()+":"+green, prep(msg), reset)
 }
 
@@ -35,7 +35,7 @@ func getTime() string {
 	return time.Now().Format(core_utils.FormattedTime)
 }
 
-func prep(input interface{}) string {
+func prep(input any) string {
 	stringInput := fmt.Sprint(input)
 	segments := strings.Split(stringInput, "\n")
 	for i := range segments {
