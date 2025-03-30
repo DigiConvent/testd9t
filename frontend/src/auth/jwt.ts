@@ -7,6 +7,9 @@ import { info, warn } from "@/composables/toast"
 import router from "@/router"
 
 export default class JwtAuthenticator {
+   get_permissions() {
+      return this.permissions
+   }
    private static instance: JwtAuthenticator | undefined
    private token: string | undefined
    public is_authenticated: Ref<boolean> = ref<boolean>(false)
@@ -81,7 +84,13 @@ export default class JwtAuthenticator {
       if (this.permissions.value.includes("super")) {
          return true
       }
-      return this.permissions.value.includes(permission)
+      // maybe there's a permission that has the prefix of permission
+      for (const p of this.permissions.value) {
+         if (permission.startsWith(p)) {
+            return true
+         }
+      }
+      return false
    }
 
    has_permissions(permissions: string[]) {
@@ -111,12 +120,12 @@ export default class JwtAuthenticator {
       return this.instance
    }
 
-   async login_using_telegram(): Promise<boolean> {
+   async login_using_telegram(): Promise<string> {
       const data = get_web_app().initData
       return this.login(api.iam.login.telegram(data))
    }
 
-   async login_using_credentials(emailaddress: string, password: string): Promise<boolean> {
+   async login_using_credentials(emailaddress: string, password: string): Promise<string> {
       return this.login(api.iam.login.credentials(emailaddress, password))
    }
 
@@ -125,21 +134,21 @@ export default class JwtAuthenticator {
       return result.is_right()
    }
 
-   async login(response: Promise<Either<string, string>>): Promise<boolean> {
+   async login(response: Promise<Either<string, string>>): Promise<string> {
       const result = await response
       if (result.is_right()) {
          const token = result.get_right()
          if (token == undefined) {
-            return false
+            return "token is undefined"
          } else {
             this.token = token
             localStorage.setItem("token", token)
             this.refresh_token()
             await this.load_permissions()
-            return true
+            return ""
          }
       } else {
-         return false
+         return result.get_left()!
       }
    }
 

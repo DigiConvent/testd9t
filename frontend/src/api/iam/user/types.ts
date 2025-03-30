@@ -4,8 +4,25 @@ export type UserCreate = {
    emailaddress: string
    first_name: string
    last_name: string
+   user_status: string
+   when: Date
 }
 
+export type UserUpdate = {
+   emailaddress: string
+   first_name: string
+   last_name: string
+}
+
+export type UserIdOrUserRead =
+   | {
+        id: undefined
+        data: UserRead
+     }
+   | {
+        id: string
+        data: undefined
+     }
 export type UserRead = {
    id: string
    emailaddress: string

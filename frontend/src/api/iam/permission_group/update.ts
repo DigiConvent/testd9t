@@ -7,7 +7,7 @@ export default async function update_permission_group(
    permission_group_write: PermissionGroupWrite,
 ): Promise<Either<string, boolean>> {
    return api_post<boolean>(
-      "/api/iam/permission-group/" + pid + "/",
+      "/api/iam/permission-group/" + pid,
       permission_group_write,
       undefined,
       204,

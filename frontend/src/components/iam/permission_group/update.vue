@@ -1,37 +1,35 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <NeedsPermission v-else-if="pg" permission="iam.permission_group.update">
-      <Form v-if="pg != null" class="flex flex-col gap-4" @submit="handle_submit">
-         <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
-         <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
-         <FormTextareaInput v-model="pg.description" label="iam.pg.fields" name="description" />
-         <PermissionGroupPicker
-            v-if="pg.parent != null"
-            v-model="pg.parent"
-            label="iam.pg.fields"
-            name="parent"
-            :discriminate_descendants="modelValue"
-         ></PermissionGroupPicker>
-         <PermissionPicker
-            v-model="pg.permissions"
-            :multiple="true"
-            :preselected="inherited_permissions"
-         ></PermissionPicker>
-         <Button @click="handle_submit">{{ $t("actions.save") }}</Button>
-      </Form>
-      <div v-else>Could not load permission group</div>
-   </NeedsPermission>
-   <div v-else>
-      {{ auth.has_permission("iam.permission_group.update") }}
-      {{ $t("unauthorised", { permission: "iam.permission_group.update" }) }}
-   </div>
+   <Form
+      v-else-if="pg != null"
+      v-permission="'iam.permission_group.update'"
+      class="flex flex-col gap-4"
+      @submit="handle_submit"
+   >
+      <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
+      <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
+      <FormTextareaInput v-model="pg.description" label="iam.pg.fields" name="description" />
+      <PermissionGroupPicker
+         v-if="pg.parent != null"
+         v-model="pg.parent"
+         label="iam.pg.fields"
+         name="parent"
+         :discriminate_descendants="modelValue"
+      ></PermissionGroupPicker>
+      <PermissionPicker
+         v-model="pg.permissions"
+         :multiple="true"
+         :preselected="inherited_permissions"
+      ></PermissionPicker>
+      <Button @click="handle_submit">{{ $t("actions.save") }}</Button>
+   </Form>
+   <div v-else>Could not load permission group</div>
 </template>
 
 <script lang="ts" setup>
 import { api } from "@/api"
 import type { PermissionGroupRead, PermissionGroupWrite } from "@/api/iam/permission_group/types"
 import { to_permission_group_write } from "@/api/iam/permission_group/utils"
-import JwtAuthenticator from "@/auth/jwt"
 import { ref, watch } from "vue"
 
 import FormTextInput from "@/components/form/text_input.vue"
@@ -40,7 +38,6 @@ import PermissionGroupPicker from "@/components/iam/permission_group/picker.vue"
 import PermissionPicker from "@/components/iam/permission/picker.vue"
 import { error } from "@/composables/toast"
 
-const auth = JwtAuthenticator.get_instance()
 const loading = ref(true)
 
 // eslint-disable-next-line vue/prop-name-casing

@@ -2,6 +2,14 @@ import router from "@/router"
 import Either from "./either"
 import JwtAuthenticator from "@/auth/jwt"
 
+function f(x: string): string {
+   if (x.endsWith("/")) {
+      console.info("Remove trailing / from " + x)
+      return x.substring(0, x.length - 1)
+   }
+   return x
+}
+
 interface FromJSON<T> {
    (data: any): T
 }
@@ -11,7 +19,7 @@ export async function api_get<T>(
    format_data: FromJSON<T>,
 ): Promise<Either<string, T>> {
    const result = new Either<string, T>()
-   const request = await fetch(url, {
+   const request = await fetch(f(url), {
       method: "GET",
       mode: "same-origin",
       headers: {
@@ -46,7 +54,7 @@ export async function api_post<T>(
    const result = new Either<string, T>()
    const body = JSON.stringify(payload)
 
-   const request = await fetch(url, {
+   const request = await fetch(f(url), {
       method: "POST",
       headers: {
          "Content-Type": "application/json",
@@ -107,7 +115,7 @@ export async function api_multipart<T>(
    }
 
    const result = new Either<string, T>()
-   const request = await fetch(url, {
+   const request = await fetch(f(url), {
       method: "POST",
       headers: {
          Authorization: "" + (localStorage.getItem("token") || ""),
@@ -131,7 +139,7 @@ export async function api_multipart<T>(
 
 export async function api_delete(url: string, expects?: number): Promise<Either<string, boolean>> {
    const result = new Either<string, boolean>()
-   const request = await fetch(url, {
+   const request = await fetch(f(url), {
       method: "DELETE",
       headers: {
          Authorization: "" + (localStorage.getItem("token") || ""),

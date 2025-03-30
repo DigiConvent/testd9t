@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// LoginWithJwt implements IamRouterInterface.
 func (router *IamRouter) LoginWithJwt(ctx *gin.Context) {
 	rawId := ctx.GetString(api_middleware.ContextField)
 	parsedId, err := uuid.Parse(rawId)

@@ -1,26 +1,28 @@
 <template>
-   <NeedsPermission permission="iam.user.create">
-      <Form class="flex flex-col gap-4 w-full" @submit="handle_submit">
-         <h2 class="text-lg">{{ t("iam.user.create.title") }}</h2>
-         <FormTextInput v-model="email" label="iam.user.create" name="email" />
-         <FormTextInput v-model="first_name" label="iam.user.create" name="first_name" />
-         <FormTextInput v-model="last_name" label="iam.user.create" name="last_name" />
-         <div class="grid grid-cols-2 gap-4">
-            <FloatLabel variant="in">
-               <UserStatusPicker id="user_status" v-model="user_status"></UserStatusPicker>
-               <label for="user_status">{{ $t("iam.user_status.picker.placeholder") }}</label>
-            </FloatLabel>
-            <FormMaskInput
-               v-model="user_status_start"
-               label="iam.user.create"
-               name="user_status_start"
-               mask="99/99/9999"
-               slot-char="DD/MM/YYYY"
-            />
-         </div>
-         <Button type="submit" severity="secondary" :label="$t('iam.user.create.submit')" />
-      </Form>
-   </NeedsPermission>
+   <Form
+      v-permission="'iam.user.create'"
+      class="flex flex-col gap-4 w-full"
+      @submit="handle_submit"
+   >
+      <h2 class="text-lg">{{ t("iam.user.create.title") }}</h2>
+      <FormTextInput v-model="email" label="iam.user.create" name="email" />
+      <FormTextInput v-model="first_name" label="iam.user.create" name="first_name" />
+      <FormTextInput v-model="last_name" label="iam.user.create" name="last_name" />
+      <div class="grid grid-cols-2 gap-4">
+         <FloatLabel variant="in">
+            <UserStatusPicker id="user_status" v-model="user_status"></UserStatusPicker>
+            <label for="user_status">{{ $t("iam.user_status.picker.placeholder") }}</label>
+         </FloatLabel>
+         <FormMaskInput
+            v-model="user_status_start"
+            label="iam.user.create"
+            name="user_status_start"
+            mask="99/99/9999"
+            slot-char="DD/MM/YYYY"
+         />
+      </div>
+      <Button type="submit" severity="secondary" :label="$t('iam.user.create.submit')" />
+   </Form>
 </template>
 
 <script lang="ts" setup>
@@ -76,11 +78,17 @@ const handle_submit = async () => {
    })
 
    if (re.success) {
+      const date = re.output["user_status_start"].split("/")
+      // make sure this is timezone aware otherwise it will shift in the database
+      const format = `${date[0]}-${date[1]}-${date[2]}T00:00:00Z`
+      const since = new Date(format)
       ;(
          await api.iam.user.create({
             emailaddress: re.output["email"],
             first_name: re.output["first_name"],
             last_name: re.output["last_name"],
+            user_status: re.output["user_status"],
+            when: since,
          })
       ).fold(
          (l) => {

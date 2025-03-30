@@ -7,7 +7,7 @@ export default async function get_permission_group_profile(
    pid: string,
 ): Promise<Either<string, PermissionGroupProfile>> {
    return api_get<PermissionGroupProfile>(
-      "/api/iam/permission-group/profile/" + pid + "/",
+      "/api/iam/permission-group/profile/" + pid,
       to_permission_group_profile,
    )
 }

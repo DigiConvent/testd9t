@@ -16,7 +16,6 @@ type UserWrite struct {
 	Emailaddress string         `json:"emailaddress" validate:"required,email"`
 	FirstName    string         `json:"first_name" validate:"required"`
 	LastName     string         `json:"last_name" validate:"required"`
-	UserStatus   uuid.UUID      `json:"status_id"`
 	Extra        map[string]any `json:"-"`
 }
 

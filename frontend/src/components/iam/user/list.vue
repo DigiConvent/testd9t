@@ -1,31 +1,31 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <NeedsPermission v-else-if="user_list" :permission="'iam.user.list'">
-      <table>
-         <tr v-for="user of user_list.items" :key="user.id">
-            <td>{{ user.id }}</td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.implied }}</td>
-            <td>{{ user.status_id }}</td>
-            <td>{{ user.status_name }}</td>
-         </tr>
-      </table>
-      <NeedsPermission permission="iam.user.create">
-         <router-link :to="{ name: 'iam.user.create' }"
-            ><Fa icon="user-plus" /> {{ $t("iam.user.create.title") }}</router-link
-         ></NeedsPermission
+   <table v-else-if="user_list" v-permission="'iam.user.list'">
+      <tr
+         v-for="user of user_list.items"
+         :key="user.id"
+         @click="router.push({ name: 'iam.user.profile', params: { id: user.id } })"
       >
-   </NeedsPermission>
+         <td>{{ user.id }}</td>
+         <td>{{ user.name }}</td>
+         <td>{{ user.implied }}</td>
+         <td>{{ user.status_id }}</td>
+         <td>{{ user.status_name }}</td>
+      </tr>
+   </table>
+   <router-link v-permission="'iam.user.create'" :to="{ name: 'iam.user.create' }"
+      ><Fa icon="user-plus" /> {{ $t("iam.user.create.title") }}</router-link
+   >
+   >
 </template>
 
 <script lang="ts" setup>
 import { api } from "@/api"
 import type { Page } from "@/api/core/page"
 import type { UserFacade } from "@/api/iam/user/types"
-import { useToast } from "primevue"
+import { error } from "@/composables/toast"
+import router from "@/router"
 import { ref } from "vue"
-
-const toast = useToast()
 
 const loading = ref(true)
 const user_list = ref<Page<UserFacade>>({
@@ -38,12 +38,8 @@ const user_list = ref<Page<UserFacade>>({
 async function load_users() {
    loading.value = true
    ;(await api.iam.user.list()).fold(
-      (error: string) => {
-         toast.add({
-            severity: "error",
-            summary: "Error",
-            detail: error,
-         })
+      (err: string) => {
+         error(err)
       },
       (users: Page<UserFacade>) => {
          user_list.value = users

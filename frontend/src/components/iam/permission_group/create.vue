@@ -1,22 +1,24 @@
 <template>
-   <NeedsPermission permission="iam.permission_group.create">
-      <Form class="flex flex-col gap-4" @submit="handle_submit">
-         <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
-         <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
-         <FormTextareaInput v-model="pg.description" label="iam.pg.fields" name="description" />
-         <PermissionGroupPicker
-            v-model="pg.parent"
-            label="iam.pg.fields"
-            name="parent"
-         ></PermissionGroupPicker>
-         <PermissionPicker
-            v-model="pg.permissions"
-            :multiple="true"
-            :preselected="inherited_permissions"
-         ></PermissionPicker>
-         <Button @click="handle_submit">{{ $t("actions.save") }}</Button>
-      </Form>
-   </NeedsPermission>
+   <Form
+      v-permission="'iam.permission_group.create'"
+      class="flex flex-col gap-4"
+      @submit="handle_submit"
+   >
+      <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
+      <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
+      <FormTextareaInput v-model="pg.description" label="iam.pg.fields" name="description" />
+      <PermissionGroupPicker
+         v-model="pg.parent"
+         label="iam.pg.fields"
+         name="parent"
+      ></PermissionGroupPicker>
+      <PermissionPicker
+         v-model="pg.permissions"
+         :multiple="true"
+         :preselected="inherited_permissions"
+      ></PermissionPicker>
+      <Button @click="handle_submit">{{ $t("actions.save") }}</Button>
+   </Form>
 </template>
 
 <script lang="ts" setup>

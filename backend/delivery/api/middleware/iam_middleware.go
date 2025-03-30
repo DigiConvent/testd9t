@@ -13,6 +13,32 @@ type IamMiddleware struct {
 	IamService iam_service.IAMServiceInterface
 }
 
+func (i *IamMiddleware) RequiresAuthentication() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		rawUserId := c.GetString(ContextField)
+		if rawUserId == "" {
+			c.JSON(403, gin.H{"error": "Not logged in"})
+			c.Abort()
+			return
+		}
+		parsedUserId, err := uuid.Parse(rawUserId)
+
+		if err != nil {
+			c.JSON(422, gin.H{"error": "Invalid id"})
+			c.Abort()
+			return
+		}
+		// make sure that this user is enabled
+		isEnabled, _ := i.IamService.IsEnabled(&parsedUserId)
+		if !isEnabled {
+			c.JSON(403, gin.H{"error": "User is disabled"})
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+
 func (i *IamMiddleware) RequiresPermission(permissions ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		permissions = append(permissions, "super")
@@ -59,6 +85,7 @@ func (i *IamMiddleware) RequiresPermission(permissions ...string) gin.HandlerFun
 
 type IamMiddlewareInterface interface {
 	RequiresPermission(permissions ...string) gin.HandlerFunc
+	RequiresAuthentication() gin.HandlerFunc
 }
 
 func NewIamMiddleware(iamService iam_service.IAMServiceInterface) IamMiddlewareInterface {

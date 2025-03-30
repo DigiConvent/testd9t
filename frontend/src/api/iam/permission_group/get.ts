@@ -6,8 +6,5 @@ import { to_permission_group_read } from "./utils"
 export default async function get_permission_group(
    pid: string,
 ): Promise<Either<string, PermissionGroupRead>> {
-   return api_get<PermissionGroupRead>(
-      "/api/iam/permission-group/" + pid + "/",
-      to_permission_group_read,
-   )
+   return api_get<PermissionGroupRead>("/api/iam/permission-group/" + pid, to_permission_group_read)
 }

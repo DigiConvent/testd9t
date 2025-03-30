@@ -23,5 +23,5 @@ func (service *IAMService) SetUserPassword(id *uuid.UUID, rawPassword string) *c
 		return &status
 	}
 
-	return core.StatusSuccess()
+	return core.StatusNoContent()
 }

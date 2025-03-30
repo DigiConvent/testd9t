@@ -5,7 +5,7 @@ import type { Page } from "@/api/core/page"
 import { to_user_facade } from "./utils"
 
 export default async function list_users(): Promise<Either<string, Page<UserFacade>>> {
-   return api_get<Page<UserFacade>>("/api/iam/user/", (data: any) => {
+   return api_get<Page<UserFacade>>("/api/iam/user", (data: any) => {
       return {
          items: data.items.map((entry: any) => to_user_facade(entry)),
          page: data.page,

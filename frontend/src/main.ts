@@ -62,7 +62,7 @@ import en from "./locales/en.json"
 import jp from "./locales/jp.json"
 import { is_mini_app } from "./auth/telegram"
 import JwtAuthenticator from "./auth/jwt"
-import Auth from "./components/auth.vue"
+import { permission } from "./directives/permission"
 
 app.use(
    createI18n({
@@ -117,9 +117,9 @@ app.component("Select", Select)
 app.component("Skeleton", Skeleton)
 app.component("Splitter", Splitter)
 app.component("SplitterPanel", SplitterPanel)
-app.component("NeedsPermission", Auth)
 
 app.directive("ripple", Ripple)
+app.directive("permission", permission)
 
 app.component("Fa", FontAwesomeIcon).component("fal", FontAwesomeLayers)
 

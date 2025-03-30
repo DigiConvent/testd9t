@@ -1,19 +1,66 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <NeedsPermission v-else-if="user_read" :permission="'iam.user.read'">View user</NeedsPermission>
+   <Card
+      v-else-if="user_read"
+      v-permission="'iam.user.write'"
+      v-permission.except="is_loggedin_user"
+   >
+      <template #title
+         >{{ user_read.first_name }} {{ user_read.last_name }}
+         <router-link
+            v-permission="'iam.user.write'"
+            v-permission.except="is_loggedin_user"
+            :to="{ name: 'iam.user.update', params: { id: user_read.id } }"
+            outlined
+            ><Fa icon="pencil"
+         /></router-link>
+      </template>
+      <template #content>
+         <table>
+            <tr>
+               <td>Vorname</td>
+               <td>{{ user_read.first_name }}</td>
+            </tr>
+            <tr>
+               <td>Nachname</td>
+               <td>{{ user_read.last_name }}</td>
+            </tr>
+            <tr>
+               <td>E-Postaddresse</td>
+               <td>{{ user_read.emailaddress }}</td>
+            </tr>
+         </table>
+      </template>
+   </Card>
 </template>
 
 <script lang="ts" setup>
 import { api } from "@/api"
-import type { UserRead } from "@/api/iam/user/types"
+import type { UserIdOrUserRead, UserRead } from "@/api/iam/user/types"
+import JwtAuthenticator from "@/auth/jwt"
 import { error } from "@/composables/toast"
-import { ref } from "vue"
+import { computed, ref } from "vue"
 
-const props = defineProps<{ id: string }>()
+const props = defineProps<UserIdOrUserRead>()
 const loading = ref(true)
 const user_read = ref<UserRead | null>(null)
+const is_loggedin_user = computed(() => {
+   const user_id = JwtAuthenticator.get_instance().get_token()?.id
+   if (props.id != undefined && user_id == props.id) {
+      return true
+   }
+   if (user_read.value != undefined && user_id == user_read.value.id) {
+      return true
+   }
+   return false
+})
 
 async function load_user() {
+   if (props.id === undefined) {
+      user_read.value = props.data
+      loading.value = false
+      return
+   }
    ;(await api.iam.user.get(props.id)).fold(
       (err: string) => {
          error(err)

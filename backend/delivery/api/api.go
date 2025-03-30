@@ -34,23 +34,30 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 		userRoutes := iamRoutes.Group("/user")
 		{
 			userRoutes.GET("/", iam.RequiresPermission("iam.user.list"), iamRouter.ListUsers)
-			userRoutes.POST("/", iam.RequiresPermission("iam.user.create"), iamRouter.CreateUser)
 			userRoutes.GET("/:id", iam.RequiresPermission("iam.user.get", "iam.user.get.:id"), iamRouter.GetUser)
-			userRoutes.POST("/:id", iam.RequiresPermission("iam.user.get", "iam.user.get.:id"), iamRouter.GetUser)
-			userRoutes.POST("/:id/enabled", iam.RequiresPermission("iam.user.set_enabled", "iam.user.set_enabled"), iamRouter.SetEnabledUser)
+			userRoutes.GET("/:id/permissions", iam.RequiresPermission("iam.user.get", "iam.user.get.:id"), iamRouter.ListPermissionsUser)
 			userRoutes.GET("/:id/profile", iam.RequiresPermission("iam.user.get", "iam.user.get.:id"), iamRouter.ProfileUser)
+			userRoutes.POST("/", iam.RequiresPermission("iam.user.create"), iamRouter.CreateUser)
+			userRoutes.POST("/:id", iam.RequiresPermission("iam.user.get", "iam.user.get.:id"), iamRouter.GetUser)
+			userRoutes.POST("/:id/enabled", iam.RequiresPermission("iam.user.set_enabled"), iamRouter.SetEnabledUser)
+			userRoutes.POST("/:id/set-password", iam.RequiresPermission("iam.user.set_password"), iamRouter.SetPasswordUser)
 
-			userRoutes.GET("/permission", iamRouter.ListPermissionsUser)
-			userRoutes.GET("/permission/:id", iam.RequiresPermission("iam.user.get", "iam.user.get.:id"), iamRouter.ListPermissionsUser)
-
-			userRoutes.POST("/:id/password", iam.RequiresPermission("iam.user.set_password"), iamRouter.SetPasswordUser)
+			meRoutes := userRoutes.Group("/me")
+			{
+				meRoutes.GET("/", iam.RequiresAuthentication(), iamRouter.GetUser)
+				meRoutes.GET("/permissions", iam.RequiresAuthentication(), iamRouter.ListPermissionsUser)
+				meRoutes.GET("/profile", iam.RequiresAuthentication(), iamRouter.ProfileUser)
+				meRoutes.POST("/set-password", iam.RequiresAuthentication(), iamRouter.SetPasswordUser)
+			}
 		}
 
 		userStatusRoutes := iamRoutes.Group("/user-status")
 		{
 			userStatusRoutes.GET("/", iam.RequiresPermission("iam.user-status.list"), iamRouter.ListUserStatus)
 			userStatusRoutes.POST("/", iam.RequiresPermission("iam.user-status.create"), iamRouter.CreateUserStatus)
-			// userStatusRoutes.GET("/:id", iam.RequiresPermission("iam.user-status.get"), iamRouter.GetUserStatus)
+			userStatusRoutes.POST("/:id", iam.RequiresPermission("iam.user-status.update"), iamRouter.UpdateUserStatus)
+			userStatusRoutes.DELETE("/:id/delete", iam.RequiresPermission("iam.user-status.delete"), iamRouter.DeleteUserStatus)
+			userStatusRoutes.POST("/:id/add-user", iam.RequiresPermission("iam.user-status.add-user"), iamRouter.AddUserStatusUser)
 		}
 
 		permissionRoutes := iamRoutes.Group("/permission")

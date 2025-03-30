@@ -21,7 +21,6 @@ func (router *IamRouter) ListPermissionsUser(ctx *gin.Context) {
 		rawId = id
 	}
 
-	// convert the raw id to something more typed
 	parsedId, err := uuid.Parse(rawId)
 	if err != nil {
 		ctx.JSON(422, gin.H{"error": "Invalid id"})

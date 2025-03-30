@@ -1,7 +1,7 @@
 <template>
    <div>
       <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-      <NeedsPermission v-else-if="data" permission="iam.permission_group.list">
+      <div v-else-if="data" v-permission="'iam.permission_group.list'">
          <FormTextInput
             v-model="pg_name"
             readonly
@@ -28,7 +28,7 @@
                </template>
             </OrganizationChart>
          </Dialog>
-      </NeedsPermission>
+      </div>
    </div>
 </template>
 

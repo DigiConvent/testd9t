@@ -1,3 +1,3 @@
 package api_middleware
 
-var ContextField string = "id"
+const ContextField string = "id"

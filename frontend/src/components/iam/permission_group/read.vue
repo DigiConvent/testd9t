@@ -1,8 +1,8 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <NeedsPermission permission="iam.permission_group.read">
-      <div>read permission group - to be implemented</div>
-   </NeedsPermission>
+   <div v-else v-permission="'iam.permission_group.read'">
+      read permission group - to be implemented
+   </div>
 </template>
 
 <script lang="ts" setup>

@@ -28,10 +28,9 @@ type UserStatusWrite struct {
 }
 
 type AddUserStatusToUser struct {
-	UserID      uuid.UUID `json:"user" validate:"required"`
-	StatusID    uuid.UUID `json:"status" validate:"required"`
-	Description string    `json:"description"`
-	When        time.Time `json:"when" validate:"required"`
+	UserID   uuid.UUID `json:"user"`
+	StatusID uuid.UUID `json:"user_status"`
+	When     time.Time `json:"when"`
 }
 
 type UserHasStatusFacade struct {

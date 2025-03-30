@@ -1,17 +1,18 @@
 package iam_router
 
 import (
-	"fmt"
-
+	router_utils "github.com/DigiConvent/testd9t/delivery/api/util"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 func (router *IamRouter) SetEnabledUser(ctx *gin.Context) {
-	id := ctx.Params.ByName("id")
-	parsedId, err := uuid.Parse(id)
-	if err != nil {
-		ctx.JSON(422, gin.H{"error": "Invalid id"})
+	id := router_utils.GetId(ctx)
+	userId := router_utils.GetUserId(ctx)
+
+	if id.String() == userId.String() {
+		ctx.JSON(422, gin.H{
+			"error": "Cannot change own status",
+		})
 		return
 	}
 
@@ -25,9 +26,7 @@ func (router *IamRouter) SetEnabledUser(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println("Setting enabled for user", id, "to", payload.Enabled)
-
-	status := router.iamService.SetEnabled(&parsedId, payload.Enabled)
+	status := router.iamService.SetEnabled(id, payload.Enabled)
 	if status != nil && status.Err() {
 		ctx.JSON(status.Code, gin.H{
 			"error": status.Message,

@@ -1,7 +1,12 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <NeedsPermission v-else-if="data" permission="iam.permission_group.list">
-      <OrganizationChart :value="data" collapsible>
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <OrganizationChart
+         v-else-if="data"
+         v-permission="'iam.permission_group.list'"
+         :value="data"
+         collapsible
+      >
          <template #default="slotProps">
             <span>{{ slotProps.node.data.name }}</span>
             <Button
@@ -12,7 +17,7 @@
             </Button>
          </template>
       </OrganizationChart>
-   </NeedsPermission>
+   </div>
 </template>
 
 <script lang="ts" setup>

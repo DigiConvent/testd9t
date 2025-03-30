@@ -2,8 +2,8 @@ import type Either from "@/api/core/either"
 import { api_get } from "@/api/core/fetch"
 import type { UserProfile } from "./types"
 
-export default async function get_user_profile(id: string): Promise<Either<string, UserProfile>> {
-   return api_get<UserProfile>("/api/iam/user/" + id + "/profile/", (data: any) => {
+export default async function get_user_profile(id?: string): Promise<Either<string, UserProfile>> {
+   return api_get<UserProfile>(`/api/iam/user${id ? "/" + id : "/me"}/profile`, (data: any) => {
       return {
          user: {
             id: data.user.id,

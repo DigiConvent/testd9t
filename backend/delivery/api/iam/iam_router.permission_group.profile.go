@@ -1,19 +1,12 @@
 package iam_router
 
 import (
+	router_utils "github.com/DigiConvent/testd9t/delivery/api/util"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 func (router *IamRouter) ProfilePermissionGroup(ctx *gin.Context) {
-	id := ctx.Params.ByName("id")
-	parsedId, err := uuid.Parse(id)
-	if err != nil {
-		ctx.JSON(422, gin.H{"error": "Invalid id"})
-		return
-	}
-
-	permissionGroup, status := router.iamService.GetPermissionGroupProfile(&parsedId)
+	permissionGroup, status := router.iamService.GetPermissionGroupProfile(router_utils.GetId(ctx))
 
 	if status != nil && status.Err() {
 		ctx.JSON(status.Code, gin.H{

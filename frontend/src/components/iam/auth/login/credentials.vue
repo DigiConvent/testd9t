@@ -62,7 +62,7 @@ const handle_submit = async () => {
          re.output["password"],
       )
 
-      if (login_successful) {
+      if (login_successful == "") {
          emit("logged_in", true)
 
          const data = get_web_app().initData
@@ -75,6 +75,8 @@ const handle_submit = async () => {
             }
          }
          success(t("iam.auth.login_form.login_successful"), "")
+      } else {
+         error(login_successful, "")
       }
    } else {
       for (const issue of re.issues) {

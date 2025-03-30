@@ -6,7 +6,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func (router *IamRouter) ProfileUser(ctx *gin.Context) {
+type SetPasswordUserRequest struct {
+	Password string `json:"password"`
+}
+
+func (router *IamRouter) SetPasswordUser(ctx *gin.Context) {
+	var setPasswordRequest SetPasswordUserRequest
+
 	var rawId string
 	permission := ctx.GetString("permission")
 	if ctx.Param("id") != "" && (permission == "super" || permission == "iam.user.set_password") {
@@ -20,19 +26,22 @@ func (router *IamRouter) ProfileUser(ctx *gin.Context) {
 		rawId = id
 	}
 
+	if err := ctx.ShouldBindJSON(&setPasswordRequest); err != nil {
+		ctx.JSON(422, gin.H{"error": err.Error()})
+		return
+	}
+
 	parsedId, err := uuid.Parse(rawId)
 	if err != nil {
 		ctx.JSON(422, gin.H{"error": "Invalid id"})
 		return
 	}
 
-	userProfile, status := router.iamService.GetUserProfile(&parsedId)
+	status := router.iamService.SetUserPassword(&parsedId, setPasswordRequest.Password)
 
-	if status != nil && status.Err() {
-		ctx.JSON(status.Code, gin.H{
-			"error": status.Message,
-		})
-	} else {
-		ctx.JSON(status.Code, userProfile)
+	if status.Err() {
+		ctx.JSON(status.Code, gin.H{"error": status.Message})
+		return
 	}
+	ctx.JSON(status.Code, gin.H{})
 }

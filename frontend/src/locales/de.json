@@ -112,7 +112,14 @@
             "title": "Benutzer"
          },
          "update": {
+            "title": "Daten aktualisieren",
             "submit": "Aktualisieren"
+         },
+         "set_password": {
+            "title": "Kennwort setzen",
+            "submit": "Setzen",
+            "password": "Kennwort",
+            "success": "Kennwort erfolgreich gesetzt."
          },
          "enabled": "Konto ist aktiviert",
          "disabled": "Konto ist deaktiviert"
