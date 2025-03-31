@@ -1,8 +1,6 @@
 package iam_router
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +13,6 @@ func (router *IamRouter) ListUserStatus(ctx *gin.Context) {
 		})
 		return
 	} else {
-		fmt.Println(userStatus)
 		ctx.JSON(status.Code, gin.H{"items": userStatus})
 	}
 }

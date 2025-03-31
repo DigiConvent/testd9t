@@ -5,6 +5,7 @@ import (
 	"time"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
+	"github.com/google/uuid"
 )
 
 func TestUserAddUserStatus(t *testing.T) {
@@ -26,11 +27,13 @@ func TestUserAddUserStatus(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
+	parent := uuid.MustParse(getRootPermissionGroup())
 	testCurrentUserStatus := &iam_domain.UserStatusWrite{
 		Name:        "UserAddUserStatusCurrent",
 		Abbr:        "UAUS",
 		Description: "test",
 		Archived:    false,
+		Parent:      &parent,
 	}
 
 	currentUserStatusId, status := iamService.CreateUserStatus(testCurrentUserStatus)
@@ -46,7 +49,7 @@ func TestUserAddUserStatus(t *testing.T) {
 	status = iamService.AddUserStatus(&iam_domain.AddUserStatusToUser{
 		UserID:   *id,
 		StatusID: *currentUserStatusId,
-		When:     time.Now().Add(3 * -time.Hour),
+		When:     time.Now().Add(-5 * time.Hour),
 	})
 
 	if status.Err() {
@@ -58,6 +61,7 @@ func TestUserAddUserStatus(t *testing.T) {
 		Abbr:        "UAUSF",
 		Description: "test",
 		Archived:    false,
+		Parent:      &parent,
 	}
 
 	futureUserStatusId, _ := iamService.CreateUserStatus(testFutureUserStatus)
@@ -69,7 +73,7 @@ func TestUserAddUserStatus(t *testing.T) {
 	status = iamService.AddUserStatus(&iam_domain.AddUserStatusToUser{
 		UserID:   *id,
 		StatusID: *futureUserStatusId,
-		When:     time.Now().Add(3 * time.Hour),
+		When:     time.Now().Add(5 * time.Hour),
 	})
 
 	if status.Err() {
@@ -117,5 +121,4 @@ func TestUserAddUserStatus(t *testing.T) {
 	if status.Err() {
 		t.Fatal(status.Message)
 	}
-
 }

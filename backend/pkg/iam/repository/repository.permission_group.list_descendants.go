@@ -8,7 +8,7 @@ import (
 
 func (r *IAMRepository) ListPermissionGroupDescendants(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status) {
 	var permissionGroups = make([]*iam_domain.PermissionGroupFacade, 0)
-	rows, err := r.db.Query(`select id, name, parent, implied from permission_group_has_permission_group_descendants where parent_id = ? and id != ?`, arg.String(), arg.String())
+	rows, err := r.db.Query(`select id, name, parent, implied from permission_group_has_permission_group_descendants where root = ? and id != ?`, arg.String(), arg.String())
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

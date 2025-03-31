@@ -8,8 +8,8 @@ begin
     update permission_group_has_user
         set "end" = (
             select "end" 
-            from user_status_interval 
-            where permission_group_has_user.permission_group = user_status_interval.status
+            from user_status_interval usi
+            where permission_group_has_user.permission_group = usi.status and usi.user = permission_group_has_user.user
         )
     where user = new.user and permission_group = new.status;
 end;
@@ -20,9 +20,9 @@ for each row
 begin 
     update permission_group_has_user
         set "end" = (
-            select "end"
-            from user_status_interval
-            where permission_group_has_user.permission_group = user_status_interval.status
+            select "end" 
+            from user_status_interval usi
+            where permission_group_has_user.permission_group = usi.status and usi.user = permission_group_has_user.user
         )
     where user = new.user and permission_group = new.status;
 end;
@@ -33,12 +33,12 @@ for each row
 begin
     delete from permission_group_has_user
     where user = old.user and permission_group = old.status;
-    
+
     update permission_group_has_user
         set "end" = (
-            select "end"
-            from user_status_interval
-            where permission_group_has_user.permission_group = user_status_interval.status
+            select "end" 
+            from user_status_interval usi
+            where permission_group_has_user.permission_group = usi.status and usi.user = permission_group_has_user.user
         )
     where user = old.user and permission_group = old.status;
 end;

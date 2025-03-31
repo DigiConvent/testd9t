@@ -16,9 +16,7 @@ func TestGetUser(t *testing.T) {
 		LastName:     "GetUser",
 	}
 
-	id, status := iamService.CreateUser(&fakeUser)
-
-	t.Log(status)
+	id, _ := iamService.CreateUser(&fakeUser)
 
 	user, status := iamService.GetUser(id)
 

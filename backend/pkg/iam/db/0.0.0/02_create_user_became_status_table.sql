@@ -8,6 +8,7 @@ create table user_became_status (
 
 create view user_status_interval as
 select 
+    "user",
     status,
     start,
     coalesce(

@@ -12,7 +12,6 @@ import (
 func (router *IamRouter) CreateUser(ctx *gin.Context) {
 	body, err := io.ReadAll(ctx.Request.Body)
 	if err != nil {
-		fmt.Println(err.Error())
 		ctx.JSON(422, gin.H{
 			"error": err.Error(),
 		})
@@ -22,7 +21,6 @@ func (router *IamRouter) CreateUser(ctx *gin.Context) {
 
 	var createUser iam_domain.UserWrite
 	if err := ctx.ShouldBindJSON(&createUser); err != nil {
-		fmt.Println(err.Error())
 		ctx.JSON(422, gin.H{
 			"error": err.Error(),
 		})

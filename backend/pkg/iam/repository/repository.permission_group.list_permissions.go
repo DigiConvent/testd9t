@@ -1,8 +1,6 @@
 package iam_repository
 
 import (
-	"fmt"
-
 	"github.com/DigiConvent/testd9t/core"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	uuid "github.com/google/uuid"
@@ -25,7 +23,6 @@ func (r *IAMRepository) ListPermissionGroupPermissions(arg *uuid.UUID) ([]*iam_d
 		}
 
 		permissions = append(permissions, &permission)
-		fmt.Println(permission.Name)
 	}
 
 	return permissions, *core.StatusSuccess()

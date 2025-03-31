@@ -4,7 +4,8 @@ with recursive ancestors as (select
     pg.name, 
     0 as implied,
     pg.parent,
-    pg.id as child_id
+    pg.id as root,
+    pg.name as hint
   from permission_groups pg
   union all
   select 
@@ -12,7 +13,8 @@ with recursive ancestors as (select
     parent.name,
     1 as implied,
     parent.parent,
-    s.child_id
+    s.root,
+    concat(parent.name, '<-', s.hint) as hint
   from permission_groups parent
   inner join ancestors s on parent.id = s.parent)
 select * from ancestors;
@@ -23,7 +25,8 @@ with recursive descendants as (select
     pg.name, 
     0 as implied,
     pg.parent,
-    pg.id as parent_id
+    pg.id as root,
+    pg.name as hint
   from permission_groups pg
   union all
   select 
@@ -31,7 +34,8 @@ with recursive descendants as (select
     child.name,
     1 as implied,
     child.parent,
-    s.parent_id
+    s.root,
+    concat(s.hint, '->', child.name) as hint
   from permission_groups child
   inner join descendants s on child.parent = s.id)
 select * from descendants;

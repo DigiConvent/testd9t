@@ -7,7 +7,7 @@ import (
 )
 
 type PermissionGroupWrite struct {
-	Name        string   `json:"name" validate:"required"`
+	Name        string   `json:"name"`
 	Abbr        string   `json:"abbr"`
 	Description string   `json:"description"`
 	Parent      string   `json:"parent"`
@@ -17,8 +17,8 @@ type PermissionGroupWrite struct {
 }
 
 type PermissionGroupSetParent struct {
-	ID     *uuid.UUID `json:"id" validate:"required"`
-	Parent *uuid.UUID `json:"parent" validate:"required"`
+	ID     *uuid.UUID `json:"id"`
+	Parent *uuid.UUID `json:"parent"`
 }
 
 type PermissionGroupRead struct {
@@ -53,8 +53,8 @@ type PermissionGroupProfile struct {
 }
 
 type AddUserToPermissionGroupWrite struct {
-	PermissionGroup *uuid.UUID `json:"permission_group" validate:"required"`
-	User            *uuid.UUID `json:"user" validate:"required"`
+	PermissionGroup *uuid.UUID `json:"permission_group"`
+	User            *uuid.UUID `json:"user"`
 	Start           *time.Time `json:"start"`
 	End             *time.Time `json:"end"`
 }

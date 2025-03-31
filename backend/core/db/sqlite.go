@@ -2,13 +2,16 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 	"path"
 	"regexp"
+	"strconv"
 	"strings"
 
 	constants "github.com/DigiConvent/testd9t/core/const"
 	"github.com/DigiConvent/testd9t/core/log"
+	core_utils "github.com/DigiConvent/testd9t/core/utils"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -198,15 +201,51 @@ func (s *SqliteDatabase) DeleteDatabase() {
 	}
 }
 
-func (s *SqliteDatabase) Exec(query string, args ...interface{}) (sql.Result, error) {
+func (s *SqliteDatabase) Exec(query string, args ...any) (sql.Result, error) {
 	return s.DB.Exec(query, args...)
 }
 
-func (s *SqliteDatabase) Query(query string, args ...interface{}) (*sql.Rows, error) {
+func (s *SqliteDatabase) Query(query string, args ...any) (*sql.Rows, error) {
 	return s.DB.Query(query, args...)
 }
 
-func (s *SqliteDatabase) QueryRow(query string, args ...interface{}) *sql.Row {
+func (s *SqliteDatabase) QueryDebug(query string, args ...any) {
+	log.Info("Query: " + query)
+	log.Info(args)
+	rows, err := s.DB.Query(query, args...)
+	if err != nil {
+		return
+	}
+
+	columns, err := rows.Columns()
+
+	if err != nil {
+		return
+	}
+
+	values := make([]any, len(columns))
+	valuePtrs := make([]any, len(columns))
+
+	for i := range values {
+		valuePtrs[i] = &values[i]
+	}
+
+	var table = core_utils.NewTable(columns)
+	for rows.Next() {
+		err = rows.Scan(valuePtrs...)
+
+		if err != nil {
+			return
+		}
+
+		table.AddRow(values)
+	}
+	count := len(table.Values)
+	fmt.Println("This query has " + strconv.Itoa(count) + " rows")
+	fmt.Println(table.Render())
+}
+
+func (s *SqliteDatabase) QueryRow(query string, args ...any) *sql.Row {
 	return s.DB.QueryRow(query, args...)
 }
 
