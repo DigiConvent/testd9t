@@ -47,7 +47,6 @@
       <a href="https://github.com/DigiConvent/testd9t" target="_blank"
          ><Fa icon="fab fa-github"></Fa
       ></a>
-      {{ auth.get_permissions() }}
    </footer>
 </template>
 

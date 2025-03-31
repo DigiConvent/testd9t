@@ -26,6 +26,7 @@ export default class JwtAuthenticator {
    }
 
    recover_session(): boolean {
+      console.info("Recovering existing session...")
       const t = localStorage.getItem("token")
       if (t != null) {
          this._token = t
@@ -36,6 +37,7 @@ export default class JwtAuthenticator {
          this.refresh_token()
          return true
       }
+      console.log("No existing session found")
       this.is_authenticated.value = false
       return false
    }
@@ -46,7 +48,9 @@ export default class JwtAuthenticator {
          return 0
       }
       // subtract 5 seconds just to be sure
-      return token.exp - Math.floor(new Date().getTime() / 1000) - 5
+      const expiration = token.exp - Math.floor(new Date().getTime() / 1000) - 5
+      console.info("Token expires in " + expiration + " seconds")
+      return expiration
    }
 
    private refresh_token() {
@@ -152,12 +156,12 @@ export default class JwtAuthenticator {
             this._token = token
             localStorage.setItem("token", token)
             this.refresh_token()
+            console.log(`Loading permissions using token ${this.token}`)
             await this.load_permissions()
             return ""
          }
-      } else {
-         return result.get_left()!
       }
+      return result.get_left()!
    }
 
    async login_using_token() {
