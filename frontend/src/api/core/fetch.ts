@@ -61,13 +61,7 @@ export async function api_post<T>(
       body: body,
    })
 
-   if (expects != undefined) {
-      if (expects != request.status) {
-         return result.left(request.status + ": ")
-      } else {
-         return result.right(true as T)
-      }
-   }
+   if (expects != undefined && expects != request.status) return result.left(request.status + ": ")
 
    let data: any = {}
    if (request.status >= 200 && request.status < 300) {

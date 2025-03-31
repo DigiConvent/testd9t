@@ -133,11 +133,13 @@ export default class JwtAuthenticator {
    }
 
    async login_using_telegram(): Promise<string> {
+      console.log("Logging in using telegram")
       const data = get_web_app().initData
       return this.login(api.iam.login.telegram(data))
    }
 
    async login_using_credentials(emailaddress: string, password: string): Promise<string> {
+      console.log("Logging in using credentials")
       return this.login(api.iam.login.credentials(emailaddress, password))
    }
 
@@ -148,6 +150,7 @@ export default class JwtAuthenticator {
 
    async login(response: Promise<Either<string, string>>): Promise<string> {
       const result = await response
+      console.info(JSON.stringify(result))
       if (result.is_right()) {
          const token = result.get_right()
          if (token == undefined) {
