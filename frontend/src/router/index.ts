@@ -101,8 +101,4 @@ const router = createRouter({
    ],
 })
 
-router.beforeEach((to, from, next) => {
-   window.Telegram.WebApp.HapticFeedback.notificationOccurred("success")
-})
-
 export default router
