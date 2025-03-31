@@ -251,7 +251,7 @@ jobs:
            run: |
               PAYLOAD='{"event": "build_complete"}'
               curl -X POST "https://digiconvent.de/api/sys/installation/refresh" \
-                 -H "Authorization: Bearer $TOKEN" \
+                 -H "Authentication: Bearer $TOKEN" \
                  -H "Content-Type: application/json" \
                  -H "User-Agent: GitHubActions" \
                  -d "$PAYLOAD"

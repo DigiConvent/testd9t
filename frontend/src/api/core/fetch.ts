@@ -1,4 +1,3 @@
-import router from "@/router"
 import Either from "./either"
 import JwtAuthenticator from "@/auth/jwt"
 
@@ -23,8 +22,7 @@ export async function api_get<T>(
       method: "GET",
       mode: "same-origin",
       headers: {
-         Authorization: "" + (localStorage.getItem("token") || ""),
-         page: router.currentRoute.value.fullPath,
+         Authentication: JwtAuthenticator.get_instance().token,
       },
    })
 
@@ -58,8 +56,7 @@ export async function api_post<T>(
       method: "POST",
       headers: {
          "Content-Type": "application/json",
-         Authorization: localStorage.getItem("token") || "",
-         page: router.currentRoute.value.fullPath,
+         Authentication: JwtAuthenticator.get_instance().token,
       },
       body: body,
    })
@@ -118,8 +115,7 @@ export async function api_multipart<T>(
    const request = await fetch(f(url), {
       method: "POST",
       headers: {
-         Authorization: "" + (localStorage.getItem("token") || ""),
-         page: router.currentRoute.value.fullPath,
+         Authentication: JwtAuthenticator.get_instance().token,
       },
       body: form_data,
    })
@@ -142,7 +138,7 @@ export async function api_delete(url: string, expects?: number): Promise<Either<
    const request = await fetch(f(url), {
       method: "DELETE",
       headers: {
-         Authorization: "" + (localStorage.getItem("token") || ""),
+         Authentication: JwtAuthenticator.get_instance().token,
       },
    })
 

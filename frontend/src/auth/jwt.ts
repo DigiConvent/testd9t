@@ -10,7 +10,7 @@ export default class JwtAuthenticator {
       return this.permissions
    }
    private static instance: JwtAuthenticator | undefined
-   private token: string | undefined
+   private _token: string | undefined
    public is_authenticated: Ref<boolean> = ref<boolean>(false)
    private permissions = ref<string[]>([])
    public countdown = ref<number>(0)
@@ -18,10 +18,17 @@ export default class JwtAuthenticator {
 
    constructor() {}
 
+   public get token() {
+      if (this._token == undefined) {
+         console.warn("Token is undefined, the user cannot authenticate for requests")
+      }
+      return this._token == undefined ? "" : this._token
+   }
+
    recover_session(): boolean {
       const t = localStorage.getItem("token")
       if (t != null) {
-         this.token = t
+         this._token = t
          if (this.seconds_remaining() < 0) {
             this.logout()
             return false
@@ -71,9 +78,9 @@ export default class JwtAuthenticator {
          enabled: boolean
       }
    } | null {
-      if (this.token != undefined) {
+      if (this._token != undefined) {
          try {
-            return JSON.parse(atob(this.token.split(".")[1]))
+            return JSON.parse(atob(this._token.split(".")[1]))
          } catch {
             this.logout()
          }
@@ -142,7 +149,7 @@ export default class JwtAuthenticator {
          if (token == undefined) {
             return "token is undefined"
          } else {
-            this.token = token
+            this._token = token
             localStorage.setItem("token", token)
             this.refresh_token()
             await this.load_permissions()
@@ -159,7 +166,7 @@ export default class JwtAuthenticator {
 
    logout() {
       clearTimeout(this.timeout)
-      this.token = undefined
+      this._token = undefined
       localStorage.removeItem("token")
       this.is_authenticated.value = false
    }

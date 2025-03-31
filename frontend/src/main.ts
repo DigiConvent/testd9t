@@ -128,10 +128,12 @@ app.use(ToastService)
 
 const auth = JwtAuthenticator.get_instance()
 if (is_mini_app()) {
+   // I don't want to recover a session, I want to start a new one
    auth.login_using_telegram().then(() => {
       mount()
    })
 } else if (auth.recover_session()) {
+   // this should only be necessary in browsers accessing the website and not over telegram
    auth.load_permissions().then(() => {
       mount()
    })

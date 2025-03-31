@@ -41,7 +41,7 @@ func getPubKey() *rsa.PublicKey {
 
 func JWTAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenString := c.GetHeader("Authorization")
+		tokenString := c.GetHeader("Authentication")
 
 		// custom auth method has no "Bearer " prefix but github does so we can't extract the user from this
 		if tokenString == "" || strings.HasPrefix(tokenString, "Bearer ") {

@@ -13,7 +13,7 @@ import (
 )
 
 func (r *SysRouter) RefreshInstallation(c *gin.Context) {
-	authHeader := c.GetHeader("Authorization")
+	authHeader := c.GetHeader("Authentication")
 	if !strings.HasPrefix(authHeader, "Bearer ") {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing Bearer token"})
 		return
