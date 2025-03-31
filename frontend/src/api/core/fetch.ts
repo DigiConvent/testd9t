@@ -77,9 +77,7 @@ export async function api_post<T>(
    }
 
    if (request.ok) {
-      if (expects && expects == request.status) {
-         return result.right(true as T)
-      } else if (format_data != undefined) {
+      if (format_data != undefined) {
          const formatted_data = format_data(data)
          return result.right(formatted_data)
       } else {
