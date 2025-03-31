@@ -7,8 +7,6 @@ import (
 )
 
 func (r *IAMRepository) ListUserGroups(userId *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status) {
-	r.db.QueryDebug(`select pg.id, pg.name, pg.abbr, pg.is_group, uhpg.implied, uhpg.parent from user_has_permission_groups uhpg join permission_groups pg on pg.id = uhpg.permission_group where uhpg.user = ?`, userId.String())
-	r.db.QueryDebug(`select * from user_has_permission_groups where user = ?;`, userId.String())
 	rows, err := r.db.Query(`select pg.id, pg.name, pg.abbr, pg.is_group, uhpg.implied, uhpg.parent from user_has_permission_groups uhpg right join permission_groups pg on pg.id = uhpg.permission_group where uhpg.user = ?`, userId.String())
 
 	if err != nil {

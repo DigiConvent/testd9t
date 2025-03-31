@@ -2,7 +2,6 @@ package iam_router
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
@@ -29,7 +28,6 @@ func (router *IamRouter) CreateUser(ctx *gin.Context) {
 
 	id, status := router.iamService.CreateUser(&createUser)
 	if status != nil && status.Err() {
-		fmt.Println(status.Message)
 		ctx.JSON(status.Code, gin.H{
 			"error": status.Message,
 		})
@@ -46,11 +44,7 @@ func (router *IamRouter) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println("Created user but now it is time to add user status")
 	addUserToUserStatus.UserID = *id
-	fmt.Println(addUserToUserStatus.UserID)
-	fmt.Println(addUserToUserStatus.StatusID)
-	fmt.Println(addUserToUserStatus.When)
 
 	status = router.iamService.AddUserStatus(&addUserToUserStatus)
 	if status.Err() {
