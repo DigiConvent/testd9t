@@ -36,6 +36,7 @@ create table user_became_status (
 
 create view user_status_interval as
 select 
+    "user",
     status,
     start,
     coalesce(
@@ -128,25 +129,44 @@ join user_facades uf on uf.id = pghu."user";
 
 
 -- backend/pkg/iam/db/0.0.0/09_create_user_has_permission_groups_view.sql 
+-- create view user_has_permission_groups as
+-- with recursive relevant_groups as (select 
+--     pghu."user", 
+--     pghu.permission_group, 
+--     0 as implied,
+--     pg.parent
+--   from permission_group_has_user pghu
+--   join permission_groups pg on pghu.permission_group = pg.id
+--   where (pghu.start <= datetime('now') or pghu.start is null) 
+--   and (pghu.end is null or datetime('now') < pghu.end)
+   
+--       -- (pghu.start is null and pghu.end is null) -- member without time restrictions
+--       -- or 
+--       -- ((
+--       --    pghu.start is not null and pghu.start <= datetime('now') -- member on time and already started
+--       --    )
+--       --    and 
+--       --    (
+--       --    pghu.end is null or pghu.end > datetime('now') -- either current or not expired
+--       -- ))
+--   union all
+--   select 
+--     s.user,
+--     child.id as permission_group,
+--     1 as implied,
+--     child.parent
+--   from permission_groups child
+--   inner join relevant_groups s on s.parent = child.id)
+-- select * from relevant_groups;
+
 create view user_has_permission_groups as
-with recursive relevant_groups as (select 
-    pghu."user", 
-    pghu.permission_group, 
-    0 as implied,
-    pg.parent
-  from permission_group_has_user pghu
-  join permission_groups pg on pghu.permission_group = pg.id
-  where (pghu.start <= datetime('now') or pghu.start is null) 
-  and (pghu.end is null or datetime('now') < pghu.end)
-  union all
-  select 
-    s.user,
-    child.id as permission_group,
-    1 as implied,
-    child.parent
-  from permission_groups child
-  inner join relevant_groups s on s.parent = child.id)
-select * from relevant_groups;
+select 
+    distinct pghpga.id as permission_group,
+    pghu."user",
+    pghpga.implied,
+    pghpga.parent
+from permission_group_has_user pghu
+join permission_group_has_permission_group_ancestors pghpga on pghu.permission_group = pghpga.root;
 
 -- backend/pkg/iam/db/0.0.0/10_create_permission_has_permission_groups_view.sql 
 create view permission_has_permission_groups as
@@ -174,7 +194,8 @@ with recursive ancestors as (select
     pg.name, 
     0 as implied,
     pg.parent,
-    pg.id as child_id
+    pg.id as root,
+    pg.name as hint
   from permission_groups pg
   union all
   select 
@@ -182,7 +203,8 @@ with recursive ancestors as (select
     parent.name,
     1 as implied,
     parent.parent,
-    s.child_id
+    s.root,
+    concat(parent.name, '<-', s.hint) as hint
   from permission_groups parent
   inner join ancestors s on parent.id = s.parent)
 select * from ancestors;
@@ -193,7 +215,8 @@ with recursive descendants as (select
     pg.name, 
     0 as implied,
     pg.parent,
-    pg.id as parent_id
+    pg.id as root,
+    pg.name as hint
   from permission_groups pg
   union all
   select 
@@ -201,14 +224,15 @@ with recursive descendants as (select
     child.name,
     1 as implied,
     child.parent,
-    s.parent_id
+    s.root,
+    concat(s.hint, '->', child.name) as hint
   from permission_groups child
   inner join descendants s on child.parent = s.id)
 select * from descendants;
 
 -- backend/pkg/iam/db/0.0.0/12_create_permission_group_has_permissions_view.sql 
 create view permission_group_has_permissions as
-select distinct implied, permission, child_id as permission_group
+select distinct implied, permission, root as permission_group
 from permission_group_has_permission_group_ancestors pghpg 
 right join permission_group_has_permission as pghp on pghp.permission_group = pghpg.id;
 
@@ -309,8 +333,8 @@ begin
     update permission_group_has_user
         set "end" = (
             select "end" 
-            from user_status_interval 
-            where permission_group_has_user.permission_group = user_status_interval.status
+            from user_status_interval usi
+            where permission_group_has_user.permission_group = usi.status and usi.user = permission_group_has_user.user
         )
     where user = new.user and permission_group = new.status;
 end;
@@ -321,9 +345,9 @@ for each row
 begin 
     update permission_group_has_user
         set "end" = (
-            select "end"
-            from user_status_interval
-            where permission_group_has_user.permission_group = user_status_interval.status
+            select "end" 
+            from user_status_interval usi
+            where permission_group_has_user.permission_group = usi.status and usi.user = permission_group_has_user.user
         )
     where user = new.user and permission_group = new.status;
 end;
@@ -334,12 +358,12 @@ for each row
 begin
     delete from permission_group_has_user
     where user = old.user and permission_group = old.status;
-    
+
     update permission_group_has_user
         set "end" = (
-            select "end"
-            from user_status_interval
-            where permission_group_has_user.permission_group = user_status_interval.status
+            select "end" 
+            from user_status_interval usi
+            where permission_group_has_user.permission_group = usi.status and usi.user = permission_group_has_user.user
         )
     where user = old.user and permission_group = old.status;
 end;
