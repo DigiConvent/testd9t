@@ -43,6 +43,20 @@
          <component :is="Component" :key="route.path" />
       </router-view>
    </header>
+   <div>
+      Testing buttons
+      <Button
+         v-for="impactStyle of impact_styles"
+         :key="impactStyle"
+         @click="impact(impactStyle as ImpactStyle)"
+      ></Button>
+      <hr />
+      <Button
+         v-for="notificationStyle of notification_styles"
+         :key="notificationStyle"
+         @click="notification(notificationStyle as NotificationStyle)"
+      ></Button>
+   </div>
    <footer class="mt-5">
       <a href="https://github.com/DigiConvent/testd9t" target="_blank"
          ><Fa icon="fab fa-github"></Fa
@@ -103,6 +117,19 @@ function generate_menu_items() {
          items: admin_items.value,
       })
    }
+}
+
+type ImpactStyle = "light" | "medium" | "heavy" | "rigid" | "soft"
+const impact_styles = ["light", "medium", "heavy", "rigid", "soft"]
+type NotificationStyle = "success" | "warning" | "error"
+const notification_styles = ["success", "warning", "error"]
+
+function impact(type: ImpactStyle) {
+   window.Telegram.WebApp.HapticFeedback.impactOccurred(type)
+}
+
+function notification(type: NotificationStyle) {
+   window.Telegram.WebApp.HapticFeedback.notificationOccurred(type)
 }
 
 onMounted(() => {
