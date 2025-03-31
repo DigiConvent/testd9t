@@ -86,7 +86,7 @@
                               icon="circle-exclamation"
                               class="text-red-400"
                            />
-                           <Fa icon="circle-question" class="text-yellow-400" />
+                           <Fa v-else icon="circle-question" class="text-yellow-400" />
                            <span class="font-bold whitespace-nowrap flex gap-4"
                               >{{ record.name }}
                               <InputGroup v-if="record.done">
