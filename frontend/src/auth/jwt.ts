@@ -26,7 +26,6 @@ export default class JwtAuthenticator {
    }
 
    recover_session(): boolean {
-      console.info("Recovering existing session...")
       const t = localStorage.getItem("token")
       if (t != null) {
          this._token = t
@@ -37,7 +36,6 @@ export default class JwtAuthenticator {
          this.refresh_token()
          return true
       }
-      console.log("No existing session found")
       this.is_authenticated.value = false
       return false
    }
@@ -49,7 +47,6 @@ export default class JwtAuthenticator {
       }
       // subtract 5 seconds just to be sure
       const expiration = token.exp - Math.floor(new Date().getTime() / 1000) - 5
-      console.info("Token expires in " + expiration + " seconds")
       return expiration
    }
 
@@ -133,13 +130,11 @@ export default class JwtAuthenticator {
    }
 
    async login_using_telegram(): Promise<string> {
-      console.log("Logging in using telegram")
       const data = get_web_app().initData
       return this.login(api.iam.login.telegram(data))
    }
 
    async login_using_credentials(emailaddress: string, password: string): Promise<string> {
-      console.log("Logging in using credentials")
       return this.login(api.iam.login.credentials(emailaddress, password))
    }
 
@@ -150,7 +145,6 @@ export default class JwtAuthenticator {
 
    async login(response: Promise<Either<string, string>>): Promise<string> {
       const result = await response
-      console.info(JSON.stringify(result))
       if (result.is_right()) {
          const token = result.get_right()
          if (token == undefined) {
@@ -159,7 +153,6 @@ export default class JwtAuthenticator {
             this._token = token
             localStorage.setItem("token", token)
             this.refresh_token()
-            console.log(`Loading permissions using token ${this.token}`)
             await this.load_permissions()
             return ""
          }

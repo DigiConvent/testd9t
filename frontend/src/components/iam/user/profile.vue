@@ -8,6 +8,7 @@
    >
       <ReadUser :id="undefined" :data="profile.user" />
       <FormSwitch
+         v-if="!is_loggedin_user"
          v-model="profile.user.enabled"
          v-permission="'iam.user.set_enabled'"
          :label_on="$t('iam.user.enabled')"
@@ -63,7 +64,9 @@ load_user_profile()
 async function set_enabled(value: boolean) {
    loading_enabled.value = true
    ;(await api.iam.user.set_enabled(props.id!, value)).fold(
-      () => {},
+      (err: string) => {
+         error(err)
+      },
       () => {
          success(t("iam.user.set_enabled.success"))
       },

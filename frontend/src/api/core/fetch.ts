@@ -3,10 +3,9 @@ import JwtAuthenticator from "@/auth/jwt"
 
 function f(x: string): string {
    if (x.endsWith("/")) {
-      console.info("Remove trailing / from " + x)
-      return x.substring(0, x.length - 1)
+      return x
    }
-   return x
+   return x + "/"
 }
 
 interface FromJSON<T> {
