@@ -101,4 +101,9 @@ const router = createRouter({
    ],
 })
 
+router.beforeEach((to, from, next) => {
+   window.Telegram.WebApp.HapticFeedback.impactOccurred("light")
+   next()
+})
+
 export default router

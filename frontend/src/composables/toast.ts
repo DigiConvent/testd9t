@@ -5,13 +5,16 @@ export function info(summary: string, detail: string = "", life: number = 3000) 
 }
 
 export function warn(summary: string, detail: string = "", life: number = 3000) {
+   window.Telegram.WebApp.HapticFeedback.notificationOccurred("warning")
    toasteventbus.emit("add", { severity: "warn", summary, detail, life })
 }
 
 export function success(summary: string, detail: string = "", life: number = 3000) {
+   window.Telegram.WebApp.HapticFeedback.notificationOccurred("success")
    toasteventbus.emit("add", { severity: "success", summary, detail, life })
 }
 
 export function error(summary: string, detail: string = "", life: number = 3000) {
+   window.Telegram.WebApp.HapticFeedback.notificationOccurred("error")
    toasteventbus.emit("add", { severity: "error", summary, detail, life })
 }
