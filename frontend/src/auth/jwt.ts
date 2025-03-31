@@ -4,7 +4,6 @@ import type Either from "@/api/core/either"
 import { ref, type Ref } from "vue"
 import type { PermissionFacade } from "@/api/iam/permission/types"
 import { info, warn } from "@/composables/toast"
-import router from "@/router"
 
 export default class JwtAuthenticator {
    get_permissions() {
@@ -17,44 +16,46 @@ export default class JwtAuthenticator {
    public countdown = ref<number>(0)
    private timeout: NodeJS.Timeout | undefined
 
-   constructor() {
+   constructor() {}
+
+   recover_session(): boolean {
       const t = localStorage.getItem("token")
       if (t != null) {
          this.token = t
+         if (this.seconds_remaining() < 0) {
+            this.logout()
+            return false
+         }
          this.refresh_token()
-      } else {
-         this.is_authenticated.value = false
-         router.replace({ name: "home" })
+         return true
       }
+      this.is_authenticated.value = false
+      return false
+   }
+
+   private seconds_remaining(): number {
+      const token = this.get_token()
+      if (token == null) {
+         return 0
+      }
+      // subtract 5 seconds just to be sure
+      return token.exp - Math.floor(new Date().getTime() / 1000) - 5
    }
 
    private refresh_token() {
-      const token = this.get_token()
-      if (token == null) {
-         return
-      }
-
-      const expiration = token.exp
-      const now = Math.floor(new Date().getTime() / 1000)
-      if (expiration == undefined || now > expiration - 5) {
+      if (this.seconds_remaining() < 0) {
          this.logout()
          return
       }
 
-      const timeout = expiration! - now
-
-      this.countdown.value = (timeout - 5) * 1000
-      this.timeout = setTimeout(
-         async () => {
-            const result = await this.login(api.iam.jwt.refresh())
-            if (result) {
-               info("Token refreshed", "")
-            } else {
-               warn("Could not refresh token", "")
-            }
-         },
-         (timeout - 5) * 1000,
-      )
+      this.timeout = setTimeout(async () => {
+         const result = await this.login(api.iam.jwt.refresh())
+         if (result) {
+            info("Token refreshed", "")
+         } else {
+            warn("Could not refresh token", "")
+         }
+      }, this.seconds_remaining() * 1000)
    }
 
    public get_token(): {

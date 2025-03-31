@@ -128,17 +128,16 @@ app.use(ToastService)
 
 const auth = JwtAuthenticator.get_instance()
 if (is_mini_app()) {
-   console.log("Is mini app-> login with telegram")
    auth.login_using_telegram().then(() => {
       mount()
    })
-} else {
+} else if (auth.recover_session()) {
    auth.load_permissions().then(() => {
-      if (!auth.is_authenticated.value) {
-         remember = "/home"
-      }
       mount()
    })
+} else {
+   remember = "/home"
+   mount()
 }
 
 function mount() {
