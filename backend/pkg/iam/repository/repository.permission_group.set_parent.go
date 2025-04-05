@@ -10,7 +10,8 @@ func (r *IAMRepository) SetParentPermissionGroup(arg *iam_domain.PermissionGroup
 	if arg.Parent == nil || arg.Parent.String() == uuid.Nil.String() {
 		arg.Parent = nil
 	}
-	result, err := r.db.Exec("update permission_groups set parent = ? where id = ?", arg.Parent, arg.ID)
+
+	result, err := r.db.Exec("update permission_groups set parent = ? where id = ? and meta is null", arg.Parent, arg.ID)
 
 	if err != nil {
 		return *core.InternalError(err.Error())

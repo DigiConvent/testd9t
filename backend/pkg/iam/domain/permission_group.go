@@ -27,6 +27,7 @@ type PermissionGroupRead struct {
 	Abbr        string              `json:"abbr"`
 	Description string              `json:"description"`
 	Parent      *uuid.UUID          `json:"parent"`
+	Meta        string              `json:"meta"`
 	IsGroup     bool                `json:"is_group"`
 	IsNode      bool                `json:"is_node"`
 	Generated   bool                `json:"generated"`
