@@ -220,7 +220,7 @@ after insert on user_status
 for each row
 begin
    insert into permission_groups (id, name, abbr, is_group, is_node, meta, description, generated) values 
-      (new.id, new.name, new.abbr, 1, 1, 'user_status', new.description, 1);
+      (new.id, new.name, new.abbr, 1, 1, 'status', new.description, 1);
 end;
 
 create trigger after_update_user_status
@@ -318,7 +318,7 @@ after insert on user_roles
 for each row
 begin
    insert into permission_groups (id, name, abbr, is_group, is_node, meta, description, generated) values 
-      (new.id, new.name, new.abbr, 1, 1, 'user_role', new.description, 1);
+      (new.id, new.name, new.abbr, 1, 1, 'role', new.description, 1);
 end;
 
 create trigger after_update_user_role
