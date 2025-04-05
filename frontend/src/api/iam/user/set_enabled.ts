@@ -1,10 +1,7 @@
-import type Either from "@/api/core/either"
+import type { ApiCall } from "@/api/core/endpoint"
 import { api_post } from "@/api/core/fetch"
 
-export default async function set_enabled(
-   id: string,
-   enabled: boolean,
-): Promise<Either<string, boolean>> {
+const set_enabled: ApiCall<boolean> = (id: string, enabled: boolean) => {
    return api_post<boolean>(
       "/api/iam/user/" + id + "/enabled",
       { enabled: enabled },
@@ -12,3 +9,5 @@ export default async function set_enabled(
       200,
    )
 }
+
+export default set_enabled

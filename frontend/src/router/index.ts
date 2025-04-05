@@ -42,6 +42,17 @@ const router = createRouter({
                                  component: () => import("../views/admin/iam/user/list.vue"),
                               },
                               {
+                                 path: ":id",
+                                 name: "iam.user.profile",
+                                 component: () => import("../views/admin/iam/user/profile.vue"),
+                                 children: [
+                                    {
+                                       path: "create",
+                                       component: () => import("../components/iam/user/create.vue"),
+                                    },
+                                 ],
+                              },
+                              {
                                  name: "iam.user.create",
                                  path: "create",
                                  component: () => import("../components/iam/user/create.vue"),
@@ -54,13 +65,14 @@ const router = createRouter({
                            ],
                         },
                         {
-                           path: "users/:id",
-                           name: "iam.user.profile",
-                           component: () => import("../views/admin/iam/user/profile.vue"),
+                           path: "user-status",
+                           name: "iam.user_status",
                            children: [
                               {
-                                 path: "create",
-                                 component: () => import("../components/iam/user/create.vue"),
+                                 name: "iam.user_status.create",
+                                 path: "new",
+                                 component: () =>
+                                    import("../components/iam/user_status/create.vue"),
                               },
                            ],
                         },

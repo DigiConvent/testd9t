@@ -48,6 +48,9 @@ export async function api_post<T>(
    format_data?: FromJSON<T>,
    expects?: number,
 ): Promise<Either<string, T>> {
+   if (format_data == undefined && expects == undefined) {
+      throw "Either expects or format_data must be defined"
+   }
    const result = new Either<string, T>()
    const body = JSON.stringify(payload)
 
@@ -60,7 +63,13 @@ export async function api_post<T>(
       body: body,
    })
 
-   if (expects != undefined && expects != request.status) return result.left(request.status + ": ")
+   if (expects != undefined) {
+      if (expects != request.status) {
+         return result.left(request.status + ": ")
+      } else if (format_data == undefined) {
+         return result.right(true as T)
+      }
+   }
 
    let data: any = {}
    if (request.status >= 200 && request.status < 300) {

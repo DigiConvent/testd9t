@@ -1,8 +1,8 @@
-import type Either from "@/api/core/either"
 import { api_get } from "@/api/core/fetch"
-import type { UserStatusRead } from ".."
+import type { ApiCall } from "@/api/core/endpoint"
+import type { UserStatusRead } from "./types"
 
-export default async function list_user_status(): Promise<Either<string, UserStatusRead[]>> {
+const list_user_status: ApiCall<UserStatusRead[]> = () => {
    return api_get<UserStatusRead[]>("/api/iam/user-status", (data: any) => {
       const result: UserStatusRead[] = []
       for (const entry of data.items || []) {
@@ -17,3 +17,5 @@ export default async function list_user_status(): Promise<Either<string, UserSta
       return result
    })
 }
+
+export default list_user_status

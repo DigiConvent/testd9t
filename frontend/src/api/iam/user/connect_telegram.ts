@@ -1,7 +1,7 @@
-import type Either from "@/api/core/either"
+import type { ApiCall } from "@/api/core/endpoint"
 import { api_post } from "@/api/core/fetch"
 
-export async function connect_telegram(init_data: string): Promise<Either<string, boolean>> {
+const connect_telegram: ApiCall<boolean> = (init_data: string) => {
    return api_post<boolean>(
       "/api/iam/login/telegram/connect",
       { payload: init_data },
@@ -9,3 +9,5 @@ export async function connect_telegram(init_data: string): Promise<Either<string
       200,
    )
 }
+
+export default connect_telegram

@@ -1,6 +1,7 @@
 <template>
    <div class="card flex justify-center">
-      <Form class="flex flex-col gap-4">
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <Form v-else class="flex flex-col gap-4">
          <FormTextInput v-model="name" label="iam.user_status.create" name="name" />
          <FormTextInput v-model="abbr" label="iam.user_status.create" name="abbr" />
          <FormTextarea v-model="description" label="iam.user_status.create" name="description" />
@@ -10,7 +11,7 @@
             label_off="iam.user_status.create.unarchived"
             name="archived"
          />
-         <PermissionGroupPicker v-model="parent" label="iam.user_status.create" name="parent" />
+         <PermissionGroupPicker v-model="us_parent" label="iam.user_status.create" name="parent" />
          <div class="flex justify-end gap-2">
             <Button
                type="button"
@@ -35,6 +36,7 @@ import PermissionGroupPicker from "@/components/iam/permission_group/picker.vue"
 
 const t = useI18n().t
 
+const loading = ref(false)
 const name = ref<string>("")
 const name_check = v.pipe(
    v.string(),
@@ -56,7 +58,7 @@ const description_check = v.pipe(
 const archived = ref<boolean>(false)
 const archived_check = v.boolean()
 
-const parent = ref<string>()
+const us_parent = ref<string>()
 const parent_check = v.string()
 
 const emit = defineEmits(["created"])
@@ -75,7 +77,7 @@ async function create_user_status() {
          abbr: abbr.value,
          description: description.value,
          archived: archived.value,
-         parent: parent.value,
+         parent: us_parent.value,
       },
    )
 
@@ -89,7 +91,7 @@ async function create_user_status() {
             parent: re.output["parent"],
          })
       ).fold(
-         (l) => {
+         (l: string) => {
             error(l)
          },
          (id: string) => {
@@ -100,4 +102,15 @@ async function create_user_status() {
       warn(re.issues[0].message)
    }
 }
+
+const props = defineProps<{ parent: string }>()
+function load() {
+   loading.value = true
+   if (props.parent != undefined) {
+      us_parent.value = props.parent
+   }
+   loading.value = false
+}
+
+load()
 </script>

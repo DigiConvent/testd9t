@@ -58,10 +58,10 @@ import type { MenuItem } from "primevue/menuitem"
 import { useI18n } from "vue-i18n"
 import UserMenu from "./user_menu.vue"
 
+const t = useI18n().t
+
 const auth = JwtAuthenticator.get_instance()
 const logged_in = auth.is_authenticated
-
-const t = useI18n().t
 
 const show_login_form = ref(false)
 

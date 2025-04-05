@@ -1,2 +1,6 @@
 @import "./base.css";
 @import "tailwindcss";
+fieldset,
+legend {
+   all: revert;
+}

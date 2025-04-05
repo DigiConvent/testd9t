@@ -1,9 +1,7 @@
 import Either from "@/api/core/either"
+import type { ApiCall } from "@/api/core/endpoint"
 
-export default async function credentials(
-   emailaddress: string,
-   password: string,
-): Promise<Either<string, string>> {
+const credentials: ApiCall<string> = async (emailaddress: string, password: string) => {
    const url = "/api/iam/login/credentials"
    const body = JSON.stringify({ emailaddress, password })
    const request = await fetch(url, {
@@ -21,3 +19,5 @@ export default async function credentials(
       return new Either<string, string>().left(request.status + ": " + data["message"])
    }
 }
+
+export default credentials

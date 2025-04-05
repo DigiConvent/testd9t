@@ -1,10 +1,10 @@
-import type Either from "@/api/core/either"
 import { api_get } from "@/api/core/fetch"
 import type { UserFacade } from "./types"
 import type { Page } from "@/api/core/page"
 import { to_user_facade } from "./utils"
+import type { ApiCall } from "@/api/core/endpoint"
 
-export default async function list_users(): Promise<Either<string, Page<UserFacade>>> {
+const list_users: ApiCall<Page<UserFacade>> = () => {
    return api_get<Page<UserFacade>>("/api/iam/user", (data: any) => {
       return {
          items: data.items.map((entry: any) => to_user_facade(entry)),
@@ -14,3 +14,5 @@ export default async function list_users(): Promise<Either<string, Page<UserFaca
       }
    })
 }
+
+export default list_users

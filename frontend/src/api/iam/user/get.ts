@@ -1,8 +1,8 @@
-import type Either from "@/api/core/either"
 import { api_get } from "@/api/core/fetch"
 import type { UserRead } from "./types"
+import type { ApiGetById } from "@/api/core/endpoint"
 
-export default async function get_user(id?: string): Promise<Either<string, UserRead>> {
+const get_user: ApiGetById<UserRead> = (id?: string) => {
    return api_get<UserRead>(`/api/iam/user${id ? "/" + id : "/me"}`, (data: any) => {
       return {
          id: data.id,
@@ -13,3 +13,5 @@ export default async function get_user(id?: string): Promise<Either<string, User
       }
    })
 }
+
+export default get_user

@@ -21,7 +21,6 @@ func TestIsEnabled(t *testing.T) {
 		t.Errorf("User should initially be disabled")
 	}
 
-	// this has to be called before a user is disabled or something because there is a map (let's call it simple cache) that needs to be initialised first
 	isEnabled, _ := iamService.IsEnabled(userId)
 	if isEnabled {
 		t.Errorf("User should be disabled initially")

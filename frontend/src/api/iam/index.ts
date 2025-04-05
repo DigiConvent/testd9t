@@ -1,3 +1,4 @@
+import type { ApiCollection } from "../core/endpoint"
 import { jwt } from "./jwt"
 import { login } from "./login"
 import { permission } from "./permission"
@@ -12,12 +13,4 @@ export const iam = {
    permission: permission,
    user_status: user_status,
    user: user,
-}
-
-export type UserStatusRead = {
-   id: string
-   name: string
-   abbr: string
-   description: string
-   archived: boolean
-}
+} satisfies ApiCollection

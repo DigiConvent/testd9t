@@ -8,16 +8,16 @@ import (
 
 func (r *IAMRepository) ListUserStatusesFromUser(id *uuid.UUID) ([]*iam_domain.UserHasStatusRead, core.Status) {
 	var userStatuses []*iam_domain.UserHasStatusRead
-	rows, err := r.db.Query(`SELECT
+	rows, err := r.db.Query(`select
 		s.id,
 		s.name,
 		s.abbr,
 		ubs.description,
 		ubs.start
-	FROM 
+	from 
 		user_became_status ubs
-	JOIN user_status s ON ubs.status = s.id
-	WHERE 
+	join user_status s on ubs.status = s.id
+	where 
 		ubs."user" = ?`, id.String())
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

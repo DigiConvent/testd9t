@@ -7,7 +7,7 @@
          >
             <Fa v-if="icon_on && modelValue" :icon="icon_on" />
             <Fa v-if="icon_off != undefined && !modelValue" :icon="icon_off" />
-            {{ modelValue ? label_on : label_off }}
+            {{ modelValue ? $t(label_on) : $t(label_off) }}
             <ProgressSpinner
                v-if="loading"
                class="inline"

@@ -43,12 +43,21 @@ type IAMRepositoryInterface interface {
 	CreateUserStatus(arg *iam_domain.UserStatusWrite) (*uuid.UUID, core.Status)
 	DeleteUserStatus(arg *uuid.UUID) core.Status
 	GetUserStatus(arg *uuid.UUID) (*iam_domain.UserStatusRead, core.Status)
-	ListUserGroups(userId *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)
 	ListUserStatuses() ([]*iam_domain.UserStatusRead, core.Status)
 	ListUserStatusesFromUser(id *uuid.UUID) ([]*iam_domain.UserHasStatusRead, core.Status)
 	ListUserStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserFacade, core.Status)
 	UpdateUserStatus(id *uuid.UUID, arg *iam_domain.UserStatusWrite) core.Status
 
+	AddUserRoleToUser(arg *iam_domain.AddUserRoleToUser) core.Status
+	CreateUserRole(arg *iam_domain.UserRoleWrite) (*uuid.UUID, core.Status)
+	DeleteUserRole(arg *uuid.UUID) core.Status
+	GetUserRole(arg *uuid.UUID) (*iam_domain.UserRoleRead, core.Status)
+	ListUserRoles() ([]*iam_domain.UserRoleRead, core.Status)
+	ListUserRolesFromUser(id *uuid.UUID) ([]*iam_domain.UserHasRoleRead, core.Status)
+	ListUserRoleUsers(arg *uuid.UUID) ([]*iam_domain.UserFacade, core.Status)
+	UpdateUserRole(id *uuid.UUID, arg *iam_domain.UserRoleWrite) core.Status
+
+	ListUserGroups(userId *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)
 	AddUserToPermissionGroup(permissionGroup, userId *uuid.UUID) core.Status
 	CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite) (*uuid.UUID, core.Status)
 	DeletePermissionGroup(arg *uuid.UUID) core.Status

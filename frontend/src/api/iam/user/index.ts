@@ -1,4 +1,5 @@
-import { connect_telegram } from "./connect_telegram"
+import type { ApiCollection } from "@/api/core/endpoint"
+import connect_telegram from "./connect_telegram"
 import create_user from "./create"
 import get_user from "./get"
 import list_users from "./list"
@@ -18,4 +19,4 @@ export const user = {
    update: update_user,
    set_enabled: set_enabled,
    set_password: set_password,
-}
+} satisfies ApiCollection

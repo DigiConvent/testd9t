@@ -1,10 +1,8 @@
-import type Either from "@/api/core/either"
 import { api_post } from "@/api/core/fetch"
 import type { PermissionGroupWrite } from "./types"
+import type { ApiCall } from "@/api/core/endpoint"
 
-export default async function create_permission_group(
-   permission_group_write: PermissionGroupWrite,
-): Promise<Either<string, string>> {
+const create_permission_group: ApiCall<string> = (permission_group_write: PermissionGroupWrite) => {
    return api_post<string>(
       "/api/iam/permission-group",
       permission_group_write,
@@ -14,3 +12,5 @@ export default async function create_permission_group(
       201,
    )
 }
+
+export default create_permission_group

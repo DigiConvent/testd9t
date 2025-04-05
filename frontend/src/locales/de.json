@@ -135,6 +135,7 @@
             "abbr": "Abkürzung",
             "description": "Beschreibung",
             "archived": "Archiviert",
+            "unarchived": "Nicht archiviert",
             "required": "{field} ist erforderlich",
             "submit": "Anlegen"
          }

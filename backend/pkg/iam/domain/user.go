@@ -29,11 +29,14 @@ type UserFacade struct {
 	Implied    bool      `json:"implied"`
 	StatusID   uuid.UUID `json:"status_id"`
 	StatusName string    `json:"status_name"`
+	RoleID     uuid.UUID `json:"role_id"`
+	RoleName   string    `json:"role_name"`
 }
 
 type UserProfile struct {
 	User        *UserRead                `json:"user"`
 	UserStatus  []*UserHasStatusRead     `json:"status"`
+	UserRole    []*UserHasRoleRead       `json:"role"`
 	Groups      []*PermissionGroupFacade `json:"groups"`
 	Permissions []*PermissionFacade      `json:"permissions"`
 }

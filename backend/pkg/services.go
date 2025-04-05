@@ -99,7 +99,7 @@ func DoFirstTimeStuff(services *Services) {
 	rootId, status := services.IamService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
 		Name:        "root",
 		Abbr:        "root",
-		IsGroup:     true,
+		IsGroup:     false,
 		IsNode:      false,
 		Description: "",
 	})

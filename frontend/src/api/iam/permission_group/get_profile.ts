@@ -1,13 +1,13 @@
-import type Either from "@/api/core/either"
 import { api_get } from "@/api/core/fetch"
 import type { PermissionGroupProfile } from "./types"
 import { to_permission_group_profile } from "./utils"
+import type { ApiGetById } from "@/api/core/endpoint"
 
-export default async function get_permission_group_profile(
-   pid: string,
-): Promise<Either<string, PermissionGroupProfile>> {
+const get_permission_group_profile: ApiGetById<PermissionGroupProfile> = (pid: string) => {
    return api_get<PermissionGroupProfile>(
       "/api/iam/permission-group/profile/" + pid,
       to_permission_group_profile,
    )
 }
+
+export default get_permission_group_profile

@@ -1,8 +1,8 @@
-import type Either from "@/api/core/either"
 import { api_get } from "@/api/core/fetch"
 import type { PermissionFacade } from "../permission/types"
+import type { ApiCall } from "@/api/core/endpoint"
 
-export default async function list_user_permissions(): Promise<Either<string, PermissionFacade[]>> {
+const list_user_permissions: ApiCall<PermissionFacade[]> = () => {
    return api_get<PermissionFacade[]>("/api/iam/user/me/permissions", (data: any) => {
       const result: PermissionFacade[] = []
       for (const entry of data) {
@@ -14,3 +14,5 @@ export default async function list_user_permissions(): Promise<Either<string, Pe
       return result
    })
 }
+
+export default list_user_permissions

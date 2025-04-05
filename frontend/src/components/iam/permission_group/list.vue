@@ -8,10 +8,14 @@
          collapsible
       >
          <template #default="slotProps">
-            <span>{{ slotProps.node.data.name }}</span>
+            <span
+               ><Fa :icon="get_icon(slotProps.node.data)" class="mr-2" />{{
+                  slotProps.node.data.name
+               }}</span
+            >
             <Button
                class="p-button-rounded p-button-text"
-               @click="emit('click', { event: $event, id: slotProps.node.data.id })"
+               @click="emit('click', { event: $event, pg: slotProps.node.data })"
             >
                <Fa icon="fa-ellipsis-v"></Fa>
             </Button>
@@ -55,4 +59,10 @@ watch(
    () => props.refresh,
    () => load_permission_groups(),
 )
+
+function get_icon(d: PermissionGroupFacade): string {
+   if (d.is_group) return "users"
+   if (d.is_node) return "user-tag"
+   return "folders"
+}
 </script>

@@ -36,7 +36,7 @@
                                        class="w-8 h-8 rounded-full inline-flex justify-center items-center text-center"
                                        :style="`background-color: ${val.color};color: #ffffff;`"
                                     >
-                                       <i :class="val.icon" />
+                                       <Fa :icon="val.icon" />
                                     </div>
                                  </div>
                               </template>
