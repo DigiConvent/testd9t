@@ -4,16 +4,20 @@ import (
 	"testing"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
+	"github.com/google/uuid"
 )
 
 func TestCreateUserStatus(t *testing.T) {
 	iamService := GetTestIAMService("iam")
+
+	rootId := uuid.MustParse(getRootPermissionGroup())
 
 	testUserStatus := &iam_domain.UserStatusWrite{
 		Name:        "UserStatusCreate",
 		Abbr:        "USC",
 		Description: "test",
 		Archived:    false,
+		Parent:      &rootId,
 	}
 
 	id, status := iamService.CreateUserStatus(testUserStatus)

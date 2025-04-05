@@ -16,7 +16,7 @@ func (r *IAMRepository) DeletePermissionGroup(arg *uuid.UUID) core.Status {
 
 	rowsAffected, _ := res.RowsAffected()
 	if rowsAffected == 0 {
-		return *core.NotFoundError("Permission group not found")
+		return *core.NotFoundError("permission group not found")
 	}
 	return *core.StatusNoContent()
 }

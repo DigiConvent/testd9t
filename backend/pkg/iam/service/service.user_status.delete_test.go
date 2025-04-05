@@ -4,16 +4,19 @@ import (
 	"testing"
 
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
+	"github.com/google/uuid"
 )
 
 func TestDeleteUserStatus(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
+	rootId := uuid.MustParse(getRootPermissionGroup())
 	id, status := iamService.CreateUserStatus(&iam_domain.UserStatusWrite{
 		Name:        "UserStatusDelete",
 		Abbr:        "USD",
 		Description: "test",
 		Archived:    false,
+		Parent:      &rootId,
 	})
 
 	if status.Err() {

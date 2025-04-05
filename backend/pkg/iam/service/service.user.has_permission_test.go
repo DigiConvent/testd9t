@@ -24,7 +24,7 @@ func TestUserHasPermission(t *testing.T) {
 		Permissions: []string{permissions[0].Name},
 		Abbr:        "TPG",
 		Description: "Test Permission Group",
-		Parent:      "",
+		Parent:      getRootPermissionGroup(),
 	}
 	permissionGroupID, _ := iamService.CreatePermissionGroup(&permissionGroup)
 
@@ -41,13 +41,19 @@ func TestUserHasPermission(t *testing.T) {
 		Archived:    false,
 		Parent:      permissionGroupID,
 	}
-	statusID, _ := iamService.CreateUserStatus(&userStatus)
+	t.Log(permissionGroupID)
+
+	statusID, status := iamService.CreateUserStatus(&userStatus)
+
+	if status.Err() {
+		t.Fatal(status.Message)
+	}
 
 	if statusID == nil {
 		t.Fatal("Expected a result")
 	}
 
-	status := iamService.AddUserStatus(&iam_domain.AddUserStatusToUser{
+	status = iamService.AddUserStatus(&iam_domain.AddUserStatusToUser{
 		UserID:   *id,
 		StatusID: *statusID,
 		When:     time.Now().Add(-2 * time.Hour),
@@ -58,10 +64,19 @@ func TestUserHasPermission(t *testing.T) {
 	}
 
 	permissionGroupProfile, _ = iamService.GetPermissionGroupProfile(statusID)
-	parentPermissionGroupProfile, _ := iamService.GetPermissionGroupProfile(&permissionGroupProfile.Ancestors[0].ID)
+	parentPermissionGroupProfile, status := iamService.GetPermissionGroupProfile(permissionGroupProfile.PermissionGroup.Parent)
+
+	if status.Err() {
+		t.Log(permissionGroupProfile.PermissionGroup)
+		t.Fatal(status.Message)
+	}
+
+	if len(parentPermissionGroupProfile.Permissions) <= 0 {
+		t.Fatalf("Permission group should have permissions ")
+	}
 
 	if parentPermissionGroupProfile.Permissions[0].Name != permissions[0].Name {
-		t.Errorf("Permission group should have permission " + permissions[0].Name)
+		t.Fatalf("Permission group should have permission " + permissions[0].Name)
 	}
 
 	t.Log(permissionGroupProfile.Members)

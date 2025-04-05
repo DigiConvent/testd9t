@@ -6,7 +6,6 @@ import (
 )
 
 func (s *IAMService) SetParentPermissionGroup(arg *iam_domain.PermissionGroupSetParent) *core.Status {
-
 	pg, status := s.repository.GetPermissionGroup(arg.Parent)
 	if status.Err() {
 		return &status
@@ -14,6 +13,7 @@ func (s *IAMService) SetParentPermissionGroup(arg *iam_domain.PermissionGroupSet
 	if pg.Meta == "role" {
 		return core.UnprocessableContentError("cannot add a permission group to a role")
 	}
+
 	if pg.Meta == "status" {
 		return core.UnprocessableContentError("cannot add a permission group to a status")
 	}

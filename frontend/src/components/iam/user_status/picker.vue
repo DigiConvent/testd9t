@@ -33,10 +33,10 @@
 
 <script lang="ts" setup>
 import { ref, defineProps, computed } from "vue"
-import type { UserStatusRead } from "@/api/iam"
 import { api } from "@/api"
 import NewUserStatusForm from "./create.vue"
 import { error } from "@/composables/toast"
+import type { UserStatusRead } from "@/api/iam/user_status/types"
 
 const loading = ref(true)
 const user_status = ref<UserStatusRead[]>([])

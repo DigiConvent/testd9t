@@ -103,7 +103,7 @@ async function create_user_status() {
    }
 }
 
-const props = defineProps<{ parent: string }>()
+const props = defineProps<{ parent?: string }>()
 function load() {
    loading.value = true
    if (props.parent != undefined) {

@@ -19,7 +19,7 @@ func TestListUserPermissions(t *testing.T) {
 	id, _ := iamService.CreateUser(&testUser)
 
 	permissions, _ := iamService.ListPermissions()
-	// this is the permission group that the user is going to inherit fromt since its status will be a descendant of this permission group
+	// this is the permission group that the user is going to inherit from since its status will be a descendant of this permission group
 	permissionGroup := iam_domain.PermissionGroupWrite{
 		Name:        "TestUserListPermissions",
 		Permissions: []string{permissions[0].Name},
@@ -34,13 +34,13 @@ func TestListUserPermissions(t *testing.T) {
 		Abbr:        "TSLP",
 		Description: "Test Status",
 		Archived:    false,
+		Parent:      permissionGroupID,
 	}
 	statusID, _ := iamService.CreateUserStatus(&userStatus)
 
-	iamService.SetParentPermissionGroup(&iam_domain.PermissionGroupSetParent{
-		ID:     statusID,
-		Parent: permissionGroupID,
-	})
+	if statusID == nil {
+		t.Fatal("Expected a result")
+	}
 
 	iamService.AddUserStatus(&iam_domain.AddUserStatusToUser{
 		UserID:   *id,

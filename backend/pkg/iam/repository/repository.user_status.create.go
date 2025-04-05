@@ -21,7 +21,10 @@ func (r *IAMRepository) CreateUserStatus(userStatus *iam_domain.UserStatusWrite)
 	if err != nil || d == 0 {
 		return nil, *core.InternalError(err.Error())
 	}
-	r.SetParentPermissionGroup(&iam_domain.PermissionGroupSetParent{ID: &id, Parent: userStatus.Parent})
+	status := r.SetParentPermissionGroup(&iam_domain.PermissionGroupSetParent{ID: &id, Parent: userStatus.Parent})
+	if status.Err() {
+		return nil, status
+	}
 
 	return &id, *core.StatusSuccess()
 }
