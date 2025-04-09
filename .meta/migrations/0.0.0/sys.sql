@@ -18,7 +18,8 @@ create table packages (
 -- backend/pkg/sys/db/0.0.0/02_create_configuration_table.sql 
 create table configurations (
     domain text default '',
-    telegram_bot_token text default ''
+    telegram_bot_token text default '',
+    maintenance boolean default false
 );
 
 insert into configurations (domain, telegram_bot_token) values ('', '');
