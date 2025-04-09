@@ -54,10 +54,21 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 		userStatusRoutes := iamRoutes.Group("/user-status")
 		{
 			userStatusRoutes.GET("/", iam.RequiresPermission("iam.user-status.list"), iamRouter.ListUserStatus)
+			userStatusRoutes.GET("/:id/", iam.RequiresPermission("iam.user-status.read"), iamRouter.GetUserStatus)
 			userStatusRoutes.POST("/", iam.RequiresPermission("iam.user-status.create"), iamRouter.CreateUserStatus)
 			userStatusRoutes.POST("/:id/", iam.RequiresPermission("iam.user-status.update"), iamRouter.UpdateUserStatus)
-			userStatusRoutes.DELETE("/:id/delete/", iam.RequiresPermission("iam.user-status.delete"), iamRouter.DeleteUserStatus)
 			userStatusRoutes.POST("/:id/add-user/", iam.RequiresPermission("iam.user-status.add-user"), iamRouter.AddUserStatusUser)
+			userStatusRoutes.DELETE("/:id/delete/", iam.RequiresPermission("iam.user-status.delete"), iamRouter.DeleteUserStatus)
+		}
+
+		userRoleRoutes := iamRoutes.Group("/user-role")
+		{
+			userRoleRoutes.GET("/", iam.RequiresPermission("iam.user-role.list"), iamRouter.ListUserRole)
+			userRoleRoutes.GET("/:id/", iam.RequiresPermission("iam.user-role.read"), iamRouter.GetUserRole)
+			userRoleRoutes.POST("/", iam.RequiresPermission("iam.user-role.create"), iamRouter.CreateUserRole)
+			userRoleRoutes.POST("/:id/", iam.RequiresPermission("iam.user-role.update"), iamRouter.UpdateUserRole)
+			userRoleRoutes.POST("/:id/add-user/", iam.RequiresPermission("iam.user-role.add-user"), iamRouter.AddUserRoleUser)
+			userRoleRoutes.DELETE("/:id/delete/", iam.RequiresPermission("iam.user-role.delete"), iamRouter.DeleteUserRole)
 		}
 
 		permissionRoutes := iamRoutes.Group("/permission")
@@ -69,10 +80,10 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 		{
 			permissionGroupRoutes.GET("/", iam.RequiresPermission("iam.permission-group.list"), iamRouter.ListPermissionGroups)
 			permissionGroupRoutes.GET("/:id/", iam.RequiresPermission("iam.permission-group.get", "iam.permission-group.get.:id"), iamRouter.GetPermissionGroup)
+			permissionGroupRoutes.GET("/:id/profile/", iam.RequiresPermission("iam.permission-group.get", "iam.permission-group.get.:id"), iamRouter.ProfilePermissionGroup)
 
 			permissionGroupRoutes.POST("/", iam.RequiresPermission("iam.permission-group.create"), iamRouter.CreatePermissionGroup)
 			permissionGroupRoutes.POST("/:id/", iam.RequiresPermission("iam.permission-group.update"), iamRouter.UpdatePermissionGroup)
-			permissionGroupRoutes.GET("/profile/:id/", iam.RequiresPermission("iam.permission-group.get", "iam.permission-group.get.:id"), iamRouter.ProfilePermissionGroup)
 		}
 	}
 

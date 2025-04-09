@@ -1,4 +1,4 @@
-export type UserStatusRead = {
+export type UserRoleRead = {
    id: string
    name: string
    abbr: string
@@ -6,16 +6,14 @@ export type UserStatusRead = {
    archived: boolean
 }
 
-export type UserStatusWrite = {
-   id: string
+export type UserRoleWrite = {
    name: string
    abbr: string
    description: string
    archived: boolean
-   parent: string
 }
 
-export type UserStatusCreate = {
+export type UserRoleCreate = {
    name: string
    abbr: string
    description: string

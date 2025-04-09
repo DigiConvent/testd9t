@@ -5,6 +5,7 @@ import type { Field, FieldOptions, FormInput } from "./types"
 import { CheckboxField } from "./fields/checkbox"
 import { error } from "@/composables/toast"
 import { Button, ProgressBar } from "primevue"
+import { SwitchField } from "./fields/switch"
 
 export class Form<T extends Record<string, any>> {
    private t: string = "form"
@@ -40,6 +41,11 @@ export class Form<T extends Record<string, any>> {
 
    add_checkbox(options: FieldOptions): this {
       return this.add_field(new CheckboxField(`${this.t}.${options.key}`, options.label, options))
+   }
+   add_switch_input(
+      options: FieldOptions & { activeColor?: string; inactiveColor?: string },
+   ): this {
+      return this.add_field(new SwitchField(`${this.t}.${options.key}`, options.label, options))
    }
 
    private add_field(field: Field): this {

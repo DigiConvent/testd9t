@@ -16,7 +16,6 @@
    <router-link v-permission="'iam.user.create'" :to="{ name: 'iam.user.create' }"
       ><Fa icon="user-plus" /> {{ $t("iam.user.create.title") }}</router-link
    >
-   >
 </template>
 
 <script lang="ts" setup>

@@ -41,8 +41,13 @@
          <Card>
             <template #title>{{ $t("iam.pg.profile.properties") }}</template>
             <template #content>
+               <ReadPermissionGroup
+                  v-permission="'iam.permission_group.read'"
+                  :data="profile!.permission_group"
+               />
                <UpdatePermissionGroup
                   v-model="profile!.permission_group.id"
+                  v-permission="'iam.permission_group.read'"
                ></UpdatePermissionGroup>
             </template>
          </Card>
@@ -70,6 +75,7 @@ import { error } from "@/composables/toast"
 import { computed, ref } from "vue"
 import UpdatePermissionGroup from "@/components/iam/permission_group/update.vue"
 import UserFacades from "@/components/iam/user/facade.vue"
+import ReadPermissionGroup from "./read.vue"
 
 const props = defineProps<{ id: string }>()
 

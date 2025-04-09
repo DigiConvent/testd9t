@@ -6,14 +6,17 @@ import (
 )
 
 func (r *SysRepository) GetConfiguration() (*sys_domain.Configuration, core.Status) {
-	row := r.db.QueryRow("select telegram_bot_token, domain from configurations limit 1")
+	row := r.db.QueryRow("select telegram_bot_token, domain, maintenance from configurations limit 1")
 
 	config := sys_domain.Configuration{}
 
-	err := row.Scan(&config.TelegramBotToken, &config.Domain)
+	err := row.Scan(&config.TelegramBotToken, &config.Domain, &config.Maintenance)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}
+
+	sys_domain.SetMaintenance(config.Maintenance)
+
 	return &config, *core.StatusSuccess()
 }

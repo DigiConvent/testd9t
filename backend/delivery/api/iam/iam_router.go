@@ -29,6 +29,13 @@ type IamRouterInterface interface {
 	UpdateUserStatus(ctx *gin.Context)
 	AddUserStatusUser(ctx *gin.Context)
 
+	CreateUserRole(ctx *gin.Context)
+	DeleteUserRole(ctx *gin.Context)
+	GetUserRole(ctx *gin.Context)
+	ListUserRole(ctx *gin.Context)
+	UpdateUserRole(ctx *gin.Context)
+	AddUserRoleUser(ctx *gin.Context)
+
 	CreateUser(ctx *gin.Context)
 	GetUser(ctx *gin.Context)
 	HasPermissionUser(ctx *gin.Context)
@@ -49,6 +56,36 @@ type IamRouter struct {
 	sysService sys_service.SysServiceInterface
 }
 
+// AddUserRoleUser implements IamRouterInterface.
+func (router *IamRouter) AddUserRoleUser(ctx *gin.Context) {
+	panic("unimplemented")
+}
+
+// CreateUserRole implements IamRouterInterface.
+func (router *IamRouter) CreateUserRole(ctx *gin.Context) {
+	panic("unimplemented")
+}
+
+// DeleteUserRole implements IamRouterInterface.
+func (router *IamRouter) DeleteUserRole(ctx *gin.Context) {
+	panic("unimplemented")
+}
+
+// GetUserRole implements IamRouterInterface.
+func (router *IamRouter) GetUserRole(ctx *gin.Context) {
+	panic("unimplemented")
+}
+
+// ListUserRole implements IamRouterInterface.
+func (router *IamRouter) ListUserRole(ctx *gin.Context) {
+	panic("unimplemented")
+}
+
+// UpdateUserRole implements IamRouterInterface.
+func (router *IamRouter) UpdateUserRole(ctx *gin.Context) {
+	panic("unimplemented")
+}
+
 // AddUserPermissionGroup implements IamRouterInterface.
 func (router *IamRouter) AddUserPermissionGroup(ctx *gin.Context) {
 	panic("unimplemented")
@@ -61,11 +98,6 @@ func (router *IamRouter) DeletePermissionGroup(ctx *gin.Context) {
 
 // DeleteUserStatus implements IamRouterInterface.
 func (router *IamRouter) DeleteUserStatus(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
-// GetUserStatus implements IamRouterInterface.
-func (router *IamRouter) GetUserStatus(ctx *gin.Context) {
 	panic("unimplemented")
 }
 

@@ -148,7 +148,10 @@ export default class Form<T> {
    }
 }
 
-export type IdOrData<T> = { id: string; data: undefined } | { id: undefined; data: T }
+export type IdOrData<T> =
+   | { id: string; data?: undefined }
+   | { id?: undefined; data: T }
+   | { id?: undefined; data: T & { id: string } } // sometimes the id is also present in the data
 export type FormConfig<T> = IdOrData<T> & {
    get: ApiGetById<T>
    t: string

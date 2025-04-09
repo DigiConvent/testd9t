@@ -5,7 +5,7 @@ import type { ApiGetById } from "@/api/core/endpoint"
 
 const get_permission_group_profile: ApiGetById<PermissionGroupProfile> = (pid: string) => {
    return api_get<PermissionGroupProfile>(
-      "/api/iam/permission-group/profile/" + pid,
+      "/api/iam/permission-group/" + pid + "/profile/",
       to_permission_group_profile,
    )
 }

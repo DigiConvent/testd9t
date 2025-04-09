@@ -20,6 +20,7 @@
             ></Button>
          </div>
       </Form>
+      <component :is="form.v_node"></component>
    </div>
 </template>
 
@@ -33,8 +34,26 @@ import FormTextInput from "@/components/form/text_input.vue"
 import FormTextarea from "@/components/form/textarea.vue"
 import FormSwitch from "@/components/form/switch.vue"
 import PermissionGroupPicker from "@/components/iam/permission_group/picker.vue"
+import { Form } from "@/components/form2/form"
+import type { UserStatusWrite } from "@/api/iam/user_status/types"
 
 const t = useI18n().t
+
+const form = new Form<UserStatusWrite>({
+   t: "iam.user_status.create",
+   save_endpoint: api.iam.user_status.create,
+   data: { id: "", name: "", abbr: "", description: "", archived: false, parent: "" },
+})
+   .add_text_input({ key: "name", label: "iam.user_status.new.name" })
+   .add_text_input({
+      key: "abbr",
+      label: "iam.user_status.new.abbr",
+   })
+   .add_text_input({ key: "description", label: "iam.user_status.new.description" })
+   .add_switch_input({
+      key: "archived",
+      label: "iam.user_status.new.archived",
+   })
 
 const loading = ref(false)
 const name = ref<string>("")

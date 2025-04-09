@@ -4,6 +4,7 @@ import { login } from "./login"
 import { permission } from "./permission"
 import { permission_group } from "./permission_group"
 import { user } from "./user"
+import { user_role } from "./user_role"
 import { user_status } from "./user_status"
 
 export const iam = {
@@ -11,6 +12,7 @@ export const iam = {
    login: login,
    permission_group: permission_group,
    permission: permission,
+   user_role: user_role,
    user_status: user_status,
    user: user,
 } satisfies ApiCollection

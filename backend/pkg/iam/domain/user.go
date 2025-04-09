@@ -13,9 +13,9 @@ type UserRead struct {
 }
 
 type UserWrite struct {
-	Emailaddress string         `json:"emailaddress" validate:"required,email"`
-	FirstName    string         `json:"first_name" validate:"required"`
-	LastName     string         `json:"last_name" validate:"required"`
+	Emailaddress string         `json:"emailaddress"`
+	FirstName    string         `json:"first_name"`
+	LastName     string         `json:"last_name"`
 	Extra        map[string]any `json:"-"`
 }
 
