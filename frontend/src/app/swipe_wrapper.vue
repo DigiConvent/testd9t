@@ -1,6 +1,5 @@
 <template>
-   <div class="app-container">
-      {{ swipe_position }} / {{ swipe_progress }}
+   <div class="app-container" style="height: 100vh; max-width: 100vw">
       <div
          v-if="swipe_direction == 'right' && swipe_position < 0"
          class="fixed top-[50%] z-10 rounded-full"
