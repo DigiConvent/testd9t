@@ -28,7 +28,8 @@ type UserRoleWrite struct {
 type AddUserRoleToUser struct {
 	UserID uuid.UUID `json:"user"`
 	RoleID uuid.UUID `json:"user_role"`
-	When   time.Time `json:"when"`
+	Start  time.Time `json:"start"`
+	End    time.Time `json:"end"`
 }
 
 type UserHasRoleFacade struct {
@@ -37,10 +38,16 @@ type UserHasRoleFacade struct {
 	Abbr string    `json:"abbr"`
 }
 
+type UserRoleFacade struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+}
+
 type UserHasRoleRead struct {
 	ID          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
 	Abbr        string    `json:"abbr"`
 	Start       time.Time `json:"start"`
+	End         time.Time `json:"end"`
 	Description string    `json:"description"`
 }

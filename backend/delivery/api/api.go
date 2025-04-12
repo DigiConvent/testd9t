@@ -57,7 +57,7 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 			userStatusRoutes.GET("/:id/", iam.RequiresPermission("iam.user-status.read"), iamRouter.GetUserStatus)
 			userStatusRoutes.POST("/", iam.RequiresPermission("iam.user-status.create"), iamRouter.CreateUserStatus)
 			userStatusRoutes.POST("/:id/", iam.RequiresPermission("iam.user-status.update"), iamRouter.UpdateUserStatus)
-			userStatusRoutes.POST("/:id/add-user/", iam.RequiresPermission("iam.user-status.add-user"), iamRouter.AddUserStatusUser)
+			userStatusRoutes.POST("/:id/add-user/", iam.RequiresPermission("iam.user-status.add-user"), iamRouter.AddUserToUserStatus)
 			userStatusRoutes.DELETE("/:id/delete/", iam.RequiresPermission("iam.user-status.delete"), iamRouter.DeleteUserStatus)
 		}
 
@@ -65,15 +65,17 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 		{
 			userRoleRoutes.GET("/", iam.RequiresPermission("iam.user-role.list"), iamRouter.ListUserRole)
 			userRoleRoutes.GET("/:id/", iam.RequiresPermission("iam.user-role.read"), iamRouter.GetUserRole)
+			userRoleRoutes.GET("/:id/profile/", iam.RequiresPermission("iam.user-role.read"), iamRouter.GetUserRoleProfile)
 			userRoleRoutes.POST("/", iam.RequiresPermission("iam.user-role.create"), iamRouter.CreateUserRole)
 			userRoleRoutes.POST("/:id/", iam.RequiresPermission("iam.user-role.update"), iamRouter.UpdateUserRole)
-			userRoleRoutes.POST("/:id/add-user/", iam.RequiresPermission("iam.user-role.add-user"), iamRouter.AddUserRoleUser)
+			userRoleRoutes.POST("/:id/add-user/", iam.RequiresPermission("iam.user-role.add-user"), iamRouter.AddUserToUserRole)
 			userRoleRoutes.DELETE("/:id/delete/", iam.RequiresPermission("iam.user-role.delete"), iamRouter.DeleteUserRole)
 		}
 
 		permissionRoutes := iamRoutes.Group("/permission")
 		{
 			permissionRoutes.GET("/", iam.RequiresPermission("iam.permission.list"), iamRouter.ListPermissions)
+			permissionRoutes.GET("/:name/profile/", iam.RequiresPermission("iam.permission.profile"), iamRouter.GetPermissionProfile)
 		}
 
 		permissionGroupRoutes := iamRoutes.Group("/permission-group")

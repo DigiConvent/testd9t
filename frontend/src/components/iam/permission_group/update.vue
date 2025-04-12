@@ -14,10 +14,10 @@
          v-model="pg.parent"
          label="iam.pg.fields"
          name="parent"
-         :discriminate_descendants="modelValue"
+         :discriminate_descendants="id()"
       ></PermissionGroupPicker>
       <PermissionPicker
-         v-model="pg.permissions"
+         v-model="permissions"
          :multiple="true"
          :preselected="inherited_permissions"
       ></PermissionPicker>
@@ -28,8 +28,7 @@
 
 <script lang="ts" setup>
 import { api } from "@/api"
-import type { PermissionGroupRead, PermissionGroupWrite } from "@/api/iam/permission_group/types"
-import { to_permission_group_write } from "@/api/iam/permission_group/utils"
+import type { PermissionGroupRead } from "@/api/iam/permission_group/types"
 import { ref, watch } from "vue"
 
 import FormTextInput from "@/components/form/text_input.vue"
@@ -37,17 +36,21 @@ import FormTextareaInput from "@/components/form/textarea.vue"
 import PermissionGroupPicker from "@/components/iam/permission_group/picker.vue"
 import PermissionPicker from "@/components/iam/permission/picker.vue"
 import { error } from "@/composables/toast"
+import type { IdOrData } from "@/components/form/form"
 
 const loading = ref(true)
 
-// eslint-disable-next-line vue/prop-name-casing
-const props = defineProps<{ modelValue: string }>()
+const props = defineProps<IdOrData<PermissionGroupRead>>()
+const id = () => {
+   return props.id || props.data!.id
+}
 
-const pg = ref<PermissionGroupWrite | null>(null)
+const pg = ref<PermissionGroupRead | null>(null)
+const permissions = ref<string[]>([])
 const emit = defineEmits(["updated"])
 
 const handle_submit = async () => {
-   ;(await api.iam.permission_group.update(props.modelValue, pg.value!)).fold(
+   ;(await api.iam.permission_group.update(id(), pg.value!)).fold(
       (err: string) => {
          error(err)
       },
@@ -60,13 +63,13 @@ const handle_submit = async () => {
 
 const load_permission_group = async () => {
    loading.value = true
-   ;(await api.iam.permission_group.get(props.modelValue)).fold(
+   ;(await api.iam.permission_group.get(id())).fold(
       (err: string) => {
          error(err)
       },
       (permission_group: PermissionGroupRead) => {
-         pg.value = to_permission_group_write(permission_group)
-         pg.value.permissions = permission_group.permissions.map((e) => e.name)
+         pg.value = permission_group
+         permissions.value = permission_group.permissions.map((e) => e.name)
          loading.value = false
       },
    )

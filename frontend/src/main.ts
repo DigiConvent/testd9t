@@ -5,6 +5,14 @@ import { createI18n } from "vue-i18n"
 import PrimeVue from "primevue/config"
 import Aura from "@primevue/themes/aura"
 
+declare global {
+   interface Window {
+      debug: boolean
+   }
+}
+
+window.debug = true
+
 import { library, config } from "@DigiConvent/ff/fontawesome-svg-core"
 import { FontAwesomeIcon, FontAwesomeLayers } from "@DigiConvent/ff/vue-fontawesome"
 import { fasds } from "@DigiConvent/ff/sharp-duotone-solid-svg-icons"
@@ -24,6 +32,8 @@ import {
    Button,
    Card,
    Checkbox,
+   Column,
+   DataTable,
    Dialog,
    Drawer,
    Fieldset,
@@ -46,6 +56,7 @@ import {
    Skeleton,
    Splitter,
    SplitterPanel,
+   Tag,
    Textarea,
    Timeline,
    ToastService,
@@ -89,6 +100,8 @@ app.component("AccordionContent", AccordionContent)
 app.component("Badge", Badge)
 app.component("Button", Button)
 app.component("Card", Card)
+app.component("Column", Column)
+app.component("DataTable", DataTable)
 app.component("Dialog", Dialog)
 app.component("Drawer", Drawer)
 app.component("Checkbox", Checkbox)
@@ -108,6 +121,7 @@ app.component("OrganizationChart", OrganizationChart)
 app.component("Popover", Popover)
 app.component("ProgressBar", ProgressBar)
 app.component("ProgressSpinner", ProgressSpinner)
+app.component("Tag", Tag)
 app.component("Textarea", Textarea)
 app.component("Timeline", Timeline)
 app.component("Toast", Toast)

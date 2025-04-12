@@ -12,7 +12,10 @@
                <Timeline :value="ancestors">
                   <template #content="slotProps">
                      <router-link
-                        :to="{ name: 'iam.pg.profile', params: { id: slotProps.item.id } }"
+                        :to="{
+                           name: 'admin.iam.permission_group.profile',
+                           params: { id: slotProps.item.id },
+                        }"
                         >{{ slotProps.item.name }}</router-link
                      >
                   </template>
@@ -39,16 +42,21 @@
             </template>
          </Card>
          <Card>
-            <template #title>{{ $t("iam.pg.profile.properties") }}</template>
+            <template #title
+               >{{ $t("iam.pg.profile.properties") }}
+               <router-link
+                  v-permission="'iam.permission_group.update'"
+                  :to="{
+                     name: 'admin.iam.permission_group.update',
+                     params: { id: profile!.permission_group.id },
+                  }"
+                  ><Fa icon="pencil" /></router-link
+            ></template>
             <template #content>
                <ReadPermissionGroup
                   v-permission="'iam.permission_group.read'"
                   :data="profile!.permission_group"
                />
-               <UpdatePermissionGroup
-                  v-model="profile!.permission_group.id"
-                  v-permission="'iam.permission_group.read'"
-               ></UpdatePermissionGroup>
             </template>
          </Card>
          <Card>
@@ -73,7 +81,6 @@ import type {
 } from "@/api/iam/permission_group/types"
 import { error } from "@/composables/toast"
 import { computed, ref } from "vue"
-import UpdatePermissionGroup from "@/components/iam/permission_group/update.vue"
 import UserFacades from "@/components/iam/user/facade.vue"
 import ReadPermissionGroup from "./read.vue"
 

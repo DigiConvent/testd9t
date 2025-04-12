@@ -8,7 +8,7 @@ import (
 
 func (r *IAMRepository) ListPermissionGroups() ([]*iam_domain.PermissionGroupFacade, core.Status) {
 	var permissionGroups []*iam_domain.PermissionGroupFacade
-	rows, err := r.db.Query(`select id, name, abbr, is_group, is_node, parent, "generated" from permission_groups`)
+	rows, err := r.db.Query(`select id, name, abbr, is_group, is_node, meta, parent, "generated" from permission_groups`)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
@@ -26,8 +26,9 @@ func (r *IAMRepository) ListPermissionGroups() ([]*iam_domain.PermissionGroupFac
 			&permissionGroup.Abbr,
 			&permissionGroup.IsGroup,
 			&permissionGroup.IsNode,
-			&parentId, // there is an entry in the database (super) where the id is 00000000-0000-0000-0000-000000000000 which equals to uuid.Nil
-			// if there is no parent id, the parent id will be nil and thus implies that the group inherits all the permissions from super
+			&permissionGroup.Meta,
+			&parentId, // there is an entry in the database (admin) where the id is 00000000-0000-0000-0000-000000000000 which equals to uuid.Nil
+			// if there is no parent id, the parent id will be nil and thus implies that the group inherits all the permissions from admin
 			&permissionGroup.Generated,
 		)
 

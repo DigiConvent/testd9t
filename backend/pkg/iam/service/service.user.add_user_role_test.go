@@ -48,11 +48,35 @@ func TestUserAddUserRole(t *testing.T) {
 	status = iamService.AddUserRole(&iam_domain.AddUserRoleToUser{
 		UserID: *id,
 		RoleID: *currentUserRoleId,
-		When:   time.Now().Add(-5 * time.Hour),
+		Start:  time.Now().Add(-2 * time.Hour),
+		End:    time.Now().Add(2 * time.Hour),
 	})
 
 	if status.Err() {
 		t.Fatal(status.Message)
+	}
+
+	// attempt to add the same role again but with overlapping from the previous one
+	status = iamService.AddUserRole(&iam_domain.AddUserRoleToUser{
+		UserID: *id,
+		RoleID: *currentUserRoleId,
+		Start:  time.Now(),
+		End:    time.Now().Add(4 * time.Hour),
+	})
+
+	if !status.Err() {
+		t.Fatal("expected an error, instead got", status.Code)
+	}
+
+	status = iamService.AddUserRole(&iam_domain.AddUserRoleToUser{
+		UserID: *id,
+		RoleID: *currentUserRoleId,
+		Start:  time.Now().Add(-3 * time.Hour),
+		End:    time.Now(),
+	})
+
+	if !status.Err() {
+		t.Fatal("expected an error")
 	}
 
 	testFutureUserRole := &iam_domain.UserRoleWrite{
@@ -71,7 +95,7 @@ func TestUserAddUserRole(t *testing.T) {
 	status = iamService.AddUserRole(&iam_domain.AddUserRoleToUser{
 		UserID: *id,
 		RoleID: *futureUserRoleId,
-		When:   time.Now().Add(5 * time.Hour),
+		Start:  time.Now().Add(5 * time.Hour),
 	})
 
 	if status.Err() {
@@ -102,19 +126,7 @@ func TestUserAddUserRole(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	userProfile, status := iamService.GetUserProfile(id)
-
-	if status.Err() {
-		t.Fatal(status.Message)
-	}
-	for _, group := range userProfile.Groups {
-		t.Log(group.Name == currentPG.PermissionGroup.Name)
-	}
-
-	t.Log(currentPG.PermissionGroup.Name)
-
 	if len(currentPG.Members) != 1 {
-		t.Log(currentPG.Members)
 		t.Fatalf("Expected 1 user, got %d", len(currentPG.Members))
 	}
 

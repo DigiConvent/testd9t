@@ -61,4 +61,16 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 		t.Log("Cannot add user to permission group")
 		t.Fatal(status.Message)
 	}
+
+	// get profile and count members
+	rootId := uuid.MustParse(getRootPermissionGroup())
+	rootProfile, _ := testService.GetPermissionGroupProfile(&rootId)
+
+	if rootProfile == nil {
+		t.Fatal("Expected a result")
+	}
+
+	if len(rootProfile.Members) != 1 {
+		t.Fatal("Expected 1 member, instead I got ", len(rootProfile.Members))
+	}
 }

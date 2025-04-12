@@ -14,15 +14,6 @@ export type UserUpdate = {
    last_name: string
 }
 
-export type UserIdOrUserRead =
-   | {
-        id: undefined
-        data: UserRead
-     }
-   | {
-        id: string
-        data: undefined
-     }
 export type UserRead = {
    id: string
    emailaddress: string
@@ -33,10 +24,12 @@ export type UserRead = {
 
 export type UserFacade = {
    id: string
-   name: string
+   first_name: string
+   last_name: string
    implied: boolean
    status_id: string
    status_name: string
+   roles: { id: string; name: string }[]
 }
 
 export type UserProfile = {

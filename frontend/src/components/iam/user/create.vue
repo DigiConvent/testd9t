@@ -5,9 +5,9 @@
       @submit="handle_submit"
    >
       <h2 class="text-lg">{{ t("iam.user.create.title") }}</h2>
-      <FormTextInput v-model="email" label="iam.user.create" name="email" />
-      <FormTextInput v-model="first_name" label="iam.user.create" name="first_name" />
-      <FormTextInput v-model="last_name" label="iam.user.create" name="last_name" />
+      <FormTextInput v-model="email" label="iam.user.fields" name="email" />
+      <FormTextInput v-model="first_name" label="iam.user.fields" name="first_name" />
+      <FormTextInput v-model="last_name" label="iam.user.fields" name="last_name" />
       <div class="grid grid-cols-2 gap-4">
          <FloatLabel variant="in">
             <UserStatusPicker id="user_status" v-model="user_status"></UserStatusPicker>
@@ -15,7 +15,7 @@
          </FloatLabel>
          <FormMaskInput
             v-model="user_status_start"
-            label="iam.user.create"
+            label="iam.user.fields"
             name="user_status_start"
             mask="99/99/9999"
             slot-char="DD/MM/YYYY"
@@ -95,7 +95,7 @@ const handle_submit = async () => {
             error(l)
          },
          (user_id: string) => {
-            router.replace({ name: "iam.user.profile", params: { id: user_id } })
+            router.replace({ name: "admin.iam.user.profile", params: { id: user_id } })
             success(t("iam.user.create.success"), "")
          },
       )

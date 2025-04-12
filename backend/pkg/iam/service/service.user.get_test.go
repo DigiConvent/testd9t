@@ -103,7 +103,7 @@ func TestGetUser(t *testing.T) {
 		t.Fatal("User is nil")
 	}
 
-	if profile.Permissions[0].Name != "super" {
-		t.Errorf("Permission is not super")
+	if profile.Permissions[0].Name != "admin" {
+		t.Errorf("Permission is not admin")
 	}
 }

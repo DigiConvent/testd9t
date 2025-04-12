@@ -16,7 +16,7 @@ func (s *IAMService) CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite)
 	}
 
 	if arg.Parent == uuid.Nil.String() {
-		return nil, core.BadRequestError("The super group cannot have descendants")
+		return nil, core.BadRequestError("The admin role cannot have descendants")
 	}
 
 	id, status := s.repository.CreatePermissionGroup(arg)

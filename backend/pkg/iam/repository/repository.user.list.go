@@ -1,6 +1,8 @@
 package iam_repository
 
 import (
+	"encoding/json"
+
 	"github.com/DigiConvent/testd9t/core"
 	"github.com/DigiConvent/testd9t/core/pagination"
 	core_utils "github.com/DigiConvent/testd9t/core/utils"
@@ -11,7 +13,7 @@ var allowedSortBy = []string{"last_name", "first_name", "emailaddress"}
 
 func (r *IAMRepository) ListUsers(filter *iam_domain.UserFilterSort) (*pagination.Page[*iam_domain.UserFacade], core.Status) {
 	sortClause := ""
-	if filter != nil && core_utils.Contains[string](allowedSortBy, filter.Sort.Field) {
+	if filter != nil && core_utils.Contains(allowedSortBy, filter.Sort.Field) {
 		sortClause = "order by " + filter.Sort.Field
 		if !filter.Sort.Asc {
 			sortClause += " desc"
@@ -23,7 +25,7 @@ func (r *IAMRepository) ListUsers(filter *iam_domain.UserFilterSort) (*paginatio
 	filterClause := ""
 
 	users := []*iam_domain.UserFacade{}
-	rows, err := r.db.Query("select id, name from user_facades " + sortClause)
+	rows, err := r.db.Query("select id, first_name, last_name, status_id, status_name, roles from user_facades " + sortClause)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
@@ -34,9 +36,15 @@ func (r *IAMRepository) ListUsers(filter *iam_domain.UserFilterSort) (*paginatio
 	for rows.Next() {
 		user := iam_domain.UserFacade{}
 
-		err := rows.Scan(&user.ID, &user.Name)
+		roles := ""
+		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.StatusID, &user.StatusName, &roles)
+
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
+		}
+
+		if roles != "" {
+			json.Unmarshal([]byte(roles), &user.Roles)
 		}
 
 		users = append(users, &user)

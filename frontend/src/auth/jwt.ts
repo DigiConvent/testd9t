@@ -89,8 +89,8 @@ export default class JwtAuthenticator {
       return null
    }
 
-   public has_permission(permission: Exclude<string, "super">): boolean {
-      if (this.permissions.value.includes("super")) {
+   public has_permission(permission: Exclude<string, "admin">): boolean {
+      if (this.permissions.value.includes("admin")) {
          return true
       }
       // maybe there's a permission that has the prefix of permission

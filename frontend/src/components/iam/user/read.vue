@@ -10,7 +10,7 @@
          <router-link
             v-permission="'iam.user.write'"
             v-permission.except="is_loggedin_user"
-            :to="{ name: 'iam.user.update', params: { id: user_read.id } }"
+            :to="{ name: 'admin.iam.user.update', params: { id: user_read.id } }"
             outlined
             ><Fa icon="pencil"
          /></router-link>
@@ -36,12 +36,13 @@
 
 <script lang="ts" setup>
 import { api } from "@/api"
-import type { UserIdOrUserRead, UserRead } from "@/api/iam/user/types"
+import type { UserRead } from "@/api/iam/user/types"
 import JwtAuthenticator from "@/auth/jwt"
+import type { IdOrData } from "@/components/form/form"
 import { error } from "@/composables/toast"
 import { computed, ref } from "vue"
 
-const props = defineProps<UserIdOrUserRead>()
+const props = defineProps<IdOrData<UserRead>>()
 const loading = ref(true)
 const user_read = ref<UserRead | null>(null)
 const is_loggedin_user = computed(() => {

@@ -1,8 +1,7 @@
 <template>
    <div class="p-4">
-      iam
       <router-view v-slot="{ Component, route }">
-         <PermissionGroupList v-if="route.name == 'iam'"></PermissionGroupList>
+         <PermissionGroupList v-if="route.name == 'admin.iam'"></PermissionGroupList>
          <component :is="Component" :key="route.path" />
       </router-view>
    </div>

@@ -1,6 +1,17 @@
+import type { PermissionGroupFacade } from "../permission_group/types"
+import type { UserFacade } from "../user/types"
+
 export type PermissionFacade = {
    name: string
    implied: boolean
+}
+
+export type PermissionRead = {
+   name: string
+   description: string
+   meta: string
+   generated: boolean
+   archived: boolean
 }
 
 export class PermissionTree<T extends { name: string }> {
@@ -127,4 +138,10 @@ export function to_permission_tree(
    }
 
    return permission_tree
+}
+
+export type PermissionProfile = {
+   permission: PermissionRead
+   permission_groups: PermissionGroupFacade[]
+   users: UserFacade[]
 }

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
+import generate_routes from "./generate"
 
 const router = createRouter({
    history: createWebHistory(),
@@ -22,76 +23,46 @@ const router = createRouter({
                name: "connect-telegram-user",
                component: () => import("../views/auth/connect_telegram_user.vue"),
             },
-            {
-               path: "admin",
-               name: "admin",
-               component: () => import("../views/admin/admin.vue"),
-               children: [
-                  {
-                     path: "iam",
-                     name: "iam",
-                     component: () => import("../views/admin/iam/iam.vue"),
-                     children: [
-                        {
-                           name: "iam.user",
-                           path: "users",
-                           children: [
-                              {
-                                 name: "iam.user.list",
-                                 path: "",
-                                 component: () => import("../views/admin/iam/user/list.vue"),
-                              },
-                              {
-                                 path: ":id",
-                                 name: "iam.user.profile",
-                                 component: () => import("../views/admin/iam/user/profile.vue"),
-                                 children: [
-                                    {
-                                       path: "create",
-                                       component: () => import("../components/iam/user/create.vue"),
-                                    },
-                                 ],
-                              },
-                              {
-                                 name: "iam.user.create",
-                                 path: "create",
-                                 component: () => import("../components/iam/user/create.vue"),
-                              },
-                              {
-                                 name: "iam.user.update",
-                                 path: ":id/update",
-                                 component: () => import("../components/iam/user/update.vue"),
-                              },
-                           ],
-                        },
-                        {
-                           path: "user-status",
-                           name: "iam.user_status",
-                           children: [
-                              {
-                                 name: "iam.user_status.create",
-                                 path: "new",
-                                 component: () =>
-                                    import("../components/iam/user_status/create.vue"),
-                              },
-                           ],
-                        },
-                        {
-                           path: "permission-group/:id",
-                           name: "iam.pg.profile",
-                           component: () =>
-                              import("../views/admin/iam/permission_group/profile.vue"),
-                        },
+            generate_routes([], {
+               admin: {
+                  iam: {
+                     user: [
+                        "create",
+                        "list",
+                        ":id/read",
+                        ":id/update",
+                        ":id/delete",
+                        ":id/profile",
+                     ],
+                     permission: [":name/profile"],
+                     permission_group: [
+                        "create",
+                        "list",
+                        ":id/read",
+                        ":id/update",
+                        ":id/delete",
+                        ":id/profile",
+                     ],
+                     user_role: [
+                        "create",
+                        "list",
+                        ":id/read",
+                        ":id/update",
+                        ":id/delete",
+                        ":id/profile",
+                     ],
+                     user_status: [
+                        "create",
+                        "list",
+                        ":id/read",
+                        ":id/update",
+                        ":id/delete",
+                        ":id/profile",
                      ],
                   },
-                  {
-                     path: "sys",
-                     name: "sys",
-                     component: () => import("../views/admin/sys/sys.vue"),
-                     children: [],
-                  },
-               ],
-            },
+                  sys: {},
+               },
+            })[0],
             {
                path: "user",
                name: "user",

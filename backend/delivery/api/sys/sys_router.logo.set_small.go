@@ -1,7 +1,6 @@
 package sys_router
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +20,6 @@ func (r *SysRouter) SetSmallLogo(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(err)
 	c.JSON(status.Code, gin.H{
 		"status": status.Message,
 	})

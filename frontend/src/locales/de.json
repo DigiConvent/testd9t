@@ -26,20 +26,14 @@
    "iam": {
       "p": {
          "show_more": "mehr anzeigen",
-         "show_fewer": "weniger anzeigen"
-      },
-      "us": {
-         "list": {
-            "title": "Mitgliedschaften"
-         }
+         "show_fewer": "weniger anzeigen",
+         "inherited": "vererbt"
       },
       "pg": {
          "read": {
             "title": "Gruppe ansehen"
          },
-         "list": {
-            "title": "Gruppen"
-         },
+         "list": {},
          "update": {
             "title": "Gruppe aktualisieren",
             "submit": "Speichern"
@@ -99,12 +93,18 @@
          }
       },
       "user": {
-         "create": {
-            "title": "Nutzer anlegen",
+         "fields": {
             "email": "E-Mailadresse",
             "first_name": "Vorname",
             "last_name": "Nachname",
-            "user_status_start": "Seit/Ab",
+            "password": "Kennwort",
+            "user_status": "Mitgliedsstatus",
+            "user_role": "Amt",
+            "roles": "Ämter",
+            "user_status_start": "seit/ab"
+         },
+         "create": {
+            "title": "Nutzer anlegen",
             "submit": "Einladen",
             "success": "Benutzer erfolgreich hinzugefügt"
          },
@@ -118,7 +118,6 @@
          "set_password": {
             "title": "Kennwort setzen",
             "submit": "Setzen",
-            "password": "Kennwort",
             "success": "Kennwort erfolgreich gesetzt."
          },
          "enabled": "Konto ist aktiviert",

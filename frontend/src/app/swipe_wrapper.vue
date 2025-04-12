@@ -46,7 +46,7 @@
    </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from "vue"
 import { useSwipe } from "@vueuse/core"
 import { useRouter } from "vue-router"
@@ -55,7 +55,7 @@ const router = useRouter()
 const el = ref(null)
 const is_horizontal_swipe = ref(false)
 const initial_touch = ref({ x: 0, y: 0 })
-const swipe_direction = ref(null | "left" | "right")
+const swipe_direction = ref<null | "left" | "right">()
 const direction_locked = ref(false)
 
 const can_go_forward = computed(() => {

@@ -61,8 +61,9 @@ watch(
 )
 
 function get_icon(d: PermissionGroupFacade): string {
-   if (d.is_group) return "users"
-   if (d.is_node) return "user-tag"
+   if (d.meta == null || d.meta == "") return "folders"
+   if (d.meta == "role") return "user-shield"
+   if (d.meta == "status") return "user-tag"
    return "folders"
 }
 </script>

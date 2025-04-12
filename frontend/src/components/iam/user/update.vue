@@ -20,12 +20,13 @@
 import { useI18n } from "vue-i18n"
 import FormTextInput from "@/components/form/text_input.vue"
 
-import type { UserIdOrUserRead, UserRead } from "@/api/iam/user/types"
+import type { UserRead } from "@/api/iam/user/types"
 import { api } from "@/api"
 import { error } from "@/composables/toast"
 import { ref } from "vue"
+import type { IdOrData } from "@/components/form/form"
 
-const props = defineProps<UserIdOrUserRead>()
+const props = defineProps<IdOrData<UserRead>>()
 
 const t = useI18n().t
 

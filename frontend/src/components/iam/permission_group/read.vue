@@ -14,12 +14,11 @@
             <td>Description</td>
             <td>{{ permission_group.description }}</td>
          </tr>
-         <tr>
-            <td>Parent</td>
-            <td>{{ permission_group.parent }}</td>
+         <tr v-if="permission_group.meta != null">
+            <td>Type</td>
+            <td>{{ permission_group.meta }}</td>
          </tr>
       </table>
-      {{ JSON.stringify(permission_group, null, 3) }}
    </div>
 </template>
 

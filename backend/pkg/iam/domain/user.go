@@ -24,13 +24,13 @@ type UserSetEnabled struct {
 }
 
 type UserFacade struct {
-	ID         uuid.UUID `json:"id"`
-	Name       string    `json:"name"`
-	Implied    bool      `json:"implied"`
-	StatusID   uuid.UUID `json:"status_id"`
-	StatusName string    `json:"status_name"`
-	RoleID     uuid.UUID `json:"role_id"`
-	RoleName   string    `json:"role_name"`
+	ID         uuid.UUID         `json:"id"`
+	FirstName  string            `json:"first_name"`
+	LastName   string            `json:"last_name"`
+	StatusID   *uuid.UUID        `json:"status_id"`
+	StatusName *string           `json:"status_name"`
+	Roles      []*UserRoleFacade `json:"roles"`
+	Implied    bool              `json:"implied"`
 }
 
 type UserProfile struct {

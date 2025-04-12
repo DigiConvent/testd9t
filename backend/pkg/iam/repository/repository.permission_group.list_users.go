@@ -13,7 +13,7 @@ func (r *IAMRepository) ListGroupUsers(groupId *uuid.UUID) ([]*iam_domain.UserFa
 
 	var users = make([]*iam_domain.UserFacade, 0)
 
-	rows, err := r.db.Query(`select "user" as id, name, implied from permission_group_has_users where root = ?`, groupId.String())
+	rows, err := r.db.Query(`select "user" as id, first_name, last_name, implied from permission_group_has_users where root = ?`, groupId.String())
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
@@ -22,7 +22,7 @@ func (r *IAMRepository) ListGroupUsers(groupId *uuid.UUID) ([]*iam_domain.UserFa
 
 	for rows.Next() {
 		var user iam_domain.UserFacade
-		err := rows.Scan(&user.ID, &user.Name, &user.Implied)
+		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Implied)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
 		}

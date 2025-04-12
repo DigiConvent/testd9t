@@ -15,6 +15,7 @@ export const to_permission_group_read = (data: any): PermissionGroupRead => {
       parent: data.parent,
       is_group: data.is_group,
       is_node: data.is_node,
+      meta: data.meta,
       generated: data.generated,
       permissions: data.permissions,
    }
@@ -44,6 +45,7 @@ export function to_permission_group_facade(data: any): PermissionGroupFacade {
       abbr: data.abbr,
       is_group: data.is_group,
       is_node: data.is_node,
+      meta: data.meta,
       implied: data.implied,
       parent: data.parent,
       generated: data.generated,

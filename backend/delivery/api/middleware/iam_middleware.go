@@ -41,7 +41,7 @@ func (i *IamMiddleware) RequiresAuthentication() gin.HandlerFunc {
 
 func (i *IamMiddleware) RequiresPermission(permissions ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		permissions = append(permissions, "super")
+		permissions = append(permissions, "admin")
 		rawUserId := c.GetString(ContextField)
 		userId, err := uuid.Parse(rawUserId)
 

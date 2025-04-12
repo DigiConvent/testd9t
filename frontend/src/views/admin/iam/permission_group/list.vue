@@ -18,7 +18,7 @@
          position="top"
          @update:visible="edit_pg = null"
       >
-         <UpdatePermissionGroup v-model="edit_pg" @updated="handle_updated"></UpdatePermissionGroup>
+         <UpdatePermissionGroup :data="edit_pg" @updated="handle_updated"></UpdatePermissionGroup>
       </Drawer>
       <Drawer
          :visible="add_pg_to_pg"
@@ -54,7 +54,6 @@ import JwtAuthenticator from "@/auth/jwt"
 import { useI18n } from "vue-i18n"
 import router from "@/router"
 import type { PermissionGroupFacade } from "@/api/iam/permission_group/types"
-import { warn } from "@/composables/toast"
 
 const pg = ref<string>()
 
@@ -89,27 +88,26 @@ const edit_pg = ref()
 
 const generate_menu_items = (pg: PermissionGroupFacade) => {
    menu_items.value = []
-   if (auth.has_permission("iam.permission_group.read"))
-      menu_items.value.push({
-         label: t("iam.pg.read.title"),
-         icon: "eye",
-         command: () => {
-            console.log(pg)
-            router.push({ name: "iam.pg.profile", params: { id: pg.id } })
-         },
-      })
-   if (auth.has_permission("iam.permission_group.create"))
-      menu_items.value.push({
-         label: t("iam.pg.create.title"),
-         icon: "plus",
-         command: () => {
-            if (pg.is_group) {
-               warn("this group can only contain members and not other sub groups")
-            } else {
-               add_pg_to_pg.value = pg.id
-            }
-         },
-      })
+   if (pg.meta == "role") {
+      generate_role_menu(pg)
+   } else if (pg.meta == "status") {
+      generate_status_menu(pg)
+   } else {
+      generate_group_menu(pg)
+   }
+}
+
+const refresh = ref(0)
+
+function generate_group_menu(pg: PermissionGroupFacade) {
+   menu_items.value = []
+   menu_items.value.push({
+      label: t("iam.pg.read.title"),
+      icon: "eye",
+      command: () => {
+         router.push({ name: "admin.iam.permission_group.profile", params: { id: pg.id } })
+      },
+   })
    if (auth.has_permission("iam.permission_group.update"))
       menu_items.value.push({
          label: t("iam.pg.update.title"),
@@ -118,26 +116,41 @@ const generate_menu_items = (pg: PermissionGroupFacade) => {
             edit_pg.value = pg.id
          },
       })
-   if (auth.has_permission("iam.user_status.create")) {
-      menu_items.value.push({
-         label: t("iam.user_status.create.title"),
-         icon: "plus",
-         command: () => {
-            if (pg.is_group) {
-               warn("this group can only contain members and not memberships")
-            } else {
-               add_us_to_pg.value = pg.id
-            }
-         },
-      })
-   }
-   // if (auth.has_permission("iam.permission_group.delete"))
-   //    menu_items.value.push({
-   //       label: t("iam.pg.delete.title"),
-   //       icon: "trash",
-   //       command: () => {},
-   //    })
+   menu_items.value.push({
+      label: t("iam.pg.create.title"),
+      icon: "plus",
+      command: () => {
+         add_pg_to_pg.value = pg.id
+      },
+   })
+   menu_items.value.push({
+      label: t("iam.user_status.create.title"),
+      icon: "plus",
+      command: () => {
+         add_us_to_pg.value = pg.id
+      },
+   })
 }
 
-const refresh = ref(0)
+function generate_role_menu(pg: PermissionGroupFacade) {
+   menu_items.value = []
+   menu_items.value.push({
+      label: t("iam.pg.role.title"),
+      icon: "magnifying-glass",
+      command: () => {
+         router.push({ name: "admin.iam.user_role.profile", params: { id: pg.id } })
+      },
+   })
+}
+
+function generate_status_menu(pg: PermissionGroupFacade) {
+   menu_items.value = []
+   menu_items.value.push({
+      label: t("iam.pg.status.title"),
+      icon: "magnifying-glass",
+      command: () => {
+         router.push({ name: "admin.iam.user_status.profile", params: { id: pg.id } })
+      },
+   })
+}
 </script>

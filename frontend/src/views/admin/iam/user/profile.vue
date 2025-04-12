@@ -1,5 +1,4 @@
 <template>
-   <!-- this is external profile watching -->
    <UserProfileComponent :id="id" />
 </template>
 

@@ -44,6 +44,7 @@ type IAMServiceInterface interface {
 	ListPermissions() ([]*iam_domain.PermissionRead, *core.Status)
 	CreatePermission(permission *iam_domain.PermissionWrite) *core.Status
 	DeletePermission(name string) *core.Status
+	GetPermissionProfile(name string) (*iam_domain.PermissionProfile, *core.Status)
 
 	ListUserPermissions(id *uuid.UUID) ([]*iam_domain.PermissionFacade, *core.Status)
 	UserHasPermission(id *uuid.UUID, permission string) bool
@@ -61,6 +62,29 @@ type IAMServiceInterface interface {
 
 type IAMService struct {
 	repository iam_repository.IAMRepositoryInterface
+}
+
+func (service *IAMService) GetPermissionProfile(name string) (*iam_domain.PermissionProfile, *core.Status) {
+	permission, status := service.repository.GetPermission(name)
+	if status.Err() {
+		return nil, &status
+	}
+
+	permisionGroups, status := service.repository.ListPermissionPermissionGroups(name)
+	if status.Err() {
+		return nil, &status
+	}
+
+	permissionUsers, status := service.repository.ListPermissionUsers(name)
+	if status.Err() {
+		return nil, &status
+	}
+
+	return &iam_domain.PermissionProfile{
+		Permission:       permission,
+		PermissionGroups: permisionGroups,
+		Users:            permissionUsers,
+	}, core.StatusSuccess()
 }
 
 func NewIamService(userRepository iam_repository.IAMRepositoryInterface) IAMServiceInterface {

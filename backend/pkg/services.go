@@ -77,7 +77,7 @@ func DoFirstTimeStuff(services *Services) {
 
 	status = services.IamService.SetEnabled(&id, true)
 	if status.Err() {
-		log.Error("Could not enable super user: " + status.Message)
+		log.Error("Could not enable admin user: " + status.Message)
 	}
 
 	status = services.IamService.UpdateUser(&id, &iam_domain.UserWrite{
@@ -87,12 +87,12 @@ func DoFirstTimeStuff(services *Services) {
 	})
 
 	if status.Err() {
-		log.Error("Could not update super user: " + status.Message)
+		log.Error("Could not update admin user: " + status.Message)
 	}
 
 	status = services.IamService.SetUserPassword(&id, os.Getenv(constants.MASTER_PASSWORD))
 	if status.Err() {
-		log.Error("Could not set super user password: " + status.Message)
+		log.Error("Could not set admin user password: " + status.Message)
 	}
 
 	// create a root permission_group
@@ -114,6 +114,6 @@ func DoFirstTimeStuff(services *Services) {
 	})
 
 	if status.Err() {
-		log.Error("Could not set super user as root permission group: " + status.Message)
+		log.Error("Could not set admin user as root permission group: " + status.Message)
 	}
 }

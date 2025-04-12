@@ -2,7 +2,7 @@
    <div>
       <ProgressBar v-if="loading" mode="indeterminate" />
       <div v-else-if="system_status" :permission="'sys.status.read'">
-         <Card class="p-4">
+         <Card>
             <template #title>
                <h2 class="text-2xl mb-4">System</h2>
                <div>{{ $t("sys.built_at", { date: system_status.version.built_at }) }}</div>

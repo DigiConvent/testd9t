@@ -15,7 +15,7 @@ func (router *IamRouter) SetPasswordUser(ctx *gin.Context) {
 
 	var rawId string
 	permission := ctx.GetString("permission")
-	if ctx.Param("id") != "" && (permission == "super" || permission == "iam.user.set_password") {
+	if ctx.Param("id") != "" && (permission == "admin" || permission == "iam.user.set_password") {
 		rawId = ctx.Param("id")
 	} else {
 		id := ctx.GetString(api_middleware.ContextField)

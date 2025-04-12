@@ -10,19 +10,20 @@
             </router-link>
          </template>
          <template #item="{ item, props, hasSubmenu, root }">
-            <a v-if="item.hasSubmenu" v-bind="props.action">{{ item.label }}</a>
+            <a v-if="item.hasSubmenu" v-bind="props.action">
+               <Fa :icon="item.icon" class="fa-fw" />
+               {{ item.label }}
+            </a>
             <router-link
                v-else
                :to="{ name: item.route, params: {} }"
                v-bind="props.action"
                class="p-0"
             >
-               <span>{{ item.label }}</span>
-               <span
-                  v-if="item.shortcut"
-                  class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
-                  >{{ item.shortcut }}</span
-               >
+               <span>
+                  <Fa :icon="item.icon" class="fa-fw" />
+                  {{ item.label }}
+               </span>
                <Fa v-if="hasSubmenu" :icon="`${root ? 'caret-down' : 'caret-up'}`" />
             </router-link>
          </template>
@@ -82,20 +83,21 @@ function generate_menu_items() {
    if (auth.has_permission("iam")) {
       admin_items.value.push({
          label: t("iam.title"),
-         route: "iam",
+         route: "admin.iam",
+         icon: "shield",
+      })
+
+      admin_items.value.push({
+         label: t("iam.user.list.title"),
+         route: "admin.iam.user.list",
+         icon: "users",
       })
    }
    if (auth.has_permission("sys")) {
       admin_items.value.push({
          label: t("sys.title"),
-         route: "sys",
-      })
-   }
-
-   if (auth.has_permission("iam.user.list")) {
-      items.value.push({
-         label: t("iam.user.list.title"),
-         route: "iam.user.list",
+         route: "admin.sys",
+         icon: "hard-drive",
       })
    }
 
@@ -104,6 +106,7 @@ function generate_menu_items() {
          label: t("admin.title"),
          route: "",
          items: admin_items.value,
+         icon: "cogs",
       })
    }
 }

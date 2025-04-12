@@ -10,7 +10,7 @@ func (router *IamRouter) ListPermissionsUser(ctx *gin.Context) {
 	var rawId string
 	permission := ctx.GetString("permission")
 
-	if ctx.Param("id") != "" && (permission == "super" || permission == "iam.user.get" || permission == "iam.user.get."+ctx.Param("id")) {
+	if ctx.Param("id") != "" && (permission == "admin" || permission == "iam.user.get" || permission == "iam.user.get."+ctx.Param("id")) {
 		rawId = ctx.Param("id")
 	} else {
 		id := ctx.GetString(api_middleware.ContextField)

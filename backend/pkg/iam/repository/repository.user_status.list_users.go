@@ -9,7 +9,8 @@ import (
 func (r *IAMRepository) ListUserStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserFacade, core.Status) {
 	rows, err := r.db.Query(`select 
 	u.id, 
-	u.name 
+	u.first_name,
+	u.last_name
 	from user_became_status ubs
 	join user_facades u on ubs.user = u.id 
 	where ubs.status = ?`, arg.String())
@@ -22,7 +23,7 @@ func (r *IAMRepository) ListUserStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserF
 
 	for rows.Next() {
 		var user iam_domain.UserFacade
-		err := rows.Scan(&user.ID, &user.Name)
+		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
 		}

@@ -10,7 +10,7 @@ func (r *IAMRepository) SetParentPermissionGroup(arg *iam_domain.PermissionGroup
 	if arg.Parent == nil || arg.Parent.String() == uuid.Nil.String() {
 		arg.Parent = nil
 	}
-	if arg.ID == nil || arg.ID.String() == uuid.Nil.String() {
+	if arg.ID == nil {
 		return *core.UnprocessableContentError("permission group ID is required")
 	}
 

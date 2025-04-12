@@ -1,7 +1,7 @@
 <template>
    <div>
       <Form class="flex flex-col gap-4">
-         <FormTextInput v-model="password" label="iam.user.set_password" name="password" />
+         <FormTextInput v-model="password" label="iam.user.fields" name="password" />
          <Button @click="handle_submit">
             {{ $t("iam.user.set_password.submit") }}
          </Button>

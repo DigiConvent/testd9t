@@ -9,7 +9,7 @@ import (
 
 func (s *IAMService) UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.PermissionGroupWrite) *core.Status {
 	if arg.Parent == uuid.Nil.String() {
-		return core.BadRequestError("The super group cannot have descendants")
+		return core.BadRequestError("The admin role cannot have descendants")
 	}
 
 	currentPermissions, _ := s.repository.ListPermissionGroupPermissions(id)

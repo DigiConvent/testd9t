@@ -6,7 +6,7 @@ import (
 )
 
 func (r *IAMRepository) AddUserRoleToUser(d *iam_domain.AddUserRoleToUser) core.Status {
-	_, err := r.db.Exec(`insert into user_became_role ("user", "role", start) values (?, ?, ?)`, d.UserID, d.RoleID, d.When)
+	_, err := r.db.Exec(`insert into user_became_role ("user", "role", "start", "end") values (?, ?, ?, ?)`, d.UserID, d.RoleID, d.Start, d.End)
 
 	if err != nil {
 		return *core.InternalError(err.Error())

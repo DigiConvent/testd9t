@@ -11,8 +11,8 @@ type PermissionGroupWrite struct {
 	Abbr        string   `json:"abbr"`
 	Description string   `json:"description"`
 	Parent      string   `json:"parent"`
-	IsGroup     bool     `json:"is_group"` // IsGroup if this permission_group only has other permission_groups, no members
-	IsNode      bool     `json:"is_node"`  // IsNode if this permission_group only has members
+	IsGroup     bool     `json:"is_group"`
+	IsNode      bool     `json:"is_node"`
 	Permissions []string `json:"permissions"`
 }
 
@@ -40,6 +40,7 @@ type PermissionGroupFacade struct {
 	Abbr      string     `json:"abbr"`
 	IsGroup   bool       `json:"is_group"`
 	IsNode    bool       `json:"is_node"`
+	Meta      *string    `json:"meta"`
 	Implied   bool       `json:"implied"`
 	Parent    *uuid.UUID `json:"parent"`
 	Generated bool       `json:"generated"`

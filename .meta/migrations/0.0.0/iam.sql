@@ -115,7 +115,7 @@ with recursive relevant_groups as (
    from permission_groups child
    inner join relevant_groups s on s.id = child.parent
 )
-select rg.root, rg.descendant as implied, rg.id as permission_group, uf.id as "user", uf.name 
+select rg.root, rg.descendant as implied, rg.id as permission_group, uf.id as "user", uf.first_name, uf.last_name 
 from relevant_groups rg
 join permission_group_has_user pghu on pghu.permission_group = rg.id 
 and (pghu.start <= datetime('now') or pghu.start is null)
