@@ -49,6 +49,9 @@
             ><Fa icon="fab fa-github"></Fa
          ></a>
       </footer>
+      <div v-permission="'admin'">
+         <router-link :to="{ name: 'app.meta' }">Dev</router-link>
+      </div>
    </SwipeWrapper>
    <Toast></Toast>
 </template>
@@ -83,7 +86,7 @@ function generate_menu_items() {
    if (auth.has_permission("iam")) {
       admin_items.value.push({
          label: t("iam.title"),
-         route: "admin.iam",
+         route: "admin.iam.permission_group.list",
          icon: "shield",
       })
 
@@ -96,7 +99,7 @@ function generate_menu_items() {
    if (auth.has_permission("sys")) {
       admin_items.value.push({
          label: t("sys.title"),
-         route: "admin.sys",
+         route: "admin.sys.overview",
          icon: "hard-drive",
       })
    }

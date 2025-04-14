@@ -84,6 +84,31 @@ export class CustomTreeNode {
       this.leaf = leaf
    }
 
+   public uncheck(keys_to_uncheck: string[]) {
+      if (keys_to_uncheck.includes(this.key)) {
+         this.checked = false
+         for (const child of this.children) {
+            child.uncheck([child.key])
+         }
+      } else {
+         for (const child of this.children) {
+            child.uncheck(keys_to_uncheck)
+         }
+      }
+   }
+   public set_checked(keys_to_check: string[]) {
+      if (keys_to_check.includes(this.key)) {
+         this.checked = true
+         for (const child of this.children) {
+            child.set_checked([child.key])
+         }
+      } else {
+         for (const child of this.children) {
+            child.set_checked(keys_to_check)
+         }
+      }
+   }
+
    public add_child(child: CustomTreeNode) {
       this.children.push(child)
       this.children.sort((child1, child2) => child1.label.localeCompare(child2.label))
@@ -141,7 +166,8 @@ export function to_permission_tree(
 }
 
 export type PermissionProfile = {
-   permission: PermissionRead
+   descendants: PermissionFacade[]
    permission_groups: PermissionGroupFacade[]
+   permission: PermissionRead
    users: UserFacade[]
 }

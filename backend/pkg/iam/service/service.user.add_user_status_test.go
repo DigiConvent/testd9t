@@ -90,8 +90,8 @@ func TestUserAddUserStatus(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	if len(futurePG.Members) != 0 {
-		t.Fatalf("Expected 0 user, got %d", len(futurePG.Members))
+	if len(futurePG.Users) != 0 {
+		t.Fatalf("Expected 0 user, got %d", len(futurePG.Users))
 	}
 
 	currentPG, status := iamService.GetPermissionGroupProfile(currentUserStatusId)
@@ -113,9 +113,9 @@ func TestUserAddUserStatus(t *testing.T) {
 		t.Log(group.Name == currentPG.PermissionGroup.Name)
 	}
 
-	if len(currentPG.Members) != 1 {
-		t.Log(currentPG.Members)
-		t.Fatalf("Expected 1 user, got %d", len(currentPG.Members))
+	if len(currentPG.Users) != 1 {
+		t.Log(currentPG.Users)
+		t.Fatalf("Expected 1 user, got %d", len(currentPG.Users))
 	}
 
 	if status.Err() {

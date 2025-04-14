@@ -16,5 +16,4 @@ func TestListPermissions(t *testing.T) {
 	if len(permissions) == 0 {
 		t.Errorf("ListPermissions() failed: no permissions found")
 	}
-
 }

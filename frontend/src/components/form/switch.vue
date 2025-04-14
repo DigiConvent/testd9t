@@ -1,6 +1,6 @@
 <template>
    <div class="flex flex-col gap-1" @click="toggle">
-      <Button :severity="'secondary'" class="!py-2 !px-1">
+      <Button :severity="'secondary'" class="!py-2 !px-1" :disabled="readonly">
          <div
             class="w-full -m-1 rounded-md"
             :class="{ 'bg-gray-100': !modelValue, 'bg-white': modelValue }"
@@ -37,10 +37,12 @@ const emit = defineEmits(["update:modelValue"])
 
 const value_facade = computed<boolean>({
    get: () => props.modelValue,
-   set: (value) => emit("update:modelValue", value),
+   set: (value) => {
+      if (!props.readonly) emit("update:modelValue", value)
+   },
 })
 function toggle() {
-   if (props.loading) return
+   if (props.loading || props.readonly) return
    value_facade.value = !value_facade.value
 }
 </script>

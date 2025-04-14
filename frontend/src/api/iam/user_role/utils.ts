@@ -12,7 +12,7 @@ export const to_user_role_read = (data: any): UserRoleRead => {
 
 export const to_user_role_profile = (data: any): UserRoleProfile => {
    return {
-      role: to_user_role_read(data.role),
+      role: to_user_role_read(data.user_role),
       users_became_role: [],
    }
 }

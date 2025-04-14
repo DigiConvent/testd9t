@@ -26,6 +26,7 @@ with recursive descendants as (select
       0 as implied,
       pg.parent,
       pg.id as root,
+      pg.meta,
       pg.name as hint
    from permission_groups pg
    union all
@@ -35,6 +36,7 @@ with recursive descendants as (select
       1 as implied,
       child.parent,
       s.root,
+      child.meta,
       concat(s.hint, '->', child.name) as hint
    from permission_groups child
    inner join descendants s on child.parent = s.id)

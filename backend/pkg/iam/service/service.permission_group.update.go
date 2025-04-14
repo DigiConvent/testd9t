@@ -2,7 +2,6 @@ package iam_service
 
 import (
 	"github.com/DigiConvent/testd9t/core"
-	core_utils "github.com/DigiConvent/testd9t/core/utils"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	"github.com/google/uuid"
 )
@@ -12,22 +11,7 @@ func (s *IAMService) UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.Permis
 		return core.BadRequestError("The admin role cannot have descendants")
 	}
 
-	currentPermissions, _ := s.repository.ListPermissionGroupPermissions(id)
-	impliedPermissions := []string{}
-	for _, p := range currentPermissions {
-		if p.Implied {
-			impliedPermissions = append(impliedPermissions, p.Name)
-		}
-	}
-
-	revisedPermissions := []string{}
-	for _, p := range arg.Permissions {
-		if !core_utils.Contains(impliedPermissions, p) {
-			revisedPermissions = append(revisedPermissions, p)
-		}
-	}
-
-	status := s.repository.SetPermissionsForPermissionGroup(id, revisedPermissions)
+	status := s.repository.SetPermissionsForPermissionGroup(id, arg.Permissions)
 
 	if status.Err() {
 		return &status

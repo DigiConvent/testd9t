@@ -17,7 +17,13 @@ const router = createRouter({
       {
          path: "/app",
          name: "home",
+         component: () => import("../views/index.vue"),
          children: [
+            {
+               path: "meta",
+               name: "app.meta",
+               component: () => import("../views/app/meta.vue"),
+            },
             {
                path: "connect-telegram-user",
                name: "connect-telegram-user",
@@ -36,7 +42,7 @@ const router = createRouter({
                      ],
                      permission: [":name/profile"],
                      permission_group: [
-                        "create",
+                        ":parent/create",
                         "list",
                         ":id/read",
                         ":id/update",
@@ -44,7 +50,7 @@ const router = createRouter({
                         ":id/profile",
                      ],
                      user_role: [
-                        "create",
+                        ":parent/create",
                         "list",
                         ":id/read",
                         ":id/update",
@@ -52,7 +58,7 @@ const router = createRouter({
                         ":id/profile",
                      ],
                      user_status: [
-                        "create",
+                        ":parent/create",
                         "list",
                         ":id/read",
                         ":id/update",
@@ -60,7 +66,7 @@ const router = createRouter({
                         ":id/profile",
                      ],
                   },
-                  sys: {},
+                  sys: ["overview"],
                },
             })[0],
             {

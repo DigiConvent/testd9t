@@ -19,6 +19,6 @@ func (s *IAMService) GetUserRole(id *uuid.UUID) (*iam_domain.UserRoleProfile, *c
 
 	return &iam_domain.UserRoleProfile{
 		UserRole: UserRole,
-		Members:  statusUsers,
+		Users:    statusUsers,
 	}, core.StatusSuccess()
 }

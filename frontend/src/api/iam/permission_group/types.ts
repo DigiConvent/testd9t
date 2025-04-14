@@ -14,7 +14,7 @@ export type PermissionGroupWrite = {
 export type PermissionGroupProfile = {
    permission_group: PermissionGroupRead
    permissions: PermissionFacade[]
-   members: UserFacade[]
+   users: UserFacade[]
    ancestors: PermissionGroupFacade[]
    descendants: PermissionGroupFacade[]
 }
@@ -25,7 +25,7 @@ export type PermissionGroupFacade = {
    abbr: string
    is_group: boolean
    is_node: boolean
-   meta: null | "" | "role" | "status"
+   meta: null | "role" | "status"
    implied: boolean
    parent?: string
    generated: boolean

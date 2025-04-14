@@ -1,8 +1,8 @@
 <template>
    <Form
-      v-permission="'iam.permission_group.create'"
+      v-permission="'iam.permission_group.write'"
       class="flex flex-col gap-4"
-      @submit="handle_submit"
+      @submit="handle_create"
    >
       <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
       <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
@@ -11,13 +11,14 @@
          v-model="pg.parent"
          label="iam.pg.fields"
          name="parent"
+         :discriminate_meta="['role', 'status']"
       ></PermissionGroupPicker>
       <PermissionPicker
          v-model="pg.permissions"
          :multiple="true"
          :preselected="inherited_permissions"
       ></PermissionPicker>
-      <Button @click="handle_submit">{{ $t("actions.save") }}</Button>
+      <Button @click="handle_create">{{ $t("actions.save") }}</Button>
    </Form>
 </template>
 
@@ -30,27 +31,30 @@ import FormTextareaInput from "@/components/form/textarea.vue"
 import PermissionGroupPicker from "./picker.vue"
 import PermissionPicker from "@/components/iam/permission/picker.vue"
 import { error } from "@/composables/toast"
-
-const emit = defineEmits(["created"])
+import router from "@/router"
 
 const props = defineProps<{ parent: string }>()
 const pg = ref<PermissionGroupWrite>({
    name: "",
    abbr: "",
    description: "",
-   parent: props.parent,
+   parent: "",
    is_group: false,
    is_node: false,
    permissions: [],
 })
 
-const handle_submit = async () => {
+if (props.parent != undefined) {
+   pg.value.parent = props.parent
+}
+
+const handle_create = async () => {
    ;(await api.iam.permission_group.create(pg.value!)).fold(
       (err: string) => {
          error(err)
       },
-      (id: string) => {
-         emit("created", id)
+      () => {
+         router.back()
       },
    )
 }

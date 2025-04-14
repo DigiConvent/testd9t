@@ -79,7 +79,7 @@ func TestUserHasPermission(t *testing.T) {
 		t.Fatalf("Permission group should have permission " + permissions[0].Name)
 	}
 
-	t.Log(permissionGroupProfile.Members)
+	t.Log(permissionGroupProfile.Users)
 
 	userProfile, _ := iamService.GetUserProfile(id)
 	t.Log("User " + userProfile.User.Emailaddress + " has the following groups:")

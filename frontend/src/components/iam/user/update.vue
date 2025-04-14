@@ -6,12 +6,7 @@
          <FormTextInput v-model="user_read.emailaddress" label="iam.user.create" name="email" />
          <FormTextInput v-model="user_read.first_name" label="iam.user.create" name="first_name" />
          <FormTextInput v-model="user_read.last_name" label="iam.user.create" name="last_name" />
-         <Button
-            type="submit"
-            severity="secondary"
-            :label="$t('iam.user.update.submit')"
-            @click="handle_submit"
-         />
+         <Button type="submit" severity="secondary" :label="$t('iam.user.update.submit')" />
       </Form>
    </div>
 </template>
@@ -22,9 +17,10 @@ import FormTextInput from "@/components/form/text_input.vue"
 
 import type { UserRead } from "@/api/iam/user/types"
 import { api } from "@/api"
-import { error } from "@/composables/toast"
+import { error, success } from "@/composables/toast"
 import { ref } from "vue"
 import type { IdOrData } from "@/components/form/form"
+import router from "@/router"
 
 const props = defineProps<IdOrData<UserRead>>()
 
@@ -35,7 +31,7 @@ const user_read = ref<UserRead>()
 async function load_user() {
    loading.value = true
    if (props.id === undefined) {
-      user_read.value = props.data
+      user_read.value = props.data!
       loading.value = false
       return
    }
@@ -53,11 +49,14 @@ async function load_user() {
 
 load_user()
 async function handle_submit() {
-   ;(await api.iam.user.update(user_read.value!, props.id)).fold(
+   ;(await api.iam.user.update(props.id, user_read.value)).fold(
       (err: string) => {
          error(err)
       },
-      () => {},
+      () => {
+         success(t("iam.user.update.success"))
+         router.back()
+      },
    )
 }
 </script>

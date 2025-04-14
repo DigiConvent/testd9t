@@ -28,15 +28,25 @@
                <div class="grid grid-cols-2">
                   <div>
                      {{ $t("iam.pg.profile.inherited") }}
-                     <div v-for="p of profile?.permissions.filter((p) => p.implied)" :key="p.name">
+                     <router-link
+                        v-for="p of profile?.permissions.filter((p) => p.implied)"
+                        :key="p.name"
+                        class="block"
+                        :to="{ name: 'admin.iam.permission.profile', params: { name: p.name } }"
+                     >
                         {{ p.name }}
-                     </div>
+                     </router-link>
                   </div>
                   <div>
                      {{ $t("iam.pg.profile.owned") }}
-                     <div v-for="p of profile?.permissions.filter((p) => !p.implied)" :key="p.name">
+                     <router-link
+                        v-for="p of profile?.permissions.filter((p) => !p.implied)"
+                        :key="p.name"
+                        class="block"
+                        :to="{ name: 'admin.iam.permission.profile', params: { name: p.name } }"
+                     >
                         {{ p.name }}
-                     </div>
+                     </router-link>
                   </div>
                </div>
             </template>
@@ -45,26 +55,24 @@
             <template #title
                >{{ $t("iam.pg.profile.properties") }}
                <router-link
-                  v-permission="'iam.permission_group.update'"
+                  v-permission="'iam.permission_group.write'"
                   :to="{
                      name: 'admin.iam.permission_group.update',
                      params: { id: profile!.permission_group.id },
                   }"
+                  class="!inline"
                   ><Fa icon="pencil" /></router-link
             ></template>
             <template #content>
-               <ReadPermissionGroup
-                  v-permission="'iam.permission_group.read'"
-                  :data="profile!.permission_group"
-               />
+               <ReadPermissionGroup :data="profile!.permission_group" />
             </template>
          </Card>
          <Card>
-            <template #title>{{ $t("iam.pg.profile.members") }}</template>
+            <template #title>{{ $t("iam.pg.profile.users") }}</template>
             <template #content>
-               <UserFacades v-if="profile.members.length > 0" :users="profile!.members" />
+               <UserFacades v-if="profile.users.length > 0" :users="profile!.users" />
                <span v-else>
-                  {{ $t("iam.pg.profile.no_members") }}
+                  {{ $t("iam.pg.profile.no_users") }}
                </span>
             </template>
          </Card>

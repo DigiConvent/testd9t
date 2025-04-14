@@ -1,16 +1,11 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <div
-      v-else-if="profile"
-      v-permission="'iam.user.read'"
-      v-permission.except="true"
-      class="flex flex-col gap-4"
-   >
+   <div v-else-if="profile" class="flex flex-col gap-4">
       <ReadUser :id="undefined" :data="profile.user" />
       <FormSwitch
-         v-if="!is_loggedin_user"
          v-model="profile.user.enabled"
-         v-permission="'iam.user.set_enabled'"
+         v-permission="'iam.user.write'"
+         :readonly="is_loggedin_user"
          :label_on="$t('iam.user.enabled')"
          :label_off="$t('iam.user.disabled')"
          icon_on="user-unlock"
@@ -20,7 +15,7 @@
       />
       <SetPassword
          :id="is_loggedin_user ? 'me' : profile.user.id"
-         v-permission="'iam.user.set_password'"
+         v-permission="'iam.user.write'"
          v-permission.except="is_loggedin_user"
          @success="password_set"
       ></SetPassword>

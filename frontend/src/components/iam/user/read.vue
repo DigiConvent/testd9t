@@ -2,7 +2,7 @@
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
    <Card
       v-else-if="user_read"
-      v-permission="'iam.user.write'"
+      v-permission="'iam.user.read'"
       v-permission.except="is_loggedin_user"
    >
       <template #title
@@ -10,8 +10,12 @@
          <router-link
             v-permission="'iam.user.write'"
             v-permission.except="is_loggedin_user"
-            :to="{ name: 'admin.iam.user.update', params: { id: user_read.id } }"
+            :to="{
+               name: 'admin.iam.user.update',
+               params: { id: is_loggedin_user ? 'me' : user_read.id },
+            }"
             outlined
+            class="!inline"
             ><Fa icon="pencil"
          /></router-link>
       </template>

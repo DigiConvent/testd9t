@@ -204,6 +204,30 @@ func (s *SqliteDatabase) DeleteDatabase() {
 func (s *SqliteDatabase) Exec(query string, args ...any) (sql.Result, error) {
 	return s.DB.Exec(query, args...)
 }
+func (s *SqliteDatabase) ExecDebug(query string, args ...any) {
+	result, err := s.DB.Exec(query, args...)
+
+	if err != nil {
+		log.Error("Exec failed: " + err.Error())
+	}
+	log.Info("Exec: " + query)
+	log.Info(args)
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		log.Error("Could not get rows affected: " + err.Error())
+	}
+
+	log.Info("Rows affected: " + strconv.Itoa(int(rowsAffected)))
+
+	lastInsertId, err := result.LastInsertId()
+
+	if err != nil {
+		log.Error("Could not get last insert id: " + err.Error())
+	}
+
+	log.Info("Last insert id: " + strconv.Itoa(int(lastInsertId)))
+}
 
 func (s *SqliteDatabase) Query(query string, args ...any) (*sql.Rows, error) {
 	return s.DB.Query(query, args...)

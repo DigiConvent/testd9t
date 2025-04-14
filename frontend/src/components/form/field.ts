@@ -25,7 +25,6 @@ export default abstract class Field {
    }
 
    public set_value(value: Ref) {
-      console.log("set value", value)
       this._v_model = value
    }
    public abstract to_json(): any

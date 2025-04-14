@@ -1,6 +1,6 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <DataTable v-else-if="user_list" v-permission="'iam.user.list'" :value="user_list.items">
+   <DataTable v-else-if="user_list" v-permission="'iam.user.read'" :value="user_list.items">
       <Column field="first_name" :header="$t('iam.user.fields.first_name')" />
       <Column field="last_name" :header="$t('iam.user.fields.last_name')" />
       <Column :header="$t('iam.user.fields.user_status')">
@@ -38,7 +38,7 @@
          </template>
       </Column>
    </DataTable>
-   <router-link v-permission="'iam.user.create'" :to="{ name: 'admin.iam.user.create' }"
+   <router-link v-permission="'iam.user.write'" :to="{ name: 'admin.iam.user.create' }"
       ><Fa icon="user-plus" /> {{ $t("iam.user.create.title") }}</router-link
    >
 </template>

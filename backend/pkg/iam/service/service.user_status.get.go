@@ -19,6 +19,6 @@ func (s *IAMService) GetUserStatus(id *uuid.UUID) (*iam_domain.UserStatusProfile
 
 	return &iam_domain.UserStatusProfile{
 		UserStatus: userStatus,
-		Members:    statusUsers,
+		Users:      statusUsers,
 	}, core.StatusSuccess()
 }

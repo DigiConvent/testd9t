@@ -8,7 +8,7 @@ import (
 
 func (r *IAMRepository) ListPermissionGroupPermissions(arg *uuid.UUID) ([]*iam_domain.PermissionFacade, core.Status) {
 	var permissions = make([]*iam_domain.PermissionFacade, 0)
-	rows, err := r.db.Query(`select permission, implied from permission_group_has_permissions where permission_group = ?`, arg.String())
+	rows, err := r.db.Query(`select permission, implied from permission_group_has_permissions where permission_group = ? order by implied desc`, arg.String())
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

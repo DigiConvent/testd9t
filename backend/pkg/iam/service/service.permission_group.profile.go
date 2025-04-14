@@ -20,7 +20,7 @@ func (service *IAMService) GetPermissionGroupProfile(id *uuid.UUID) (*iam_domain
 		log.Error(status.Message)
 		return nil, &status
 	}
-	profile.Members = users
+	profile.Users = users
 
 	permissionGroups, status := service.repository.ListPermissionGroupAncestors(id)
 	if status.Err() {

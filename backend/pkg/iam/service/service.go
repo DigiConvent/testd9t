@@ -37,9 +37,11 @@ type IAMServiceInterface interface {
 	GetPermissionGroupProfile(id *uuid.UUID) (*iam_domain.PermissionGroupProfile, *core.Status)
 	ListPermissionGroups() ([]*iam_domain.PermissionGroupFacade, *core.Status)
 	UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.PermissionGroupWrite) *core.Status
-	DeletePermissionGroup(id *uuid.UUID) *core.Status
 	SetParentPermissionGroup(arg *iam_domain.PermissionGroupSetParent) *core.Status
 	AddUserToPermissionGroup(permissionGroup *uuid.UUID, userId *uuid.UUID) *core.Status
+	AddPermissionToPermissionGroup(permissionGroupId *uuid.UUID, permission string) *core.Status
+	RemovePermissionFromPermissionGroup(permissionGroupId *uuid.UUID, permission string) *core.Status
+	DeletePermissionGroup(id *uuid.UUID) *core.Status
 
 	ListPermissions() ([]*iam_domain.PermissionRead, *core.Status)
 	CreatePermission(permission *iam_domain.PermissionWrite) *core.Status
@@ -62,29 +64,6 @@ type IAMServiceInterface interface {
 
 type IAMService struct {
 	repository iam_repository.IAMRepositoryInterface
-}
-
-func (service *IAMService) GetPermissionProfile(name string) (*iam_domain.PermissionProfile, *core.Status) {
-	permission, status := service.repository.GetPermission(name)
-	if status.Err() {
-		return nil, &status
-	}
-
-	permisionGroups, status := service.repository.ListPermissionPermissionGroups(name)
-	if status.Err() {
-		return nil, &status
-	}
-
-	permissionUsers, status := service.repository.ListPermissionUsers(name)
-	if status.Err() {
-		return nil, &status
-	}
-
-	return &iam_domain.PermissionProfile{
-		Permission:       permission,
-		PermissionGroups: permisionGroups,
-		Users:            permissionUsers,
-	}, core.StatusSuccess()
 }
 
 func NewIamService(userRepository iam_repository.IAMRepositoryInterface) IAMServiceInterface {

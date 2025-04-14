@@ -5,5 +5,6 @@ export default function to_permission_profile(data: any): PermissionProfile {
       permission: data.permission,
       permission_groups: data.permission_groups,
       users: data.users,
+      descendants: data.descendants,
    }
 }

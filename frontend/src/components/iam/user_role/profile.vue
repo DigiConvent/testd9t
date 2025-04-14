@@ -1,6 +1,6 @@
 <template>
    <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <div v-else-if="profile" v-permission="'iam.user_role.read'"></div>
+   <div v-else-if="profile" v-permission="'iam.user_role.read'">This is a user wowe</div>
 </template>
 <script lang="ts" setup>
 import { api } from "@/api"
@@ -10,7 +10,7 @@ import { ref } from "vue"
 
 const loading = ref<boolean>(true)
 
-const props = defineProps<{ id?: string }>()
+const props = defineProps<{ id: string }>()
 const profile = ref<UserRoleProfile>()
 
 async function load() {

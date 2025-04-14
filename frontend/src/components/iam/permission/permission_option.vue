@@ -15,13 +15,18 @@
                :class="`${parent_hovered && !is_checked ? 'text-gray-500' : 'text-green-700'}`"
             />
             <Fa v-else-if="is_indeterminate" icon="minus-circle" class="text-orange-600 fa-fw" />
-            <Fa v-else icon="circle" class="text-slate-400 fa-fw" />
+            <Fa
+               v-else
+               :icon="
+                  (props.preselected || []).includes(props.node.key) ? 'check-circle' : 'circle'
+               "
+               class="text-slate-400 fa-fw"
+            />
          </template>
          <input
             class="hidden"
             type="checkbox"
             :checked="is_checked"
-            :readonly="(props.preselected || []).includes(props.node.key)"
             :indeterminate.prop="is_indeterminate"
             @change="handle_change($event)"
          />
@@ -82,7 +87,7 @@
                :parent_hovered="parent_hovered || hovered"
                :preselected="preselected"
                :summarised="!summarised"
-               :readonly="(props.preselected || []).includes(props.node.key) || readonly"
+               :readonly="readonly"
                @update:checked="update_child_checked(index, $event)"
             />
             <div
@@ -130,9 +135,7 @@ const children = computed(() => {
 
 const node = ref(props.node)
 
-const is_checked = computed(
-   () => node.value.checked === true || (props.preselected || []).includes(node.value.key),
-)
+const is_checked = computed(() => node.value.checked === true)
 
 const is_indeterminate = computed(() => {
    if (!node.value.children) return false
@@ -183,7 +186,7 @@ const update_parent_state = (node: CustomTreeNode) => {
 }
 
 watch(
-   () => node.value.children,
+   node.value.children,
    () => {
       update_parent_state(node.value)
    },

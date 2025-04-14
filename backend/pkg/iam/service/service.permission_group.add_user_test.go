@@ -62,7 +62,7 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 		t.Fatal(status.Message)
 	}
 
-	// get profile and count members
+	// get profile and count users
 	rootId := uuid.MustParse(getRootPermissionGroup())
 	rootProfile, _ := testService.GetPermissionGroupProfile(&rootId)
 
@@ -70,7 +70,7 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	if len(rootProfile.Members) != 1 {
-		t.Fatal("Expected 1 member, instead I got ", len(rootProfile.Members))
+	if len(rootProfile.Users) != 1 {
+		t.Fatal("Expected 1 user, instead I got ", len(rootProfile.Users))
 	}
 }

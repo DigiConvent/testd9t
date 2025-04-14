@@ -3,7 +3,7 @@
       <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
       <OrganizationChart
          v-else-if="data"
-         v-permission="'iam.permission_group.list'"
+         v-permission="'iam.permission_group.read'"
          :value="data"
          collapsible
       >

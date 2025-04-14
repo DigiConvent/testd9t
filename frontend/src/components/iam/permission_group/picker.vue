@@ -1,15 +1,16 @@
 <template>
    <div>
       <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-      <div v-else-if="data" v-permission="'iam.permission_group.list'">
+      <div v-else-if="data" v-permission="'iam.permission_group.read'">
          <FormTextInput
             v-model="pg_name"
             readonly
-            label="iam.pg.fields"
-            name="parent"
+            :label="label"
+            :name="name"
+            class="!cursor-pointer"
             @click="show_picker_dialog = true"
          />
-         <Dialog v-model:visible="show_picker_dialog" modal :header="$t('iam.pg.fields.parent')">
+         <Dialog v-model:visible="show_picker_dialog" modal :header="$t(label + '.' + name)">
             <OrganizationChart
                v-if="data"
                :value="data"
@@ -38,6 +39,15 @@ import { create_tree_using_parent, type CustomNode } from "@/api/core/node"
 import type { PermissionGroupFacade } from "@/api/iam/permission_group/types"
 import { computed, ref } from "vue"
 
+const props = defineProps<{
+   // eslint-disable-next-line vue/prop-name-casing
+   modelValue: string | undefined
+   label: string
+   name: string
+   discriminate_meta?: (null | "role" | "status")[]
+   discriminate_descendants?: string
+}>()
+
 const t = useI18n().t
 const loading = ref(true)
 const show_picker_dialog = ref(false)
@@ -45,15 +55,6 @@ const show_picker_dialog = ref(false)
 import FormTextInput from "@/components/form/text_input.vue"
 import { error } from "@/composables/toast"
 import { useI18n } from "vue-i18n"
-
-const props = defineProps<{
-   // eslint-disable-next-line vue/prop-name-casing
-   modelValue: string | undefined
-   label: string
-   only_nodes?: boolean
-   only_groups?: boolean
-   discriminate_descendants?: string
-}>()
 
 const emit = defineEmits(["update:modelValue"])
 
@@ -96,9 +97,7 @@ async function load_permission_groups() {
             PermissionGroupFacade & { selectable: boolean; styleClass: string }
          >(root, selectable_permission_groups)
 
-         if (props.discriminate_descendants != undefined) {
-            discriminate_descendant(root_node)
-         }
+         discriminate_permission_groups(root_node)
 
          data.value = root_node
 
@@ -117,27 +116,37 @@ function handle_picked(event: any) {
    }
 }
 
-function discriminate_descendant(
+function discriminate_permission_groups(
    permission_group: CustomNode<
       PermissionGroupFacade & { selectable: boolean; styleClass: string }
    >,
    discriminate: boolean = false,
 ) {
-   if (permission_group.key == props.discriminate_descendants) discriminate = true
-
+   if (
+      props.discriminate_descendants != undefined &&
+      permission_group.key == props.discriminate_descendants
+   ) {
+      permission_group.styleClass = "!bg-sky-500"
+      discriminate = true
+   }
    permission_group.selectable = !discriminate && permission_group.data.selectable
+
+   if (
+      props.discriminate_meta != undefined &&
+      props.discriminate_meta.includes(permission_group.data.meta)
+   ) {
+      permission_group.selectable = false
+   }
 
    if (!permission_group.selectable) {
       permission_group.styleClass = "!bg-gray-300"
    }
-   if (permission_group.data.id == props.discriminate_descendants) {
-      permission_group.styleClass = "!bg-sky-500"
-   }
+
    if (selected.value != null && permission_group.data.id == selected.value.id) {
       permission_group.styleClass = "!bg-emerald-500"
    }
    for (const child of permission_group.children) {
-      discriminate_descendant(child, discriminate)
+      discriminate_permission_groups(child, discriminate)
    }
 }
 </script>

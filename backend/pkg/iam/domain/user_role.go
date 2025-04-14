@@ -8,7 +8,7 @@ import (
 
 type UserRoleProfile struct {
 	UserRole *UserRoleRead `json:"user_role"`
-	Members  []*UserFacade `json:"members"`
+	Users    []*UserFacade `json:"users"`
 }
 
 type UserRoleRead struct {

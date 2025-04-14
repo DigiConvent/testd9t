@@ -25,11 +25,30 @@
    },
    "iam": {
       "p": {
+         "p": "Berechtigung | Berechtigungen",
+         "profile": {
+            "users": "Benutzer mit dieser Berechtigung",
+            "groups": "Gruppen mit dieser Berechtigung",
+            "archived": "Archiviert",
+            "generated": "Generiert",
+            "add_to_group": {
+               "success": "Berechtigung erfolgreich hinzugefügt",
+               "error": "Konnte Berechtigung nicht hinzufügen"
+            },
+            "remove_from_group": {
+               "success": "Berechtigung erfolgreich entfernt",
+               "error": "Konnte Berechtigung nicht entfernen"
+            }
+         },
+         "fields": {
+            "group": "Gruppe"
+         },
          "show_more": "mehr anzeigen",
          "show_fewer": "weniger anzeigen",
          "inherited": "vererbt"
       },
       "pg": {
+         "pg": "Gruppe | Gruppen",
          "read": {
             "title": "Gruppe ansehen"
          },
@@ -43,14 +62,13 @@
             "submit": "Erstellen"
          },
          "delete": {
-            "title": "Gruppe löschen",
-            "submit": "Löschen"
+            "warning": "Wegen der folgenden Abhängigkeiten kann die Gruppe nicht gelöscht werden:"
          },
          "profile": {
-            "no_members": "Keine Mitglieder",
+            "no_users": "Keine Mitglieder",
             "hierarchy": "Gruppenhierarchie",
             "permissions": "Zugriffsrechte",
-            "members": "Mitglieder",
+            "users": "Mitglieder",
             "inherited": "Vererbt",
             "owned": "Eigene",
             "properties": "Eigenschaften"
@@ -93,6 +111,7 @@
          }
       },
       "user": {
+         "user": "Benutzer | Benutzer",
          "fields": {
             "email": "E-Mailadresse",
             "first_name": "Vorname",
@@ -123,7 +142,17 @@
          "enabled": "Konto ist aktiviert",
          "disabled": "Konto ist deaktiviert"
       },
-      "user_status": {
+      "ur": {
+         "ur": "Amt | Ämter",
+         "fields": {
+            "name": "Name",
+            "abbr": "Abkürzung",
+            "description": "Beschreibung",
+            "parent": "Übergeordnete Gruppe"
+         }
+      },
+      "us": {
+         "us": "Mitgliedsstatus | Mitgliedsstatus",
          "picker": {
             "placeholder": "Mitgliedsstatus",
             "empty": "Kein Mitgliedsstatus gefunden"
@@ -141,13 +170,33 @@
       }
    },
    "actions": {
-      "create": "Erstellen",
-      "update": "Aktualisieren",
-      "delete": "Löschen",
-      "cancel": "Abbrechen",
-      "save": "Speichern",
-      "close": "Schließen",
-      "reset": "Zurücksetzen"
+      "create": "{entity} erstellen",
+      "view": "{entity} ansehen",
+      "update": "{entity} aktualisieren",
+      "edit": "{entity} bearbeiten",
+      "add": "{entity} hinzufügen",
+      "remove": "{entity} entfernen",
+      "cancel": "{entity} abbrechen",
+      "save": "{entity} speichern",
+      "close": "{entity} schließen",
+      "reset": "{entity} zurücksetzen",
+      "delete": "{entity} löschen"
    },
-   "unauthorised": "Fehlende Authorisierung ({permission})"
+   "feedback": {
+      "required": "{field} ist erforderlich",
+      "invalid": "{field} ist ungueltig",
+      "success": "{entity} erfolgreich erstellt",
+      "update": "{entity} erfolgreich aktualisiert",
+      "delete": "{entity} erfolgreich gelöscht",
+      "cancel": "{entity} erfolgreich abgebrochen"
+   },
+   "prompt": {
+      "delete": "Willst du {entity} wirklich löschen?"
+   },
+   "answers": {
+      "yes": "Ja",
+      "no": "Nein"
+   },
+   "unauthorised": "Fehlende Authorisierung ({permission})",
+   "inherited": "vererbt"
 }

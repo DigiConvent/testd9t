@@ -6,8 +6,7 @@ import (
 )
 
 func (r *IAMRepository) ListPermissionPermissionGroups(name string) ([]*iam_domain.PermissionGroupFacade, core.Status) {
-	r.db.QueryDebug("select * from permission_group_has_permission where permission = ?", name)
-	rows, err := r.db.Query(`select permission_group from permission_group_has_permission where permission = ?`, name)
+	rows, err := r.db.Query(`select pg.id, pg.name, pg.abbr, pg.is_group, pg.meta, pg.is_node, pg.parent, pg.generated from permission_group_has_permission pghp join permission_groups pg on pg.id = pghp.permission_group where pghp.permission = ?`, name)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
@@ -17,7 +16,7 @@ func (r *IAMRepository) ListPermissionPermissionGroups(name string) ([]*iam_doma
 	permissionGroups := make([]*iam_domain.PermissionGroupFacade, 0)
 	for rows.Next() {
 		var permissionGroup iam_domain.PermissionGroupFacade
-		err := rows.Scan(&permissionGroup.ID, &permissionGroup.Name, &permissionGroup.Parent, &permissionGroup.Implied)
+		err := rows.Scan(&permissionGroup.ID, &permissionGroup.Name, &permissionGroup.Abbr, &permissionGroup.IsGroup, &permissionGroup.Meta, &permissionGroup.IsNode, &permissionGroup.Parent, &permissionGroup.Generated)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
 		}

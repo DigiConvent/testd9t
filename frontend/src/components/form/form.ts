@@ -86,9 +86,6 @@ export default class Form<T> {
       const child_v_nodes = this._fields.map((e) => e.vnode)
       const v_models = Object.fromEntries(this._field_models.entries())
 
-      console.log(child_nodes)
-      console.log(child_v_nodes)
-
       this._vnode.value = h("div", [
          h(
             Fieldset,
@@ -122,14 +119,7 @@ export default class Form<T> {
                      h(
                         Button,
                         {
-                           onClick: () => {
-                              for (const model of this._field_models) {
-                                 const key = model[0]
-                                 const value = model[1].value
-                                 console.log(key, value)
-                              }
-                              console.log(this._field_models)
-                           },
+                           onClick: () => {},
                         },
                         "done",
                      ),

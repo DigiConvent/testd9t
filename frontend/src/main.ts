@@ -11,7 +11,8 @@ declare global {
    }
 }
 
-window.debug = true
+window.debug = process.env.NODE_ENV === "development"
+// window.debug = false
 
 import { library, config } from "@DigiConvent/ff/fontawesome-svg-core"
 import { FontAwesomeIcon, FontAwesomeLayers } from "@DigiConvent/ff/vue-fontawesome"
@@ -29,6 +30,7 @@ import {
    AccordionHeader,
    AccordionPanel,
    Badge,
+   Breadcrumb,
    Button,
    Card,
    Checkbox,
@@ -61,6 +63,7 @@ import {
    Timeline,
    ToastService,
    ToggleButton,
+   ToggleSwitch,
    TreeSelect,
 } from "primevue"
 
@@ -98,6 +101,7 @@ app.component("AccordionPanel", AccordionPanel)
 app.component("AccordionHeader", AccordionHeader)
 app.component("AccordionContent", AccordionContent)
 app.component("Badge", Badge)
+app.component("Breadcrumb", Breadcrumb)
 app.component("Button", Button)
 app.component("Card", Card)
 app.component("Column", Column)
@@ -126,6 +130,7 @@ app.component("Textarea", Textarea)
 app.component("Timeline", Timeline)
 app.component("Toast", Toast)
 app.component("ToggleButton", ToggleButton)
+app.component("ToggleSwitch", ToggleSwitch)
 app.component("TreeSelect", TreeSelect)
 app.component("Select", Select)
 app.component("Skeleton", Skeleton)
@@ -137,7 +142,7 @@ app.directive("permission", permission)
 
 app.component("Fa", FontAwesomeIcon).component("fal", FontAwesomeLayers)
 
-let remember = window.location.href.replace(window.location.origin, "")
+let reuser = window.location.href.replace(window.location.origin, "")
 app.use(ToastService)
 
 const auth = JwtAuthenticator.get_instance()
@@ -152,14 +157,14 @@ if (is_mini_app()) {
       mount()
    })
 } else {
-   remember = "/home"
+   reuser = "/home"
    mount()
 }
 
 function mount() {
    app.mount("#app")
    if (auth.is_authenticated.value) {
-      router.replace({ path: remember })
+      router.replace({ path: reuser })
    } else {
       router.replace({ name: "home" })
    }

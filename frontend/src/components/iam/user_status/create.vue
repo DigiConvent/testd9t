@@ -15,7 +15,7 @@
          <div class="flex justify-end gap-2">
             <Button
                type="button"
-               :label="$t('iam.user_status.create.submit')"
+               :label="$t("iam'us.create.submit')"
                @click="create_user_status"
             ></Button>
          </div>
@@ -59,19 +59,19 @@ const loading = ref(false)
 const name = ref<string>("")
 const name_check = v.pipe(
    v.string(),
-   v.nonEmpty(t("iam.user_status.new.required", { field: t("iam.user_status.new.name") })),
+   v.nonEmpty(t("iam.us.new.required", { field: t("iam.us.new.name") })),
 )
 
 const abbr = ref<string>("")
 const abbr_check = v.pipe(
    v.string(),
-   v.nonEmpty(t("iam.user_status.new.required", { field: t("iam.user_status.new.abbr") })),
+   v.nonEmpty(t("iam.us.new.required", { field: t("iam.us.new.abbr") })),
 )
 
 const description = ref<string>("")
 const description_check = v.pipe(
    v.string(),
-   v.nonEmpty(t("iam.user_status.new.required", { field: t("iam.user_status.new.description") })),
+   v.nonEmpty(t("iam.us.new.required", { field: t("iam.us.new.description") })),
 )
 
 const archived = ref<boolean>(false)

@@ -14,6 +14,7 @@ func (r *IAMRepository) SetPermissionsForPermissionGroup(permissionGroupId *uuid
 
 	setPermissions, _ := json.Marshal(permissions)
 	pgId := permissionGroupId.String()
+
 	_, err := r.db.Exec(`
 with existing_permissions as (select permission from permission_group_has_permission where permission_group = ?),
 new_permissions as (select value as permission from json_each(?)),

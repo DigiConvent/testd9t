@@ -7,12 +7,12 @@
       :options="user_status"
       option-label="name"
       option-value="id"
-      :empty-message="$t('iam.user_status.picker.empty')"
+      :empty-message="$t("iam'us.picker.empty')"
    >
       <template #footer>
          <div class="p-3">
             <Button
-               :label="$t('iam.user_status.create.title')"
+               :label="$t("iam'us.create.title')"
                fluid
                severity="secondary"
                text
@@ -24,7 +24,7 @@
    <Dialog
       v-model:visible="show_new_user_status_form"
       modal
-      :header="$t('iam.user_status.create.title')"
+      :header="$t("iam'us.create.title')"
       :style="{ width: '25rem' }"
    >
       <NewUserStatusForm @created="load_user_status($event)"></NewUserStatusForm>

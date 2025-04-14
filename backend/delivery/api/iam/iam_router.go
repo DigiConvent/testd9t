@@ -19,6 +19,7 @@ type IamRouterInterface interface {
 	ProfilePermissionGroup(ctx *gin.Context)
 	SetParentPermissionGroup(ctx *gin.Context)
 	UpdatePermissionGroup(ctx *gin.Context)
+	PermissionGroupEditPermissions(ctx *gin.Context)
 
 	ListPermissions(ctx *gin.Context)
 	GetPermissionProfile(ctx *gin.Context)
@@ -73,16 +74,6 @@ func (router *IamRouter) AddUserToUserStatus(ctx *gin.Context) {
 	panic("unimplemented")
 }
 
-// CreateUserRole implements IamRouterInterface.
-func (router *IamRouter) CreateUserRole(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
-// DeletePermissionGroup implements IamRouterInterface.
-func (router *IamRouter) DeletePermissionGroup(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
 // DeleteUserRole implements IamRouterInterface.
 func (router *IamRouter) DeleteUserRole(ctx *gin.Context) {
 	panic("unimplemented")
@@ -95,11 +86,6 @@ func (router *IamRouter) DeleteUserStatus(ctx *gin.Context) {
 
 // GetUserRole implements IamRouterInterface.
 func (router *IamRouter) GetUserRole(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
-// GetUserRoleProfile implements IamRouterInterface.
-func (router *IamRouter) GetUserRoleProfile(ctx *gin.Context) {
 	panic("unimplemented")
 }
 

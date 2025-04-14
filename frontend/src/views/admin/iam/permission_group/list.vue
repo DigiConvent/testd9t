@@ -1,58 +1,22 @@
 <template>
-   <div>
-      <PermissionGroupTreeView
-         :refresh="refresh"
-         @click="handle_click($event)"
-      ></PermissionGroupTreeView>
-      <Menu ref="show_menu" :model="menu_items" :popup="true">
-         <template #item="{ item }">
-            <div class="hover:bg-gray-100 p-2 cursor-pointer">
-               <Fa :icon="item.icon" class="fa-fw mr" /> {{ item.label }}
-            </div>
-         </template>
-      </Menu>
-      <Drawer
-         :visible="edit_pg != null"
-         modal
-         style="width: 100%; height: 100%"
-         position="top"
-         @update:visible="edit_pg = null"
-      >
-         <UpdatePermissionGroup :data="edit_pg" @updated="handle_updated"></UpdatePermissionGroup>
-      </Drawer>
-      <Drawer
-         :visible="add_pg_to_pg"
-         position="bottom"
-         modal
-         style="width: 100%; height: 100%"
-         @update:visible="add_pg_to_pg = null"
-      >
-         <CreatePermissionGroup
-            :parent="add_pg_to_pg"
-            @created="handle_created_pg"
-         ></CreatePermissionGroup>
-      </Drawer>
-      <Drawer
-         :visible="add_us_to_pg"
-         position="right"
-         modal
-         style="width: 100%; height: 100%"
-         @update:visible="add_us_to_pg = null"
-      >
-         <CreateUserStatus :parent="add_us_to_pg" @created="handle_created_us"></CreateUserStatus>
-      </Drawer>
-   </div>
+   <PermissionGroupTreeView
+      :refresh="refresh"
+      @click="handle_click($event)"
+   ></PermissionGroupTreeView>
+   <Menu ref="show_menu" :model="menu_items" :popup="true">
+      <template #item="{ item }">
+         <router-link :to="item.route" class="inline-block w-full p-2">
+            <Fa :icon="item.icon" class="fa-fw mr" /> {{ item.label }}
+         </router-link>
+      </template>
+   </Menu>
 </template>
 
 <script lang="ts" setup>
 import PermissionGroupTreeView from "@/components/iam/permission_group/list.vue"
-import UpdatePermissionGroup from "@/components/iam/permission_group/update.vue"
-import CreatePermissionGroup from "@/components/iam/permission_group/create.vue"
-import CreateUserStatus from "@/components/iam/user_status/create.vue"
 import { ref } from "vue"
 import JwtAuthenticator from "@/auth/jwt"
 import { useI18n } from "vue-i18n"
-import router from "@/router"
 import type { PermissionGroupFacade } from "@/api/iam/permission_group/types"
 
 const pg = ref<string>()
@@ -64,27 +28,12 @@ const handle_click = (arg: { event: any; pg: PermissionGroupFacade }) => {
    show_menu.value.toggle(arg.event)
 }
 
-const handle_created_pg = () => {
-   add_pg_to_pg.value = null
-   refresh.value += 1
-}
-
-const add_us_to_pg = ref()
-const handle_created_us = () => {
-   add_us_to_pg.value = null
-   refresh.value += 1
-}
-const handle_updated = () => {
-   edit_pg.value = null
-   refresh.value += 1
-}
-
 const t = useI18n().t
 
 const auth = JwtAuthenticator.get_instance()
-const menu_items = ref()
-const add_pg_to_pg = ref()
-const edit_pg = ref()
+const menu_items = ref<({ label: string; icon: string; route?: any } | { separator: boolean })[]>(
+   [],
+)
 
 const generate_menu_items = (pg: PermissionGroupFacade) => {
    menu_items.value = []
@@ -100,57 +49,83 @@ const generate_menu_items = (pg: PermissionGroupFacade) => {
 const refresh = ref(0)
 
 function generate_group_menu(pg: PermissionGroupFacade) {
-   menu_items.value = []
    menu_items.value.push({
-      label: t("iam.pg.read.title"),
+      label: t("actions.view", { entity: t("iam.pg.pg") }),
       icon: "eye",
-      command: () => {
-         router.push({ name: "admin.iam.permission_group.profile", params: { id: pg.id } })
-      },
+      route: { name: "admin.iam.permission_group.profile", params: { id: pg.id } },
    })
-   if (auth.has_permission("iam.permission_group.update"))
+   if (auth.has_permission("iam.permission_group.write")) {
       menu_items.value.push({
-         label: t("iam.pg.update.title"),
+         label: t("actions.edit", { entity: t("iam.pg.pg") }),
          icon: "pencil",
-         command: () => {
-            edit_pg.value = pg.id
-         },
+         route: { name: "admin.iam.permission_group.update", params: { id: pg.id } },
       })
-   menu_items.value.push({
-      label: t("iam.pg.create.title"),
-      icon: "plus",
-      command: () => {
-         add_pg_to_pg.value = pg.id
-      },
-   })
-   menu_items.value.push({
-      label: t("iam.user_status.create.title"),
-      icon: "plus",
-      command: () => {
-         add_us_to_pg.value = pg.id
-      },
-   })
+      menu_items.value.push({
+         label: t("actions.add", { entity: t("iam.pg.pg") }),
+         icon: "folders",
+         route: { name: "admin.iam.permission_group.create", params: { parent: pg.id } },
+      })
+      menu_items.value.push({
+         label: t("actions.delete", { entity: t("iam.pg.pg") }),
+         icon: "trash",
+         route: { name: "admin.iam.permission_group.delete", params: { id: pg.id } },
+      })
+   }
+   if (auth.has_permission("iam.user_role.write")) {
+      menu_items.value.push({
+         separator: true,
+      })
+      menu_items.value.push({
+         label: t("actions.add", { entity: t("iam.ur.ur") }),
+         icon: "user-shield",
+         route: { name: "admin.iam.user_role.create", params: { parent: pg.id } },
+      })
+   }
+   if (auth.has_permission("iam.user_status.write")) {
+      menu_items.value.push({
+         separator: true,
+      })
+      menu_items.value.push({
+         label: t("actions.add", { entity: t("iam.us.us") }),
+         icon: "user-tag",
+         route: { name: "admin.iam.user_status.create", params: { parent: pg.id } },
+      })
+   }
 }
 
 function generate_role_menu(pg: PermissionGroupFacade) {
-   menu_items.value = []
    menu_items.value.push({
-      label: t("iam.pg.role.title"),
-      icon: "magnifying-glass",
-      command: () => {
-         router.push({ name: "admin.iam.user_role.profile", params: { id: pg.id } })
-      },
+      label: t("actions.view", { entity: t("iam.ur.ur") }),
+      icon: "eye",
+      route: { name: "admin.iam.user_role.profile", params: { id: pg.id } },
+   })
+   menu_items.value.push({
+      label: t("actions.edit", { entity: t("iam.ur.ur") }),
+      icon: "pencil",
+      route: { name: "admin.iam.user_role.update", params: { id: pg.id } },
+   })
+   menu_items.value.push({
+      label: t("actions.delete", { entity: t("iam.ur.ur") }),
+      icon: "trash",
+      route: { name: "admin.iam.permission_group.delete", params: { id: pg.id } },
    })
 }
 
 function generate_status_menu(pg: PermissionGroupFacade) {
-   menu_items.value = []
    menu_items.value.push({
-      label: t("iam.pg.status.title"),
-      icon: "magnifying-glass",
-      command: () => {
-         router.push({ name: "admin.iam.user_status.profile", params: { id: pg.id } })
-      },
+      label: t("actions.view", { entity: t("iam.us.us") }),
+      icon: "eye",
+      route: { name: "admin.iam.user_status.profile", params: { id: pg.id } },
+   })
+   menu_items.value.push({
+      label: t("actions.edit", { entity: t("iam.us.us") }),
+      icon: "pencil",
+      route: { name: "admin.iam.user_status.update", params: { id: pg.id } },
+   })
+   menu_items.value.push({
+      label: t("actions.delete", { entity: t("iam.us.us") }),
+      icon: "trash",
+      route: { name: "admin.iam.permission_group.delete", params: { id: pg.id } },
    })
 }
 </script>

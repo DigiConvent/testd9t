@@ -22,7 +22,7 @@ export default function generate_routes(
          path: key.replace("_", "-"),
          name: prefix.concat(key).join("."),
          children: kids,
-         component: () => import("../views/" + prefix.concat(key).join("/") + ".vue"),
+         // component: () => import("../views/" + prefix.concat(key).join("/") + ".vue"),
       }
    })
 }

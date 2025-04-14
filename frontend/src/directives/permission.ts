@@ -5,15 +5,9 @@ import { type Directive } from "vue"
 
 const auth = JwtAuthenticator.get_instance()
 export const permission: Directive = {
-   created(el, binding) {
-      if (Object.keys(binding.modifiers).length == 0) {
-         console.log("created")
-      }
-   },
    beforeMount(el, binding) {
       const { modifiers, value } = binding
       if (typeof value == "string" && modifiers.except === undefined) {
-         console.log("Before mount")
          if (!auth.has_permission(value)) {
             el.style.display = "none"
          }
@@ -24,16 +18,12 @@ export const permission: Directive = {
          if (Object.keys(binding.modifiers).length == 0) {
             const wrapper = document.createElement(binding.arg || "fieldset")
 
-            if (binding.value?.class) {
-               wrapper.className = binding.value.class
+            if (el.className) {
+               wrapper.className = el.className
             }
 
-            if (binding.value?.style) {
-               Object.assign(wrapper.style, binding.value.style)
-            }
-
-            if (binding.value?.attrs) {
-               Object.entries(binding.value.attrs).forEach(([key, value]: any) => {
+            if (el.attrs) {
+               Object.entries(el.attrs).forEach(([key, value]: any) => {
                   wrapper.setAttribute(key, value)
                })
             }
@@ -49,6 +39,7 @@ export const permission: Directive = {
                legend.classList.add("!cursor-pointer")
                legend.classList.add("!select-none")
                legend.classList.add("!border")
+               legend.classList.add("!text-xs")
                legend.ondblclick = () => {
                   router.push({ name: "admin.iam.permission.profile", params: { name: value } })
                }

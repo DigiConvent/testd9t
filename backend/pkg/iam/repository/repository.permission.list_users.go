@@ -8,7 +8,7 @@ import (
 )
 
 func (r *IAMRepository) ListPermissionUsers(name string) ([]*iam_domain.UserFacade, core.Status) {
-	rows, err := r.db.Query(`select id, first_name, last_name, status_id, status_name, roles from permission_has_users where permission = ?`, name)
+	rows, err := r.db.Query(`select distinct id, first_name, last_name, status_id, status_name, roles from permission_has_users where permission = ?`, name)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

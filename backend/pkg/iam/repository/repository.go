@@ -69,6 +69,8 @@ type IAMRepositoryInterface interface {
 	ListUserGroups(userId *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)
 	SetParentPermissionGroup(arg *iam_domain.PermissionGroupSetParent) core.Status
 	SetPermissionsForPermissionGroup(permissionGroupId *uuid.UUID, permissions []string) core.Status
+	AddPermissionToPermissionGroup(permissionGroupId *uuid.UUID, permission string) core.Status
+	RemovePermissionFromPermissionGroup(permissionGroupId *uuid.UUID, permission string) core.Status
 	UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.PermissionGroupWrite) core.Status
 
 	CreatePermission(permission *iam_domain.PermissionWrite) core.Status
@@ -76,6 +78,7 @@ type IAMRepositoryInterface interface {
 	GetPermission(name string) (*iam_domain.PermissionRead, core.Status)
 	ListPermissionPermissionGroups(name string) ([]*iam_domain.PermissionGroupFacade, core.Status)
 	ListPermissions() ([]*iam_domain.PermissionRead, core.Status)
+	ListPermissionDescendants(name string) ([]*iam_domain.PermissionFacade, core.Status)
 	ListPermissionUsers(name string) ([]*iam_domain.UserFacade, core.Status)
 
 	GetPrivateKey() *rsa.PrivateKey

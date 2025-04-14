@@ -10,7 +10,7 @@ const update_user: ApiSaveById<UserUpdate, boolean> = (
       `/api/iam/user${id ? "/" + id : "/me"}`,
       user_update_data,
       undefined,
-      200,
+      204,
    )
 }
 

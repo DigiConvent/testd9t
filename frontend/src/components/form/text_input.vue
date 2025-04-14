@@ -8,6 +8,7 @@
             type="text"
             fluid
             :readonly="readonly"
+            :class="{ 'cursor-pointer': readonly }"
             autocomplete="off"
             @input="handle_input($event)"
          />

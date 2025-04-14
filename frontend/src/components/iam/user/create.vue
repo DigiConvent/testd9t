@@ -1,9 +1,5 @@
 <template>
-   <Form
-      v-permission="'iam.user.create'"
-      class="flex flex-col gap-4 w-full"
-      @submit="handle_submit"
-   >
+   <Form v-permission="'iam.user.write'" class="flex flex-col gap-4 w-full" @submit="handle_submit">
       <h2 class="text-lg">{{ t("iam.user.create.title") }}</h2>
       <FormTextInput v-model="email" label="iam.user.fields" name="email" />
       <FormTextInput v-model="first_name" label="iam.user.fields" name="first_name" />
@@ -11,7 +7,7 @@
       <div class="grid grid-cols-2 gap-4">
          <FloatLabel variant="in">
             <UserStatusPicker id="user_status" v-model="user_status"></UserStatusPicker>
-            <label for="user_status">{{ $t("iam.user_status.picker.placeholder") }}</label>
+            <label for="user_status">{{ $t("iam.us.picker.placeholder") }}</label>
          </FloatLabel>
          <FormMaskInput
             v-model="user_status_start"

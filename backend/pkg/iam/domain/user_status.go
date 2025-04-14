@@ -8,7 +8,7 @@ import (
 
 type UserStatusProfile struct {
 	UserStatus *UserStatusRead `json:"user_status"`
-	Members    []*UserFacade   `json:"members"`
+	Users      []*UserFacade   `json:"users"`
 }
 
 type UserStatusRead struct {

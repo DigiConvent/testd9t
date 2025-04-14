@@ -30,7 +30,7 @@ export function to_permission_group_profile(data: any): PermissionGroupProfile {
             description: entry.description,
          }
       }),
-      members: data.members.map((entry: any) => {
+      users: data.users.map((entry: any) => {
          return to_user_facade(entry)
       }),
       ancestors: data.ancestors.map((entry: any) => to_permission_group_facade(entry)),

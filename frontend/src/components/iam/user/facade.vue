@@ -4,17 +4,21 @@
          <router-link
             :to="{ name: 'admin.iam.user.profile', params: { id: _user.id } }"
             class="block"
-            >{{ _user.status_name }} {{ _user.name }}
+            ><Fa icon="user" />{{ _user.first_name }} {{ _user.last_name }}
          </router-link>
       </template>
    </template>
-   <template v-else-if="user">
-      {{ user.name }}
+   <template v-else>
+      {{ user }}
    </template>
 </template>
 
 <script lang="ts" setup>
 import type { UserFacade } from "@/api/iam/user/types"
 
-defineProps<{ user?: UserFacade; users?: UserFacade[] }>()
+type UserFacadeProps =
+   | { user?: undefined; users: UserFacade[] }
+   | { user: UserFacade; users?: undefined }
+
+defineProps<UserFacadeProps>()
 </script>

@@ -32,6 +32,5 @@ export type UserRoleCreate = {
    name: string
    abbr: string
    description: string
-   archived: boolean
    parent: string
 }
