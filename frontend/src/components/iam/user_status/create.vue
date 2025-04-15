@@ -15,7 +15,7 @@
          <div class="flex justify-end gap-2">
             <Button
                type="button"
-               :label="$t("iam'us.create.submit')"
+               :label="$t('iam.us.create.submit')"
                @click="create_user_status"
             ></Button>
          </div>

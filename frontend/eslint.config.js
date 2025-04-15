@@ -25,7 +25,9 @@ export default typescriptEslint.config(
          "vue/multi-word-component-names": "off",
          "vue/no-reserved-component-names": "off",
          "vue/no-unused-vars": "error",
+         "vue/no-unused-components": "error",
          "vue/prop-name-casing": ["error", "snake_case"],
+         "vue/no-multiple-template-root": "error",
          "@typescript-eslint/indent": ["error", 3],
          "@typescript-eslint/naming-convention": [
             "error",

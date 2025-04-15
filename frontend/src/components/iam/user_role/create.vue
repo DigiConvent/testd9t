@@ -35,8 +35,6 @@ const user_role = ref<UserRoleCreate>({
    parent: "",
 })
 
-const emit = defineEmits(["created"])
-
 async function create_user_role() {
    ;(await api.iam.user_role.create(user_role.value)).fold(
       (l: string) => {

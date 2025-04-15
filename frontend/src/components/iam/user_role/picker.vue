@@ -1,34 +1,36 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <Select
-      v-else-if="user_status"
-      v-model="value_facade"
-      class="w-full"
-      :options="user_status"
-      option-label="name"
-      option-value="id"
-      :empty-message="$t("iam'us.picker.empty')"
-   >
-      <template #footer>
-         <div class="p-3">
-            <Button
-               :label="$t("iam'us.create.title')"
-               fluid
-               severity="secondary"
-               text
-               @click="show_new_user_status_form = true"
-            />
-         </div>
-      </template>
-   </Select>
-   <Dialog
-      v-model:visible="show_new_user_status_form"
-      modal
-      :header="$t("iam'us.create.title')"
-      :style="{ width: '25rem' }"
-   >
-      <NewUserStatusForm @created="load_user_status($event)"></NewUserStatusForm>
-   </Dialog>
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <Select
+         v-else-if="user_status"
+         v-model="value_facade"
+         class="w-full"
+         :options="user_status"
+         option-label="name"
+         option-value="id"
+         :empty-message="$t('iam.us.picker.empty')"
+      >
+         <template #footer>
+            <div class="p-3">
+               <Button
+                  :label="$t('iam.us.create.title')"
+                  fluid
+                  severity="secondary"
+                  text
+                  @click="show_new_user_status_form = true"
+               />
+            </div>
+         </template>
+      </Select>
+      <Dialog
+         v-model:visible="show_new_user_status_form"
+         modal
+         :header="$t('iam.us.create.title')"
+         :style="{ width: '25rem' }"
+      >
+         <NewUserStatusForm @created="load_user_status($event)"></NewUserStatusForm>
+      </Dialog>
+   </div>
 </template>
 
 <script lang="ts" setup>

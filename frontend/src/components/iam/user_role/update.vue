@@ -23,7 +23,7 @@
          <div class="flex justify-end gap-2">
             <Button
                type="button"
-               :label="$t("iam'us.create.submit')"
+               :label="$t('iam.us.create.submit')"
                @click="create_user_status"
             ></Button>
          </div>
@@ -60,11 +60,11 @@ async function create_user_status() {
    )
 }
 
-function load() {
+async function load() {
    loading.value = true
 
    if (props.id != undefined) {
-      api.iam.user_status.get(props.id).fold(
+      ;(await api.iam.user_status.get(props.id)).fold(
          (err: string) => {
             error(err)
          },

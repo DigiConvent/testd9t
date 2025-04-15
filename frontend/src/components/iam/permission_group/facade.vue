@@ -1,27 +1,29 @@
 <template>
-   <template v-if="permission_groups">
-      <template v-for="pg in permission_groups" :key="pg.id">
-         <a
-            v-if="has_on_click"
-            class="cursor-pointer select-none"
-            @click="handle_click($event, pg)"
-         >
-            <Fa :icon="get_icon(pg.meta)" class="fa-fw" />
-            {{ pg.name }} {{ pg.abbr != "" ? `(${pg.abbr})` : "" }}
-         </a>
-         <router-link
-            v-else
-            :to="{ name: 'admin.iam.permission_group.profile', params: { id: pg.id } }"
-            class="block"
-         >
-            <Fa :icon="get_icon(pg.meta)" class="fa-fw" />
-            {{ pg.name }} {{ pg.abbr != "" ? `(${pg.abbr})` : "" }}
-         </router-link>
+   <div>
+      <template v-if="permission_groups">
+         <template v-for="pg in permission_groups" :key="pg.id">
+            <a
+               v-if="has_on_click"
+               class="cursor-pointer select-none"
+               @click="handle_click($event, pg)"
+            >
+               <Fa :icon="get_icon(pg.meta)" class="fa-fw" />
+               {{ pg.name }} {{ pg.abbr != "" ? `(${pg.abbr})` : "" }}
+            </a>
+            <router-link
+               v-else
+               :to="{ name: 'admin.iam.permission_group.profile', params: { id: pg.id } }"
+               class="block"
+            >
+               <Fa :icon="get_icon(pg.meta)" class="fa-fw" />
+               {{ pg.name }} {{ pg.abbr != "" ? `(${pg.abbr})` : "" }}
+            </router-link>
+         </template>
       </template>
-   </template>
-   <template v-else>
-      {{ permission_group }}
-   </template>
+      <template v-else>
+         {{ permission_group }}
+      </template>
+   </div>
 </template>
 
 <script lang="ts" setup>

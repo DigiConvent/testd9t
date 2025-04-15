@@ -23,7 +23,7 @@
          <div class="flex justify-end gap-2">
             <Button
                type="button"
-               :label="$t("iam'us.create.submit')"
+               :label="$t('iam.us.create.submit')"
                @click="create_user_status"
             ></Button>
          </div>
@@ -39,11 +39,11 @@ import FormTextInput from "@/components/form/text_input.vue"
 import FormTextarea from "@/components/form/textarea.vue"
 import FormSwitch from "@/components/form/switch.vue"
 import PermissionGroupPicker from "@/components/iam/permission_group/picker.vue"
-import type { UserStatusWrite } from "@/api/iam/user_status/types"
+import type { UserStatusRead, UserStatusWrite } from "@/api/iam/user_status/types"
 import { type IdOrData } from "@/components/form/form"
 
 const loading = ref(true)
-const data = ref<UserStatusWrite>()
+const data = ref<UserStatusRead>()
 const props = defineProps<IdOrData<UserStatusWrite> & { parent?: string }>()
 const us_parent = ref<string>()
 
@@ -60,15 +60,15 @@ async function create_user_status() {
    )
 }
 
-function load() {
+async function load() {
    loading.value = true
 
    if (props.id != undefined) {
-      api.iam.user_status.get(props.id).fold(
+      ;(await api.iam.user_status.get(props.id)).fold(
          (err: string) => {
             error(err)
          },
-         (user_status: UserStatusWrite) => {
+         (user_status: UserStatusRead) => {
             data.value = user_status
             loading.value = false
          },

@@ -52,8 +52,8 @@
       <div v-permission="'admin'">
          <router-link :to="{ name: 'app.meta' }">Dev</router-link>
       </div>
+      <Toast></Toast>
    </SwipeWrapper>
-   <Toast></Toast>
 </template>
 
 <script lang="ts" setup>

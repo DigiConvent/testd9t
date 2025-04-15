@@ -1,46 +1,48 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <DataTable v-else-if="user_list" v-permission="'iam.user.read'" :value="user_list.items">
-      <Column field="first_name" :header="$t('iam.user.fields.first_name')" />
-      <Column field="last_name" :header="$t('iam.user.fields.last_name')" />
-      <Column :header="$t('iam.user.fields.user_status')">
-         <template #body="slotProps">
-            <router-link
-               v-if="slotProps.data.status_id != null"
-               :to="{
-                  name: 'admin.iam.user_status.profile',
-                  params: { id: slotProps.data.status_id },
-               }"
-               >{{ slotProps.data.status_name }}</router-link
-            >
-            <Fa v-else icon="circle-exclamation" class="text-red-500" />
-         </template>
-      </Column>
-      <Column :header="$t('iam.user.fields.roles')">
-         <template #body="slotProps">
-            <div class="flex shrink gap-4">
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <DataTable v-else-if="user_list" v-permission="'iam.user.read'" :value="user_list.items">
+         <Column field="first_name" :header="$t('iam.user.fields.first_name')" />
+         <Column field="last_name" :header="$t('iam.user.fields.last_name')" />
+         <Column :header="$t('iam.user.fields.user_status')">
+            <template #body="slotProps">
                <router-link
-                  v-for="(role, i) of slotProps.data.roles"
-                  :key="role.id"
-                  :to="{ name: 'admin.iam.user_role.profile', params: { id: role.id } }"
-                  :style="`background-color: ${colours[i]}`"
-                  class="white-text p-1 rounded"
-                  >{{ role.name }}</router-link
+                  v-if="slotProps.data.status_id != null"
+                  :to="{
+                     name: 'admin.iam.user_status.profile',
+                     params: { id: slotProps.data.status_id },
+                  }"
+                  >{{ slotProps.data.status_name }}</router-link
                >
-            </div>
-         </template>
-      </Column>
-      <Column v-permission="'iam.user.read'">
-         <template #body="slotProps">
-            <Button class="p-button-text" @click="handle_row_click(slotProps)">
-               <Fa icon="id-card" class="text-xl"></Fa>
-            </Button>
-         </template>
-      </Column>
-   </DataTable>
-   <router-link v-permission="'iam.user.write'" :to="{ name: 'admin.iam.user.create' }"
-      ><Fa icon="user-plus" /> {{ $t("iam.user.create.title") }}</router-link
-   >
+               <Fa v-else icon="circle-exclamation" class="text-red-500" />
+            </template>
+         </Column>
+         <Column :header="$t('iam.user.fields.roles')">
+            <template #body="slotProps">
+               <div class="flex shrink gap-4">
+                  <router-link
+                     v-for="(role, i) of slotProps.data.roles"
+                     :key="role.id"
+                     :to="{ name: 'admin.iam.user_role.profile', params: { id: role.id } }"
+                     :style="`background-color: ${colours[i]}`"
+                     class="white-text p-1 rounded"
+                     >{{ role.name }}</router-link
+                  >
+               </div>
+            </template>
+         </Column>
+         <Column v-permission="'iam.user.read'">
+            <template #body="slotProps">
+               <Button class="p-button-text" @click="handle_row_click(slotProps)">
+                  <Fa icon="id-card" class="text-xl"></Fa>
+               </Button>
+            </template>
+         </Column>
+      </DataTable>
+      <router-link v-permission="'iam.user.write'" :to="{ name: 'admin.iam.user.create' }">
+         <Fa icon="user-plus" /> {{ $t("iam.user.create.title") }}
+      </router-link>
+   </div>
 </template>
 
 <script lang="ts" setup>

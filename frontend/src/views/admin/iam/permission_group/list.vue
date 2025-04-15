@@ -1,15 +1,17 @@
 <template>
-   <PermissionGroupTreeView
-      :refresh="refresh"
-      @click="handle_click($event)"
-   ></PermissionGroupTreeView>
-   <Menu ref="show_menu" :model="menu_items" :popup="true">
-      <template #item="{ item }">
-         <router-link :to="item.route" class="inline-block w-full p-2">
-            <Fa :icon="item.icon" class="fa-fw mr" /> {{ item.label }}
-         </router-link>
-      </template>
-   </Menu>
+   <div>
+      <PermissionGroupTreeView
+         :refresh="refresh"
+         @click="handle_click($event)"
+      ></PermissionGroupTreeView>
+      <Menu ref="show_menu" :model="menu_items" :popup="true">
+         <template #item="{ item }">
+            <router-link :to="item.route" class="inline-block w-full p-2">
+               <Fa :icon="item.icon" class="fa-fw mr" /> {{ item.label }}
+            </router-link>
+         </template>
+      </Menu>
+   </div>
 </template>
 
 <script lang="ts" setup>

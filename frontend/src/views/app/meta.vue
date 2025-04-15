@@ -1,15 +1,17 @@
 <template>
-   <span v-permission="'admin'" class="inline">
-      <ToggleSwitch v-model="debug"></ToggleSwitch>
-   </span>
-   <div v-for="route of sorted_routes" :key="route.path">
-      <router-link
-         v-if="!route.path.includes(':') && route.components != undefined"
-         :to="route.path"
-         class="underline text-sky-700"
-         >{{ route.path }}</router-link
-      >
-      <span v-else>{{ route.path }}</span>
+   <div>
+      <span v-permission="'admin'" class="inline">
+         <ToggleSwitch v-model="debug"></ToggleSwitch>
+      </span>
+      <div v-for="route of sorted_routes" :key="route.path">
+         <router-link
+            v-if="!route.path.includes(':') && route.components != undefined"
+            :to="route.path"
+            class="underline text-sky-700"
+            >{{ route.path }}</router-link
+         >
+         <span v-else>{{ route.path }}</span>
+      </div>
    </div>
 </template>
 

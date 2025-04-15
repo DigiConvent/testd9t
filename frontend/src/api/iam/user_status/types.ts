@@ -4,6 +4,7 @@ export type UserStatusRead = {
    abbr: string
    description: string
    archived: boolean
+   parent: string
 }
 
 export type UserStatusWrite = {
