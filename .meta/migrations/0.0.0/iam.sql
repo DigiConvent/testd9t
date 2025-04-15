@@ -145,6 +145,7 @@ with recursive descendants as (select
       0 as implied,
       pg.parent,
       pg.id as root,
+      pg.meta,
       pg.name as hint
    from permission_groups pg
    union all
@@ -154,6 +155,7 @@ with recursive descendants as (select
       1 as implied,
       child.parent,
       s.root,
+      child.meta,
       concat(s.hint, '->', child.name) as hint
    from permission_groups child
    inner join descendants s on child.parent = s.id)
@@ -403,35 +405,23 @@ join permission_group_has_permission_group_ancestors pghpga on pghu.permission_g
 
 -- backend/pkg/iam/db/0.0.0/998_insert_permissions.sql 
 insert into permissions (name) values 
-('iam'),
-('iam.user'),
-('iam.user.write'),
 ('iam.user.read'),
-('iam.user.list'),
-('iam.user_status'),
-('iam.user_status.write'),
+('iam.user.write'),
+('iam.user_role.read'),
+('iam.user_role.write'),
 ('iam.user_status.read'),
-('iam.user_status.list'),
-('iam.user_status.update'),
-('iam.user_status.delete'),
-('iam.user_status.add'),
-('iam.permission'),
-('iam.permission.list'),
-('iam.permission_group'),
+('iam.user_status.write'),
+('iam.permission.read'),
 ('iam.permission_group.write'),
-('iam.permission_group.read'),
-('iam.permission_group.list'),
-('iam.permission_group.delete'),
-('iam.permission_group.add_user'),
-('iam.permission_group.update_permissions'),
-('iam.permission_group.update_users');
+('iam.permission_group.read');
 
 -- backend/pkg/iam/db/0.0.0/999_create_admin.sql 
 insert into users (id, emailaddress, first_name, last_name, enabled) values
 ('00000000-0000-0000-0000-000000000000', '', 'Admin', 'McAdmin', 1);
 
-insert into permissions (name) values ('admin'); -- this is basically like root user
+insert into permissions (name, description) values ('admin', 'Permission to bypass all permissions.'); -- this is the root user
 insert into user_roles (id, name, abbr, description) values ('00000000-0000-0000-0000-000000000000', 'admin', 'admin', 'A role for bypassing all permissions');
+update permission_groups set generated = 1 where id = '00000000-0000-0000-0000-000000000000';
 insert into permission_group_has_permission (permission_group, permission) values ('00000000-0000-0000-0000-000000000000', 'admin');
 insert into user_became_role (user, "role", "start", "end", description) values ('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', datetime('now', 'localtime'), datetime('9999-12-31T23:59:59'), '');
 
