@@ -1,30 +1,34 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <Form
-      v-else-if="pg"
-      v-permission="'iam.permission_group.write'"
-      class="flex flex-col gap-4"
-      @submit="handle_submit"
-   >
-      <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
-      <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
-      <FormTextareaInput v-model="pg.description" label="iam.pg.fields" name="description" />
-      <PermissionGroupPicker
-         v-if="pg.parent != null"
-         v-model="pg.parent"
-         label="iam.pg.fields"
-         name="parent"
-         :discriminate_descendants="id()"
-         :discriminate_meta="['role', 'status']"
-      ></PermissionGroupPicker>
-      <PermissionPicker
-         v-model="permissions"
-         :multiple="true"
-         :preselected="inherited_permissions"
-      ></PermissionPicker>
-      <Button @click="handle_submit">{{ $t("actions.save", { entity: $t("iam.pg.pg") }) }}</Button>
-   </Form>
-   <div v-else>Could not load permission group</div>
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <Form
+         v-else-if="pg"
+         v-permission="'iam.permission_group.write'"
+         class="flex flex-col gap-4"
+         @submit="handle_submit"
+      >
+         <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
+         <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
+         <FormTextareaInput v-model="pg.description" label="iam.pg.fields" name="description" />
+         <PermissionGroupPicker
+            v-if="pg.parent != null"
+            v-model="pg.parent"
+            label="iam.pg.fields"
+            name="parent"
+            :discriminate_descendants="id()"
+            :discriminate_meta="['role', 'status']"
+         ></PermissionGroupPicker>
+         <PermissionPicker
+            v-model="permissions"
+            :multiple="true"
+            :preselected="inherited_permissions"
+         ></PermissionPicker>
+         <Button @click="handle_submit">{{
+            $t("actions.save", { entity: $t("iam.pg.pg") })
+         }}</Button>
+      </Form>
+      <div v-else>Could not load permission group</div>
+   </div>
 </template>
 
 <script lang="ts" setup>
@@ -36,8 +40,11 @@ import FormTextInput from "@/components/form/text_input.vue"
 import FormTextareaInput from "@/components/form/textarea.vue"
 import PermissionGroupPicker from "@/components/iam/permission_group/picker.vue"
 import PermissionPicker from "@/components/iam/permission/picker.vue"
-import { error } from "@/composables/toast"
+import { error, success } from "@/composables/toast"
 import type { IdOrData } from "@/components/form/form"
+import { useI18n } from "vue-i18n"
+
+const t = useI18n().t
 
 const loading = ref(true)
 
@@ -49,18 +56,17 @@ const id = () => {
 const pg = ref<PermissionGroupWrite | null>(null)
 const parent = ref<string>("")
 const permissions = ref<string[]>([])
-const emit = defineEmits(["updated"])
 
 const handle_submit = async () => {
    if (pg.value == null) return
    pg.value.permissions = permissions.value
    ;(await api.iam.permission_group.update(id(), pg.value!)).fold(
       (err: string) => {
-         error(err)
+         error(t("feedback.-.update", { entity: t("iam.pg.pg") }), err)
       },
       (result: boolean) => {
          if (!result) error("Failed to update permission group")
-         else emit("updated", true)
+         else success(t("feedback.+.update", { entity: t("iam.pg.pg") }))
       },
    )
 }

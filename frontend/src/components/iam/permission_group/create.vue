@@ -1,25 +1,36 @@
 <template>
-   <Form
-      v-permission="'iam.permission_group.write'"
-      class="flex flex-col gap-4"
-      @submit="handle_create"
-   >
-      <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
-      <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
-      <FormTextareaInput v-model="pg.description" label="iam.pg.fields" name="description" />
-      <PermissionGroupPicker
-         v-model="pg.parent"
-         label="iam.pg.fields"
-         name="parent"
-         :discriminate_meta="['role', 'status']"
-      ></PermissionGroupPicker>
-      <PermissionPicker
-         v-model="pg.permissions"
-         :multiple="true"
-         :preselected="inherited_permissions"
-      ></PermissionPicker>
-      <Button @click="handle_create">{{ $t("actions.save") }}</Button>
-   </Form>
+   <div>
+      <Form v-permission="'iam.permission_group.write'" class="flex flex-col gap-4">
+         <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
+         <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
+         <FormTextareaInput v-model="pg.description" label="iam.pg.fields" name="description" />
+         <PermissionGroupPicker
+            v-model="pg.parent"
+            label="iam.pg.fields"
+            name="parent"
+            :discriminate_meta="['role', 'status']"
+         ></PermissionGroupPicker>
+         <PermissionPicker
+            v-model="pg.permissions"
+            :multiple="true"
+            :preselected="inherited_permissions"
+         ></PermissionPicker>
+         <div class="flex gap-2">
+            <Button @click="handle_create('')">{{
+               $t("actions.create", { entity: $t("iam.pg.pg") })
+            }}</Button>
+            <Button :style="`background-color: ${get_colour(4)}`" @click="handle_create('new')">
+               ...<Fa icon="plus" />
+            </Button>
+            <Button :style="`background-color: ${get_colour(5)}`" @click="handle_create('profile')">
+               ...<Fa icon="eye" />
+            </Button>
+            <Button :style="`background-color: ${get_colour(6)}`" @click="handle_create('edit')">
+               ...<Fa icon="pencil" />
+            </Button>
+         </div>
+      </Form>
+   </div>
 </template>
 
 <script lang="ts" setup>
@@ -32,6 +43,7 @@ import PermissionGroupPicker from "./picker.vue"
 import PermissionPicker from "@/components/iam/permission/picker.vue"
 import { error } from "@/composables/toast"
 import router from "@/router"
+import { get_colour } from "@/utils/colour"
 
 const props = defineProps<{ parent: string }>()
 const pg = ref<PermissionGroupWrite>({
@@ -48,13 +60,32 @@ if (props.parent != undefined) {
    pg.value.parent = props.parent
 }
 
-const handle_create = async () => {
+async function handle_create(action: "" | "new" | "profile" | "edit") {
    ;(await api.iam.permission_group.create(pg.value!)).fold(
       (err: string) => {
          error(err)
       },
-      () => {
-         router.back()
+      (id: string) => {
+         if (action == "new")
+            router.replace({
+               name: "admin.iam.permission_group.create",
+               params: { parent: pg.value.parent },
+            })
+         if (action == "") {
+            router.back()
+         }
+         if (action == "profile") {
+            router.replace({
+               name: "admin.iam.permission_group.profile",
+               params: { id: id },
+            })
+         }
+         if (action == "edit") {
+            router.replace({
+               name: "admin.iam.permission_group.update",
+               params: { id: id },
+            })
+         }
       },
    )
 }

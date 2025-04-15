@@ -155,6 +155,7 @@ import type { SystemStatus } from "@/api/sys/types"
 import { error, info } from "@/composables/toast"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
+import { colours } from "@/utils/colour"
 
 const t = useI18n().t
 
@@ -272,25 +273,6 @@ const shortened_value = (value: string) => {
    return result.join("; ")
 }
 
-const colours = [
-   "#ef4444",
-   "#f59e0b",
-   "#84cc16",
-   "#10b981",
-   "#06b6d4",
-   "#3b82f6",
-   "#8b5cf6",
-   "#d946ef",
-   "#f43f5e",
-   "#f97316",
-   "#eab308",
-   "#22c55e",
-   "#14b8a6",
-   "#0ea5e9",
-   "#6366f1",
-   "#a855f7",
-   "#ec4899",
-]
 function fill_colours_and_sort<T>(
    entries: { color: string; value: number; [key: string]: any }[] & T[],
 ): T[] {

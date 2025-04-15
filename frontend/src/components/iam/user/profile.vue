@@ -1,24 +1,26 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <div v-else-if="profile" class="flex flex-col gap-4">
-      <ReadUser :id="undefined" :data="profile.user" />
-      <FormSwitch
-         v-model="profile.user.enabled"
-         v-permission="'iam.user.write'"
-         :readonly="is_loggedin_user"
-         :label_on="$t('iam.user.enabled')"
-         :label_off="$t('iam.user.disabled')"
-         icon_on="user-unlock"
-         icon_off="user-lock"
-         :loading="loading_enabled"
-         @update:model-value="set_enabled"
-      />
-      <SetPassword
-         :id="is_loggedin_user ? 'me' : profile.user.id"
-         v-permission="'iam.user.write'"
-         v-permission.except="is_loggedin_user"
-         @success="password_set"
-      ></SetPassword>
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <div v-else-if="profile" class="flex flex-col gap-4">
+         <ReadUser :id="undefined" :data="profile.user" />
+         <FormSwitch
+            v-model="profile.user.enabled"
+            v-permission="'iam.user.write'"
+            :readonly="is_loggedin_user"
+            :label_on="$t('iam.user.enabled')"
+            :label_off="$t('iam.user.disabled')"
+            icon_on="user-unlock"
+            icon_off="user-lock"
+            :loading="loading_enabled"
+            @update:model-value="set_enabled"
+         />
+         <SetPassword
+            :id="is_loggedin_user ? 'me' : profile.user.id"
+            v-permission="'iam.user.write'"
+            v-permission.except="is_loggedin_user"
+            @success="password_set"
+         ></SetPassword>
+      </div>
    </div>
 </template>
 

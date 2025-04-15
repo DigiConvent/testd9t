@@ -91,7 +91,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-   window.Telegram.WebApp.HapticFeedback.impactOccurred("light")
+   if (window.Telegram.WebApp.initData != "")
+      window.Telegram.WebApp.HapticFeedback.impactOccurred("light")
    next()
 })
 

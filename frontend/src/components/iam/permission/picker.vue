@@ -1,44 +1,47 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <div v-else-if="node">
-      <div class="border border-gray-200 p-2" @click="show_permissions_dialog = true">
-         <label class="block"> {{ $t("iam.pg.fields.permissions") }} </label>
-         <div class="rounded gap-2 flex">
-            <div
-               v-for="permission of modelValue"
-               :key="permission"
-               @click="remove($event, permission)"
-            >
-               <InputGroup class="cursor-pointer select-none text-white">
-                  <Badge><Fa icon="times" />{{ permission }}</Badge>
-               </InputGroup>
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <div v-else-if="node">
+         <div class="border border-gray-200 p-2" @click="show_permissions_dialog = true">
+            <label class="block"> {{ $t("iam.pg.fields.permissions") }} </label>
+            <div class="rounded gap-2 flex">
+               <div
+                  v-for="permission of modelValue"
+                  :key="permission"
+                  @click="remove($event, permission)"
+               >
+                  <InputGroup class="cursor-pointer select-none text-white">
+                     <Badge><Fa icon="times" />{{ permission }}</Badge>
+                  </InputGroup>
+               </div>
+               <Badge :severity="'info'" class="cursor-pointer select-none inline">
+                  <Fa icon="plus" class="fa-fw" />
+                  {{ $t("actions.add", { entity: $t("iam.p.p") }) }}
+               </Badge>
             </div>
-            <Badge :severity="'info'" class="cursor-pointer select-none inline">
-               <Fa icon="plus" class="fa-fw" /> {{ $t("actions.add", { entity: $t("iam.p.p") }) }}
-            </Badge>
          </div>
+         <Dialog
+            v-model:visible="show_permissions_dialog"
+            modal
+            @hide="show_permissions_dialog = false"
+         >
+            <template #default>
+               <PermissionOption
+                  v-for="child of node.children.sort((a, b) => a.label.localeCompare(b.label))"
+                  :key="child.key"
+                  :node="child"
+                  :multiple="multiple"
+                  :parent_hovered="false"
+                  :preselected="preselected"
+                  :summarised="false"
+                  :readonly="(preselected || []).includes(child.key)"
+               />
+            </template>
+            <template #footer>
+               <Button @click="show_permissions_dialog = false">{{ $t("actions.close") }} </Button>
+            </template>
+         </Dialog>
       </div>
-      <Dialog
-         v-model:visible="show_permissions_dialog"
-         modal
-         @hide="show_permissions_dialog = false"
-      >
-         <template #default>
-            <PermissionOption
-               v-for="child of node.children.sort((a, b) => a.label.localeCompare(b.label))"
-               :key="child.key"
-               :node="child"
-               :multiple="multiple"
-               :parent_hovered="false"
-               :preselected="preselected"
-               :summarised="false"
-               :readonly="(preselected || []).includes(child.key)"
-            />
-         </template>
-         <template #footer>
-            <Button @click="show_permissions_dialog = false">{{ $t("actions.close") }} </Button>
-         </template>
-      </Dialog>
    </div>
 </template>
 

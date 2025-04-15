@@ -1,24 +1,30 @@
 <template>
-   <Form v-permission="'iam.user.write'" class="flex flex-col gap-4 w-full" @submit="handle_submit">
-      <h2 class="text-lg">{{ t("iam.user.create.title") }}</h2>
-      <FormTextInput v-model="email" label="iam.user.fields" name="email" />
-      <FormTextInput v-model="first_name" label="iam.user.fields" name="first_name" />
-      <FormTextInput v-model="last_name" label="iam.user.fields" name="last_name" />
-      <div class="grid grid-cols-2 gap-4">
-         <FloatLabel variant="in">
-            <UserStatusPicker id="user_status" v-model="user_status"></UserStatusPicker>
-            <label for="user_status">{{ $t("iam.us.picker.placeholder") }}</label>
-         </FloatLabel>
-         <FormMaskInput
-            v-model="user_status_start"
-            label="iam.user.fields"
-            name="user_status_start"
-            mask="99/99/9999"
-            slot-char="DD/MM/YYYY"
-         />
-      </div>
-      <Button type="submit" severity="secondary" :label="$t('iam.user.create.submit')" />
-   </Form>
+   <div>
+      <Form
+         v-permission="'iam.user.write'"
+         class="flex flex-col gap-4 w-full"
+         @submit="handle_submit"
+      >
+         <h2 class="text-lg">{{ t("iam.user.create.title") }}</h2>
+         <FormTextInput v-model="email" label="iam.user.fields" name="email" />
+         <FormTextInput v-model="first_name" label="iam.user.fields" name="first_name" />
+         <FormTextInput v-model="last_name" label="iam.user.fields" name="last_name" />
+         <div class="grid grid-cols-2 gap-4">
+            <FloatLabel variant="in">
+               <UserStatusPicker id="user_status" v-model="user_status"></UserStatusPicker>
+               <label for="user_status">{{ $t("iam.us.picker.placeholder") }}</label>
+            </FloatLabel>
+            <FormMaskInput
+               v-model="user_status_start"
+               label="iam.user.fields"
+               name="user_status_start"
+               mask="99/99/9999"
+               slot-char="DD/MM/YYYY"
+            />
+         </div>
+         <Button type="submit" severity="secondary" :label="$t('iam.user.create.submit')" />
+      </Form>
+   </div>
 </template>
 
 <script lang="ts" setup>

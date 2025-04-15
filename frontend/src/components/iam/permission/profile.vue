@@ -1,61 +1,65 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <div v-else-if="profile" class="flex flex-col gap-4">
-      <Card>
-         <template #content>
-            <router-link
-               v-for="permission of ancestors"
-               :key="permission.name"
-               class="block"
-               :to="{ name: 'admin.iam.permission.profile', params: { name: permission.name } }"
-            >
-               {{ permission.name }}
-            </router-link>
-            <h1 class="text-2xl">
-               {{ profile.permission.name }}
-               <small v-if="profile.permission.archived">{{ $t("iam.p.profile.archived") }}</small>
-               <p>{{ profile.permission.description }}</p>
-            </h1>
-            <router-link
-               v-for="permission of profile.descendants"
-               :key="permission.name"
-               class="block"
-               :to="{ name: 'admin.iam.permission.profile', params: { name: permission.name } }"
-            >
-               {{ permission.name }}
-            </router-link>
-         </template>
-      </Card>
-      <Card>
-         <template #title>
-            {{ $t("iam.p.profile.users") }}
-         </template>
-         <template #content>
-            <UserFacades :users="profile.users"></UserFacades>
-         </template>
-      </Card>
-      <Card>
-         <template #title>
-            {{ $t("iam.p.profile.groups") }}
-            <a @click="show_permission_group_picker = true"><Fa icon="plus" /></a>
-         </template>
-         <template #content>
-            <PermissionGroupFacades
-               :permission_groups="profile.permission_groups"
-               @pick="handle_remove_permission"
-            ></PermissionGroupFacades>
-            <Dialog v-model:visible="show_permission_group_picker" modal>
-               <PermissionGroupPicker
-                  v-model="permission_group_to_add"
-                  label="iam.p.fields"
-                  name="group"
-               />
-               <Button @click="handle_add_permission_group">{{
-                  $t("iam.p.profile.add_group")
-               }}</Button>
-            </Dialog>
-         </template>
-      </Card>
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <div v-else-if="profile" class="flex flex-col gap-4">
+         <Card>
+            <template #content>
+               <router-link
+                  v-for="permission of ancestors"
+                  :key="permission.name"
+                  class="block"
+                  :to="{ name: 'admin.iam.permission.profile', params: { name: permission.name } }"
+               >
+                  {{ permission.name }}
+               </router-link>
+               <h1 class="text-2xl">
+                  {{ profile.permission.name }}
+                  <small v-if="profile.permission.archived">{{
+                     $t("iam.p.profile.archived")
+                  }}</small>
+                  <p>{{ profile.permission.description }}</p>
+               </h1>
+               <router-link
+                  v-for="permission of profile.descendants"
+                  :key="permission.name"
+                  class="block"
+                  :to="{ name: 'admin.iam.permission.profile', params: { name: permission.name } }"
+               >
+                  {{ permission.name }}
+               </router-link>
+            </template>
+         </Card>
+         <Card>
+            <template #title>
+               {{ $t("iam.p.profile.users") }}
+            </template>
+            <template #content>
+               <UserFacades :users="profile.users"></UserFacades>
+            </template>
+         </Card>
+         <Card>
+            <template #title>
+               {{ $t("iam.p.profile.groups") }}
+               <a @click="show_permission_group_picker = true"><Fa icon="plus" /></a>
+            </template>
+            <template #content>
+               <PermissionGroupFacades
+                  :permission_groups="profile.permission_groups"
+                  @pick="handle_remove_permission"
+               ></PermissionGroupFacades>
+               <Dialog v-model:visible="show_permission_group_picker" modal>
+                  <PermissionGroupPicker
+                     v-model="permission_group_to_add"
+                     label="iam.p.fields"
+                     name="group"
+                  />
+                  <Button @click="handle_add_permission_group">{{
+                     $t("iam.p.profile.add_group")
+                  }}</Button>
+               </Dialog>
+            </template>
+         </Card>
+      </div>
    </div>
 </template>
 

@@ -63,3 +63,10 @@ export function to_permission_group_write(pg: PermissionGroupRead): PermissionGr
       permissions: pg.permissions.map((e) => e.name),
    }
 }
+
+export function get_icon(type: string | null): string {
+   if (type == null || type == "") return "folders"
+   if (type == "role") return "user-shield"
+   if (type == "status") return "user-tag"
+   return "folders"
+}

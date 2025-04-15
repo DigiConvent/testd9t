@@ -1,41 +1,43 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <Card
-      v-else-if="user_read"
-      v-permission="'iam.user.read'"
-      v-permission.except="is_loggedin_user"
-   >
-      <template #title
-         >{{ user_read.first_name }} {{ user_read.last_name }}
-         <router-link
-            v-permission="'iam.user.write'"
-            v-permission.except="is_loggedin_user"
-            :to="{
-               name: 'admin.iam.user.update',
-               params: { id: is_loggedin_user ? 'me' : user_read.id },
-            }"
-            outlined
-            class="!inline"
-            ><Fa icon="pencil"
-         /></router-link>
-      </template>
-      <template #content>
-         <table>
-            <tr>
-               <td>Vorname</td>
-               <td>{{ user_read.first_name }}</td>
-            </tr>
-            <tr>
-               <td>Nachname</td>
-               <td>{{ user_read.last_name }}</td>
-            </tr>
-            <tr>
-               <td>E-Postaddresse</td>
-               <td>{{ user_read.emailaddress }}</td>
-            </tr>
-         </table>
-      </template>
-   </Card>
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <Card
+         v-else-if="user_read"
+         v-permission="'iam.user.read'"
+         v-permission.except="is_loggedin_user"
+      >
+         <template #title
+            >{{ user_read.first_name }} {{ user_read.last_name }}
+            <router-link
+               v-permission="'iam.user.write'"
+               v-permission.except="is_loggedin_user"
+               :to="{
+                  name: 'admin.iam.user.update',
+                  params: { id: is_loggedin_user ? 'me' : user_read.id },
+               }"
+               outlined
+               class="!inline"
+               ><Fa icon="pencil"
+            /></router-link>
+         </template>
+         <template #content>
+            <table>
+               <tr>
+                  <td>Vorname</td>
+                  <td>{{ user_read.first_name }}</td>
+               </tr>
+               <tr>
+                  <td>Nachname</td>
+                  <td>{{ user_read.last_name }}</td>
+               </tr>
+               <tr>
+                  <td>E-Postaddresse</td>
+                  <td>{{ user_read.emailaddress }}</td>
+               </tr>
+            </table>
+         </template>
+      </Card>
+   </div>
 </template>
 
 <script lang="ts" setup>

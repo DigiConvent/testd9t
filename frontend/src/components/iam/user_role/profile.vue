@@ -1,6 +1,8 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <div v-else-if="profile" v-permission="'iam.user_role.read'">This is a user wowe</div>
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <div v-else-if="profile" v-permission="'iam.user_role.read'">This is a user wowe</div>
+   </div>
 </template>
 <script lang="ts" setup>
 import { api } from "@/api"

@@ -84,3 +84,34 @@ export const create_tree_from_permission_group_facades = (
    }
    return root
 }
+
+export function inventory(
+   node: CustomNode<any>,
+   key: string,
+   options: string[],
+): { total: number; other: number; [key: string]: number } {
+   const result: { total: number; other: number; [key: string]: number } = {
+      total: node.children.length,
+      other: 0,
+   }
+   for (const option of options) {
+      result[option] = 0
+      for (const child of node.children) {
+         if (child.data[key] == option) result[option]++
+      }
+   }
+
+   for (const child of node.children) {
+      const i = inventory(child, key, options)
+      result.total += i.total
+      for (const option of options) {
+         result[option] += i[option]
+      }
+   }
+
+   result.other = result.total
+   for (const option of options) {
+      result.other -= result[option]
+   }
+   return result
+}

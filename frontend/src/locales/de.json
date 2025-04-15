@@ -171,6 +171,7 @@
    },
    "actions": {
       "create": "{entity} erstellen",
+      "and_new": "... und neu",
       "view": "{entity} ansehen",
       "update": "{entity} aktualisieren",
       "edit": "{entity} bearbeiten",
@@ -183,15 +184,27 @@
       "delete": "{entity} löschen"
    },
    "feedback": {
+      "+": {
+         "create": "{entity} erfolgreich erstellt",
+         "update": "{entity} erfolgreich aktualisiert",
+         "delete": "{entity} erfolgreich gelöscht",
+         "add": "{entity} erfolgreich hinzugefügt",
+         "remove": "{entity} erfolgreich entfernt",
+         "cancel": "{entity} erfolgreich abgebrochen"
+      },
+      "-": {
+         "create": "{entity} konnte nicht erstellt werden",
+         "update": "{entity} konnte nicht aktualisiert werden",
+         "delete": "{entity} konnte nicht gelöscht werden",
+         "add": "{entity} konnte nicht hinzugefügt werden",
+         "remove": "{entity} konnte nicht entfernt werden",
+         "cancel": "{entity} konnte nicht abgebrochen werden"
+      },
       "required": "{field} ist erforderlich",
-      "invalid": "{field} ist ungueltig",
-      "success": "{entity} erfolgreich erstellt",
-      "update": "{entity} erfolgreich aktualisiert",
-      "delete": "{entity} erfolgreich gelöscht",
-      "cancel": "{entity} erfolgreich abgebrochen"
+      "invalid": "{field} ist ungueltig"
    },
    "prompt": {
-      "delete": "Willst du {entity} wirklich löschen?"
+      "delete": "Willst du {entity} '{name}' wirklich löschen?"
    },
    "answers": {
       "yes": "Ja",

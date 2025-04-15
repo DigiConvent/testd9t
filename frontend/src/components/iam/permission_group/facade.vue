@@ -29,18 +29,13 @@
 <script lang="ts" setup>
 import type { PermissionGroupFacade } from "@/api/iam/permission_group/types"
 import { getCurrentInstance } from "vue"
+import { get_icon } from "@/api/iam/permission_group/utils"
 
 type PermissionGroupFacadeProps =
    | { permission_group?: undefined; permission_groups: PermissionGroupFacade[] }
    | { permission_group: PermissionGroupFacade; permission_groups?: undefined }
 
 defineProps<PermissionGroupFacadeProps>()
-function get_icon(type: string | null): string {
-   if (type == null || type == "") return "folders"
-   if (type == "role") return "user-shield"
-   if (type == "status") return "user-tag"
-   return "folders"
-}
 
 const emits = defineEmits<{
    (e: "pick", payload: { event: Event; pg: PermissionGroupFacade }): void

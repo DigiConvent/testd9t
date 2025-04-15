@@ -1,24 +1,26 @@
 <template>
-   <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
-   <div v-else-if="permission_group" v-permission="'iam.permission_group.read'">
-      <table>
-         <tr>
-            <td>Name</td>
-            <td>{{ permission_group.name }}</td>
-         </tr>
-         <tr>
-            <td>Abbr</td>
-            <td>{{ permission_group.abbr }}</td>
-         </tr>
-         <tr>
-            <td>Description</td>
-            <td>{{ permission_group.description }}</td>
-         </tr>
-         <tr v-if="permission_group.meta != null">
-            <td>Type</td>
-            <td>{{ permission_group.meta }}</td>
-         </tr>
-      </table>
+   <div>
+      <ProgressBar v-if="loading" mode="indeterminate"></ProgressBar>
+      <div v-else-if="permission_group" v-permission="'iam.permission_group.read'">
+         <table>
+            <tr>
+               <td>Name</td>
+               <td>{{ permission_group.name }}</td>
+            </tr>
+            <tr>
+               <td>Abbr</td>
+               <td>{{ permission_group.abbr }}</td>
+            </tr>
+            <tr>
+               <td>Description</td>
+               <td>{{ permission_group.description }}</td>
+            </tr>
+            <tr v-if="permission_group.meta != null">
+               <td>Type</td>
+               <td>{{ permission_group.meta }}</td>
+            </tr>
+         </table>
+      </div>
    </div>
 </template>
 

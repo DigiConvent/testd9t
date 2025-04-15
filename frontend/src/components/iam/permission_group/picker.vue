@@ -24,6 +24,7 @@
                         v-if="selected != null && slotProps.node.data.id == selected!.id"
                         icon="circle-check"
                      />
+                     <Fa :icon="get_icon(slotProps.node.data.meta)" />
                      {{ slotProps.node.data.name }}</span
                   >
                </template>
@@ -38,6 +39,7 @@ import { api } from "@/api"
 import { create_tree_using_parent, type CustomNode } from "@/api/core/node"
 import type { PermissionGroupFacade } from "@/api/iam/permission_group/types"
 import { computed, ref } from "vue"
+import { get_icon } from "@/api/iam/permission_group/utils"
 
 const props = defineProps<{
    // eslint-disable-next-line vue/prop-name-casing

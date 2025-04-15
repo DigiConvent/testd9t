@@ -6,10 +6,14 @@
          v-permission="'iam.permission_group.read'"
          :value="data"
          collapsible
+         @update:collapsed-keys="toggle_collapse($event)"
       >
+         <template #toggleicon="slotProps">
+            <Fa :icon="slotProps.expanded ? 'minus' : 'plus'" />
+         </template>
          <template #default="slotProps">
             <span
-               ><Fa :icon="get_icon(slotProps.node.data)" class="mr-2" />{{
+               ><Fa :icon="get_icon(slotProps.node.data.meta)" class="mr-2" />{{
                   slotProps.node.data.name
                }}</span
             >
@@ -19,6 +23,22 @@
             >
                <Fa icon="fa-ellipsis-v"></Fa>
             </Button>
+            <div v-if="collapsed.includes(slotProps.node.key)" class="">
+               <InputGroup class="text-sm text-gray-500">
+                  <Tag rounded severity="secondary"
+                     >{{ inventory(slotProps.node, "meta", ["role", "status"]).other }}
+                     <Fa icon="folders" />
+                  </Tag>
+                  <Tag rounded severity="secondary"
+                     >{{ inventory(slotProps.node, "meta", ["role", "status"]).role }}
+                     <Fa icon="user-shield" />
+                  </Tag>
+                  <Tag rounded severity="secondary"
+                     >{{ inventory(slotProps.node, "meta", ["role", "status"]).status }}
+                     <Fa icon="user-tag" />
+                  </Tag>
+               </InputGroup>
+            </div>
          </template>
       </OrganizationChart>
    </div>
@@ -26,10 +46,16 @@
 
 <script lang="ts" setup>
 import { api } from "@/api"
-import { create_tree_using_parent, type CustomNode } from "@/api/core/node"
+import { create_tree_using_parent, inventory, type CustomNode } from "@/api/core/node"
 import type { PermissionGroupFacade } from "@/api/iam/permission_group/types"
 import { error } from "@/composables/toast"
 import { ref, watch } from "vue"
+import { get_icon } from "@/api/iam/permission_group/utils"
+
+const collapsed = ref<string[]>([])
+function toggle_collapse(event: any) {
+   collapsed.value = Object.keys(event)
+}
 
 const props = defineProps<{ refresh: number }>()
 const emit = defineEmits(["click"])
@@ -59,11 +85,4 @@ watch(
    () => props.refresh,
    () => load_permission_groups(),
 )
-
-function get_icon(d: PermissionGroupFacade): string {
-   if (d.meta == null || d.meta == "") return "folders"
-   if (d.meta == "role") return "user-shield"
-   if (d.meta == "status") return "user-tag"
-   return "folders"
-}
 </script>
