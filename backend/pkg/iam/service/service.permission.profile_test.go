@@ -33,8 +33,4 @@ func TestGetPermissionProfile(t *testing.T) {
 	if len(permission.Descendants) == 0 {
 		t.Fatalf("GetPermissionProfile() failed: no descendants found")
 	}
-	for _, descendant := range permission.Descendants {
-		t.Log(descendant)
-	}
-
 }

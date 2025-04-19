@@ -2,8 +2,8 @@ create trigger after_insert_user_role
 after insert on user_roles
 for each row
 begin
-   insert into permission_groups (id, name, abbr, is_group, is_node, meta, description, generated) values 
-      (new.id, new.name, new.abbr, 1, 1, 'role', new.description, 1);
+   insert into permission_groups (id, name, abbr, meta, description, generated) values 
+      (new.id, new.name, new.abbr, 'role', new.description, 1);
 end;
 
 create trigger after_update_user_role

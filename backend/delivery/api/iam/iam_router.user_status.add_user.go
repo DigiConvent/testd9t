@@ -6,7 +6,7 @@ import (
 )
 
 func (router *IamRouter) AddUserStatusUser(ctx *gin.Context) {
-	var addUserToUserStatus iam_domain.AddUserStatusToUser
+	var addUserToUserStatus iam_domain.UserBecameStatusWrite
 	if err := ctx.ShouldBindJSON(&addUserToUserStatus); err != nil {
 		ctx.JSON(422, gin.H{
 			"error": err.Error(),
@@ -14,7 +14,7 @@ func (router *IamRouter) AddUserStatusUser(ctx *gin.Context) {
 		return
 	}
 
-	status := router.iamService.AddUserStatus(&addUserToUserStatus)
+	status := router.iamService.AddUserBecameStatus(&addUserToUserStatus)
 	if status.Err() {
 		ctx.JSON(status.Code, gin.H{
 			"error": status.Message,

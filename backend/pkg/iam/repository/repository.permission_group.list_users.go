@@ -22,7 +22,7 @@ func (r *IAMRepository) ListGroupUsers(groupId *uuid.UUID) ([]*iam_domain.UserFa
 
 	for rows.Next() {
 		var user iam_domain.UserFacade
-		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Implied)
+		err := rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Implied)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
 		}

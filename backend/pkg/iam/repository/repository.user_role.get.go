@@ -10,7 +10,7 @@ func (r *IAMRepository) GetUserRole(arg *uuid.UUID) (*iam_domain.UserRoleRead, c
 	row := r.db.QueryRow("select id, name, abbr, description from user_roles where id = ?", arg)
 
 	var userRole iam_domain.UserRoleRead
-	err := row.Scan(&userRole.ID, &userRole.Name, &userRole.Abbr, &userRole.Description)
+	err := row.Scan(&userRole.Id, &userRole.Name, &userRole.Abbr, &userRole.Description)
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}

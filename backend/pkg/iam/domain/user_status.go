@@ -7,12 +7,13 @@ import (
 )
 
 type UserStatusProfile struct {
-	UserStatus *UserStatusRead `json:"user_status"`
-	Users      []*UserFacade   `json:"users"`
+	*PermissionGroupProfile
+	UserStatus *UserStatusRead         `json:"user_role"`
+	History    []*UserBecameStatusRead `json:"history"`
 }
 
 type UserStatusRead struct {
-	ID          uuid.UUID `json:"id"`
+	Id          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
 	Abbr        string    `json:"abbr"`
 	Description string    `json:"description"`
@@ -27,22 +28,18 @@ type UserStatusWrite struct {
 	Parent      *uuid.UUID `json:"parent"`
 }
 
-type AddUserStatusToUser struct {
-	UserID   uuid.UUID `json:"user"`
-	StatusID uuid.UUID `json:"user_status"`
-	When     time.Time `json:"when"`
+type UserBecameStatusRead struct {
+	UserStatus  uuid.UUID  `json:"user_status"`
+	User        UserFacade `json:"user"`
+	Description string     `json:"description"`
+	Start       time.Time  `json:"start"`
+	End         *time.Time `json:"end"` // if this is nil, the user is currently that status
 }
 
-type UserHasStatusFacade struct {
-	ID   uuid.UUID `json:"id"`
-	Name string    `json:"name"`
-	Abbr string    `json:"abbr"`
-}
-
-type UserHasStatusRead struct {
-	ID          uuid.UUID `json:"id"`
-	Name        string    `json:"name"`
-	Abbr        string    `json:"abbr"`
-	Start       time.Time `json:"start"`
-	Description string    `json:"description"`
+type UserBecameStatusWrite struct {
+	UserStatus  uuid.UUID  `json:"user_status"`
+	User        uuid.UUID  `json:"user"`
+	Description string     `json:"description"`
+	Start       time.Time  `json:"start"`
+	End         *time.Time `json:"end"`
 }

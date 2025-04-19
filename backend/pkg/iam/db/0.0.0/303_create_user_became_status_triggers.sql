@@ -2,43 +2,64 @@ create trigger after_insert_user_became_status
 after insert on user_became_status
 for each row
 begin
+   update user_became_status 
+   set "end" = (
+      select ubs.start
+      from user_became_status ubs
+      where 
+         ubs.user = new.user and 
+         ubs.start > user_became_status.start
+      order by ubs.start asc
+      limit 1
+   ) 
+   where user = new.user;
    insert into permission_group_has_user (permission_group, user, start) values 
       (new.status, new.user, new.start);
-
-   update permission_group_has_user
-      set "end" = (
-         select "end" 
-         from user_status_interval usi
-         where permission_group_has_user.permission_group = usi.status and usi.user = permission_group_has_user.user
-      )
-   where user = new.user and permission_group = new.status;
 end;
 
 create trigger after_update_user_became_status 
-after update on user_became_status
+after update of start on user_became_status
 for each row
-begin 
+begin
+   -- set all the end dates of every entry of new.user to the start date of the succeeding entry
+   update user_became_status 
+   set "end" = (
+      select ubs.start
+      from user_became_status ubs
+      where 
+         ubs.user = new.user and 
+         ubs.start > user_became_status.start
+      order by ubs.start asc
+      limit 1
+   )
+   where user = new.user;
+end;
+
+create trigger after_update_user_became_status_end
+after update of end on user_became_status
+for each row
+begin
    update permission_group_has_user
       set "end" = (
          select "end" 
-         from user_status_interval usi
-         where permission_group_has_user.permission_group = usi.status and usi.user = permission_group_has_user.user
+         from user_became_status ubs
+         where permission_group_has_user.permission_group = ubs.status and ubs.user = permission_group_has_user.user
       )
-   where user = new.user and permission_group = new.status;
+   where user = new.user;
 end;
 
 create trigger after_delete_user_became_status
 after delete on user_became_status
 for each row
 begin
-   delete from permission_group_has_user
-   where user = old.user and permission_group = old.status;
-
    update permission_group_has_user
       set "end" = (
          select "end" 
-         from user_status_interval usi
-         where permission_group_has_user.permission_group = usi.status and usi.user = permission_group_has_user.user
+         from user_became_status ubs
+         where permission_group_has_user.permission_group = ubs.status and ubs.user = permission_group_has_user.user
       )
+   where user = old.user;
+
+   delete from permission_group_has_user
    where user = old.user and permission_group = old.status;
 end;

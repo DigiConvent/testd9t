@@ -45,11 +45,11 @@ func TestUserAddUserRole(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status = iamService.AddUserRole(&iam_domain.AddUserRoleToUser{
-		UserID: *id,
-		RoleID: *currentUserRoleId,
-		Start:  time.Now().Add(-2 * time.Hour),
-		End:    time.Now().Add(2 * time.Hour),
+	status = iamService.AddUserToUserRole(&iam_domain.UserBecameRoleWrite{
+		User:  *id,
+		Role:  *currentUserRoleId,
+		Start: time.Now().Add(-2 * time.Hour),
+		End:   time.Now().Add(4 * time.Hour),
 	})
 
 	if status.Err() {
@@ -57,22 +57,22 @@ func TestUserAddUserRole(t *testing.T) {
 	}
 
 	// attempt to add the same role again but with overlapping from the previous one
-	status = iamService.AddUserRole(&iam_domain.AddUserRoleToUser{
-		UserID: *id,
-		RoleID: *currentUserRoleId,
-		Start:  time.Now(),
-		End:    time.Now().Add(4 * time.Hour),
+	status = iamService.AddUserToUserRole(&iam_domain.UserBecameRoleWrite{
+		User:  *id,
+		Role:  *currentUserRoleId,
+		Start: time.Now(),
+		End:   time.Now().Add(4 * time.Hour),
 	})
 
 	if !status.Err() {
 		t.Fatal("expected an error, instead got", status.Code)
 	}
 
-	status = iamService.AddUserRole(&iam_domain.AddUserRoleToUser{
-		UserID: *id,
-		RoleID: *currentUserRoleId,
-		Start:  time.Now().Add(-3 * time.Hour),
-		End:    time.Now(),
+	status = iamService.AddUserToUserRole(&iam_domain.UserBecameRoleWrite{
+		User:  *id,
+		Role:  *currentUserRoleId,
+		Start: time.Now().Add(-3 * time.Hour),
+		End:   time.Now(),
 	})
 
 	if !status.Err() {
@@ -92,10 +92,11 @@ func TestUserAddUserRole(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status = iamService.AddUserRole(&iam_domain.AddUserRoleToUser{
-		UserID: *id,
-		RoleID: *futureUserRoleId,
-		Start:  time.Now().Add(5 * time.Hour),
+	status = iamService.AddUserToUserRole(&iam_domain.UserBecameRoleWrite{
+		User:  *id,
+		Role:  *futureUserRoleId,
+		Start: time.Now().Add(5 * time.Hour),
+		End:   time.Now().Add(6 * time.Hour),
 	})
 
 	if status.Err() {
@@ -116,6 +117,7 @@ func TestUserAddUserRole(t *testing.T) {
 		t.Fatalf("Expected 0 user, got %d", len(futurePG.Users))
 	}
 
+	testDB.QueryDebug("select * from permission_group_has_user where permission_group = ? ", currentUserRoleId.String())
 	currentPG, status := iamService.GetPermissionGroupProfile(currentUserRoleId)
 
 	if status.Err() {

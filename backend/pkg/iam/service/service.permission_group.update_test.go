@@ -13,16 +13,12 @@ func TestPermissionGroupUpdate(t *testing.T) {
 		Name:        "PermissionGroupUpdate",
 		Abbr:        "PGU",
 		Description: "test",
-		IsGroup:     true,
-		IsNode:      false,
 	})
 
 	status := iamService.UpdatePermissionGroup(permissionGroupID, &iam_domain.PermissionGroupWrite{
 		Name:        "PermissionGroupUpdate1",
 		Abbr:        "PGUx",
 		Description: "tset",
-		IsGroup:     false,
-		IsNode:      true,
 	})
 
 	if status.Err() {
@@ -50,13 +46,4 @@ func TestPermissionGroupUpdate(t *testing.T) {
 	if pgProfile.Description != "tset" {
 		t.Fatalf("Permission group description not updated")
 	}
-
-	if !pgProfile.IsGroup {
-		t.Fatalf("Permission group is_group not updated")
-	}
-
-	if pgProfile.IsNode {
-		t.Fatalf("Permission group is_node not updated")
-	}
-
 }

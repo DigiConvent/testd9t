@@ -5,7 +5,7 @@ import (
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
-func (s *IAMService) AddUserStatus(status *iam_domain.AddUserStatusToUser) *core.Status {
+func (s *IAMService) AddUserBecameStatus(status *iam_domain.UserBecameStatusWrite) *core.Status {
 	result := s.repository.AddUserStatusToUser(status)
 
 	return &result

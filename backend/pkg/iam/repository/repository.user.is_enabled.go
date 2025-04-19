@@ -10,7 +10,7 @@ import (
 var JwtDuration time.Duration = time.Hour * 3
 
 type disabledUser struct {
-	ID    uuid.UUID `json:"id"`
+	Id    uuid.UUID `json:"id"`
 	since time.Time
 }
 
@@ -27,12 +27,12 @@ func (r *IAMRepository) IsEnabled(id *uuid.UUID) (bool, core.Status) {
 		defer result.Close()
 		for result.Next() {
 			var user disabledUser
-			err := result.Scan(&user.ID)
+			err := result.Scan(&user.Id)
 			user.since = time.Now()
 			if err != nil {
 				return false, *core.InternalError(err.Error())
 			}
-			disabledUsers[user.ID.String()] = user
+			disabledUsers[user.Id.String()] = user
 		}
 	}
 
@@ -50,7 +50,7 @@ func (r *IAMRepository) IsEnabled(id *uuid.UUID) (bool, core.Status) {
 
 // no need to check since the list has to be initialised after the very first login
 func disableUser(id *uuid.UUID) {
-	disabledUsers[id.String()] = disabledUser{ID: *id, since: time.Now()}
+	disabledUsers[id.String()] = disabledUser{Id: *id, since: time.Now()}
 }
 
 func enableUser(id *uuid.UUID) {

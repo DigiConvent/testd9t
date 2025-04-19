@@ -11,8 +11,13 @@ export const to_user_role_read = (data: any): UserRoleRead => {
 }
 
 export const to_user_role_profile = (data: any): UserRoleProfile => {
+   console.log(data.users_became_role)
    return {
       role: to_user_role_read(data.user_role),
-      users_became_role: [],
+      users_became_role: data.users_became_role.map((e: any) => ({
+         user: e.user,
+         start: new Date(e.start),
+         end: new Date(e.end),
+      })),
    }
 }

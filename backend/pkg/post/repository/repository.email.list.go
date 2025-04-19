@@ -24,7 +24,7 @@ func (p PostRepository) ListEmails(fs *post_domain.EmailFilterSort) (*pagination
 
 	for rows.Next() {
 		email := &post_domain.EmailFacade{}
-		err := rows.Scan(&email.ID, &email.Mailbox, &email.Correspondent, &email.Subject, &email.SentAt)
+		err := rows.Scan(&email.Id, &email.Mailbox, &email.Correspondent, &email.Subject, &email.SentAt)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
 		}

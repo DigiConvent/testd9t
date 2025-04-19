@@ -69,6 +69,11 @@ async function load_permission_groups() {
          error(error_message)
       },
       (permission_groups: PermissionGroupFacade[]) => {
+         permission_groups.sort((a, b) => {
+            if (a.meta == null && b.meta != null) return -1
+            if (a.meta != null && b.meta == null) return 1
+            return a.name.localeCompare(b.name)
+         })
          const root = permission_groups.find((entry) => entry.parent == null)
          if (!root) return
          const root_node = create_tree_using_parent<PermissionGroupFacade>(root, permission_groups)

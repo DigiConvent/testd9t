@@ -23,19 +23,17 @@ func TestGetUserStatus(t *testing.T) {
 		t.Errorf("CreateUserStatus() failed: %s", status.Message)
 	}
 
-	userStatusProfile, status := iamService.GetUserStatus(id)
+	userStatus, status := iamService.GetUserStatus(id)
 
 	if status.Err() {
 		t.Errorf("GetUserStatus() failed: %s", status.Message)
 	}
-	userStatus := userStatusProfile.UserStatus
-
 	if userStatus == nil {
 		t.Errorf("Expected a result, got %v", userStatus)
 	}
 
-	if userStatus.ID.String() != id.String() {
-		t.Errorf("Expected %v, got %v", id, userStatus.ID.String())
+	if userStatus.Id.String() != id.String() {
+		t.Errorf("Expected %v, got %v", id, userStatus.Id.String())
 	}
 
 	if userStatus.Name != "Test User Status" {

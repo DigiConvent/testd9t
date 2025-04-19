@@ -6,8 +6,8 @@ import (
 
 func (r *IAMRepository) UserHasPermission(userId *uuid.UUID, permission string) bool {
 	var hasPermission bool
-	permission += "%"
-	row := r.db.QueryRow(`select 1 from user_has_permissions where user = ? and permission like ?`, userId.String(), permission)
+	permissionLike := permission + ".%"
+	row := r.db.QueryRow(`select 1 from user_has_permissions where user = ? and (permission = ? or permission like ?)`, userId.String(), permission, permissionLike)
 
 	err := row.Scan(&hasPermission)
 

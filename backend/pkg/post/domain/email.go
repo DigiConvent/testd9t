@@ -9,7 +9,7 @@ import (
 type EmailRead struct {
 	Mailbox       *uuid.UUID `json:"mailbox"`
 	Correspondent string     `json:"correspondent"`
-	ID            *uuid.UUID `json:"id"`
+	Id            *uuid.UUID `json:"id"`
 	Subject       string     `json:"subject"`
 	Body          string     `json:"body"`
 	Attachments   []string   `json:"attachments"`
@@ -19,7 +19,7 @@ type EmailRead struct {
 }
 
 type EmailFacade struct {
-	ID            *uuid.UUID `json:"id"`
+	Id            *uuid.UUID `json:"id"`
 	Mailbox       *uuid.UUID `json:"mailbox"`
 	Correspondent string     `json:"correspondent"`
 	Subject       string     `json:"subject"`

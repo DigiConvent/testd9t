@@ -1,3 +1,5 @@
+import type { UserFacade } from "../user/types"
+
 export type UserStatusRead = {
    id: string
    name: string
@@ -22,4 +24,16 @@ export type UserStatusCreate = {
    description: string
    archived: boolean
    parent: string
+}
+
+export type UserBecameStatus = {
+   role: string
+   user: UserFacade
+   start: Date
+   end: Date
+}
+
+export type UserStatusProfile = {
+   user_status: UserStatusRead
+   users_became_status: UserBecameStatus[]
 }

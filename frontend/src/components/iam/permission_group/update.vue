@@ -7,8 +7,18 @@
          class="flex flex-col gap-4"
          @submit="handle_submit"
       >
-         <FormTextInput v-model="pg.name" label="iam.pg.fields" name="name" />
-         <FormTextInput v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
+         <FormTextInput
+            v-if="pg.meta == null"
+            v-model="pg.name"
+            label="iam.pg.fields"
+            name="name"
+         />
+         <FormTextInput
+            v-if="pg.meta == null"
+            v-model="pg.abbr"
+            label="iam.pg.fields"
+            name="abbr"
+         />
          <FormTextareaInput v-model="pg.description" label="iam.pg.fields" name="description" />
          <PermissionGroupPicker
             v-if="pg.parent != null"

@@ -55,7 +55,7 @@ func (p PostRepository) StoreEmail(email *post_domain.EmailWrite) core.Status {
 	_, err = p.db.Exec("insert into emails (id, correspondent, mailbox, subject, notes) values (?, ?, ?, ?, ?)",
 		id.String(),
 		email.Correspondent,
-		mailbox.ID,
+		mailbox.Id,
 		email.Subject,
 		email.Html,
 		strings.Join(notes, "\n"))

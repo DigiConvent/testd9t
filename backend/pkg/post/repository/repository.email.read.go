@@ -18,7 +18,7 @@ func (p PostRepository) ReadEmail(id *uuid.UUID) (*post_domain.EmailRead, core.S
 	var email = &post_domain.EmailRead{}
 
 	err := p.db.QueryRow("select id, from_email_address, to_email_address, subject, read_at, sent_at from emails where id = ?", id.String()).
-		Scan(&email.ID, &email.Correspondent, &email.Mailbox, &email.Subject, &email.ReadAt, &email.SentAt)
+		Scan(&email.Id, &email.Correspondent, &email.Mailbox, &email.Subject, &email.ReadAt, &email.SentAt)
 
 	if err != nil {
 		return nil, *core.NotFoundError("email not found")

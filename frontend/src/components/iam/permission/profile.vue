@@ -54,7 +54,7 @@
                      name="group"
                   />
                   <Button @click="handle_add_permission_group">{{
-                     $t("iam.p.profile.add_group")
+                     $t("actions.add", { entity: $t("iam.pg.pg") })
                   }}</Button>
                </Dialog>
             </template>

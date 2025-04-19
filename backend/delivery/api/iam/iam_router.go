@@ -11,7 +11,6 @@ type IamRouterInterface interface {
 	LoginWithCredentials(ctx *gin.Context)
 	LoginWithJwt(ctx *gin.Context)
 
-	AddUserPermissionGroup(ctx *gin.Context)
 	CreatePermissionGroup(ctx *gin.Context)
 	DeletePermissionGroup(ctx *gin.Context)
 	GetPermissionGroup(ctx *gin.Context)
@@ -19,25 +18,27 @@ type IamRouterInterface interface {
 	ProfilePermissionGroup(ctx *gin.Context)
 	SetParentPermissionGroup(ctx *gin.Context)
 	UpdatePermissionGroup(ctx *gin.Context)
-	PermissionGroupEditPermissions(ctx *gin.Context)
+	EditPermissionGroupPermissions(ctx *gin.Context)
 
 	ListPermissions(ctx *gin.Context)
 	GetPermissionProfile(ctx *gin.Context)
 
 	CreateUserStatus(ctx *gin.Context)
-	DeleteUserStatus(ctx *gin.Context)
 	GetUserStatus(ctx *gin.Context)
+	GetUserStatusProfile(ctx *gin.Context)
 	ListUserStatus(ctx *gin.Context)
 	UpdateUserStatus(ctx *gin.Context)
 	AddUserToUserStatus(ctx *gin.Context)
+	DeleteUserStatus(ctx *gin.Context)
 
 	CreateUserRole(ctx *gin.Context)
-	DeleteUserRole(ctx *gin.Context)
 	GetUserRole(ctx *gin.Context)
+	GetUserRoleProfile(ctx *gin.Context)
 	ListUserRole(ctx *gin.Context)
 	UpdateUserRole(ctx *gin.Context)
 	AddUserToUserRole(ctx *gin.Context)
-	GetUserRoleProfile(ctx *gin.Context)
+	RemoveUserFromUserRole(ctx *gin.Context)
+	DeleteUserRole(ctx *gin.Context)
 
 	CreateUser(ctx *gin.Context)
 	GetUser(ctx *gin.Context)
@@ -59,23 +60,8 @@ type IamRouter struct {
 	sysService sys_service.SysServiceInterface
 }
 
-// AddUserPermissionGroup implements IamRouterInterface.
-func (router *IamRouter) AddUserPermissionGroup(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
-// AddUserToUserRole implements IamRouterInterface.
-func (router *IamRouter) AddUserToUserRole(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
 // AddUserToUserStatus implements IamRouterInterface.
 func (router *IamRouter) AddUserToUserStatus(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
-// DeleteUserRole implements IamRouterInterface.
-func (router *IamRouter) DeleteUserRole(ctx *gin.Context) {
 	panic("unimplemented")
 }
 

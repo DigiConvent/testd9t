@@ -7,7 +7,7 @@ import (
 )
 
 func (r *IAMRepository) ListUserGroups(userId *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status) {
-	rows, err := r.db.Query(`select pg.id, pg.name, pg.abbr, pg.is_group, uhpg.implied, uhpg.parent from user_has_permission_groups uhpg right join permission_groups pg on pg.id = uhpg.permission_group where uhpg.user = ?`, userId.String())
+	rows, err := r.db.Query(`select pg.id, pg.name, pg.abbr, pg.meta, uhpg.implied, uhpg.parent from user_has_permission_groups uhpg right join permission_groups pg on pg.id = uhpg.permission_group where uhpg.user = ?`, userId.String())
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
@@ -18,7 +18,7 @@ func (r *IAMRepository) ListUserGroups(userId *uuid.UUID) ([]*iam_domain.Permiss
 	for rows.Next() {
 		var permissionGroup iam_domain.PermissionGroupFacade
 		var parentID uuid.UUID
-		err := rows.Scan(&permissionGroup.ID, &permissionGroup.Name, &permissionGroup.Abbr, &permissionGroup.IsGroup, &permissionGroup.Implied, &parentID)
+		err := rows.Scan(&permissionGroup.Id, &permissionGroup.Name, &permissionGroup.Abbr, &permissionGroup.Meta, &permissionGroup.Implied, &parentID)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
 		}

@@ -13,27 +13,21 @@ func TestSetPermissionGroupParent(t *testing.T) {
 		Name:        "PermissionGroupParentSetChild",
 		Abbr:        "PGP",
 		Description: "test",
-		IsGroup:     true,
-		IsNode:      false,
 	})
 
 	permissionGroupParentID, _ := iamService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
 		Name:        "PermissionGroupParent",
 		Abbr:        "PGP",
 		Description: "test",
-		IsGroup:     true,
-		IsNode:      false,
 	})
 	permissionGroupGrandParentID, _ := iamService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
 		Name:        "PermissionGroupGrandParent",
 		Abbr:        "PGP",
 		Description: "test",
-		IsGroup:     true,
-		IsNode:      false,
 	})
 
 	status := iamService.SetParentPermissionGroup(&iam_domain.PermissionGroupSetParent{
-		ID:     permissionGroupChildID,
+		Id:     permissionGroupChildID,
 		Parent: permissionGroupParentID,
 	})
 
@@ -42,7 +36,7 @@ func TestSetPermissionGroupParent(t *testing.T) {
 	}
 
 	status = iamService.SetParentPermissionGroup(&iam_domain.PermissionGroupSetParent{
-		ID:     permissionGroupParentID,
+		Id:     permissionGroupParentID,
 		Parent: permissionGroupGrandParentID,
 	})
 

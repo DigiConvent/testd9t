@@ -12,7 +12,7 @@ func (r *IAMRepository) GetUserByEmailaddress(emailaddress string) (*iam_domain.
 	row := r.db.QueryRow(`select id, first_name, last_name, enabled from users where emailaddress = ?`, strings.ToLower(emailaddress))
 
 	err := row.Scan(
-		&user.ID,
+		&user.Id,
 		&user.FirstName,
 		&user.LastName,
 		&user.Enabled,

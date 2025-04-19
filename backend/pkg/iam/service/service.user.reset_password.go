@@ -10,7 +10,7 @@ func (service *IAMService) ResetPassword(emailaddress string) (string, *core.Sta
 		return "", &status
 	}
 
-	token, status := service.repository.ResetCredentials(&user.ID)
+	token, status := service.repository.ResetCredentials(&user.Id)
 
 	return token, &status
 }

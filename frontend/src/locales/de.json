@@ -78,8 +78,6 @@
             "abbr": "Abkürzung",
             "description": "Beschreibung",
             "parent": "Übergeordnete Gruppe",
-            "is_leaf": "Endgruppe",
-            "is_group": "Gruppe",
             "permissions": "Zugriffsrechte"
          },
          "picker": {
@@ -211,5 +209,36 @@
       "no": "Nein"
    },
    "unauthorised": "Fehlende Authorisierung ({permission})",
-   "inherited": "vererbt"
+   "inherited": "vererbt",
+   "time": {
+      "now": "Jetzt",
+      "month": {
+         "0": "Januar",
+         "1": "Februar",
+         "2": "März",
+         "3": "April",
+         "4": "Mai",
+         "5": "Juni",
+         "6": "Juli",
+         "7": "August",
+         "8": "September",
+         "9": "Oktober",
+         "10": "November",
+         "11": "Dezember"
+      },
+      "mo": {
+         "0": "Jan",
+         "1": "Feb",
+         "2": "März",
+         "3": "Apr",
+         "4": "Mai",
+         "5": "Jun",
+         "6": "Jul",
+         "7": "Aug",
+         "8": "Sep",
+         "9": "Okt",
+         "10": "Nov",
+         "11": "Dez"
+      }
+   }
 }

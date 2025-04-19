@@ -10,7 +10,7 @@ type EditPermissionGroupPermissions struct {
 	Remove string `json:"remove"`
 }
 
-func (router *IamRouter) PermissionGroupEditPermissions(ctx *gin.Context) {
+func (router *IamRouter) EditPermissionGroupPermissions(ctx *gin.Context) {
 	permissionGroupId := router_utils.GetId(ctx)
 
 	var payload EditPermissionGroupPermissions

@@ -9,8 +9,8 @@ begin
          where user = new.user
          and role = new.role
          and (
-            (new.start between "start" and "end") or
-            (new.end between "start" and "end")
+            (new.start between start and "end") or
+            (new.end between start and "end")
          )
       )
       then raise(abort, 'user already has this role with overlapping time period')
@@ -21,7 +21,7 @@ create trigger after_insert_user_became_role
 after insert on user_became_role
 for each row
 begin
-   insert into permission_group_has_user (permission_group, user, "start", "end") values 
+   insert into permission_group_has_user (permission_group, user, start, "end") values 
       (new.role, new.user, new.start, new.end);
 end;
 

@@ -14,7 +14,7 @@ func (r *IAMRepository) CreatePermissionGroup(arg *iam_domain.PermissionGroupWri
 		parent = &arg.Parent
 	}
 
-	_, err := r.db.Exec(`insert into permission_groups (id, name, abbr, description, is_group, is_node, parent) values (?, ?, ?, ?, ?, ?, ?)`, id, arg.Name, arg.Abbr, arg.Description, arg.IsGroup, arg.IsNode, parent)
+	_, err := r.db.Exec(`insert into permission_groups (id, name, abbr, description, parent) values (?, ?, ?, ?, ?)`, id, arg.Name, arg.Abbr, arg.Description, parent)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())

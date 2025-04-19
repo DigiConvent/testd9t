@@ -30,26 +30,27 @@ func TestUpdateUserStatus(t *testing.T) {
 	testUserStatus.Description = "testx"
 	testUserStatus.Archived = true
 
-	status := iamService.UpdateUserStatus(id, testUserStatus)
+	fakeId := uuid.Max
+	status := iamService.UpdateUserStatus(&fakeId, testUserStatus)
+
+	if !status.Err() {
+		t.Fatal("Expected an error")
+	}
+
+	status = iamService.UpdateUserStatus(id, testUserStatus)
 
 	if status.Err() {
 		t.Fatal(status.Message)
 	}
 
-	userStatusProfile, status := iamService.GetUserStatus(id)
-
-	if status.Err() {
-		t.Errorf("GetUserStatus() failed: %s", status.Message)
-	}
-
-	userStatus := userStatusProfile.UserStatus
+	userStatus, _ := iamService.GetUserStatus(id)
 
 	if userStatus == nil {
 		t.Errorf("Expected a result, got %v", userStatus)
 	}
 
-	if userStatus.ID.String() != id.String() {
-		t.Errorf("Expected %v, got %v", id, userStatus.ID.String())
+	if userStatus.Id.String() != id.String() {
+		t.Errorf("Expected %v, got %v", id, userStatus.Id.String())
 	}
 
 	if userStatus.Name != "UserStatusUpdateUpdated" {

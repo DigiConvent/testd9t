@@ -109,12 +109,12 @@ create table permission_group_has_permission (
 -- backend/pkg/iam/db/0.0.0/202_create_permission_group_has_user_table.sql 
 create table permission_group_has_user (
    permission_group uuid not null references permission_groups(id) on delete cascade,
-   "user" uuid not null references users(id) on delete cascade,
-   "start" timestamp not null default CURRENT_TIMESTAMP,
+   user uuid not null references users(id) on delete cascade,
+   start timestamp not null default CURRENT_TIMESTAMP,
    "end" timestamp default null
 );
 
-create index permission_group_has_user_pgu on permission_group_has_user(permission_group, "user");
+create index permission_group_has_user_pgu on permission_group_has_user(permission_group, user);
 
 -- backend/pkg/iam/db/0.0.0/203_create_permission_group_has_permission_groups_view.sql 
 create view permission_group_has_permission_group_ancestors as
@@ -164,10 +164,10 @@ select * from descendants;
 -- backend/pkg/iam/db/0.0.0/204_create_permission_group_has_users_view.sql 
 create view permission_group_has_users as
 select 
- pghpgd.root, pghpgd.implied, pghpgd.id as permission_group, u.id as "user", u.first_name, u.last_name 
+ pghpgd.root, pghpgd.implied, pghpgd.id as permission_group, u.id as user, u.first_name, u.last_name 
 from permission_group_has_user pghu 
 right join permission_group_has_permission_group_descendants pghpgd on pghpgd.id = pghu.permission_group
-right join users u on u.id = pghu."user"
+right join users u on u.id = pghu.user
 where (pghu.start <= datetime('now', 'localtime') or pghu.start is null)
 and (pghu.end is null or datetime('now', 'localtime') < pghu.end);
 
@@ -216,16 +216,16 @@ end;
 
 -- backend/pkg/iam/db/0.0.0/302_create_user_became_status_table.sql 
 create table user_became_status (
-   "user" uuid not null references users(id) on delete cascade,
+   user uuid not null references users(id) on delete cascade,
    "status" uuid not null references user_status(id) on delete cascade,
-   "start" timestamp not null,
+   start timestamp not null,
    description varchar default '',
-   primary key ("user", "status")
+   primary key (user, "status")
 );
 
 create view user_status_interval as
 select 
-   "user",
+   user,
    status,
    start,
    coalesce(
@@ -314,9 +314,9 @@ end;
 
 -- backend/pkg/iam/db/0.0.0/402_create_user_became_role_table.sql 
 create table user_became_role (
-   "user" uuid not null references users(id) on delete cascade,
+   user uuid not null references users(id) on delete cascade,
    "role" uuid not null references user_roles(id) on delete cascade,
-   "start" timestamp not null,
+   start timestamp not null,
    "end" timestamp not null,
    description varchar default ''
 );
@@ -333,8 +333,8 @@ begin
          where user = new.user
          and role = new.role
          and (
-            (new.start between "start" and "end") or
-            (new.end between "start" and "end")
+            (new.start between start and "end") or
+            (new.end between start and "end")
          )
       )
       then raise(abort, 'user already has this role with overlapping time period')
@@ -345,7 +345,7 @@ create trigger after_insert_user_became_role
 after insert on user_became_role
 for each row
 begin
-   insert into permission_group_has_user (permission_group, user, "start", "end") values 
+   insert into permission_group_has_user (permission_group, user, start, "end") values 
       (new.role, new.user, new.start, new.end);
 end;
 
@@ -397,7 +397,7 @@ join permission_group_has_permission pghp on uhpg.permission_group = pghp.permis
 create view user_has_permission_groups as
 select 
    distinct pghpga.id as permission_group,
-   pghu."user",
+   pghu.user,
    pghpga.implied,
    pghpga.parent
 from permission_group_has_user pghu
@@ -423,6 +423,6 @@ insert into permissions (name, description) values ('admin', 'Permission to bypa
 insert into user_roles (id, name, abbr, description) values ('00000000-0000-0000-0000-000000000000', 'admin', 'admin', 'A role for bypassing all permissions');
 update permission_groups set generated = 1 where id = '00000000-0000-0000-0000-000000000000';
 insert into permission_group_has_permission (permission_group, permission) values ('00000000-0000-0000-0000-000000000000', 'admin');
-insert into user_became_role (user, "role", "start", "end", description) values ('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', datetime('now', 'localtime'), datetime('9999-12-31T23:59:59'), '');
+insert into user_became_role (user, "role", start, "end", description) values ('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', datetime('now', 'localtime'), datetime('9999-12-31T23:59:59'), '');
 
 

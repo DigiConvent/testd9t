@@ -12,7 +12,7 @@ func (p PostRepository) ReadEmailAddress(id *uuid.UUID) (*post_domain.EmailAddre
 	}
 
 	readAddress := &post_domain.EmailAddressRead{}
-	err := p.db.QueryRow("select id, name, domain from email_addresses where id = ?", id.String()).Scan(&readAddress.ID, &readAddress.Name, &readAddress.Domain)
+	err := p.db.QueryRow("select id, name, domain from email_addresses where id = ?", id.String()).Scan(&readAddress.Id, &readAddress.Name, &readAddress.Domain)
 
 	if err != nil {
 		return nil, *core.NotFoundError("email address not found")

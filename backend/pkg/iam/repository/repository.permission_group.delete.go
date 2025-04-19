@@ -5,11 +5,11 @@ import (
 	uuid "github.com/google/uuid"
 )
 
-func (r *IAMRepository) DeletePermissionGroup(arg *uuid.UUID) core.Status {
+func (r *IAMRepository) DeletePermissionGroup(arg *uuid.UUID, generated bool) core.Status {
 	if arg == nil {
 		return *core.UnprocessableContentError("ID is required")
 	}
-	res, err := r.db.Exec(`delete from permission_groups where id = ? and "generated" = false`, arg.String())
+	res, err := r.db.Exec(`delete from permission_groups where id = ? and "generated" = ?`, arg.String(), generated)
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

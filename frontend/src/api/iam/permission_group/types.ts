@@ -6,8 +6,7 @@ export type PermissionGroupWrite = {
    abbr: string
    description: string
    parent?: string
-   is_group: boolean
-   is_node: boolean
+   meta: null | "role" | "status"
    permissions: string[]
 }
 
@@ -23,8 +22,6 @@ export type PermissionGroupFacade = {
    id: string
    name: string
    abbr: string
-   is_group: boolean
-   is_node: boolean
    meta: null | "role" | "status"
    implied: boolean
    parent?: string
@@ -37,9 +34,7 @@ export type PermissionGroupRead = {
    abbr: string
    description: string
    parent?: string
-   is_group: boolean
-   is_node: boolean
-   meta: string
+   meta: null | "role" | "status"
    generated: boolean
    permissions: PermissionFacade[]
 }

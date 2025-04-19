@@ -23,7 +23,7 @@ func (r *IAMRepository) ListUserStatuses() ([]*iam_domain.UserStatusRead, core.S
 	for rows.Next() {
 		userStatusRead := &iam_domain.UserStatusRead{}
 		err = rows.Scan(
-			&userStatusRead.ID,
+			&userStatusRead.Id,
 			&userStatusRead.Name,
 			&userStatusRead.Abbr,
 			&userStatusRead.Description,

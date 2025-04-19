@@ -51,8 +51,7 @@ const pg = ref<PermissionGroupWrite>({
    abbr: "",
    description: "",
    parent: "",
-   is_group: false,
-   is_node: false,
+   meta: null,
    permissions: [],
 })
 

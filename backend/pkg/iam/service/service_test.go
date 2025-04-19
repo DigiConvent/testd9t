@@ -19,7 +19,7 @@ func getRootPermissionGroup() string {
 	facades, _ := testService.ListPermissionGroups()
 	for _, facade := range facades {
 		if facade.Name == "root" {
-			return facade.ID.String()
+			return facade.Id.String()
 		}
 	}
 

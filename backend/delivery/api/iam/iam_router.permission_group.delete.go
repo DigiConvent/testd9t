@@ -8,7 +8,7 @@ import (
 func (router *IamRouter) DeletePermissionGroup(ctx *gin.Context) {
 	permissionGroupId := router_utils.GetId(ctx)
 
-	status := router.iamService.DeletePermissionGroup(permissionGroupId)
+	status := router.iamService.DeletePermissionGroup(permissionGroupId, false)
 	if status != nil && status.Err() {
 		ctx.JSON(status.Code, gin.H{
 			"error": status.Message,

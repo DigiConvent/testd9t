@@ -38,6 +38,7 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 				meRoutes.GET("/", iam.RequiresAuthentication(), iamRouter.GetUser)
 				meRoutes.GET("/permissions/", iam.RequiresAuthentication(), iamRouter.ListPermissionsUser)
 				meRoutes.GET("/profile/", iam.RequiresAuthentication(), iamRouter.ProfileUser)
+
 				meRoutes.POST("/set-password/", iam.RequiresAuthentication(), iamRouter.SetPasswordUser)
 				meRoutes.POST("/", iam.RequiresAuthentication(), iamRouter.UpdateUser)
 			}
@@ -46,6 +47,7 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 			userRoutes.GET("/:id/", iam.RequiresPermission("iam.user.read", "iam.user.read.:id"), iamRouter.GetUser)
 			userRoutes.GET("/:id/permissions/", iam.RequiresPermission("iam.user.read", "iam.user.read.:id"), iamRouter.ListPermissionsUser)
 			userRoutes.GET("/:id/profile/", iam.RequiresPermission("iam.user.read", "iam.user.read.:id"), iamRouter.ProfileUser)
+
 			userRoutes.POST("/", iam.RequiresPermission("iam.user.create"), iamRouter.CreateUser)
 			userRoutes.POST("/:id/", iam.RequiresPermission("iam.user.read", "iam.user.read.:id"), iamRouter.GetUser)
 			userRoutes.POST("/:id/enabled/", iam.RequiresPermission("iam.user.write"), iamRouter.SetEnabledUser)
@@ -57,9 +59,12 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 		{
 			userStatusRoutes.GET("/", iam.RequiresPermission("iam.user-status.read"), iamRouter.ListUserStatus)
 			userStatusRoutes.GET("/:id/", iam.RequiresPermission("iam.user-status.read"), iamRouter.GetUserStatus)
+			userStatusRoutes.GET("/:id/profile/", iam.RequiresPermission("iam.user-status.read"), iamRouter.GetUserStatusProfile)
+
 			userStatusRoutes.POST("/", iam.RequiresPermission("iam.user-status.write"), iamRouter.CreateUserStatus)
 			userStatusRoutes.POST("/:id/", iam.RequiresPermission("iam.user-status.write"), iamRouter.UpdateUserStatus)
 			userStatusRoutes.POST("/:id/add-user/", iam.RequiresPermission("iam.user-status.write"), iamRouter.AddUserToUserStatus)
+
 			userStatusRoutes.DELETE("/:id/delete/", iam.RequiresPermission("iam.user-status.write"), iamRouter.DeleteUserStatus)
 		}
 
@@ -68,9 +73,12 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 			userRoleRoutes.GET("/", iam.RequiresPermission("iam.user-role.read"), iamRouter.ListUserRole)
 			userRoleRoutes.GET("/:id/", iam.RequiresPermission("iam.user-role.read"), iamRouter.GetUserRole)
 			userRoleRoutes.GET("/:id/profile/", iam.RequiresPermission("iam.user-role.read"), iamRouter.GetUserRoleProfile)
+
 			userRoleRoutes.POST("/", iam.RequiresPermission("iam.user-role.write"), iamRouter.CreateUserRole)
 			userRoleRoutes.POST("/:id/", iam.RequiresPermission("iam.user-role.write"), iamRouter.UpdateUserRole)
 			userRoleRoutes.POST("/:id/add-user/", iam.RequiresPermission("iam.user-role.write"), iamRouter.AddUserToUserRole)
+			userRoleRoutes.POST("/:id/remove-user/", iam.RequiresPermission("iam.user-role.write"), iamRouter.RemoveUserFromUserRole)
+
 			userRoleRoutes.DELETE("/:id/delete/", iam.RequiresPermission("iam.user-role.write"), iamRouter.DeleteUserRole)
 		}
 
@@ -88,7 +96,7 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 
 			permissionGroupRoutes.POST("/", iam.RequiresPermission("iam.permission-group.write"), iamRouter.CreatePermissionGroup)
 			permissionGroupRoutes.POST("/:id/", iam.RequiresPermission("iam.permission-group.write"), iamRouter.UpdatePermissionGroup)
-			permissionGroupRoutes.POST("/:id/permission/", iam.RequiresPermission("admin"), iamRouter.PermissionGroupEditPermissions)
+			permissionGroupRoutes.POST("/:id/permission/", iam.RequiresPermission("admin"), iamRouter.EditPermissionGroupPermissions)
 
 			permissionGroupRoutes.DELETE("/:id/", iam.RequiresPermission("iam.permission-group.write"), iamRouter.DeletePermissionGroup)
 		}
@@ -98,6 +106,7 @@ func RegisterRoutes(router *gin.Engine, s *services.Services) {
 	{
 		sysRoutes.GET("/status/", iam.RequiresPermission("sys"), sysRouter.GetStatus)
 		sysRoutes.GET("/installation/refresh/", sysRouter.RefreshInstallation)
+
 		sysRoutes.POST("/logo/small/", iam.RequiresPermission("sys"), sysRouter.SetSmallLogo)
 		sysRoutes.POST("/logo/large/", iam.RequiresPermission("sys"), sysRouter.SetLargeLogo)
 	}

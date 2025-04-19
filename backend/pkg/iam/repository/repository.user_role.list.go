@@ -22,7 +22,7 @@ func (r *IAMRepository) ListUserRoles() ([]*iam_domain.UserRoleRead, core.Status
 	for rows.Next() {
 		userRoleRead := &iam_domain.UserRoleRead{}
 		err = rows.Scan(
-			&userRoleRead.ID,
+			&userRoleRead.Id,
 			&userRoleRead.Name,
 			&userRoleRead.Abbr,
 			&userRoleRead.Description,

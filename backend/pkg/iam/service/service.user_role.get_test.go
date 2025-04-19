@@ -19,31 +19,29 @@ func TestGetUserRole(t *testing.T) {
 		t.Errorf("CreateUserRole() failed: %s", status.Message)
 	}
 
-	UserRoleProfile, status := iamService.GetUserRole(id)
+	userRole, status := iamService.GetUserRole(id)
 
 	if status.Err() {
 		t.Errorf("GetUserRole() failed: %s", status.Message)
 	}
-	UserRole := UserRoleProfile.UserRole
 
-	if UserRole == nil {
-		t.Errorf("Expected a result, got %v", UserRole)
+	if userRole == nil {
+		t.Errorf("Expected a result, got %v", userRole)
 	}
 
-	if UserRole.ID.String() != id.String() {
-		t.Errorf("Expected %v, got %v", id, UserRole.ID.String())
+	if userRole.Id.String() != id.String() {
+		t.Errorf("Expected %v, got %v", id, userRole.Id.String())
 	}
 
-	if UserRole.Name != "Test User Status" {
-		t.Errorf("Expected %s, got %s", "Test User Status", UserRole.Name)
+	if userRole.Name != "Test User Status" {
+		t.Errorf("Expected %s, got %s", "Test User Status", userRole.Name)
 	}
 
-	if UserRole.Abbr != "TUS" {
-		t.Errorf("Expected %s, got %s", "TUS", UserRole.Abbr)
+	if userRole.Abbr != "TUS" {
+		t.Errorf("Expected %s, got %s", "TUS", userRole.Abbr)
 	}
 
-	if UserRole.Description != "testxs" {
-		t.Errorf("Expected %s, got %s", "testxs", UserRole.Description)
+	if userRole.Description != "testxs" {
+		t.Errorf("Expected %s, got %s", "testxs", userRole.Description)
 	}
-
 }

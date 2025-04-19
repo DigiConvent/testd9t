@@ -6,29 +6,33 @@ import (
 	uuid "github.com/google/uuid"
 )
 
-func (r *IAMRepository) ListUserRoleUsers(arg *uuid.UUID) ([]*iam_domain.UserFacade, core.Status) {
+func (r *IAMRepository) ListUserRoleUsers(arg *uuid.UUID, now bool) ([]*iam_domain.UserBecameRoleRead, core.Status) {
 	rows, err := r.db.Query(`select 
 	u.id, 
 	u.first_name,
-	u.last_name 
-	from user_became_status ubs
-	join user_facades u on ubs.user = u.id 
-	where ubs.status = ?`, arg.String())
+	u.last_name,
+	ubr.start,
+	ubr.end
+	from user_became_role ubr
+	join user_facades u on ubr.user = u.id 
+	where ubr.role = ?`, arg.String())
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}
 	defer rows.Close()
 
-	users := make([]*iam_domain.UserFacade, 0)
+	ubrs := make([]*iam_domain.UserBecameRoleRead, 0)
 
 	for rows.Next() {
-		var user iam_domain.UserFacade
-		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName)
+		var ubr iam_domain.UserBecameRoleRead = iam_domain.UserBecameRoleRead{
+			User: iam_domain.UserFacade{},
+		}
+		err := rows.Scan(&ubr.User.Id, &ubr.User.FirstName, &ubr.User.LastName, &ubr.Start, &ubr.End)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
 		}
-		users = append(users, &user)
+		ubrs = append(ubrs, &ubr)
 	}
 
-	return users, *core.StatusSuccess()
+	return ubrs, *core.StatusSuccess()
 }

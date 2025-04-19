@@ -7,7 +7,7 @@ import (
 
 func (router *IamRouter) GetUserRoleProfile(ctx *gin.Context) {
 	id := router_utils.GetId(ctx)
-	userRole, status := router.iamService.GetUserRole(id)
+	userRole, status := router.iamService.GetUserRoleProfile(id)
 
 	if status != nil && status.Err() {
 		ctx.JSON(status.Code, gin.H{

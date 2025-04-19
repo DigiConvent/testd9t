@@ -13,7 +13,7 @@ func (s *IAMService) GetPermissionGroup(id *uuid.UUID) (*iam_domain.PermissionGr
 		return nil, &status
 	}
 
-	read.Permissions, status = s.repository.ListPermissionGroupPermissions(&read.ID)
+	read.Permissions, status = s.repository.ListPermissionGroupPermissions(&read.Id)
 
 	return read, &status
 }

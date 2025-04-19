@@ -14,8 +14,6 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 		Name:        "PermissionGroupAddUser",
 		Abbr:        "PGA",
 		Description: "test",
-		IsGroup:     true,
-		IsNode:      false,
 		Parent:      getRootPermissionGroup(),
 	})
 

@@ -16,7 +16,6 @@ func TestResetPassword(t *testing.T) {
 	})
 
 	if status.Err() {
-		t.Log(uid)
 		t.Fatal(status.Message)
 	}
 

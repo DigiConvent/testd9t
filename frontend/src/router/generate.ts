@@ -12,7 +12,9 @@ export default function generate_routes(
          return {
             path: path.replace("_", "-"),
             name: prefix.concat(key).join("."),
-            component: () => import("../views/" + prefix.concat(key).join("/") + ".vue"),
+
+            component: () =>
+               import(/* @vite-ignore */ "../views/" + prefix.concat(key).join("/") + ".vue"),
          }
       })
    }

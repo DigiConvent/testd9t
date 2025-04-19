@@ -29,10 +29,10 @@ func (r *IAMRepository) ListUserRolesFromUser(id *uuid.UUID) ([]*iam_domain.User
 		userRole := &iam_domain.UserHasRoleRead{}
 
 		err := rows.Scan(
-			&userRole.ID,
+			&userRole.Id,
 			&userRole.Name,
 			&userRole.Abbr,
-			&userRole.Description,
+			&userRole.Comment,
 			&userRole.Start,
 		)
 		if err != nil {

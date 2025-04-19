@@ -14,7 +14,7 @@ func (r *IAMRepository) GetUserByID(id *uuid.UUID) (*iam_domain.UserRead, core.S
 	row := r.db.QueryRow(`select id, emailaddress, first_name, last_name, enabled from users where id = ?`, id.String())
 
 	err := row.Scan(
-		&user.ID,
+		&user.Id,
 		&user.Emailaddress,
 		&user.FirstName,
 		&user.LastName,

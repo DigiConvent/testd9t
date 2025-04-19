@@ -28,7 +28,7 @@ func TestGetUser(t *testing.T) {
 		t.Fatal("User is nil")
 	}
 
-	if user.ID != *id {
+	if user.Id != *id {
 		t.Errorf("ID is not equal")
 	}
 

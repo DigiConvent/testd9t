@@ -1,8 +1,6 @@
 package iam_repository
 
 import (
-	"encoding/json"
-
 	"github.com/DigiConvent/testd9t/core"
 	"github.com/DigiConvent/testd9t/core/pagination"
 	core_utils "github.com/DigiConvent/testd9t/core/utils"
@@ -25,7 +23,7 @@ func (r *IAMRepository) ListUsers(filter *iam_domain.UserFilterSort) (*paginatio
 	filterClause := ""
 
 	users := []*iam_domain.UserFacade{}
-	rows, err := r.db.Query("select id, first_name, last_name, status_id, status_name, roles from user_facades " + sortClause)
+	rows, err := r.db.Query("select id, first_name, last_name, status_id, status_name, role_id, role_name from user_facades " + sortClause)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
@@ -36,15 +34,10 @@ func (r *IAMRepository) ListUsers(filter *iam_domain.UserFilterSort) (*paginatio
 	for rows.Next() {
 		user := iam_domain.UserFacade{}
 
-		roles := ""
-		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.StatusID, &user.StatusName, &roles)
+		err := rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.StatusId, &user.StatusName, &user.RoleId, &user.RoleName)
 
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
-		}
-
-		if roles != "" {
-			json.Unmarshal([]byte(roles), &user.Roles)
 		}
 
 		users = append(users, &user)

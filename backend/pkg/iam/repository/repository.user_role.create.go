@@ -21,7 +21,7 @@ func (r *IAMRepository) CreateUserRole(userRole *iam_domain.UserRoleWrite) (*uui
 	if err != nil || d == 0 {
 		return nil, *core.InternalError(err.Error())
 	}
-	r.SetParentPermissionGroup(&iam_domain.PermissionGroupSetParent{ID: &id, Parent: userRole.Parent})
+	r.SetParentPermissionGroup(&iam_domain.PermissionGroupSetParent{Id: &id, Parent: userRole.Parent})
 
 	return &id, *core.StatusSuccess()
 }

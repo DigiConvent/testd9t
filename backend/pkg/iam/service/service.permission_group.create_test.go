@@ -13,8 +13,6 @@ func TestCreatePermissionGroup(t *testing.T) {
 		Name:        "PermissionGroupCreate",
 		Abbr:        "PG",
 		Description: "test",
-		IsGroup:     true,
-		IsNode:      false,
 		Parent:      getRootPermissionGroup(),
 	}
 

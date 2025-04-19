@@ -46,10 +46,10 @@ func TestUserAddUserStatus(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status = iamService.AddUserStatus(&iam_domain.AddUserStatusToUser{
-		UserID:   *id,
-		StatusID: *currentUserStatusId,
-		When:     time.Now().Add(-5 * time.Hour),
+	status = iamService.AddUserBecameStatus(&iam_domain.UserBecameStatusWrite{
+		User:       *id,
+		UserStatus: *currentUserStatusId,
+		Start:      time.Now().Add(-5 * time.Hour),
 	})
 
 	if status.Err() {
@@ -70,10 +70,10 @@ func TestUserAddUserStatus(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status = iamService.AddUserStatus(&iam_domain.AddUserStatusToUser{
-		UserID:   *id,
-		StatusID: *futureUserStatusId,
-		When:     time.Now().Add(5 * time.Hour),
+	status = iamService.AddUserBecameStatus(&iam_domain.UserBecameStatusWrite{
+		User:       *id,
+		UserStatus: *futureUserStatusId,
+		Start:      time.Now().Add(5 * time.Hour),
 	})
 
 	if status.Err() {
@@ -104,13 +104,10 @@ func TestUserAddUserStatus(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	userProfile, status := iamService.GetUserProfile(id)
+	_, status = iamService.GetUserProfile(id)
 
 	if status.Err() {
 		t.Fatal(status.Message)
-	}
-	for _, group := range userProfile.Groups {
-		t.Log(group.Name == currentPG.PermissionGroup.Name)
 	}
 
 	if len(currentPG.Users) != 1 {

@@ -31,32 +31,32 @@ func TestUpdateUserRole(t *testing.T) {
 		t.Fatal(status.Message)
 	}
 
-	UserRoleProfile, status := iamService.GetUserRole(id)
+	userRole, status := iamService.GetUserRole(id)
+
+	t.Log(userRole)
 
 	if status.Err() {
 		t.Errorf("GetUserRole() failed: %s", status.Message)
 	}
 
-	UserRole := UserRoleProfile.UserRole
-
-	if UserRole == nil {
-		t.Errorf("Expected a result, got %v", UserRole)
+	if userRole == nil {
+		t.Errorf("Expected a result, got %v", userRole)
 	}
 
-	if UserRole.ID.String() != id.String() {
-		t.Errorf("Expected %v, got %v", id, UserRole.ID.String())
+	if userRole.Id.String() != id.String() {
+		t.Errorf("Expected %v, got %v", id, userRole.Id.String())
 	}
 
-	if UserRole.Name != "UserRoleUpdateUpdated" {
-		t.Errorf("Expected %s, got %s", "UserRoleUpdateUpdated", UserRole.Name)
+	if userRole.Name != testUserRole.Name {
+		t.Errorf("Expected %s, got %s", testUserRole.Name, userRole.Name)
 	}
 
-	if UserRole.Abbr != "USUU" {
-		t.Errorf("Expected %s, got %s", "USUU", UserRole.Abbr)
+	if userRole.Abbr != testUserRole.Abbr {
+		t.Errorf("Expected %s, got %s", testUserRole.Abbr, userRole.Abbr)
 	}
 
-	if UserRole.Description != "testx" {
-		t.Errorf("Expected %s, got %s", "testx", UserRole.Description)
+	if userRole.Description != "testx" {
+		t.Errorf("Expected %s, got %s", "testx", userRole.Description)
 	}
 
 	pg, _ := iamService.GetPermissionGroup(id)

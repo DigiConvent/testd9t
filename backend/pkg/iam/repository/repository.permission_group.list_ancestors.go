@@ -17,7 +17,7 @@ func (r *IAMRepository) ListPermissionGroupAncestors(arg *uuid.UUID) ([]*iam_dom
 
 	for rows.Next() {
 		var permissionGroup iam_domain.PermissionGroupFacade
-		err := rows.Scan(&permissionGroup.ID, &permissionGroup.Name, &permissionGroup.Parent, &permissionGroup.Implied)
+		err := rows.Scan(&permissionGroup.Id, &permissionGroup.Name, &permissionGroup.Parent, &permissionGroup.Implied)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
 		}

@@ -49,12 +49,12 @@ func (r *IAMRepository) GetTelegramID(dataString, botToken string) (*int, core.S
 
 	userData := query.Get("user")
 	var userObj struct {
-		ID int `json:"id"`
+		Id int `json:"id"`
 	}
 	err := json.Unmarshal([]byte(userData), &userObj)
 	if err != nil {
 		return nil, *core.UnprocessableContentError(err.Error())
 	}
 
-	return &userObj.ID, *core.StatusSuccess()
+	return &userObj.Id, *core.StatusSuccess()
 }

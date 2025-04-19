@@ -13,8 +13,6 @@ func TestDeletePermissionGroup(t *testing.T) {
 		Name:        "PermissionGroupDelete",
 		Abbr:        "PG",
 		Description: "test",
-		IsGroup:     true,
-		IsNode:      false,
 		Permissions: []string{},
 	})
 
@@ -22,7 +20,7 @@ func TestDeletePermissionGroup(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status := testService.DeletePermissionGroup(res)
+	status := testService.DeletePermissionGroup(res, false)
 
 	if status.Err() {
 		t.Fatal(status.Message)

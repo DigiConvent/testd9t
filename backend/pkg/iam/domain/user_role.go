@@ -7,12 +7,13 @@ import (
 )
 
 type UserRoleProfile struct {
-	UserRole *UserRoleRead `json:"user_role"`
-	Users    []*UserFacade `json:"users"`
+	*PermissionGroupProfile
+	UserRole *UserRoleRead         `json:"user_role"`
+	History  []*UserBecameRoleRead `json:"history"`
 }
 
 type UserRoleRead struct {
-	ID          uuid.UUID `json:"id"`
+	Id          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
 	Abbr        string    `json:"abbr"`
 	Description string    `json:"description"`
@@ -25,29 +26,37 @@ type UserRoleWrite struct {
 	Parent      *uuid.UUID `json:"parent"`
 }
 
-type AddUserRoleToUser struct {
-	UserID uuid.UUID `json:"user"`
-	RoleID uuid.UUID `json:"user_role"`
-	Start  time.Time `json:"start"`
-	End    time.Time `json:"end"`
+type UserBecameRoleWrite struct {
+	User    uuid.UUID `json:"user"`
+	Role    uuid.UUID `json:"user_role"`
+	Start   time.Time `json:"start"`
+	End     time.Time `json:"end"`
+	Comment string    `json:"comment"`
 }
 
 type UserHasRoleFacade struct {
-	ID   uuid.UUID `json:"id"`
+	Id   uuid.UUID `json:"id"`
 	Name string    `json:"name"`
 	Abbr string    `json:"abbr"`
 }
 
 type UserRoleFacade struct {
-	ID   uuid.UUID `json:"id"`
+	Id   uuid.UUID `json:"id"`
 	Name string    `json:"name"`
 }
 
 type UserHasRoleRead struct {
-	ID          uuid.UUID `json:"id"`
-	Name        string    `json:"name"`
-	Abbr        string    `json:"abbr"`
-	Start       time.Time `json:"start"`
-	End         time.Time `json:"end"`
-	Description string    `json:"description"`
+	Id      uuid.UUID `json:"id"`
+	Name    string    `json:"name"`
+	Abbr    string    `json:"abbr"`
+	Start   time.Time `json:"start"`
+	End     time.Time `json:"end"`
+	Comment string    `json:"comment"`
+}
+
+type UserBecameRoleRead struct {
+	Role  uuid.UUID  `json:"role"`
+	User  UserFacade `json:"user"`
+	Start time.Time  `json:"start"`
+	End   time.Time  `json:"end"`
 }

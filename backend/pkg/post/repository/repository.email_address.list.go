@@ -15,7 +15,7 @@ func (p PostRepository) ListEmailAddresses() ([]post_domain.EmailAddressRead, co
 
 	for rows.Next() {
 		result := post_domain.EmailAddressRead{}
-		err := rows.Scan(&result.ID, &result.Name, &result.Domain)
+		err := rows.Scan(&result.Id, &result.Name, &result.Domain)
 		if err != nil {
 			return nil, *core.InternalError(err.Error())
 		}

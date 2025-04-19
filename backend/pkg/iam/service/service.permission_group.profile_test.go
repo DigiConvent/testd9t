@@ -15,8 +15,6 @@ func TestGetPermissionGroupProfile(t *testing.T) {
 		Name:        "PermissionGroupProfile",
 		Abbr:        "PG",
 		Description: "test",
-		IsGroup:     true,
-		IsNode:      false,
 		Permissions: []string{permissions[0].Name, permissions[1].Name, permissions[2].Name},
 		Parent:      getRootPermissionGroup(),
 	})
@@ -43,16 +41,8 @@ func TestGetPermissionGroupProfile(t *testing.T) {
 		t.Fatalf("Expected test, instead got %v", permissionGroupProfile.PermissionGroup.Description)
 	}
 
-	if !permissionGroupProfile.PermissionGroup.IsGroup {
-		t.Fatalf("Expected true, instead got %v", permissionGroupProfile.PermissionGroup.IsGroup)
-	}
-
-	if permissionGroupProfile.PermissionGroup.IsNode {
-		t.Fatalf("Expected false, instead got %v", permissionGroupProfile.PermissionGroup.IsNode)
-	}
-
-	if permissionGroupProfile.PermissionGroup.ID != *profileId {
-		t.Fatalf("Expected %v, instead got %v", profileId, permissionGroupProfile.PermissionGroup.ID)
+	if permissionGroupProfile.PermissionGroup.Id != *profileId {
+		t.Fatalf("Expected %v, instead got %v", profileId, permissionGroupProfile.PermissionGroup.Id)
 	}
 
 	if len(permissionGroupProfile.Permissions) != 3 {
