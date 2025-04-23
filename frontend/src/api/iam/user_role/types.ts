@@ -10,7 +10,7 @@ export type UserRoleRead = {
 
 export type UserRoleProfile = {
    role: UserRoleRead
-   users_became_role: UserBecameRole[]
+   history: UserBecameRole[]
 }
 
 export type UserBecameRole = {

@@ -270,7 +270,8 @@ func (s *SqliteDatabase) QueryDebug(query string, args ...any) {
 }
 
 func (s *SqliteDatabase) QueryRow(query string, args ...any) *sql.Row {
-	return s.DB.QueryRow(query, args...)
+	row := s.DB.QueryRow(query, args...)
+	return row
 }
 
 func (s *SqliteDatabase) Close() {

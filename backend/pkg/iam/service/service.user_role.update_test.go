@@ -13,6 +13,7 @@ func TestUpdateUserRole(t *testing.T) {
 		Name:        "UserRoleUpdate",
 		Abbr:        "USU",
 		Description: "test",
+		Parent:      getRootPermissionGroupUuid(),
 	}
 
 	id, _ := iamService.CreateUserRole(testUserRole)
@@ -21,19 +22,34 @@ func TestUpdateUserRole(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	testUserRole.Name = "UserRoleUpdateUpdated"
-	testUserRole.Abbr = "USUU"
-	testUserRole.Description = "testx"
+	testUserRole.Name = ""
 
 	status := iamService.UpdateUserRole(id, testUserRole)
 
+	if !status.Err() && status.Message != "iam.user_role.update.invalid_name" {
+		t.Fatalf("expected error, got %v", status.Message)
+	}
+
+	testUserRole.Name = "UserRoleUpdateUpdated"
+	testUserRole.Abbr = "USUU"
+	testUserRole.Description = "testx"
+	testUserRole.Parent = nil
+
+	status = iamService.UpdateUserRole(id, testUserRole)
+
+	if !status.Err() && status.Message != "iam.user_role.update.invalid_parent" {
+		t.Fatalf("expected error, got %v", status.Message)
+	}
+
+	testUserRole.Parent = getRootPermissionGroupUuid()
+
+	status = iamService.UpdateUserRole(id, testUserRole)
+
 	if status.Err() {
-		t.Fatal(status.Message)
+		t.Errorf("UpdateUserRole() failed: %s", status.Message)
 	}
 
 	userRole, status := iamService.GetUserRole(id)
-
-	t.Log(userRole)
 
 	if status.Err() {
 		t.Errorf("GetUserRole() failed: %s", status.Message)

@@ -22,6 +22,7 @@ const password = ref("")
 async function handle_submit() {
    ;(await api.iam.user.set_password(props.id || "me", password.value)).fold(
       (err: string) => {
+         console.log(err)
          error(err)
       },
       () => {

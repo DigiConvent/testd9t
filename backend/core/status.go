@@ -12,7 +12,7 @@ type Status struct {
 }
 
 func InternalError(message string) *Status {
-	log.Error("Internal Error " + message)
+	log.Error("Internal Error: " + message)
 	return &Status{
 		Message: message,
 		Code:    500,
@@ -20,7 +20,7 @@ func InternalError(message string) *Status {
 }
 
 func NotFoundError(message string) *Status {
-	log.Error("Not Found Error" + message)
+	log.Error("Not Found Error: " + message)
 	return &Status{
 		Message: message,
 		Code:    404,
@@ -28,6 +28,7 @@ func NotFoundError(message string) *Status {
 }
 
 func BadRequestError(message string) *Status {
+	log.Error("Bad Request Error: " + message)
 	return &Status{
 		Message: message,
 		Code:    400,
@@ -35,6 +36,7 @@ func BadRequestError(message string) *Status {
 }
 
 func UnprocessableContentError(message string) *Status {
+	log.Error("Could not process content: " + message)
 	return &Status{
 		Message: message,
 		Code:    422,
@@ -42,6 +44,7 @@ func UnprocessableContentError(message string) *Status {
 }
 
 func UnauthorizedError(message string) *Status {
+	log.Error("Unauthorized: " + message)
 	return &Status{
 		Message: message,
 		Code:    401,
@@ -49,6 +52,7 @@ func UnauthorizedError(message string) *Status {
 }
 
 func ForbiddenError(message string) *Status {
+	log.Error("Forbidden: " + message)
 	return &Status{
 		Message: message,
 		Code:    403,
@@ -56,6 +60,7 @@ func ForbiddenError(message string) *Status {
 }
 
 func ConflictError(message string) *Status {
+	log.Error("Conflict: " + message)
 	return &Status{
 		Message: message,
 		Code:    409,

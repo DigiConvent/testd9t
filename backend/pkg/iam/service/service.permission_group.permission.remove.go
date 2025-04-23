@@ -6,6 +6,17 @@ import (
 )
 
 func (service *IAMService) RemovePermissionFromPermissionGroup(permissionGroupId *uuid.UUID, permission string) *core.Status {
-	status := service.repository.RemovePermissionFromPermissionGroup(permissionGroupId, permission)
+	if permissionGroupId == nil {
+		return core.NotFoundError("iam.permission_group.missing_permission_group")
+	}
+	if permission == "" {
+		return core.NotFoundError("iam.permission_group.missing_permission")
+	}
+	p, status := service.repository.GetPermission(permission)
+	if p == nil && status.Code == 404 {
+		return core.NotFoundError("iam.permission_group.missing_permission")
+	}
+
+	status = service.repository.RemovePermissionFromPermissionGroup(permissionGroupId, permission)
 	return &status
 }

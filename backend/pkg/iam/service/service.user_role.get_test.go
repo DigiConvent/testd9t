@@ -13,6 +13,7 @@ func TestGetUserRole(t *testing.T) {
 		Name:        "Test User Status",
 		Abbr:        "TUS",
 		Description: "testxs",
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	if status.Err() {

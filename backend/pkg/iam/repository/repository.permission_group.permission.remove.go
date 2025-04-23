@@ -14,8 +14,12 @@ func (r *IAMRepository) RemovePermissionFromPermissionGroup(permissionGroupId *u
 
 	rowsAffected, err := result.RowsAffected()
 
-	if err != nil || rowsAffected == 0 {
-		return *core.InternalError(err.Error())
+	if err != nil {
+		return *core.NotFoundError(err.Error())
+	}
+
+	if rowsAffected == 0 {
+		return *core.NotFoundError("iam.permission_group.missing_permission")
 	}
 
 	return *core.StatusNoContent()

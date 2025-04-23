@@ -65,7 +65,9 @@ export async function api_post<T>(
 
    if (expects != undefined) {
       if (expects != request.status) {
-         return result.left(request.status + ": ")
+         // check if there is an error message
+         const error_message = (await request.json())["error"]
+         return result.left(error_message)
       } else if (format_data == undefined) {
          return result.right(true as T)
       }

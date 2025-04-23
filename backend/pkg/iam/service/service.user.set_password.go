@@ -7,10 +7,10 @@ import (
 
 func (service *IAMService) SetUserPassword(id *uuid.UUID, rawPassword string) *core.Status {
 	if id == nil {
-		return core.UnprocessableContentError("ID is required")
+		return core.UnprocessableContentError("iam.user.set_password.missing_user")
 	}
 	if rawPassword == "" {
-		return core.UnprocessableContentError("Password is required")
+		return core.UnprocessableContentError("iam.user.set_password.empty")
 	}
 
 	password, err := hashedPassword(rawPassword)

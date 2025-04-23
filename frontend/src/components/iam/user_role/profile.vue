@@ -9,7 +9,7 @@
                   :height="Math.max(400, t_window.innerHeight * 0.4)"
                   :width="t_window.innerWidth"
                   :data="[
-                     ...profile.users_became_role.map((e) => ({
+                     ...profile.history.map((e) => ({
                         label: e.user.last_name,
                         start: e.start,
                         end: e.end,

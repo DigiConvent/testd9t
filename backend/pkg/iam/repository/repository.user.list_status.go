@@ -8,6 +8,7 @@ import (
 
 func (r *IAMRepository) ListUserStatusesFromUser(id *uuid.UUID) ([]*iam_domain.UserBecameStatusRead, core.Status) {
 	var userBecameStatusses []*iam_domain.UserBecameStatusRead
+	r.db.QueryDebug(`select * from user_became_status ubs where ubs."user" = ? `, id.String())
 	rows, err := r.db.Query(`select
 		s.id,
 		uf.id, 

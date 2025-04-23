@@ -13,6 +13,7 @@ func TestDeleteUserRole(t *testing.T) {
 		Name:        "UserRoleDelete",
 		Abbr:        "USD",
 		Description: "test",
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	if status.Err() {

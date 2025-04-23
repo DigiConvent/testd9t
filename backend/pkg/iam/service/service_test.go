@@ -10,6 +10,7 @@ import (
 	iam_repository "github.com/DigiConvent/testd9t/pkg/iam/repository"
 	iam_service "github.com/DigiConvent/testd9t/pkg/iam/service"
 	iam_setup "github.com/DigiConvent/testd9t/pkg/iam/setup"
+	"github.com/google/uuid"
 )
 
 var testDB db.DatabaseInterface
@@ -29,6 +30,12 @@ func getRootPermissionGroup() string {
 	})
 
 	return id.String()
+}
+
+func getRootPermissionGroupUuid() *uuid.UUID {
+	root := getRootPermissionGroup()
+	res := uuid.MustParse(root)
+	return &res
 }
 
 func GetTestIAMService(dbName string) iam_service.IAMServiceInterface {

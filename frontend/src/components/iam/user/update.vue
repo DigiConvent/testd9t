@@ -4,13 +4,13 @@
       <div v-else-if="user_read" class="card flex justify-center">
          <Form class="flex flex-col gap-4 w-full" @submit="handle_submit">
             <h2>{{ t("iam.user.update.title") }}</h2>
-            <FormTextInput v-model="user_read.emailaddress" label="iam.user.create" name="email" />
+            <FormTextInput v-model="user_read.emailaddress" label="iam.user.fields" name="email" />
             <FormTextInput
                v-model="user_read.first_name"
-               label="iam.user.create"
+               label="iam.user.fields"
                name="first_name"
             />
-            <FormTextInput v-model="user_read.last_name" label="iam.user.create" name="last_name" />
+            <FormTextInput v-model="user_read.last_name" label="iam.user.fields" name="last_name" />
             <Button type="submit" severity="secondary" :label="$t('iam.user.update.submit')" />
          </Form>
       </div>

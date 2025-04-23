@@ -10,6 +10,7 @@ import (
 
 func (r *IAMRepository) ListUserStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserBecameStatusRead, core.Status) {
 
+	r.db.QueryDebug(`select * from user_became_status ubs where ubs.status = ? `, arg.String())
 	rows, err := r.db.Query(`select 
 		ubs.status,
 		uf.id, 
