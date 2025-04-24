@@ -7,11 +7,11 @@ import (
 )
 
 type PermissionGroupWrite struct {
-	Name        string   `json:"name"`
-	Abbr        string   `json:"abbr"`
-	Description string   `json:"description"`
-	Parent      string   `json:"parent"`
-	Permissions []string `json:"permissions"`
+	Name        string     `json:"name"`
+	Abbr        string     `json:"abbr"`
+	Description string     `json:"description"`
+	Parent      *uuid.UUID `json:"parent"`
+	Permissions []string   `json:"permissions"`
 }
 
 type PermissionGroupSetParent struct {

@@ -13,17 +13,11 @@ type UserRoleProfile struct {
 }
 
 type UserRoleRead struct {
-	Id          uuid.UUID `json:"id"`
-	Name        string    `json:"name"`
-	Abbr        string    `json:"abbr"`
-	Description string    `json:"description"`
+	PermissionGroupRead
 }
 
 type UserRoleWrite struct {
-	Name        string     `json:"name"`
-	Abbr        string     `json:"abbr"`
-	Description string     `json:"description"`
-	Parent      *uuid.UUID `json:"parent"`
+	PermissionGroupWrite
 }
 
 type UserBecameRoleWrite struct {

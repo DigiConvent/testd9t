@@ -9,21 +9,24 @@ import (
 func TestSetPermissionGroupParent(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
+	permissionGroupGrandParentID, _ := iamService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
+		Name:        "PermissionGroupGrandParent",
+		Abbr:        "PGP",
+		Description: "test",
+		Parent:      getRootPermissionGroupUuid(),
+	})
 	permissionGroupChildID, _ := iamService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
 		Name:        "PermissionGroupParentSetChild",
 		Abbr:        "PGP",
 		Description: "test",
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	permissionGroupParentID, _ := iamService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
 		Name:        "PermissionGroupParent",
 		Abbr:        "PGP",
 		Description: "test",
-	})
-	permissionGroupGrandParentID, _ := iamService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
-		Name:        "PermissionGroupGrandParent",
-		Abbr:        "PGP",
-		Description: "test",
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	status := iamService.SetParentPermissionGroup(&iam_domain.PermissionGroupSetParent{
@@ -54,7 +57,7 @@ func TestSetPermissionGroupParent(t *testing.T) {
 		t.Fatalf("No permission group found")
 	}
 
-	if len(pgProfile.Ancestors) != 3 {
-		t.Fatalf("Expected 1 permission group, instead got %v", len(pgProfile.Ancestors))
+	if len(pgProfile.Ancestors) != 4 {
+		t.Fatalf("Expected 4 permission group, instead got %v", len(pgProfile.Ancestors))
 	}
 }

@@ -2,7 +2,7 @@
    <PermissionProfile :id="id"></PermissionProfile>
 </template>
 <script lang="ts" setup>
-import PermissionProfile from "@/components/iam/permission/profile.vue"
+import PermissionProfile from "@/components/pkg/iam/permission/profile.vue"
 import { useRoute } from "vue-router"
 
 const name = useRoute().params.name

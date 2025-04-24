@@ -4,5 +4,5 @@
 </template>
 
 <script lang="ts" setup>
-import UserProfileComponent from "@/components/iam/user/profile.vue"
+import UserProfileComponent from "@/components/pkg/iam/user/profile.vue"
 </script>

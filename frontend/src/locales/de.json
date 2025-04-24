@@ -78,7 +78,8 @@
             "abbr": "Abkürzung",
             "description": "Beschreibung",
             "parent": "Übergeordnete Gruppe",
-            "permissions": "Zugriffsrechte"
+            "permissions": "Zugriffsrechte",
+            "meta": "Typ"
          },
          "picker": {
             "none": "Keine ausgewählt"

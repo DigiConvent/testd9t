@@ -42,7 +42,7 @@ async function load_user() {
       return
    }
 
-   ;(await api.iam.user.get(props.id)).fold(
+   ;(await api.iam.user.read(props.id)).fold(
       (err: string) => {
          error(err)
       },

@@ -26,7 +26,7 @@ func TestUserHasPermission(t *testing.T) {
 		Permissions: []string{permission},
 		Abbr:        "TPG",
 		Description: "Test Permission Group",
-		Parent:      getRootPermissionGroup(),
+		Parent:      getRootPermissionGroupUuid(),
 	}
 	permissionGroupID, _ := iamService.CreatePermissionGroup(&permissionGroup)
 
@@ -37,11 +37,13 @@ func TestUserHasPermission(t *testing.T) {
 	}
 
 	userStatus := iam_domain.UserStatusWrite{
-		Name:        "TestStatusUserHasPermission",
-		Abbr:        "TS",
-		Description: "Test Status",
-		Archived:    false,
-		Parent:      permissionGroupID,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "TestStatusUserHasPermission",
+			Abbr:        "TS",
+			Description: "Test Status",
+			Parent:      permissionGroupID,
+		},
+		Archived: false,
 	}
 
 	statusID, status := iamService.CreateUserStatus(&userStatus)

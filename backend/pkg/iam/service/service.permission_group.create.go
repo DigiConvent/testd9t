@@ -1,21 +1,25 @@
 package iam_service
 
 import (
+	"fmt"
+
 	"github.com/DigiConvent/testd9t/core"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
-	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
 func (s *IAMService) CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite) (*uuid.UUID, *core.Status) {
-
-	validate := validator.New(validator.WithRequiredStructEnabled())
-	err := validate.Struct(arg)
-	if err != nil {
-		return nil, core.UnprocessableContentError(err.Error())
+	if arg == nil {
+		return nil, core.UnprocessableContentError("iam.permission_group.create.missing_data")
 	}
-
-	if arg.Parent == uuid.Nil.String() {
+	if arg.Name == "" {
+		return nil, core.UnprocessableContentError("iam.permission_group.create.invalid_name")
+	}
+	if arg.Parent == nil {
+		fmt.Println(arg)
+		return nil, core.UnprocessableContentError("iam.permission_group.create.invalid_parent")
+	}
+	if *arg.Parent == uuid.Nil {
 		return nil, core.BadRequestError("The admin role cannot have descendants")
 	}
 

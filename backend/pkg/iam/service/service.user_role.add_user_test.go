@@ -29,10 +29,12 @@ func TestUserAddUserRole(t *testing.T) {
 
 	parent := uuid.MustParse(getRootPermissionGroup())
 	testCurrentUserRole := &iam_domain.UserRoleWrite{
-		Name:        "UserAddUserRoleCurrent",
-		Abbr:        "UAUS",
-		Description: "test",
-		Parent:      &parent,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "UserAddUserRoleCurrent",
+			Abbr:        "UAUS",
+			Description: "test",
+			Parent:      &parent,
+		},
 	}
 
 	currentUserRoleId, status := iamService.CreateUserRole(testCurrentUserRole)
@@ -80,10 +82,12 @@ func TestUserAddUserRole(t *testing.T) {
 	}
 
 	testFutureUserRole := &iam_domain.UserRoleWrite{
-		Name:        "UserAddUserRoleFuture",
-		Abbr:        "UAUSF",
-		Description: "test",
-		Parent:      &parent,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "UserAddUserRoleFuture",
+			Abbr:        "UAUSF",
+			Description: "test",
+			Parent:      &parent,
+		},
 	}
 
 	futureUserRoleId, _ := iamService.CreateUserRole(testFutureUserRole)

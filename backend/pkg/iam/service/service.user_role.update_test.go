@@ -10,10 +10,12 @@ func TestUpdateUserRole(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	testUserRole := &iam_domain.UserRoleWrite{
-		Name:        "UserRoleUpdate",
-		Abbr:        "USU",
-		Description: "test",
-		Parent:      getRootPermissionGroupUuid(),
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "UserRoleUpdate",
+			Abbr:        "USU",
+			Description: "test",
+			Parent:      getRootPermissionGroupUuid(),
+		},
 	}
 
 	id, _ := iamService.CreateUserRole(testUserRole)

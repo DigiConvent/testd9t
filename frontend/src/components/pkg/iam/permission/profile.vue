@@ -43,10 +43,15 @@
                <a @click="show_permission_group_picker = true"><Fa icon="plus" /></a>
             </template>
             <template #content>
-               <PermissionGroupFacades
-                  :permission_groups="profile.permission_groups"
-                  @pick="handle_remove_permission"
-               ></PermissionGroupFacades>
+               <div v-for="pg of profile.permission_groups" :key="pg.id">
+                  <Button
+                     class="p-button-text"
+                     severity="danger"
+                     @click="handle_remove_permission({ event: $event, pg: pg })"
+                  >
+                     <Fa icon="times" /></Button
+                  ><Fa :icon="get_icon(pg.meta)" class="fa-fw" /> {{ pg.name }}
+               </div>
                <Dialog v-model:visible="show_permission_group_picker" modal>
                   <PermissionGroupPicker
                      v-model="permission_group_to_add"
@@ -66,13 +71,13 @@
 <script lang="ts" setup>
 import { api } from "@/api"
 import { type PermissionProfile } from "@/api/iam/permission/types"
-import UserFacades from "@/components/iam/user/facade.vue"
-import PermissionGroupFacades from "@/components/iam/permission_group/facade.vue"
+import UserFacades from "@/components/pkg/iam/user/facade.vue"
 import { error, success } from "@/composables/toast"
 import { computed, ref } from "vue"
 import type { PermissionGroupFacade } from "@/api/iam/permission_group/types"
 import PermissionGroupPicker from "../permission_group/picker.vue"
 import { useI18n } from "vue-i18n"
+import { get_icon } from "@/api/iam/permission_group/utils"
 
 const loading = ref<boolean>(true)
 const props = defineProps<{ id: string }>()
@@ -96,7 +101,7 @@ const ancestors = computed(() => {
 })
 
 async function load() {
-   ;(await api.iam.permission.profile(props.id)).fold(
+   ;(await api.iam.permission.read_profile(props.id)).fold(
       (err: string) => {
          error(err)
       },

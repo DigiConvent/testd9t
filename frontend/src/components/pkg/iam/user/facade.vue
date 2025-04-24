@@ -5,7 +5,8 @@
             <router-link
                :to="{ name: 'admin.iam.user.profile', params: { id: _user.id } }"
                class="block"
-               ><Fa icon="user" />{{ _user.first_name }} {{ _user.last_name }}
+               ><Fa :icon="_user.role_id != '' ? 'user-shield' : 'user'" /> {{ _user.first_name }}
+               {{ _user.last_name }}
             </router-link>
          </template>
       </template>

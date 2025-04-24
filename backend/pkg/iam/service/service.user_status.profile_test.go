@@ -13,25 +13,31 @@ import (
 func TestGetUserStatusProfile(t *testing.T) {
 	rootId := uuid.MustParse(getRootPermissionGroup())
 	userStatusId, _ := GetTestIAMService("iam").CreateUserStatus(&iam_domain.UserStatusWrite{
-		Name:        "Test User Status Profile",
-		Abbr:        "TUS",
-		Description: "testxs",
-		Archived:    true,
-		Parent:      &rootId,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "Test User Status Profile",
+			Abbr:        "TUS",
+			Description: "testxs",
+			Parent:      &rootId,
+		},
+		Archived: true,
 	})
 	userStatusId2, _ := GetTestIAMService("iam").CreateUserStatus(&iam_domain.UserStatusWrite{
-		Name:        "Test User Status Profile2",
-		Abbr:        "TUS",
-		Description: "testxs",
-		Archived:    true,
-		Parent:      &rootId,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "Test User Status Profile2",
+			Abbr:        "TUS",
+			Description: "testxs",
+			Parent:      &rootId,
+		},
+		Archived: true,
 	})
 	userStatusId3, _ := GetTestIAMService("iam").CreateUserStatus(&iam_domain.UserStatusWrite{
-		Name:        "Test User Status Profile3",
-		Abbr:        "TUS",
-		Description: "testxs",
-		Archived:    true,
-		Parent:      &rootId,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "Test User Status Profile3",
+			Abbr:        "TUS",
+			Description: "testxs",
+			Parent:      &rootId,
+		},
+		Archived: true,
 	})
 
 	userStatusProfile, status := GetTestIAMService("iam").GetUserStatusProfile(userStatusId)

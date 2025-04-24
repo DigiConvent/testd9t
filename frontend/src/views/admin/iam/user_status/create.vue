@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import { useRoute } from "vue-router"
-import CreateUserStatus from "@/components/iam/user_status/create.vue"
+import CreateUserStatus from "@/components/pkg/iam/user_status/create.vue"
 import { ref } from "vue"
 
 const params = useRoute().params

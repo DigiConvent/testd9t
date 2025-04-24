@@ -13,6 +13,7 @@ func TestDeletePermissionGroup(t *testing.T) {
 		Name:        "PermissionGroupDelete",
 		Abbr:        "PG",
 		Description: "test",
+		Parent:      getRootPermissionGroupUuid(),
 		Permissions: []string{},
 	})
 

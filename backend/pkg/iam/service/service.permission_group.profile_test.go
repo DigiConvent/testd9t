@@ -16,7 +16,7 @@ func TestGetPermissionGroupProfile(t *testing.T) {
 		Abbr:        "PG",
 		Description: "test",
 		Permissions: []string{permissions[0].Name, permissions[1].Name, permissions[2].Name},
-		Parent:      getRootPermissionGroup(),
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	permissionGroupProfile, status := testService.GetPermissionGroupProfile(profileId)

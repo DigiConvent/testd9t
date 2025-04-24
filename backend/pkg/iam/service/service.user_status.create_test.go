@@ -13,11 +13,13 @@ func TestCreateUserStatus(t *testing.T) {
 	rootId := uuid.MustParse(getRootPermissionGroup())
 
 	testUserStatus := &iam_domain.UserStatusWrite{
-		Name:        "UserStatusCreate",
-		Abbr:        "USC",
-		Description: "test",
-		Archived:    false,
-		Parent:      &rootId,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "UserStatusCreate",
+			Abbr:        "USC",
+			Description: "test",
+			Parent:      &rootId,
+		},
+		Archived: false,
 	}
 
 	id, status := iamService.CreateUserStatus(testUserStatus)

@@ -30,9 +30,9 @@ import type { UserProfile } from "@/api/iam/user/types"
 import JwtAuthenticator from "@/auth/jwt"
 import { error, success } from "@/composables/toast"
 import { computed, ref } from "vue"
-import ReadUser from "@/components/iam/user/read.vue"
+import ReadUser from "@/components/pkg/iam/user/read.vue"
 import FormSwitch from "@/components/form/switch.vue"
-import SetPassword from "@/components/iam/user/set_password.vue"
+import SetPassword from "@/components/pkg/iam/user/set_password.vue"
 import { useI18n } from "vue-i18n"
 
 const props = defineProps<{ id?: string }>()
@@ -45,7 +45,7 @@ const auth = JwtAuthenticator.get_instance()
 const t = useI18n().t
 
 async function load_user_profile() {
-   ;(await api.iam.user.profile(props.id)).fold(
+   ;(await api.iam.user.read_profile(props.id)).fold(
       (err: string) => {
          error(err)
       },

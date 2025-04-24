@@ -59,7 +59,7 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from "vue"
 import JwtAuthenticator from "../auth/jwt"
-import LoginForm from "@/components/iam/auth/login/credentials.vue"
+import LoginForm from "@/components/pkg/iam/auth/login/credentials.vue"
 import type { MenuItem } from "primevue/menuitem"
 import { useI18n } from "vue-i18n"
 import UserMenu from "./user_menu.vue"

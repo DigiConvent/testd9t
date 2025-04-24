@@ -1,6 +1,7 @@
 package iam_router
 
 import (
+	router_utils "github.com/DigiConvent/testd9t/delivery/api/util"
 	iam_service "github.com/DigiConvent/testd9t/pkg/iam/service"
 	sys_service "github.com/DigiConvent/testd9t/pkg/sys/service"
 	"github.com/gin-gonic/gin"
@@ -72,7 +73,17 @@ func (router *IamRouter) DeleteUserStatus(ctx *gin.Context) {
 
 // GetUserRole implements IamRouterInterface.
 func (router *IamRouter) GetUserRole(ctx *gin.Context) {
-	panic("unimplemented")
+	id := router_utils.GetId(ctx)
+
+	userRole, status := router.iamService.GetUserRole(id)
+
+	if status != nil && status.Err() {
+		ctx.JSON(status.Code, gin.H{
+			"error": status.Message,
+		})
+	} else {
+		ctx.JSON(status.Code, userRole)
+	}
 }
 
 // HasPermissionUser implements IamRouterInterface.

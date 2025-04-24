@@ -89,7 +89,7 @@ import type {
 } from "@/api/iam/permission_group/types"
 import { error } from "@/composables/toast"
 import { computed, ref } from "vue"
-import UserFacades from "@/components/iam/user/facade.vue"
+import UserFacades from "@/components/pkg/iam/user/facade.vue"
 import ReadPermissionGroup from "./read.vue"
 
 const props = defineProps<{ id: string }>()
@@ -108,7 +108,7 @@ const ancestors = computed({
 })
 async function load_profile() {
    loading.value = true
-   ;(await api.iam.permission_group.get_profile(props.id)).fold(
+   ;(await api.iam.permission_group.read_profile(props.id)).fold(
       (err: string) => {
          error(err)
       },

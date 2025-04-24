@@ -31,7 +31,7 @@ const t_window = window
 // }))
 import { api } from "@/api"
 import type { UserRoleProfile } from "@/api/iam/user_role/types"
-import PermissionGroupProfile from "@/components/iam/permission_group/profile.vue"
+import PermissionGroupProfile from "@/components/pkg/iam/permission_group/profile.vue"
 import { error } from "@/composables/toast"
 import { ref } from "vue"
 import MyTimeline from "@/components/shared/timeline.vue"
@@ -43,7 +43,7 @@ const profile = ref<UserRoleProfile>()
 
 async function load() {
    loading.value = true
-   ;(await api.iam.user_role.profile(props.id)).fold(
+   ;(await api.iam.user_role.read_profile(props.id)).fold(
       (err: string) => {
          error(err)
       },

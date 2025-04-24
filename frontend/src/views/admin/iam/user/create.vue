@@ -3,5 +3,5 @@
 </template>
 
 <script lang="ts" setup>
-import CreateUser from "@/components/iam/user/create.vue"
+import CreateUser from "@/components/pkg/iam/user/create.vue"
 </script>

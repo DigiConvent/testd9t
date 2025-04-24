@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import UserRoleProfile from "@/components/iam/user_role/profile.vue"
+import UserRoleProfile from "@/components/pkg/iam/user_role/profile.vue"
 import { useRoute } from "vue-router"
 
 const ids = useRoute().params.id

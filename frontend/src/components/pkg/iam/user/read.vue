@@ -23,15 +23,15 @@
          <template #content>
             <table>
                <tr>
-                  <td>Vorname</td>
+                  <td>{{ $t("iam.user.fields.first_name") }}</td>
                   <td>{{ user_read.first_name }}</td>
                </tr>
                <tr>
-                  <td>Nachname</td>
+                  <td>{{ $t("iam.user.fields.last_name") }}</td>
                   <td>{{ user_read.last_name }}</td>
                </tr>
                <tr>
-                  <td>E-Postaddresse</td>
+                  <td>{{ $t("iam.user.fields.email") }}</td>
                   <td>{{ user_read.emailaddress }}</td>
                </tr>
             </table>
@@ -68,7 +68,7 @@ async function load_user() {
       loading.value = false
       return
    }
-   ;(await api.iam.user.get(props.id)).fold(
+   ;(await api.iam.user.read(props.id)).fold(
       (err: string) => {
          error(err)
       },

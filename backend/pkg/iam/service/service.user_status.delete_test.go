@@ -12,11 +12,13 @@ func TestDeleteUserStatus(t *testing.T) {
 
 	rootId := uuid.MustParse(getRootPermissionGroup())
 	id, status := iamService.CreateUserStatus(&iam_domain.UserStatusWrite{
-		Name:        "UserStatusDelete",
-		Abbr:        "USD",
-		Description: "test",
-		Archived:    false,
-		Parent:      &rootId,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "UserStatusDelete",
+			Abbr:        "USD",
+			Description: "test",
+			Parent:      &rootId,
+		},
+		Archived: false,
 	})
 
 	if status.Err() {

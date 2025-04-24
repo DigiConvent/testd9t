@@ -12,9 +12,11 @@ func TestGetUserRoleProfile(t *testing.T) {
 
 	rootId := uuid.MustParse(getRootPermissionGroup())
 	userRoleId, _ := testService.CreateUserRole(&iam_domain.UserRoleWrite{
-		Name:   "UserRoleProfile",
-		Abbr:   "UR",
-		Parent: &rootId,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:   "UserRoleProfile",
+			Abbr:   "UR",
+			Parent: &rootId,
+		},
 	})
 
 	_, status := testService.GetUserRole(&uuid.Max)

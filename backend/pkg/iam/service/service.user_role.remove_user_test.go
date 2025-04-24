@@ -20,10 +20,12 @@ func TestRemoveUserFromUserRole(t *testing.T) {
 	}
 
 	testRole, _ := iamService.CreateUserRole(&iam_domain.UserRoleWrite{
-		Name:        "TestRemoveUserFromUserRole",
-		Description: "TestRemoveUserFromUserRole",
-		Abbr:        "TRU",
-		Parent:      getRootPermissionGroupUuid(),
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "TestRemoveUserFromUserRole",
+			Description: "TestRemoveUserFromUserRole",
+			Abbr:        "TRU",
+			Parent:      getRootPermissionGroupUuid(),
+		},
 	})
 
 	if testRole == nil {

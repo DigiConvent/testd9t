@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import PermissionGroupTreeView from "@/components/iam/permission_group/list.vue"
+import PermissionGroupTreeView from "@/components/pkg/iam/permission_group/list.vue"
 import { ref } from "vue"
 import JwtAuthenticator from "@/auth/jwt"
 import { useI18n } from "vue-i18n"

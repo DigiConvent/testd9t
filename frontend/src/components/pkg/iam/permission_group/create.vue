@@ -40,7 +40,7 @@ import { ref, watch } from "vue"
 import FormTextInput from "@/components/form/text_input.vue"
 import FormTextareaInput from "@/components/form/textarea.vue"
 import PermissionGroupPicker from "./picker.vue"
-import PermissionPicker from "@/components/iam/permission/picker.vue"
+import PermissionPicker from "@/components/pkg/iam/permission/picker.vue"
 import { error } from "@/composables/toast"
 import router from "@/router"
 import { get_colour } from "@/utils/colour"
@@ -51,7 +51,7 @@ const pg = ref<PermissionGroupWrite>({
    abbr: "",
    description: "",
    parent: "",
-   meta: null,
+   meta: "",
    permissions: [],
 })
 
@@ -92,7 +92,7 @@ async function handle_create(action: "" | "new" | "profile" | "edit") {
 const inherited_permissions = ref<string[]>([])
 function load_inherited_permissions() {
    if (pg.value == null || pg.value.parent == null) return
-   api.iam.permission_group.get(pg.value.parent).then((result) => {
+   api.iam.permission_group.read(pg.value.parent).then((result) => {
       result.fold(
          (err: string) => {
             error(err)

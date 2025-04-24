@@ -1,8 +1,6 @@
 package iam_service
 
 import (
-	"fmt"
-
 	"github.com/DigiConvent/testd9t/core"
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 	"github.com/google/uuid"
@@ -17,25 +15,21 @@ func (s *IAMService) GetUserProfile(id *uuid.UUID) (*iam_domain.UserProfile, *co
 	if status.Err() {
 		return nil, &status
 	}
-	fmt.Println("Happens")
 
 	userStatuses, status := s.repository.ListUserStatusesFromUser(id)
 	if status.Err() {
 		return nil, &status
 	}
-	fmt.Println("Happens")
 
 	userPermissions, status := s.repository.ListUserPermissions(id)
 	if status.Err() {
 		return nil, &status
 	}
-	fmt.Println("Happens")
 
 	userGroups, status := s.repository.ListUserGroups(id)
 	if status.Err() {
 		return nil, &status
 	}
-	fmt.Println("Happens")
 
 	return &iam_domain.UserProfile{
 		User:        userRead,

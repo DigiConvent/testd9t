@@ -7,8 +7,11 @@ import (
 )
 
 func (s *IAMService) UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.PermissionGroupWrite) *core.Status {
-	if arg.Parent == uuid.Nil.String() {
-		return core.BadRequestError("The admin role cannot have descendants")
+	if arg == nil {
+		return core.UnprocessableContentError("iam.permission_group.update.missing_data")
+	}
+	if arg.Name == "" {
+		return core.UnprocessableContentError("iam.permission_group.update.invalid_name")
 	}
 
 	status := s.repository.SetPermissionsForPermissionGroup(id, arg.Permissions)

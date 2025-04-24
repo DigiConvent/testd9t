@@ -12,10 +12,10 @@ import update_user from "./update"
 export const user = {
    connect_telegram: connect_telegram,
    create: create_user,
-   get: get_user,
-   profile: get_user_profile,
-   list_permissions: list_permissions,
    list: list_users,
+   read: get_user,
+   read_profile: get_user_profile,
+   list_permissions: list_permissions,
    update: update_user,
    set_enabled: set_enabled,
    set_password: set_password,

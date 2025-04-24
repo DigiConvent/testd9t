@@ -13,19 +13,13 @@ type UserStatusProfile struct {
 }
 
 type UserStatusRead struct {
-	Id          uuid.UUID `json:"id"`
-	Name        string    `json:"name"`
-	Abbr        string    `json:"abbr"`
-	Description string    `json:"description"`
-	Archived    bool      `json:"archived"`
+	PermissionGroupRead
+	Archived bool `json:"archived"`
 }
 
 type UserStatusWrite struct {
-	Name        string     `json:"name"`
-	Abbr        string     `json:"abbr"`
-	Description string     `json:"description"`
-	Archived    bool       `json:"archived"`
-	Parent      *uuid.UUID `json:"parent"`
+	PermissionGroupWrite
+	Archived bool `json:"archived"`
 }
 
 type UserBecameStatusRead struct {

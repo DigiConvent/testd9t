@@ -1,30 +1,17 @@
+import type { PermissionGroupRead, PermissionGroupWrite } from "../permission_group/types"
 import type { UserFacade } from "../user/types"
 
 export type UserStatusRead = {
-   id: string
-   name: string
-   abbr: string
-   description: string
    archived: boolean
-   parent: string
-}
+} & PermissionGroupRead
 
 export type UserStatusWrite = {
-   id: string
-   name: string
-   abbr: string
-   description: string
    archived: boolean
-   parent: string
-}
+} & PermissionGroupWrite
 
 export type UserStatusCreate = {
-   name: string
-   abbr: string
-   description: string
    archived: boolean
-   parent: string
-}
+} & PermissionGroupWrite
 
 export type UserBecameStatus = {
    role: string

@@ -29,11 +29,13 @@ func TestUserAddUserStatus(t *testing.T) {
 
 	parent := uuid.MustParse(getRootPermissionGroup())
 	testCurrentUserStatus := &iam_domain.UserStatusWrite{
-		Name:        "UserAddUserStatusCurrent",
-		Abbr:        "UAUS",
-		Description: "test",
-		Archived:    false,
-		Parent:      &parent,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "UserAddUserStatusCurrent",
+			Abbr:        "UAUS",
+			Description: "test",
+			Parent:      &parent,
+		},
+		Archived: false,
 	}
 
 	currentUserStatusId, status := iamService.CreateUserStatus(testCurrentUserStatus)
@@ -57,11 +59,13 @@ func TestUserAddUserStatus(t *testing.T) {
 	}
 
 	testFutureUserStatus := &iam_domain.UserStatusWrite{
-		Name:        "UserAddUserStatusFuture",
-		Abbr:        "UAUSF",
-		Description: "test",
-		Archived:    false,
-		Parent:      &parent,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "UserAddUserStatusFuture",
+			Abbr:        "UAUSF",
+			Description: "test",
+			Parent:      &parent,
+		},
+		Archived: false,
 	}
 
 	futureUserStatusId, _ := iamService.CreateUserStatus(testFutureUserStatus)

@@ -10,10 +10,12 @@ func TestCreateUserRole(t *testing.T) {
 	iamService := GetTestIAMService("iam")
 
 	testUserRole := &iam_domain.UserRoleWrite{
-		Name:        "UserRoleCreate",
-		Abbr:        "USC",
-		Description: "test",
-		Parent:      getRootPermissionGroupUuid(),
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "UserRoleCreate",
+			Abbr:        "USC",
+			Description: "test",
+			Parent:      getRootPermissionGroupUuid(),
+		},
 	}
 
 	id, status := iamService.CreateUserRole(testUserRole)

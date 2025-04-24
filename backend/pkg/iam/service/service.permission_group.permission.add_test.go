@@ -13,7 +13,7 @@ func TestAddPermissionToPermissionGroup(t *testing.T) {
 		Name:        "PermissionGroupAddPermission",
 		Abbr:        "PGA",
 		Description: "test",
-		Parent:      getRootPermissionGroup(),
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	status := testService.AddPermissionToPermissionGroup(pg, "test")

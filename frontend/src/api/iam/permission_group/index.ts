@@ -11,8 +11,8 @@ import update_permission_group from "./update"
 
 export const permission_group = {
    create: create_permission_group,
-   get: get_permission_group,
-   get_profile: get_permission_group_profile,
+   read: get_permission_group,
+   read_profile: get_permission_group_profile,
    list: list_permission_groups,
    add_user: add_user,
    add_permission: add_permission,

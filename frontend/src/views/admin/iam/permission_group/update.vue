@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import { useRoute } from "vue-router"
-import UpdatePermissionGroup from "@/components/iam/permission_group/update.vue"
+import UpdatePermissionGroup from "@/components/pkg/iam/permission_group/update.vue"
 
 const ids = useRoute().params.id
 

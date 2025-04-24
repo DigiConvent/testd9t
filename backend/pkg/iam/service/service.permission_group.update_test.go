@@ -13,6 +13,7 @@ func TestPermissionGroupUpdate(t *testing.T) {
 		Name:        "PermissionGroupUpdate",
 		Abbr:        "PGU",
 		Description: "test",
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	status := iamService.UpdatePermissionGroup(permissionGroupID, &iam_domain.PermissionGroupWrite{

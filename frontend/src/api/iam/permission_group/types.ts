@@ -6,7 +6,6 @@ export type PermissionGroupWrite = {
    abbr: string
    description: string
    parent?: string
-   meta: null | "role" | "status"
    permissions: string[]
 }
 
@@ -22,7 +21,7 @@ export type PermissionGroupFacade = {
    id: string
    name: string
    abbr: string
-   meta: null | "role" | "status"
+   meta: "" | "role" | "status"
    implied: boolean
    parent?: string
    generated: boolean
@@ -34,7 +33,7 @@ export type PermissionGroupRead = {
    abbr: string
    description: string
    parent?: string
-   meta: null | "role" | "status"
+   meta: "" | "role" | "status"
    generated: boolean
    permissions: PermissionFacade[]
 }

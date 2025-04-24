@@ -4,19 +4,19 @@
       <div v-else-if="permission_group" v-permission="'iam.permission_group.read'">
          <table>
             <tr>
-               <td>Name</td>
+               <td>{{ $t("iam.pg.fields.name") }}</td>
                <td>{{ permission_group.name }}</td>
             </tr>
             <tr>
-               <td>Abbr</td>
+               <td>{{ $t("iam.pg.fields.abbr") }}</td>
                <td>{{ permission_group.abbr }}</td>
             </tr>
             <tr>
-               <td>Description</td>
+               <td>{{ $t("iam.pg.fields.description") }}</td>
                <td>{{ permission_group.description }}</td>
             </tr>
             <tr v-if="permission_group.meta != null">
-               <td>Type</td>
+               <td>{{ $t("iam.pg.fields.meta") }}</td>
                <td>{{ permission_group.meta }}</td>
             </tr>
          </table>
@@ -39,7 +39,7 @@ const permission_group = ref<PermissionGroupRead | null>(null)
 async function load() {
    loading.value = true
    if (props.id != undefined) {
-      ;(await api.iam.permission_group.get(props.id)).fold(
+      ;(await api.iam.permission_group.read(props.id)).fold(
          (err: string) => {
             error(err)
          },

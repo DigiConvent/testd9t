@@ -10,7 +10,7 @@ export const user_role = {
    create: create_user_role,
    list: list_user_role,
    read: get_user_role,
-   profile: get_user_role_profile,
+   read_profile: get_user_role_profile,
    update: update_user_role,
    delete: delete_user_role,
 } satisfies ApiCollection

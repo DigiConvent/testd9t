@@ -38,7 +38,7 @@ import { error } from "@/composables/toast"
 import FormTextInput from "@/components/form/text_input.vue"
 import FormTextarea from "@/components/form/textarea.vue"
 import FormSwitch from "@/components/form/switch.vue"
-import PermissionGroupPicker from "@/components/iam/permission_group/picker.vue"
+import PermissionGroupPicker from "@/components/pkg/iam/permission_group/picker.vue"
 import type { UserStatusRead, UserStatusWrite } from "@/api/iam/user_status/types"
 import { type IdOrData } from "@/components/form/form"
 
@@ -64,7 +64,7 @@ async function load() {
    loading.value = true
 
    if (props.id != undefined) {
-      ;(await api.iam.user_status.get(props.id)).fold(
+      ;(await api.iam.user_status.read(props.id)).fold(
          (err: string) => {
             error(err)
          },

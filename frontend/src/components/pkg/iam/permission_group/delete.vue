@@ -68,7 +68,7 @@
 <script lang="ts" setup>
 import { api } from "@/api"
 import type { PermissionGroupProfile } from "@/api/iam/permission_group/types"
-import UserFacades from "@/components/iam/user/facade.vue"
+import UserFacades from "@/components/pkg/iam/user/facade.vue"
 import PermissionGroupFacades from "./facade.vue"
 import { error, success } from "@/composables/toast"
 import router from "@/router"
@@ -94,7 +94,7 @@ async function handle_delete() {
 const profile = ref<PermissionGroupProfile>()
 async function load() {
    loading.value = true
-   ;(await api.iam.permission_group.get_profile(props.id)).fold(
+   ;(await api.iam.permission_group.read_profile(props.id)).fold(
       (err: string) => {
          error(err)
       },

@@ -5,8 +5,12 @@ export const to_user_role_read = (data: any): UserRoleRead => {
       id: data.id,
       name: data.name,
       abbr: data.abbr,
-      description: data.description,
       archived: data.archived,
+      description: data.description,
+      generated: data.generated,
+      meta: data.meta,
+      parent: data.parent,
+      permissions: data.permissions,
    }
 }
 

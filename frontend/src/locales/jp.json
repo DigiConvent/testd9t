@@ -1,6 +1,14 @@
 {
    "admin": { "title": "管理" },
    "sys": {
+      "upload_logo": {
+         "large_label": "ロゴ（大）",
+         "small_label": "ロゴ（小）",
+         "success": "ロゴのアップロードに成功しました",
+         "fail": "ロゴのアップロードに失敗しました"
+      },
+      "built_at": "{date} に作成",
+      "online_since": "{date} からオンライン",
       "title": "システム",
       "data": "データ使用量",
       "total": "合計",
@@ -9,72 +17,228 @@
       "dns": {
          "abbr": "DNS",
          "title": "ドメインネームサービス",
-         "invalid": "{dns}のエントリが無効です。",
-         "fix": "{domain}のDNSに以下の{type}エントリを入力してください。",
-         "copied_to_clipboard": "クリップボードにコピーされました",
-         "valid": "{dns}のエントリは正しいようです。"
+         "invalid": "{dns} のエントリが無効です。",
+         "fix": "{domain} のDNSに次の {type} エントリを追加してください。",
+         "copied_to_clipboard": "クリップボードにコピーしました",
+         "valid": "{dns} のエントリは正しく見えます。"
       }
    },
    "iam": {
       "p": {
+         "p": "権限",
+         "profile": {
+            "users": "この権限を持つユーザー",
+            "groups": "この権限を持つグループ",
+            "archived": "アーカイブ済み",
+            "generated": "生成済み",
+            "add_to_group": {
+               "success": "権限が正常に追加されました",
+               "error": "権限を追加できませんでした"
+            },
+            "remove_from_group": {
+               "success": "権限が正常に削除されました",
+               "error": "権限を削除できませんでした"
+            }
+         },
+         "fields": {
+            "group": "グループ"
+         },
          "show_more": "もっと表示",
-         "show_fewer": "減らして表示"
+         "show_fewer": "少なく表示",
+         "inherited": "継承"
       },
       "pg": {
+         "pg": "グループ",
+         "read": {
+            "title": "グループを見る"
+         },
+         "list": {},
          "update": {
-            "title": "グループ情報",
+            "title": "グループを更新",
+            "submit": "保存"
+         },
+         "create": {
+            "title": "グループを作成",
+            "submit": "作成"
+         },
+         "delete": {
+            "warning": "次の依存関係があるため、このグループを削除できません："
+         },
+         "profile": {
+            "no_users": "メンバーがいません",
+            "hierarchy": "グループ階層",
+            "permissions": "アクセス権",
+            "users": "メンバー",
+            "inherited": "継承",
+            "owned": "所有",
+            "properties": "プロパティ"
+         },
+         "fields": {
             "name": "名前",
             "abbr": "略称",
             "description": "説明",
-            "submit": "保存"
+            "parent": "親グループ",
+            "permissions": "アクセス権"
+         },
+         "picker": {
+            "none": "選択なし"
          }
       },
       "title": "アクセス制御",
       "auth": {
+         "user_menu": {
+            "my_profile": "マイプロフィール",
+            "logged_in_as": "{user} としてログイン中",
+            "logout": "ログアウト"
+         },
          "login_form": {
             "title": "ログイン",
             "email": "メールアドレス",
-            "required": "{field}は必須です",
+            "required": "{field} は必須です",
             "password": "パスワード",
-            "login_unsuccessful": "無効なログイン情報",
+            "login_unsuccessful": "無効なログイン情報です",
             "login_successful": "ログイン成功",
-            "submit": "ログイン",
-            "logout": "ログアウト"
+            "submit": "ログイン"
          },
          "connect_telegram_user": {
-            "title": "Telegramユーザーを接続",
-            "description": "Telegramユーザーを接続するには、以下のボタンを使用してください。",
-            "button": "Telegramユーザーを接続",
-            "restart_required": "Telegramユーザーを接続するには、ページを再読み込みする必要があります。アプリケーションは5秒後に終了します。",
+            "title": "Telegram ユーザーを接続",
+            "description": "Telegram ユーザーを接続するには、以下のボタンを使用してください。",
+            "button": "Telegram ユーザーを接続",
+            "restart_required": "Telegram ユーザーを接続するにはページを再読み込みする必要があります。5秒後にアプリケーションが閉じます。",
             "restart": "今すぐ再読み込み"
          }
       },
       "user": {
-         "create": {
-            "title": "ユーザーを作成",
+         "user": "ユーザー",
+         "fields": {
             "email": "メールアドレス",
-            "required": "{field}は必須です",
-            "invalid": "{field}は無効です",
             "first_name": "名",
             "last_name": "姓",
-            "submit": "招待"
+            "password": "パスワード",
+            "user_status": "会員ステータス",
+            "user_role": "役職",
+            "roles": "役職",
+            "user_status_start": "開始日"
+         },
+         "create": {
+            "title": "ユーザーを作成",
+            "submit": "招待",
+            "success": "ユーザーが正常に追加されました"
          },
          "list": {
             "title": "ユーザー"
+         },
+         "update": {
+            "title": "データを更新",
+            "submit": "更新"
+         },
+         "set_password": {
+            "title": "パスワードを設定",
+            "submit": "設定",
+            "success": "パスワードが正常に設定されました"
+         },
+         "enabled": "アカウントは有効です",
+         "disabled": "アカウントは無効です"
+      },
+      "ur": {
+         "ur": "役職",
+         "fields": {
+            "name": "名前",
+            "abbr": "略称",
+            "description": "説明",
+            "parent": "親グループ"
          }
       },
-      "user_status": {
+      "us": {
+         "us": "会員ステータス",
          "picker": {
             "placeholder": "会員ステータス",
             "empty": "会員ステータスが見つかりません"
          },
-         "new": "新しい会員ステータス",
          "create": {
             "title": "会員ステータスを作成",
             "name": "名前",
-            "required": "{field}は必須です",
+            "abbr": "略称",
+            "description": "説明",
+            "archived": "アーカイブ済み",
+            "unarchived": "アーカイブされていない",
+            "required": "{field} は必須です",
             "submit": "作成"
          }
+      }
+   },
+   "actions": {
+      "create": "{entity} を作成",
+      "and_new": "…そして新規作成",
+      "view": "{entity} を表示",
+      "update": "{entity} を更新",
+      "edit": "{entity} を編集",
+      "add": "{entity} を追加",
+      "remove": "{entity} を削除",
+      "cancel": "{entity} をキャンセル",
+      "save": "{entity} を保存",
+      "close": "{entity} を閉じる",
+      "reset": "{entity} をリセット",
+      "delete": "{entity} を削除"
+   },
+   "feedback": {
+      "+": {
+         "create": "{entity} を正常に作成しました",
+         "update": "{entity} を正常に更新しました",
+         "delete": "{entity} を正常に削除しました",
+         "add": "{entity} を正常に追加しました",
+         "remove": "{entity} を正常に削除しました",
+         "cancel": "{entity} を正常にキャンセルしました"
+      },
+      "-": {
+         "create": "{entity} を作成できませんでした",
+         "update": "{entity} を更新できませんでした",
+         "delete": "{entity} を削除できませんでした",
+         "add": "{entity} を追加できませんでした",
+         "remove": "{entity} を削除できませんでした",
+         "cancel": "{entity} をキャンセルできませんでした"
+      },
+      "required": "{field} は必須です",
+      "invalid": "{field} が無効です"
+   },
+   "prompt": {
+      "delete": "{entity} '{name}' を本当に削除しますか？"
+   },
+   "answers": {
+      "yes": "はい",
+      "no": "いいえ"
+   },
+   "unauthorised": "認可されていません（{permission}）",
+   "inherited": "継承",
+   "time": {
+      "now": "今",
+      "month": {
+         "0": "一月",
+         "1": "二月",
+         "2": "三月",
+         "3": "四月",
+         "4": "五月",
+         "5": "六月",
+         "6": "七月",
+         "7": "八月",
+         "8": "九月",
+         "9": "十月",
+         "10": "十一月",
+         "11": "十二月"
+      },
+      "mo": {
+         "0": "一月",
+         "1": "二月",
+         "2": "三月",
+         "3": "四月",
+         "4": "五月",
+         "5": "六月",
+         "6": "七月",
+         "7": "八月",
+         "8": "九月",
+         "9": "十月",
+         "10": "十一月",
+         "11": "十二月"
       }
    }
 }

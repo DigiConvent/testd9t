@@ -25,16 +25,18 @@ func TestListUserPermissions(t *testing.T) {
 		Permissions: []string{permissions[0].Name},
 		Abbr:        "TPG",
 		Description: "Test Permission Group",
-		Parent:      "",
+		Parent:      getRootPermissionGroupUuid(),
 	}
 	permissionGroupID, _ := iamService.CreatePermissionGroup(&permissionGroup)
 
 	userStatus := iam_domain.UserStatusWrite{
-		Name:        "TestUserListPermissions",
-		Abbr:        "TSLP",
-		Description: "Test Status",
-		Archived:    false,
-		Parent:      permissionGroupID,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "TestUserListPermissions",
+			Abbr:        "TSLP",
+			Description: "Test Status",
+			Parent:      permissionGroupID,
+		},
+		Archived: false,
 	}
 	statusID, _ := iamService.CreateUserStatus(&userStatus)
 

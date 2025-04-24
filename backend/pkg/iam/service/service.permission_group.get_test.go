@@ -14,7 +14,7 @@ func TestGetPermissionGroup(t *testing.T) {
 		Name:        "PermissionGroupGet",
 		Abbr:        "PG",
 		Description: "test",
-		Parent:      getRootPermissionGroup(),
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	if res == nil {

@@ -19,7 +19,7 @@ func TestRemovePermissionFromPermissionGroup(t *testing.T) {
 		Name:        "PermissionGroupRemovePermission",
 		Abbr:        "PG",
 		Description: "test",
-		Parent:      getRootPermissionGroup(),
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	status = testService.RemovePermissionFromPermissionGroup(pg, "test")

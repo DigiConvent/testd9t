@@ -17,7 +17,7 @@ const loading = ref<boolean>(true)
 const profile = ref<UserStatusProfile>()
 
 async function load() {
-   ;(await api.iam.user_status.profile(props.id)).fold(
+   ;(await api.iam.user_status.read_profile(props.id)).fold(
       (err: string) => {
          error(err)
       },

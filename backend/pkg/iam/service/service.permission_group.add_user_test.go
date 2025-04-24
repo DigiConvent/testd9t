@@ -14,7 +14,7 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 		Name:        "PermissionGroupAddUser",
 		Abbr:        "PGA",
 		Description: "test",
-		Parent:      getRootPermissionGroup(),
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	if pg == nil {
@@ -37,11 +37,13 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 	parsedId, _ := uuid.Parse(id)
 
 	userStatus, status := testService.CreateUserStatus(&iam_domain.UserStatusWrite{
-		Name:        "PermissionGroupAddUserTest",
-		Abbr:        "PGAUT",
-		Description: "testxs",
-		Archived:    true,
-		Parent:      &parsedId,
+		PermissionGroupWrite: iam_domain.PermissionGroupWrite{
+			Name:        "PermissionGroupAddUserTest",
+			Abbr:        "PGAUT",
+			Description: "testxs",
+			Parent:      &parsedId,
+		},
+		Archived: true,
 	})
 
 	if status.Err() {

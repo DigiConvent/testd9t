@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import { useRoute } from "vue-router"
-import UserStatusProfile from "@/components/iam/user_status/profile.vue"
+import UserStatusProfile from "@/components/pkg/iam/user_status/profile.vue"
 import { ref } from "vue"
 
 const params = useRoute().params

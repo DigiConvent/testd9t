@@ -7,18 +7,8 @@
          class="flex flex-col gap-4"
          @submit="handle_submit"
       >
-         <FormTextInput
-            v-if="pg.meta == null"
-            v-model="pg.name"
-            label="iam.pg.fields"
-            name="name"
-         />
-         <FormTextInput
-            v-if="pg.meta == null"
-            v-model="pg.abbr"
-            label="iam.pg.fields"
-            name="abbr"
-         />
+         <FormTextInput v-if="pg.meta == ''" v-model="pg.name" label="iam.pg.fields" name="name" />
+         <FormTextInput v-if="pg.meta == ''" v-model="pg.abbr" label="iam.pg.fields" name="abbr" />
          <FormTextareaInput v-model="pg.description" label="iam.pg.fields" name="description" />
          <PermissionGroupPicker
             v-if="pg.parent != null"
@@ -48,8 +38,8 @@ import { ref, watch } from "vue"
 
 import FormTextInput from "@/components/form/text_input.vue"
 import FormTextareaInput from "@/components/form/textarea.vue"
-import PermissionGroupPicker from "@/components/iam/permission_group/picker.vue"
-import PermissionPicker from "@/components/iam/permission/picker.vue"
+import PermissionGroupPicker from "@/components/pkg/iam/permission_group/picker.vue"
+import PermissionPicker from "@/components/pkg/iam/permission/picker.vue"
 import { error, success } from "@/composables/toast"
 import type { IdOrData } from "@/components/form/form"
 import { useI18n } from "vue-i18n"
@@ -83,7 +73,7 @@ const handle_submit = async () => {
 
 const load_permission_group = async () => {
    loading.value = true
-   ;(await api.iam.permission_group.get(id())).fold(
+   ;(await api.iam.permission_group.read(id())).fold(
       (err: string) => {
          error(err)
       },
@@ -110,7 +100,7 @@ load_permission_group()
 const inherited_permissions = ref<string[]>([])
 function load_inherited_permissions() {
    if (pg.value == null || pg.value.parent == null) return
-   api.iam.permission_group.get(pg.value.parent).then((result) => {
+   api.iam.permission_group.read(pg.value.parent).then((result) => {
       result.fold(
          (err: string) => {
             error(err)

@@ -13,13 +13,13 @@ func TestListPermissionGroups(t *testing.T) {
 		Name:        "PermissionGroupList1",
 		Abbr:        "PG",
 		Description: "test",
-		Parent:      getRootPermissionGroup(),
+		Parent:      getRootPermissionGroupUuid(),
 	})
 	testService.CreatePermissionGroup(&iam_domain.PermissionGroupWrite{
 		Name:        "PermissionGroupList2",
 		Abbr:        "PG",
 		Description: "test",
-		Parent:      getRootPermissionGroup(),
+		Parent:      getRootPermissionGroupUuid(),
 	})
 
 	permissionGroups, status := testService.ListPermissionGroups()

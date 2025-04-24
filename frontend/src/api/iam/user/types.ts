@@ -29,7 +29,8 @@ export type UserFacade = {
    implied: boolean
    status_id: string
    status_name: string
-   roles: { id: string; name: string }[]
+   role_id: string
+   role_name: string
 }
 
 export type UserProfile = {
