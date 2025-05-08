@@ -7,11 +7,6 @@ import (
 )
 
 func (service *IAMService) GetUserRoleProfile(id *uuid.UUID) (*iam_domain.UserRoleProfile, *core.Status) {
-	userRole, status := service.repository.GetUserRole(id)
-	if status.Err() {
-		return nil, &status
-	}
-
 	users, status := service.repository.ListUserRoleUsers(id, false)
 	if status.Err() {
 		return nil, &status
@@ -24,7 +19,6 @@ func (service *IAMService) GetUserRoleProfile(id *uuid.UUID) (*iam_domain.UserRo
 
 	return &iam_domain.UserRoleProfile{
 		PermissionGroupProfile: permissionGroup,
-		UserRole:               userRole,
 		History:                users,
 	}, &status
 }

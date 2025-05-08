@@ -46,7 +46,7 @@ func (router *IamRouter) CreateUser(ctx *gin.Context) {
 
 	addUserToUserStatus.User = *id
 
-	status = router.iamService.AddUserBecameStatus(&addUserToUserStatus)
+	status = router.iamService.AddUserToUserStatus(&addUserToUserStatus)
 	if status.Err() {
 		ctx.JSON(status.Code, gin.H{
 			"error": status.Message,

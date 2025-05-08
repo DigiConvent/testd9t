@@ -5,17 +5,9 @@ import (
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
-func (r *IAMRepository) ListUserStatuses() ([]*iam_domain.UserStatusRead, core.Status) {
+func (r *IAMRepository) ListStatuses() ([]*iam_domain.UserStatusRead, core.Status) {
 	var userStatuses []*iam_domain.UserStatusRead
-	rows, err := r.db.Query(`
-	SELECT 
-		id,
-		name,
-		abbr,
-		description,
-		archived
-	FROM 
-		user_status`)
+	rows, err := r.db.Query(`select  id, name, abbr, description, archived from permission_groups where meta = 'status'`)
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}

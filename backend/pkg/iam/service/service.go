@@ -24,7 +24,7 @@ type IAMServiceInterface interface {
 	ListUserStatuses() ([]*iam_domain.UserStatusRead, *core.Status)
 	DeleteUserStatus(id *uuid.UUID) *core.Status
 	UpdateUserStatus(id *uuid.UUID, status *iam_domain.UserStatusWrite) *core.Status
-	AddUserBecameStatus(status *iam_domain.UserBecameStatusWrite) *core.Status
+	AddUserToUserStatus(status *iam_domain.UserBecameStatusWrite) *core.Status
 
 	ListUserRoles() ([]*iam_domain.UserRoleRead, *core.Status)
 	CreateUserRole(status *iam_domain.UserRoleWrite) (*uuid.UUID, *core.Status)
@@ -32,8 +32,8 @@ type IAMServiceInterface interface {
 	GetUserRoleProfile(id *uuid.UUID) (*iam_domain.UserRoleProfile, *core.Status)
 	DeleteUserRole(id *uuid.UUID) *core.Status
 	UpdateUserRole(id *uuid.UUID, status *iam_domain.UserRoleWrite) *core.Status
-	AddUserToUserRole(status *iam_domain.UserBecameRoleWrite) *core.Status
-	RemoveUserFromUserRole(status *iam_domain.UserBecameRoleWrite) *core.Status
+	AddUserToUserRole(status *iam_domain.AddRoleToUserWrite) *core.Status
+	RemoveUserFromUserRole(status *iam_domain.AddRoleToUserWrite) *core.Status
 
 	CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite) (*uuid.UUID, *core.Status)
 	GetPermissionGroup(id *uuid.UUID) (*iam_domain.PermissionGroupRead, *core.Status)
@@ -44,7 +44,7 @@ type IAMServiceInterface interface {
 	AddUserToPermissionGroup(permissionGroup *uuid.UUID, userId *uuid.UUID) *core.Status
 	AddPermissionToPermissionGroup(permissionGroupId *uuid.UUID, permission string) *core.Status
 	RemovePermissionFromPermissionGroup(permissionGroupId *uuid.UUID, permission string) *core.Status
-	DeletePermissionGroup(id *uuid.UUID, generated bool) *core.Status
+	DeletePermissionGroup(id *uuid.UUID) *core.Status
 
 	ListPermissions() ([]*iam_domain.PermissionRead, *core.Status)
 	CreatePermission(permission *iam_domain.PermissionWrite) *core.Status

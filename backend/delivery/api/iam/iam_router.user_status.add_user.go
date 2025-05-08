@@ -14,7 +14,7 @@ func (router *IamRouter) AddUserStatusUser(ctx *gin.Context) {
 		return
 	}
 
-	status := router.iamService.AddUserBecameStatus(&addUserToUserStatus)
+	status := router.iamService.AddUserToUserStatus(&addUserToUserStatus)
 	if status.Err() {
 		ctx.JSON(status.Code, gin.H{
 			"error": status.Message,

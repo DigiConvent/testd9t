@@ -13,9 +13,9 @@ func (r *IAMRepository) ListUserRoleUsers(arg *uuid.UUID, now bool) ([]*iam_doma
 	u.last_name,
 	ubr.start,
 	ubr.end
-	from user_became_role ubr
+	from permission_group_has_user ubr
 	join user_facades u on ubr.user = u.id 
-	where ubr.role = ?`, arg.String())
+	where ubr.permission_group = ?`, arg.String())
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}

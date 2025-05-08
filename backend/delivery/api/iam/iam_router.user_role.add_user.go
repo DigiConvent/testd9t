@@ -6,7 +6,7 @@ import (
 )
 
 func (router *IamRouter) AddUserToUserRole(ctx *gin.Context) {
-	var addUserToUserRole iam_domain.UserBecameRoleWrite
+	var addUserToUserRole iam_domain.AddRoleToUserWrite
 
 	if err := ctx.ShouldBindJSON(&addUserToUserRole); err != nil {
 		ctx.JSON(422, gin.H{

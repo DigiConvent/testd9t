@@ -59,9 +59,9 @@ func TestGetUserStatusProfile(t *testing.T) {
 		t.Fatalf("expected 0 users in its history, instead got %v", len(userStatusProfile.History))
 	}
 
-	// add 3 users...
+	// add 4 users...
 	userIds := make([]uuid.UUID, 4)
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		userId, _ := GetTestIAMService("iam").CreateUser(&iam_domain.UserWrite{
 			Emailaddress: "GetUserStatusProfile" + strconv.Itoa(i) + "@test.test",
 			FirstName:    "Test",
@@ -71,7 +71,7 @@ func TestGetUserStatusProfile(t *testing.T) {
 		userIds[i] = *userId
 
 		// link them all to the first user status
-		GetTestIAMService("iam").AddUserBecameStatus(&iam_domain.UserBecameStatusWrite{
+		GetTestIAMService("iam").AddUserToUserStatus(&iam_domain.UserBecameStatusWrite{
 			UserStatus: *userStatusId,
 			User:       userIds[i],
 			Start:      time.Now().Add(-1 * time.Hour),
@@ -79,18 +79,18 @@ func TestGetUserStatusProfile(t *testing.T) {
 	}
 
 	// add a user status as the later one. Since this is a more recent one, this user should not show up in the profile of the first user status
-	GetTestIAMService("iam").AddUserBecameStatus(&iam_domain.UserBecameStatusWrite{
-		UserStatus:  *userStatusId2,
-		User:        userIds[2],
-		Start:       time.Now().Add(-30 * time.Minute),
-		Description: "This should be in the past and be the most current user status for " + formatUuuid(userIds[2].String()),
+	GetTestIAMService("iam").AddUserToUserStatus(&iam_domain.UserBecameStatusWrite{
+		UserStatus: *userStatusId2,
+		User:       userIds[2],
+		Start:      time.Now().Add(-30 * time.Minute),
+		Comment:    "This should be in the past and be the most current user status for " + formatUuuid(userIds[2].String()),
 	})
 	// and since this user status is in the future, this user should show up
-	GetTestIAMService("iam").AddUserBecameStatus(&iam_domain.UserBecameStatusWrite{
-		UserStatus:  *userStatusId3,
-		User:        userIds[3],
-		Start:       time.Now().Add(30 * time.Minute),
-		Description: "This should be in the future",
+	GetTestIAMService("iam").AddUserToUserStatus(&iam_domain.UserBecameStatusWrite{
+		UserStatus: *userStatusId3,
+		User:       userIds[3],
+		Start:      time.Now().Add(30 * time.Minute),
+		Comment:    "This should be in the future",
 	})
 
 	profile, status := GetTestIAMService("iam").GetUserStatusProfile(userStatusId)
@@ -103,8 +103,8 @@ func TestGetUserStatusProfile(t *testing.T) {
 		t.Fatalf("GetUserStatusProfile() failed: %s", status.Message)
 	}
 
-	if len(profile.History) != 3 {
-		t.Fatalf("expected 3 users, instead got %v", len(profile.History))
+	if len(profile.History) != 7 {
+		t.Fatalf("expected 7 users, instead got %v", len(profile.History))
 	}
 }
 

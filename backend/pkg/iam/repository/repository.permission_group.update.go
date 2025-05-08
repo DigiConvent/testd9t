@@ -8,7 +8,7 @@ import (
 
 func (r *IAMRepository) UpdatePermissionGroup(id *uuid.UUID, arg *iam_domain.PermissionGroupWrite) core.Status {
 	pg, _ := r.GetPermissionGroup(id)
-	if pg.Generated {
+	if pg.Meta != "" {
 		arg.Name = pg.Name
 		arg.Abbr = pg.Abbr
 	}

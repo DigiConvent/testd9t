@@ -21,7 +21,7 @@ func TestDeletePermissionGroup(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status := testService.DeletePermissionGroup(res, false)
+	status := testService.DeletePermissionGroup(res)
 
 	if status.Err() {
 		t.Fatal(status.Message)

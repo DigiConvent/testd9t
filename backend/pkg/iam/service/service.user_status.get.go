@@ -7,7 +7,7 @@ import (
 )
 
 func (s *IAMService) GetUserStatus(id *uuid.UUID) (*iam_domain.UserStatusRead, *core.Status) {
-	userStatus, status := s.repository.GetUserStatus(id)
+	userStatus, status := s.repository.GetStatus(id)
 	if status.Code != 200 {
 		return nil, &status
 	}

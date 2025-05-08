@@ -7,7 +7,7 @@ import (
 )
 
 func (s *IAMService) CreateUserStatus(arg *iam_domain.UserStatusWrite) (*uuid.UUID, *core.Status) {
-	id, status := s.repository.CreateUserStatus(arg)
+	id, status := s.repository.CreateStatus(arg)
 	if status.Err() {
 		return nil, &status
 	}

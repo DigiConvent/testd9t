@@ -6,6 +6,6 @@ import (
 )
 
 func (iamService *IAMService) DeleteUserStatus(id *uuid.UUID) *core.Status {
-	status := iamService.repository.DeleteUserStatus(id)
+	status := iamService.repository.DeleteStatus(id)
 	return &status
 }

@@ -3,9 +3,9 @@ create table permission_groups (
    name varchar not null,
    abbr varchar default '',
    description varchar default '',
-   meta varchar default null,
+   meta varchar default null check (meta is null or meta = 'role' or meta = 'status'),
    parent uuid references permission_groups(id) on delete set null,
-   "generated" boolean default false
+   archived boolean default false
 );
 
 -- there can only be one root

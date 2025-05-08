@@ -5,8 +5,8 @@ import (
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
-func (r *IAMRepository) AddUserStatusToUser(d *iam_domain.UserBecameStatusWrite) core.Status {
-	_, err := r.db.Exec(`insert into user_became_status ("user", status, start, description) values (?, ?, ?, ?)`, d.User, d.UserStatus, d.Start, d.Description)
+func (r *IAMRepository) AddStatusToUser(d *iam_domain.UserBecameStatusWrite) core.Status {
+	_, err := r.db.Exec(`insert into permission_group_has_user ("user", permission_group, start, comment) values (?, ?, ?, ?)`, d.User, d.UserStatus, d.Start, d.Comment)
 
 	if err != nil {
 		return *core.InternalError(err.Error())

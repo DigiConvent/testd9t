@@ -5,8 +5,8 @@ import (
 	uuid "github.com/google/uuid"
 )
 
-func (r *IAMRepository) DeleteUserStatus(id *uuid.UUID) core.Status {
-	result, err := r.db.Exec(`delete from user_status where id = ?`, id)
+func (r *IAMRepository) DeleteStatus(id *uuid.UUID) core.Status {
+	result, err := r.db.Exec(`delete from permission_groups where id = ? and meta = 'status'`, id)
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

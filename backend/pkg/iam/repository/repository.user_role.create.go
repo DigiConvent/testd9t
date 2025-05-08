@@ -11,7 +11,7 @@ func (r *IAMRepository) CreateUserRole(userRole *iam_domain.UserRoleWrite) (*uui
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}
-	res, err := r.db.Exec("insert into user_roles (id, name, abbr, description) values (?, ?, ?, ?)", id, userRole.Name, userRole.Abbr, userRole.Description)
+	res, err := r.db.Exec("insert into permission_groups (id, name, abbr, description, parent, meta) values (?, ?, ?, ?, ?, 'role')", id, userRole.Name, userRole.Abbr, userRole.Description, userRole.Parent)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
@@ -21,7 +21,6 @@ func (r *IAMRepository) CreateUserRole(userRole *iam_domain.UserRoleWrite) (*uui
 	if err != nil || d == 0 {
 		return nil, *core.InternalError(err.Error())
 	}
-	r.SetParentPermissionGroup(&iam_domain.PermissionGroupSetParent{Id: &id, Parent: userRole.Parent})
 
 	return &id, *core.StatusSuccess()
 }

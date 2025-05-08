@@ -5,8 +5,8 @@ import (
 	iam_domain "github.com/DigiConvent/testd9t/pkg/iam/domain"
 )
 
-func (r *IAMRepository) RemoveUserFromUserRole(arg *iam_domain.UserBecameRoleWrite) core.Status {
-	result, err := r.db.Exec(`delete from user_became_role where "user" = ? and "role" = ? and start = ? and end = ?`, arg.User, arg.Role, arg.Start, arg.End)
+func (r *IAMRepository) RemoveUserFromUserRole(arg *iam_domain.AddRoleToUserWrite) core.Status {
+	result, err := r.db.Exec(`delete from permission_group_has_user where "user" = ? and "role" = ? and start = ? and end = ?`, arg.User, arg.Role, arg.Start, arg.End)
 
 	if err != nil {
 		return *core.InternalError(err.Error())

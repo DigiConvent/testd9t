@@ -39,16 +39,16 @@ func TestGetUserRoleProfile(t *testing.T) {
 		t.Fatal("Expected no history")
 	}
 
-	if res.UserRole.Name != "UserRoleProfile" {
-		t.Fatal("Expected UserRoleProfile, instead I got ", res.UserRole.Name)
+	if res.PermissionGroup.Name != "UserRoleProfile" {
+		t.Fatal("Expected UserRoleProfile, instead I got ", res.PermissionGroup.Name)
 	}
 
-	if res.UserRole.Abbr != "UR" {
-		t.Fatal("Expected UR, instead I got ", res.UserRole.Abbr)
+	if res.PermissionGroup.Abbr != "UR" {
+		t.Fatal("Expected UR, instead I got ", res.PermissionGroup.Abbr)
 	}
 
-	if res.UserRole.Description != "" {
-		t.Fatal("Expected '', instead I got ", res.UserRole.Description)
+	if res.PermissionGroup.Description != "" {
+		t.Fatal("Expected '', instead I got ", res.PermissionGroup.Description)
 	}
 
 	if res.PermissionGroup.Parent == nil {

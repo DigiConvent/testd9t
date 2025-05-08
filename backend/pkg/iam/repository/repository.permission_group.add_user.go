@@ -10,18 +10,17 @@ func (r *IAMRepository) AddUserToPermissionGroup(permissionGroup, userId *uuid.U
 		return *core.UnprocessableContentError("permission group and user id must be provided")
 	}
 
-	var generated bool
-	err := r.db.QueryRow(`select "generated" from permission_groups where id = ?`, permissionGroup.String()).Scan(&generated)
-
-	if err != nil {
-		return *core.InternalError(err.Error())
+	// make sure that the permission group has a valid meta
+	pg, status := r.GetPermissionGroup(permissionGroup)
+	if status.Err() {
+		return status
 	}
 
-	if generated {
-		return *core.UnprocessableContentError("cannot add user to generated permission groups")
+	if pg.Meta == "" {
+		return *core.UnprocessableContentError("iam.permission_group.add_user.invalid_meta")
 	}
 
-	_, err = r.db.Exec(`insert into permission_group_has_user (permission_group, user) values (?, ?)`, permissionGroup.String(), userId.String())
+	_, err := r.db.Exec(`insert into permission_group_has_user (permission_group, user) values (?, ?)`, permissionGroup.String(), userId.String())
 
 	if err != nil {
 		return *core.InternalError(err.Error())

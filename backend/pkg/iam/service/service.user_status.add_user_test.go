@@ -48,7 +48,7 @@ func TestUserAddUserStatus(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status = iamService.AddUserBecameStatus(&iam_domain.UserBecameStatusWrite{
+	status = iamService.AddUserToUserStatus(&iam_domain.UserBecameStatusWrite{
 		User:       *id,
 		UserStatus: *currentUserStatusId,
 		Start:      time.Now().Add(-5 * time.Hour),
@@ -74,7 +74,7 @@ func TestUserAddUserStatus(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status = iamService.AddUserBecameStatus(&iam_domain.UserBecameStatusWrite{
+	status = iamService.AddUserToUserStatus(&iam_domain.UserBecameStatusWrite{
 		User:       *id,
 		UserStatus: *futureUserStatusId,
 		Start:      time.Now().Add(5 * time.Hour),

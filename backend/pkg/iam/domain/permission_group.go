@@ -26,18 +26,16 @@ type PermissionGroupRead struct {
 	Description string              `json:"description"`
 	Parent      *uuid.UUID          `json:"parent"`
 	Meta        string              `json:"meta"`
-	Generated   bool                `json:"generated"`
 	Permissions []*PermissionFacade `json:"permissions"`
 }
 
 type PermissionGroupFacade struct {
-	Id        uuid.UUID  `json:"id"`
-	Name      string     `json:"name"`
-	Abbr      string     `json:"abbr"`
-	Meta      *string    `json:"meta"`
-	Implied   bool       `json:"implied"`
-	Parent    *uuid.UUID `json:"parent"`
-	Generated bool       `json:"generated"`
+	Id      uuid.UUID  `json:"id"`
+	Name    string     `json:"name"`
+	Abbr    string     `json:"abbr"`
+	Meta    *string    `json:"meta"`
+	Implied bool       `json:"implied"`
+	Parent  *uuid.UUID `json:"parent"`
 }
 
 type PermissionGroupProfile struct {

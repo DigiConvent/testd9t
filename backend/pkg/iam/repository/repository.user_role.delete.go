@@ -6,7 +6,7 @@ import (
 )
 
 func (r *IAMRepository) DeleteUserRole(id *uuid.UUID) core.Status {
-	result, err := r.db.Exec(`delete from user_roles where id = ?`, id)
+	result, err := r.db.Exec(`delete from permission_groups where id = ? and meta = 'role'`, id)
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

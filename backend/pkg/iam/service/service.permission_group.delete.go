@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *IAMService) DeletePermissionGroup(id *uuid.UUID, generated bool) *core.Status {
-	status := s.repository.DeletePermissionGroup(id, generated)
+func (s *IAMService) DeletePermissionGroup(id *uuid.UUID) *core.Status {
+	status := s.repository.DeletePermissionGroup(id)
 	return &status
 }

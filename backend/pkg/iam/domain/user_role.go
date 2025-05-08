@@ -8,8 +8,7 @@ import (
 
 type UserRoleProfile struct {
 	*PermissionGroupProfile
-	UserRole *UserRoleRead         `json:"user_role"`
-	History  []*UserBecameRoleRead `json:"history"`
+	History []*UserBecameRoleRead `json:"history"`
 }
 
 type UserRoleRead struct {
@@ -20,7 +19,7 @@ type UserRoleWrite struct {
 	PermissionGroupWrite
 }
 
-type UserBecameRoleWrite struct {
+type AddRoleToUserWrite struct {
 	User    uuid.UUID `json:"user"`
 	Role    uuid.UUID `json:"user_role"`
 	Start   time.Time `json:"start"`

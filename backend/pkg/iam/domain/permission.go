@@ -10,7 +10,6 @@ type PermissionRead struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Meta        string `json:"meta"`
-	Generated   bool   `json:"generated"`
 	Archived    bool   `json:"archived"`
 }
 

@@ -47,7 +47,7 @@ func TestUserAddUserRole(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status = iamService.AddUserToUserRole(&iam_domain.UserBecameRoleWrite{
+	status = iamService.AddUserToUserRole(&iam_domain.AddRoleToUserWrite{
 		User:  *id,
 		Role:  *currentUserRoleId,
 		Start: time.Now().Add(-2 * time.Hour),
@@ -59,7 +59,7 @@ func TestUserAddUserRole(t *testing.T) {
 	}
 
 	// attempt to add the same role again but with overlapping from the previous one
-	status = iamService.AddUserToUserRole(&iam_domain.UserBecameRoleWrite{
+	status = iamService.AddUserToUserRole(&iam_domain.AddRoleToUserWrite{
 		User:  *id,
 		Role:  *currentUserRoleId,
 		Start: time.Now(),
@@ -70,7 +70,7 @@ func TestUserAddUserRole(t *testing.T) {
 		t.Fatal("expected an error, instead got", status.Code)
 	}
 
-	status = iamService.AddUserToUserRole(&iam_domain.UserBecameRoleWrite{
+	status = iamService.AddUserToUserRole(&iam_domain.AddRoleToUserWrite{
 		User:  *id,
 		Role:  *currentUserRoleId,
 		Start: time.Now().Add(-3 * time.Hour),
@@ -96,7 +96,7 @@ func TestUserAddUserRole(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status = iamService.AddUserToUserRole(&iam_domain.UserBecameRoleWrite{
+	status = iamService.AddUserToUserRole(&iam_domain.AddRoleToUserWrite{
 		User:  *id,
 		Role:  *futureUserRoleId,
 		Start: time.Now().Add(5 * time.Hour),

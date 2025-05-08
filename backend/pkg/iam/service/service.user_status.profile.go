@@ -15,13 +15,13 @@ func (service *IAMService) GetUserStatusProfile(id *uuid.UUID) (*iam_domain.User
 	}
 	profile.PermissionGroupProfile = permissionGroupProfile
 
-	userStatus, status := service.repository.GetUserStatus(id)
+	userStatus, status := service.repository.GetStatus(id)
 	if status.Code != 200 {
 		return nil, &status
 	}
 	profile.UserStatus = userStatus
 
-	users, status := service.repository.ListUserStatusUsers(id)
+	users, status := service.repository.ListStatusUsers(id)
 	if status.Code != 200 {
 		return nil, &status
 	}

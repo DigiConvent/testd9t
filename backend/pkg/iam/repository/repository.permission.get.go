@@ -6,14 +6,14 @@ import (
 )
 
 func (r *IAMRepository) GetPermission(name string) (*iam_domain.PermissionRead, core.Status) {
-	result := r.db.QueryRow("select name, description, meta, generated, archived from permissions where name = ?", name)
+	result := r.db.QueryRow("select name, description, meta, archived from permissions where name = ?", name)
 
 	if result.Err() != nil {
 		return nil, *core.NotFoundError("iam.permission")
 	}
 
 	var permission iam_domain.PermissionRead
-	err := result.Scan(&permission.Name, &permission.Description, &permission.Meta, &permission.Generated, &permission.Archived)
+	err := result.Scan(&permission.Name, &permission.Description, &permission.Meta, &permission.Archived)
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}

@@ -8,7 +8,7 @@ import (
 
 func (r *IAMRepository) ListPermissionGroups() ([]*iam_domain.PermissionGroupFacade, core.Status) {
 	var permissionGroups []*iam_domain.PermissionGroupFacade
-	rows, err := r.db.Query(`select id, name, abbr, meta, parent, "generated" from permission_groups`)
+	rows, err := r.db.Query(`select id, name, abbr, meta, parent from permission_groups`)
 
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
@@ -26,7 +26,6 @@ func (r *IAMRepository) ListPermissionGroups() ([]*iam_domain.PermissionGroupFac
 			&permissionGroup.Abbr,
 			&permissionGroup.Meta,
 			&parentId,
-			&permissionGroup.Generated,
 		)
 
 		if parentId != nil {

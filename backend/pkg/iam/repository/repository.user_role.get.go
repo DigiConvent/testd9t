@@ -7,7 +7,7 @@ import (
 )
 
 func (r *IAMRepository) GetUserRole(arg *uuid.UUID) (*iam_domain.UserRoleRead, core.Status) {
-	row := r.db.QueryRow("select id, name, abbr, description from user_roles where id = ?", arg)
+	row := r.db.QueryRow("select id, name, abbr, description from permission_groups where id = ? and meta = 'role'", arg)
 
 	var userRole iam_domain.UserRoleRead
 	err := row.Scan(&userRole.Id, &userRole.Name, &userRole.Abbr, &userRole.Description)

@@ -8,20 +8,18 @@ import (
 	uuid "github.com/google/uuid"
 )
 
-func (r *IAMRepository) ListUserStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserBecameStatusRead, core.Status) {
-
-	r.db.QueryDebug(`select * from user_became_status ubs where ubs.status = ? `, arg.String())
+func (r *IAMRepository) ListStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserBecameStatusRead, core.Status) {
 	rows, err := r.db.Query(`select 
-		ubs.status,
+		ubs.permission_group,
 		uf.id, 
 		uf.first_name,
 		uf.last_name,
 		ubs.start,
 		ubs.end,
-		ubs.description
-	from user_became_status ubs
+		ubs.comment
+	from permission_group_has_user ubs
 		left join user_facades uf on ubs.user = uf.id
-	where ubs.status = ? and ubs.start <= datetime('now', 'localtime') and (ubs."end" >= datetime('now', 'localtime') or ubs."end" is null)`, arg.String())
+	where ubs.permission_group = ? and ubs.start <= datetime('now', 'localtime') and (ubs."end" >= datetime('now', 'localtime') or ubs."end" is null)`, arg.String())
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}
@@ -41,7 +39,7 @@ func (r *IAMRepository) ListUserStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserB
 			&ubs.User.LastName,
 			&startTime,
 			&endTime,
-			&ubs.Description,
+			&ubs.Comment,
 		)
 
 		if err != nil {

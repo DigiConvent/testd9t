@@ -56,7 +56,7 @@ func TestUserHasPermission(t *testing.T) {
 		t.Fatal("Expected a result")
 	}
 
-	status = iamService.AddUserBecameStatus(&iam_domain.UserBecameStatusWrite{
+	status = iamService.AddUserToUserStatus(&iam_domain.UserBecameStatusWrite{
 		User:       *id,
 		UserStatus: *statusID,
 		Start:      time.Now().Add(-2 * time.Hour),

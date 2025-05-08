@@ -47,7 +47,6 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 	})
 
 	if status.Err() {
-		t.Log("Cannot create user status")
 		t.Fatal(status.Message)
 	}
 
@@ -57,8 +56,7 @@ func TestAddUserToPermissionGroup(t *testing.T) {
 
 	status = testService.AddUserToPermissionGroup(userStatus, user)
 
-	if !status.Err() {
-		t.Log("Cannot add user to permission group")
+	if status.Err() {
 		t.Fatal(status.Message)
 	}
 

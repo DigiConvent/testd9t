@@ -6,7 +6,7 @@ import (
 )
 
 func (router *IamRouter) RemoveUserFromUserRole(ctx *gin.Context) {
-	var payload iam_domain.UserBecameRoleWrite
+	var payload iam_domain.AddRoleToUserWrite
 
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
 		ctx.JSON(422, gin.H{

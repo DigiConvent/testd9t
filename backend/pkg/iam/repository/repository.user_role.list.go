@@ -7,14 +7,7 @@ import (
 
 func (r *IAMRepository) ListUserRoles() ([]*iam_domain.UserRoleRead, core.Status) {
 	var userStatuses []*iam_domain.UserRoleRead
-	rows, err := r.db.Query(`
-	SELECT 
-		id,
-		name,
-		abbr,
-		description
-	FROM 
-		user_roles`)
+	rows, err := r.db.Query(`select id, name, abbr, description from permission_groups where meta = 'role'`)
 	if err != nil {
 		return nil, *core.InternalError(err.Error())
 	}

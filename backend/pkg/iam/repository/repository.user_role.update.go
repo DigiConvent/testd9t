@@ -7,7 +7,7 @@ import (
 )
 
 func (r *IAMRepository) UpdateUserRole(id *uuid.UUID, arg *iam_domain.UserRoleWrite) core.Status {
-	result, err := r.db.Exec("update user_roles set name = ?, abbr = ?, description = ? where id = ?", arg.Name, arg.Abbr, arg.Description, id.String())
+	result, err := r.db.Exec("update permission_groups set name = ?, abbr = ?, description = ? where id = ? and meta = 'role'", arg.Name, arg.Abbr, arg.Description, id.String())
 	if err != nil {
 		return *core.InternalError(err.Error())
 	}

@@ -39,17 +39,17 @@ type IAMRepositoryInterface interface {
 	SetCredentialEmailaddress(id *uuid.UUID, emailaddress string) core.Status
 	ResetCredentials(id *uuid.UUID) (string, core.Status)
 
-	AddUserStatusToUser(arg *iam_domain.UserBecameStatusWrite) core.Status
-	CreateUserStatus(arg *iam_domain.UserStatusWrite) (*uuid.UUID, core.Status)
-	DeleteUserStatus(arg *uuid.UUID) core.Status
-	GetUserStatus(arg *uuid.UUID) (*iam_domain.UserStatusRead, core.Status)
-	ListUserStatuses() ([]*iam_domain.UserStatusRead, core.Status)
-	ListUserStatusesFromUser(id *uuid.UUID) ([]*iam_domain.UserBecameStatusRead, core.Status)
-	ListUserStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserBecameStatusRead, core.Status)
-	UpdateUserStatus(id *uuid.UUID, arg *iam_domain.UserStatusWrite) core.Status
+	AddStatusToUser(arg *iam_domain.UserBecameStatusWrite) core.Status
+	CreateStatus(arg *iam_domain.UserStatusWrite) (*uuid.UUID, core.Status)
+	DeleteStatus(arg *uuid.UUID) core.Status
+	GetStatus(arg *uuid.UUID) (*iam_domain.UserStatusRead, core.Status)
+	ListStatuses() ([]*iam_domain.UserStatusRead, core.Status)
+	ListStatusesFromUser(id *uuid.UUID) ([]*iam_domain.UserBecameStatusRead, core.Status)
+	ListStatusUsers(arg *uuid.UUID) ([]*iam_domain.UserBecameStatusRead, core.Status)
+	UpdateStatus(id *uuid.UUID, arg *iam_domain.UserStatusWrite) core.Status
 
-	UserBecameRoleWrite(arg *iam_domain.UserBecameRoleWrite) core.Status
-	RemoveUserFromUserRole(arg *iam_domain.UserBecameRoleWrite) core.Status
+	AddRoleToUser(arg *iam_domain.AddRoleToUserWrite) core.Status
+	RemoveUserFromUserRole(arg *iam_domain.AddRoleToUserWrite) core.Status
 	CreateUserRole(arg *iam_domain.UserRoleWrite) (*uuid.UUID, core.Status)
 	DeleteUserRole(arg *uuid.UUID) core.Status
 	GetUserRole(arg *uuid.UUID) (*iam_domain.UserRoleRead, core.Status)
@@ -60,7 +60,7 @@ type IAMRepositoryInterface interface {
 
 	AddUserToPermissionGroup(permissionGroup, userId *uuid.UUID) core.Status
 	CreatePermissionGroup(arg *iam_domain.PermissionGroupWrite) (*uuid.UUID, core.Status)
-	DeletePermissionGroup(arg *uuid.UUID, generated bool) core.Status
+	DeletePermissionGroup(arg *uuid.UUID) core.Status
 	GetPermissionGroup(arg *uuid.UUID) (*iam_domain.PermissionGroupRead, core.Status)
 	ListGroupUsers(groupId *uuid.UUID) ([]*iam_domain.UserFacade, core.Status)
 	ListPermissionGroupAncestors(arg *uuid.UUID) ([]*iam_domain.PermissionGroupFacade, core.Status)

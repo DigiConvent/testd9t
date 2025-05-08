@@ -6,7 +6,7 @@ import (
 )
 
 func (service *IAMService) ListUserStatuses() ([]*iam_domain.UserStatusRead, *core.Status) {
-	userStatuses, status := service.repository.ListUserStatuses()
+	userStatuses, status := service.repository.ListStatuses()
 	if status.Err() {
 		return nil, &status
 	}
