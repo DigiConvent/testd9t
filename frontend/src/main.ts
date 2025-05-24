@@ -1,17 +1,18 @@
 import "./assets/main.css"
 
 import { createApp } from "vue"
-import { createI18n } from "vue-i18n"
 import PrimeVue from "primevue/config"
 import Aura from "@primevue/themes/aura"
 
 declare global {
    interface Window {
       debug: boolean
+      enable_gesture_navigation: boolean
    }
 }
 
 window.debug = process.env.NODE_ENV === "development"
+window.enable_gesture_navigation = true
 // window.debug = false
 
 import { library, config } from "@DigiConvent/ff/fontawesome-svg-core"
@@ -58,6 +59,10 @@ import {
    Skeleton,
    Splitter,
    SplitterPanel,
+   Step,
+   StepItem,
+   StepPanel,
+   Stepper,
    Tag,
    Textarea,
    Timeline,
@@ -71,24 +76,13 @@ const app = createApp(App)
 
 app.use(PrimeVue, { theme: { preset: Aura } })
 
-import de from "./locales/de.json"
-import en from "./locales/en.json"
-import jp from "./locales/jp.json"
 import { is_mini_app } from "./auth/telegram"
 import JwtAuthenticator from "./auth/jwt"
 import { permission } from "./directives/permission"
+import { i18n } from "./locales/i18n"
+import { info } from "./composables/toast"
 
-app.use(
-   createI18n({
-      locale: "de",
-      fallbackLocale: "de",
-      messages: {
-         de,
-         en,
-         jp,
-      },
-   }),
-)
+app.use(i18n)
 
 config.familyDefault = "sharp-duotone"
 library.add(fasds)
@@ -136,6 +130,10 @@ app.component("Select", Select)
 app.component("Skeleton", Skeleton)
 app.component("Splitter", Splitter)
 app.component("SplitterPanel", SplitterPanel)
+app.component("Stepper", Stepper)
+app.component("Step", Step)
+app.component("StepItem", StepItem)
+app.component("StepPanel", StepPanel)
 
 app.directive("ripple", Ripple)
 app.directive("permission", permission)
@@ -149,23 +147,28 @@ const auth = JwtAuthenticator.get_instance()
 if (is_mini_app()) {
    // I don't want to recover a session, I want to start a new one
    auth.login_using_telegram().then(() => {
-      mount()
+      mount(reuser)
    })
-} else if (auth.recover_session()) {
-   // this should only be necessary in browsers accessing the website and not over telegram
-   auth.load_permissions().then(() => {
-      mount()
+} else if (auth.sessions.length == 0) {
+   mount(reuser)
+} else if (auth.sessions.length == 1) {
+   auth.recover_session().then((is_authenticated) => {
+      if (is_authenticated) {
+         mount(reuser)
+         info("Session recovered", "")
+      } else {
+         info("Session not recovered", "")
+      }
    })
-} else {
-   reuser = "/home"
-   mount()
+} else if (auth.sessions.length > 1) {
+   mount("/auth/session/")
 }
 
-function mount() {
+function mount(path_to_load: string = "/app/") {
    app.mount("#app")
-   if (auth.is_authenticated.value) {
-      router.replace({ path: reuser })
-   } else {
-      router.replace({ name: "home" })
+   try {
+      router.replace({ path: path_to_load })
+   } catch (e) {
+      console.log(e)
    }
 }
